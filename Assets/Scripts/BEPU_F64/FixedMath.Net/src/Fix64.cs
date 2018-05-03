@@ -1027,6 +1027,15 @@ namespace FixMath.NET
 
         public Fix64(int value) {
             RawValue = value * ONE;
+
+        }
+
+        /// <summary>
+        /// Intentially kept out of the way so this is never accidentally called
+        /// </summary>
+        public static Fix64 BuildFromLong(long rawValue)
+        {
+            return new Fix64(rawValue);
         }
     }
 }
