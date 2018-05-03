@@ -7,8 +7,10 @@ namespace FixMath.NET
     /// <summary>
     /// Represents a Q31.32 fixed-point number.
     /// </summary>
-    public partial struct Fix64 : IEquatable<Fix64>, IComparable<Fix64> {
-		// Field is public and mutable to allow serialization by XNA Content Pipeline
+    [Serializable]
+    public partial struct Fix64 : IEquatable<Fix64>, IComparable<Fix64>
+    {
+        [Fix64Float]
         public long RawValue;
 
         // Precision of this type is 2^-32, that is 2,3283064365386962890625E-10
