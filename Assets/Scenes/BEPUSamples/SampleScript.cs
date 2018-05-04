@@ -1,0 +1,16 @@
+﻿using UnityEngine;
+using BEPUUnity;
+
+public class SampleScript : MonoBehaviour
+{
+    [SerializeField] private BEPUUnity.Space m_space = null;
+
+	void Start ()
+    {
+        var shapeList = m_space.gameObject.GetComponentsInChildren<BEPUUnity.ShapeBase>();
+        for(int i=0; i<shapeList.Length; i++)
+        {
+            m_space.Add(shapeList[i]);
+        }
+    }
+}
