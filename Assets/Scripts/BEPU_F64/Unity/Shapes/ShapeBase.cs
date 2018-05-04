@@ -8,6 +8,7 @@ namespace BEPUUnity
     public abstract class ShapeBase : MonoBehaviour
     {
         [SerializeField] protected BEPUutilities.Vector3 m_startPosition;
+        [SerializeField] protected BEPUutilities.Quaternion m_startOrientation;
         [SerializeField] protected Fix64 m_mass;
 
         protected Entity m_entity = null;
@@ -24,6 +25,11 @@ namespace BEPUUnity
                 m_startPosition.X = (Fix64)transform.position.x;
                 m_startPosition.Y = (Fix64)transform.position.y;
                 m_startPosition.Z = (Fix64)transform.position.z;
+
+                m_startOrientation.X = (Fix64)transform.rotation.x;
+                m_startOrientation.Y = (Fix64)transform.rotation.y;
+                m_startOrientation.Z = (Fix64)transform.rotation.z;
+                m_startOrientation.W = (Fix64)transform.rotation.w;
             }
         }
 

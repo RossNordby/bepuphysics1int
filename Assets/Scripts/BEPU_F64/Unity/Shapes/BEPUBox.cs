@@ -13,6 +13,7 @@ namespace BEPUUnity
         private void Awake()
         {
             m_entity = new Box(m_startPosition, m_width, m_height, m_length, m_mass);
+            m_entity.Orientation = m_startOrientation;
         }
 
 #if UNITY_EDITOR

@@ -6,6 +6,7 @@ namespace BEPUutilities
     /// <summary>
     /// Provides XNA-like quaternion support.
     /// </summary>
+    [Serializable]
     public struct Quaternion : IEquatable<Quaternion>
     {
         /// <summary>

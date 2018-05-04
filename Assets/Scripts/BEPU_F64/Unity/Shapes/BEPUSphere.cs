@@ -11,6 +11,7 @@ namespace BEPUUnity
         private void Awake()
         {
             m_entity = new Sphere(m_startPosition, m_radius, m_mass);
+            m_entity.Orientation = m_startOrientation;
         }
 
 #if UNITY_EDITOR
