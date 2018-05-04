@@ -6,6 +6,7 @@ namespace BEPUutilities
     /// <summary>
     /// Provides XNA-like 3D vector math.
     /// </summary>
+    [Serializable]
     public struct Vector3 : IEquatable<Vector3>
     {
         /// <summary>

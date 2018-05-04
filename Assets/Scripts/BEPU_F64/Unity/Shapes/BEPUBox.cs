@@ -12,14 +12,12 @@ namespace BEPUUnity
 
         private void Awake()
         {
-            var position = new BEPUutilities.Vector3((Fix64)transform.position.x, (Fix64)transform.position.y, (Fix64)transform.position.z);
-            m_entity = new Box(position, m_width, m_height, m_length, m_mass);
+            m_entity = new Box(m_startPosition, m_width, m_height, m_length, m_mass);
         }
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            // 
             //Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y, 0.0f), (float)m_width);
         }
 #endif
