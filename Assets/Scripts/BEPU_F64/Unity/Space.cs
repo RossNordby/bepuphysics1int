@@ -6,17 +6,17 @@ namespace BEPUUnity
     public class Space : MonoBehaviour
     {
         // we need a serialized Vector3
-        [SerializeField] private Fix64 m_gravity;
+        [SerializeField] private BEPUutilities.Vector3 m_gravity;
 
         private BEPUphysics.Space m_space;
 
         private void Awake()
         {
             m_space = new BEPUphysics.Space();
-            m_space.ForceUpdater.gravity = new BEPUutilities.Vector3(Fix64.Zero, m_gravity, Fix64.Zero);
+            m_space.ForceUpdater.gravity = m_gravity;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             m_space.Update();
         }
