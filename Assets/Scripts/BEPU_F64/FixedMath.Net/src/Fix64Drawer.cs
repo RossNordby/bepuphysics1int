@@ -12,7 +12,7 @@ public class Fix64FloatDrawer : PropertyDrawer
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        float floatValue = (float)Fix64.BuildFromLong(property.longValue);
+        float floatValue = (float)Fix64.BuildFromRawLong(property.longValue);
 
         EditorGUI.BeginProperty(position, label, property);
         EditorGUI.BeginChangeCheck();

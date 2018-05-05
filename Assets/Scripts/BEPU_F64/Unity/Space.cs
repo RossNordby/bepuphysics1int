@@ -16,7 +16,7 @@ namespace BEPUUnity
             m_space.ForceUpdater.gravity = m_gravity;
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             m_space.Update();
         }

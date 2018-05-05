@@ -395,7 +395,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 706810549}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.37, y: -1.3, z: 0.68}
+  m_LocalPosition: {x: -0.37, y: -1.314, z: 0.68}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2006153452}
@@ -416,7 +416,7 @@ MonoBehaviour:
     X:
       RawValue: -1589137920
     Y:
-      RawValue: -3204045312
+      RawValue: -3264175104
     Z:
       RawValue: 2920577792
   m_startOrientation:
