@@ -15,7 +15,7 @@ namespace BEPUUnity
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             Gizmos.color = ((float)m_mass > 0) ? Color.green : Color.red;
             Gizmos.DrawWireSphere(new Vector3(transform.position.x, transform.position.y, transform.position.z), (float)m_radius);
