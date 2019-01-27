@@ -2,28 +2,33 @@ using FixMath.NET;
 using UnityEditor;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(Fix64FloatAttribute))]
+[CustomPropertyDrawer(typeof(Fix64))]
 public class Fix64FloatDrawer : PropertyDrawer
 {
-    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-    {
-        return EditorGUIUtility.singleLineHeight * 2f;
-    }
+	private static bool viewRaw = false;
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        float floatValue = (float)Fix64.BuildFromRawLong(property.longValue);
+		int buttonWidth = 20;
 
-        EditorGUI.BeginProperty(position, label, property);
-        EditorGUI.BeginChangeCheck();
-        
-        float lineHeight = EditorGUIUtility.singleLineHeight;
-        floatValue = EditorGUI.FloatField(new Rect(position.xMin, position.yMin, position.width, lineHeight), "Float Value", floatValue);
-        EditorGUI.LongField(new Rect(position.xMin, position.yMin + lineHeight, position.width, lineHeight), "Raw Value", property.longValue);
+		var r = position;
+		r.width -= buttonWidth + 20;
+		if (viewRaw) {
+			EditorGUI.PropertyField(r, property.FindPropertyRelative("RawValue"), label);
+		}
+		else {
+			EditorGUI.BeginChangeCheck();
+			float floatValue = (float) Fix64.BuildFromRawLong(property.FindPropertyRelative("RawValue").longValue);
+			floatValue = EditorGUI.FloatField(r, label, floatValue);
+			if (EditorGUI.EndChangeCheck())
+				property.FindPropertyRelative("RawValue").longValue = ((Fix64) floatValue).RawValue;
+		}
 
-        if (EditorGUI.EndChangeCheck())
-            property.longValue = ((Fix64)floatValue).RawValue;
-
-        EditorGUI.EndProperty();
+		r.width = buttonWidth;
+		r.x = position.width - buttonWidth;
+		if (GUI.Button(r, viewRaw ? new GUIContent("R", "Currently in Raw view") : new GUIContent("F", "Currently in Float view"))) {
+			viewRaw = !viewRaw;
+			GUIUtility.keyboardControl = 0;
+		}
     }
 }

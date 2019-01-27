@@ -12,7 +12,6 @@ namespace FixMath.NET
     {
         public const MethodImplOptions AggressiveInlining = (MethodImplOptions)256;
 
-        [Fix64Float]
         public long RawValue;
 
         // Precision of this type is 2^-32, that is 2,3283064365386962890625E-10
