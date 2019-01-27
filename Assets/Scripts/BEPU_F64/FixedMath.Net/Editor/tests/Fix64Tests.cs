@@ -223,7 +223,7 @@ namespace FixMath.NET
 
                     if (m_testCases[j] == 0)
                     {
-                        Assert.Throws<DivideByZeroException>(() => Ignore(x / y));
+						Assert.AreEqual(x >= 0 ? Fix64.MaxValue : Fix64.MinValue, x / y);
                     }
                     else
                     {
@@ -475,7 +475,7 @@ namespace FixMath.NET
 
                     if (operand2 == 0)
                     {
-                        Assert.Throws<DivideByZeroException>(() => Ignore(f1 / f2));
+						Assert.AreEqual(f1 >= 0 ? Fix64.MaxValue : Fix64.MinValue, f1 / f2);
                     }
                     else
                     {
@@ -494,33 +494,35 @@ namespace FixMath.NET
             Console.WriteLine("failed: {0}%", deltas.Count(d => d > Fix64.Precision) * 100.0 / deltas.Count);
         }
 
-        //[Test]
-        //public void SinBenchmark()
-        //{
-        //    var deltas = new List<double>();
+		/*
+        [Test]
+        public void SinBenchmark()
+        {
+            var deltas = new List<double>();
 
-        //    var swf = new Stopwatch();
-        //    var swd = new Stopwatch();
+            var swf = new Stopwatch();
+            var swd = new Stopwatch();
 
-        //    // Restricting the range to from 0 to Pi/2
-        //    for (var angle = 0.0; angle <= 2 * Math.PI; angle += 0.000004)
-        //    {
-        //        var f = (Fix64)angle;
-        //        swf.Start();
-        //        var actualF = Fix64.Sin(f);
-        //        swf.Stop();
-        //        var actual = (double)actualF;
-        //        swd.Start();
-        //        var expectedD = Math.Sin(angle);
-        //        swd.Stop();
-        //        var expected = (double)expectedD;
-        //        var delta = Math.Abs(expected - actual);
-        //        deltas.Add(delta);
-        //    }
-        //    Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (double)Fix64.Precision);
-        //    Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (double)Fix64.Precision);
-        //    Console.WriteLine("Fix64.Sin time = {0}ms, Math.Sin time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
-        //}
+            // Restricting the range to from 0 to Pi/2
+            for (var angle = 0.0; angle <= 2 * Math.PI; angle += 0.000004)
+            {
+                var f = (Fix64)angle;
+                swf.Start();
+                var actualF = Fix64.Sin(f);
+                swf.Stop();
+                var actual = (double)actualF;
+                swd.Start();
+                var expectedD = Math.Sin(angle);
+                swd.Stop();
+                var expected = (double)expectedD;
+                var delta = Math.Abs(expected - actual);
+                deltas.Add(delta);
+            }
+            Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (double)Fix64.Precision);
+            Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (double)Fix64.Precision);
+            Console.WriteLine("Fix64.Sin time = {0}ms, Math.Sin time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
+        }
+		*/
 
         [Test]
         public void Sin()
@@ -741,7 +743,9 @@ namespace FixMath.NET
             Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix64.Precision);
             Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix64.Precision);
         }
-        //[Test]
+
+		/*
+        [Test]
         public void AtanBenchmark()
         {
             var deltas = new List<decimal>();
@@ -767,6 +771,7 @@ namespace FixMath.NET
             Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix64.Precision);
             Console.WriteLine("Fix64.Atan time = {0}ms, Math.Atan time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
         }
+		*/
 
         [Test]
         public void Atan2()
@@ -812,8 +817,8 @@ namespace FixMath.NET
             Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix64.Precision);
         }
 
-
-        //[Test]
+		/*
+        [Test]
         public void Atan2Benchmark()
         {
             var deltas = new List<decimal>();
@@ -843,6 +848,7 @@ namespace FixMath.NET
             Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix64.Precision);
             Console.WriteLine("Fix64.Atan2 time = {0}ms, Math.Atan2 time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
         }
+		*/
 
         [Test]
         public void Negation()

@@ -637,10 +637,26 @@ namespace FixMath.NET
             return new Fix64(flipVertical ? -nearestValue : nearestValue);
         }
 
-        [MethodImplAttribute(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static long ClampSinValue(long angle, out bool flipHorizontal, out bool flipVertical) {
+#if CHECKMATH
+            var largePI = 7244019458077122842;
+            // Obtained from ((Fix64)1686629713.065252369824872831112M).m_rawValue
+            // This is (2^29)*PI, where 29 is the largest N such that (2^N)*PI < MaxValue.
+            // The idea is that this number contains way more precision than PI_TIMES_2,
+            // and (((x % (2^29*PI)) % (2^28*PI)) % ... (2^1*PI) = x % (2 * PI)
+            // In practice this gives us an error of about 1,25e-9 in the worst case scenario (Sin(MaxValue))
+            // Whereas simply doing x % PI_TIMES_2 is the 2e-3 range.
+
+            var clamped2Pi = angle;
+            for (int i = 0; i < 29; ++i)
+            {
+                clamped2Pi %= (largePI >> i);
+            }
+#else
             // Clamp value to 0 - 2*PI using modulo; this is very slow but there's no better way AFAIK
             var clamped2Pi = angle % PI_TIMES_2;
+#endif
             if (angle < 0) {
                 clamped2Pi += PI_TIMES_2;
             }
