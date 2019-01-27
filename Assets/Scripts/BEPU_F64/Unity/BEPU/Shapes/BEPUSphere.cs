@@ -18,7 +18,8 @@ namespace BEPUUnity
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = ((float)m_mass > 0) ? Color.green : Color.red;
-            Gizmos.DrawWireSphere(new Vector3(transform.position.x, transform.position.y, transform.position.z), (float)m_radius);
+			Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one);
+            Gizmos.DrawWireSphere(Vector3.zero, (float)m_radius);
         }
 #endif
     }

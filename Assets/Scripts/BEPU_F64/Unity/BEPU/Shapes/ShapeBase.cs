@@ -18,9 +18,10 @@ namespace BEPUUnity
             return m_entity;
         }
 
+#if UNITY_EDITOR
         private void Update()
         {
-            if(!Application.isPlaying)
+            if (!Application.isPlaying)
             {
                 m_startPosition.X = (Fix64)transform.position.x;
                 m_startPosition.Y = (Fix64)transform.position.y;
@@ -32,6 +33,7 @@ namespace BEPUUnity
                 m_startOrientation.W = (Fix64)transform.rotation.w;
             }
         }
+#endif
 
         private void LateUpdate()
         {

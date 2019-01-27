@@ -9,7 +9,7 @@ public class SampleScript : MonoBehaviour
     {
         Application.targetFrameRate = 60;
 
-        var shapeList = m_space.gameObject.GetComponentsInChildren<BEPUUnity.ShapeBase>();
+        var shapeList = m_space.gameObject.GetComponentsInChildren<ShapeBase>();
         for(int i=0; i<shapeList.Length; i++)
         {
             m_space.Add(shapeList[i]);
