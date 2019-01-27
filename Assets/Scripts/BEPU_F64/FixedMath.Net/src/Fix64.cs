@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 namespace FixMath.NET
 {
     /// <summary>
-    /// Represents a Q31.32 fixed-point number.
+    /// Represents a Q1.31.32 fixed-point number.
     /// </summary>
     [Serializable]
     public partial struct Fix64 : IEquatable<Fix64>, IComparable<Fix64>
@@ -55,6 +55,7 @@ namespace FixMath.NET
         const long LOG2MAX = 0x1F00000000;
         const long LOG2MIN = -0x2000000000;
         const int LUT_SIZE = (int)(PI_OVER_2 >> 15);
+		const int BitsMinus1 = (sizeof(long) - 1);
 
         /// <summary>
         /// Returns a number indicating the sign of a Fix64 number.
@@ -72,7 +73,7 @@ namespace FixMath.NET
             return
                 v.RawValue < 0 ? MinusOne :
                 v.RawValue > 0 ? One :
-                Fix64.Zero;
+                Zero;
         }
 
 
@@ -87,7 +88,7 @@ namespace FixMath.NET
             }
 
             // branchless implementation, see http://www.strchr.com/optimized_abs_function
-            var mask = value.RawValue >> 63;
+            var mask = value.RawValue >> BitsMinus1;
             return new Fix64((value.RawValue + mask) ^ mask);
         }
 
@@ -97,7 +98,7 @@ namespace FixMath.NET
         /// </summary>
         public static Fix64 FastAbs(Fix64 value) {
             // branchless implementation, see http://www.strchr.com/optimized_abs_function
-            var mask = value.RawValue >> 63;
+            var mask = value.RawValue >> BitsMinus1;
             return new Fix64((value.RawValue + mask) ^ mask);
         }
 
@@ -906,6 +907,7 @@ namespace FixMath.NET
             return new Fix64(rawValue);
         }
 
+		/*
         internal static void GenerateSinLut() {
             using (var writer = new StreamWriter("Fix64SinLut.cs")) {
                 writer.Write(
@@ -960,11 +962,12 @@ namespace FixMath.NET
         }
 
         // turn into a Console Application and use this to generate the look-up tables
-        //static void Main(string[] args)
-        //{
-        //    GenerateSinLut();
-        //    GenerateTanLut();
-        //}
+        static void Main(string[] args)
+        {
+            GenerateSinLut();
+            GenerateTanLut();
+        }
+		*/
 
         /// <summary>
         /// This is the constructor from raw value; it can only be used interally.
