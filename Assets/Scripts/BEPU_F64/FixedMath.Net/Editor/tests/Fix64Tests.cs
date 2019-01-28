@@ -223,7 +223,7 @@ namespace FixMath.NET
 
                     if (m_testCases[j] == 0)
                     {
-						Assert.AreEqual(x >= 0 ? Fix64.MaxValue : Fix64.MinValue, x / y);
+						Assert.AreEqual(x >= 0 ? Fix64.MaxValue : Fix64.MinValue, x / y, x.ToString() + " / " + y.ToString());
                     }
                     else
                     {

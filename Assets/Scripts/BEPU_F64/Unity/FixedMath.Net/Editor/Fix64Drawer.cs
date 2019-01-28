@@ -21,7 +21,7 @@ public class Fix64FloatDrawer : PropertyDrawer
 			float floatValue = (float) Fix64.BuildFromRawLong(property.FindPropertyRelative("RawValue").longValue);
 			floatValue = EditorGUI.FloatField(r, label, floatValue);
 			if (EditorGUI.EndChangeCheck())
-				property.FindPropertyRelative("RawValue").longValue = ((Fix64) floatValue).RawValue;
+				property.FindPropertyRelative("RawValue").longValue = (long) ((Fix64) floatValue).GetRawValue();
 		}
 
 		r.width = buttonWidth;
