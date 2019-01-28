@@ -23,16 +23,22 @@ namespace BEPUUnity
         {
             if (!Application.isPlaying)
             {
-                m_startPosition.X = (Fix64)transform.position.x;
-                m_startPosition.Y = (Fix64)transform.position.y;
-                m_startPosition.Z = (Fix64)transform.position.z;
+				CopyTransformToBEPU();
 
-                m_startOrientation.X = (Fix64)transform.rotation.x;
-                m_startOrientation.Y = (Fix64)transform.rotation.y;
-                m_startOrientation.Z = (Fix64)transform.rotation.z;
-                m_startOrientation.W = (Fix64)transform.rotation.w;
-            }
+			}
         }
+
+		[ContextMenu("CopyTransformToBEPU")]
+		private void CopyTransformToBEPU() {
+			m_startPosition.X = (Fix64) transform.position.x;
+			m_startPosition.Y = (Fix64) transform.position.y;
+			m_startPosition.Z = (Fix64) transform.position.z;
+
+			m_startOrientation.X = (Fix64) transform.rotation.x;
+			m_startOrientation.Y = (Fix64) transform.rotation.y;
+			m_startOrientation.Z = (Fix64) transform.rotation.z;
+			m_startOrientation.W = (Fix64) transform.rotation.w;
+		}
 #endif
 
         private void LateUpdate()

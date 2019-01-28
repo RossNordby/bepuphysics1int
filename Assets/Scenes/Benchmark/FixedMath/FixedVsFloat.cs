@@ -9,7 +9,7 @@ public class FixedVsFloat : MonoBehaviour {
 	public int iterations = 20000;
 
 	Dictionary<Func<int, Fix64>, string> fResults = new Dictionary<Func<int, Fix64>, string>();
-	Dictionary<Func<int, double>, string> dResults = new Dictionary<Func<int, double>, string>();
+	Dictionary<Func<int, float>, string> dResults = new Dictionary<Func<int, float>, string>();
 	
 	private void Update() {
 		fResults.Clear();
@@ -232,197 +232,197 @@ public class FixedVsFloat : MonoBehaviour {
 	/// <summary>
 	/// Get the number of nanoseconds of an iteration of <paramref name="f"/>, that must execute <see cref="iterations"/> iterations.
 	/// </summary>
-	string TestDouble(Func<int, double> f) {
+	string TestDouble(Func<int, float> f) {
 		if (dResults.ContainsKey(f)) return dResults[f];
 		var sw = Stopwatch.StartNew();
 		var tmp = f(iterations);
 		return dResults[f] = " = " + sw.Elapsed.TotalMilliseconds / iterations * 1000000 + " ns";
 	}
 
-	static double DAdd(int iterations) {
-		double sum = 0;
-		for (int i = 0; i < iterations; i++) sum += 1d;
+	static float DAdd(int iterations) {
+		float sum = 0;
+		for (int i = 0; i < iterations; i++) sum += 1f;
 		return sum;
 	}
-	static double DSub(int iterations) {
-		double sum = 0;
-		for (int i = 0; i < iterations; i++) sum -= 1d;
+	static float DSub(int iterations) {
+		float sum = 0;
+		for (int i = 0; i < iterations; i++) sum -= 1f;
 		return sum;
 	}
-	static double DInv(int iterations) {
-		double sum = 0;
-		for (int i = 0; i < iterations; i++) sum = -1d;
+	static float DInv(int iterations) {
+		float sum = 0;
+		for (int i = 0; i < iterations; i++) sum = -1f;
 		return sum;
 	}
-	static double DMul2(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i * 2d;
+	static float DMul2(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i * 2f;
 		return sum;
 	}
-	static double DDiv2(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i / 2d;
+	static float DDiv2(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i / 2f;
 		return sum;
 	}
-	static double DMul3(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i * 3d;
+	static float DMul3(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i * 3f;
 		return sum;
 	}
-	static double DDiv3(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i / 3d;
+	static float DDiv3(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i / 3f;
 		return sum;
 	}
-	static double DMul12345(int iterations) {
-		double f12345 = (12345);
-		double sum = 0;
+	static float DMul12345(int iterations) {
+		float f12345 = (12345);
+		float sum = 0;
 		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i * f12345;
 		return sum;
 	}
-	static double DDiv12345(int iterations) {
-		double f12345 = (12345);
-		double sum = 0;
+	static float DDiv12345(int iterations) {
+		float f12345 = (12345);
+		float sum = 0;
 		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i / f12345;
 		return sum;
 	}
-	static double DDiv1(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = 1d / (i);
+	static float DDiv1(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = 1f / (i);
 		return sum;
 	}
-	static double DModulo(int iterations) {
-		double sum = 0;
+	static float DModulo(int iterations) {
+		float sum = 0;
 		for (int i = -iterations / 2; i < 0; i++) sum = 11 * 5 * 3 % (i);
 		for (int i = 1; i < iterations / 2; i++) sum = 11 * 5 * 3 % (i);
 		return sum;
 	}
-	static double DSign(int iterations) {
-		double sum = 0;
+	static float DSign(int iterations) {
+		float sum = 0;
 		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Math.Sign((i));
 		return sum;
 	}
-	static double DAbs(int iterations) {
-		double sum = 0;
+	static float DAbs(int iterations) {
+		float sum = 0;
 		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Math.Abs((i));
 		return sum;
 	}
-	static double DFloor(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Math.Floor((double) (i));
+	static float DFloor(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Mathf.Floor((float) (i));
 		return sum;
 	}
-	static double DLog2(int iterations) {
-		double sum = 0;
-		for (int i = 1; i <= iterations; i++) sum = Math.Log((double) (i), 2);
+	static float DLog2(int iterations) {
+		float sum = 0;
+		for (int i = 1; i <= iterations; i++) sum = Mathf.Log((float) (i), 2);
 		return sum;
 	}
-	static double DLn(int iterations) {
-		double sum = 0;
-		for (int i = 1; i <= iterations; i++) sum = Math.Log((double) (i));
+	static float DLn(int iterations) {
+		float sum = 0;
+		for (int i = 1; i <= iterations; i++) sum = Mathf.Log((float) (i));
 		return sum;
 	}
-	static double DPow2(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Math.Pow(2, i);
+	static float DPow2(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Mathf.Pow(2, i);
 		return sum;
 	}
-	static double DPow(int iterations) {
-		double sum = 0;
-		for (int i = 0; i < iterations; i++) sum = Math.Pow((i), (i));
+	static float DPow(int iterations) {
+		float sum = 0;
+		for (int i = 0; i < iterations; i++) sum = Mathf.Pow((i), (i));
 		return sum;
 	}
-	static double DAcos(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Math.Acos((i));
+	static float DAcos(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Mathf.Acos((i));
 		return sum;
 	}
-	static double DCeiling(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Math.Ceiling((double) (i));
+	static float DCeiling(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Mathf.Ceil((float) (i));
 		return sum;
 	}
-	static double DRound(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Math.Round((double) (i));
+	static float DRound(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Mathf.Round((float) (i));
 		return sum;
 	}
-	static double DEqualEqual(int iterations) {
+	static float DEqualEqual(int iterations) {
 		bool tmp;
-		double sum = 0;
+		float sum = 0;
 		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum == (i);
 		return sum;
 	}
-	static double DNotEqual(int iterations) {
+	static float DNotEqual(int iterations) {
 		bool tmp;
-		double sum = 0;
+		float sum = 0;
 		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum != (i);
 		return sum;
 	}
-	static double DGreater(int iterations) {
+	static float DGreater(int iterations) {
 		bool tmp;
-		double sum = 0;
+		float sum = 0;
 		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum > (i);
 		return sum;
 	}
-	static double DLess(int iterations) {
+	static float DLess(int iterations) {
 		bool tmp;
-		double sum = 0;
+		float sum = 0;
 		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum < (i);
 		return sum;
 	}
-	static double DGreaterOrEqual(int iterations) {
+	static float DGreaterOrEqual(int iterations) {
 		bool tmp;
-		double sum = 0;
+		float sum = 0;
 		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum >= (i);
 		return sum;
 	}
-	static double DLessOrEqual(int iterations) {
+	static float DLessOrEqual(int iterations) {
 		bool tmp;
-		double sum = 0;
+		float sum = 0;
 		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum <= (i);
 		return sum;
 	}
-	static double DSqrt(int iterations) {
-		double sum = 0;
-		for (int i = 0; i < iterations; i++) sum = Math.Sqrt((i));
+	static float DSqrt(int iterations) {
+		float sum = 0;
+		for (int i = 0; i < iterations; i++) sum = Mathf.Sqrt((i));
 		return sum;
 	}
-	static double DSin(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Math.Sin((i));
+	static float DSin(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Mathf.Sin((i));
 		return sum;
 	}
-	static double DFastSin(int iterations) { return DSin(iterations); }
-	static double DCos(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Math.Cos((i));
+	static float DFastSin(int iterations) { return DSin(iterations); }
+	static float DCos(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Mathf.Cos((i));
 		return sum;
 	}
-	static double DFastCos(int iterations) { return DCos(iterations); }
-	static double DTan(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Math.Tan((i));
+	static float DFastCos(int iterations) { return DCos(iterations); }
+	static float DTan(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Mathf.Tan((i));
 		return sum;
 	}
-	static double DAtan(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Math.Atan((i));
+	static float DAtan(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Mathf.Atan((i));
 		return sum;
 	}
-	static double DAtan2(int iterations) {
-		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Math.Atan2((i), (i));
+	static float DAtan2(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Mathf.Atan2((i), (i));
 		return sum;
 	}
-	static double DFastAtan2(int iterations) { return DAtan2(iterations); }
-	static double DEquals(int iterations) {
+	static float DFastAtan2(int iterations) { return DAtan2(iterations); }
+	static float DEquals(int iterations) {
 		bool tmp;
 		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = (i).Equals((i));
 		return 0;
 	}
-	static double DCompareTo(int iterations) {
-		double sum = 0;
+	static float DCompareTo(int iterations) {
+		float sum = 0;
 		for (int i = -iterations / 2; i < iterations / 2; i++) sum = (i).CompareTo((i));
 		return sum;
 	}
