@@ -35,8 +35,8 @@ namespace BEPUutilities
 		public static readonly Fix64 C1p1 = (Fix64)1.1m;
         public static readonly Fix64 Half = Fix64.One / 2;
         public static readonly Fix64 OneEighth = Fix64.One / 8;
-		public static readonly Fix64 FourThirds = new Fix64(4) / 3;
-		public static readonly Fix64 TwoFifths = new Fix64(2) / 5;
+		public static readonly Fix64 FourThirds = (Fix64) 4 / 3;
+		public static readonly Fix64 TwoFifths = (Fix64) 2 / 5;
 		public static readonly Fix64 C0p2 = (Fix64)0.2m;
 		public static readonly Fix64 C0p8 = (Fix64)0.8m;
 		public static readonly Fix64 C0p01 = (Fix64)0.01m;

@@ -26,7 +26,7 @@ namespace BEPUutilities
     /// <summary>
     /// Approximate value of Pi divided by four.
     /// </summary>
-    public static readonly Fix64 PiOver4 = Fix64.Pi / new Fix64(4);
+    public static readonly Fix64 PiOver4 = Fix64.PiOver4;
 
     /// <summary>
     /// Calculate remainder of of Fix64 division using same algorithm
