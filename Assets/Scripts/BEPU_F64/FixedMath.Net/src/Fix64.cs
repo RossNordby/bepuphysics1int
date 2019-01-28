@@ -1,7 +1,6 @@
 ﻿#define CHECKMATH
 
 using System;
-using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace FixMath.NET
@@ -40,27 +39,41 @@ namespace FixMath.NET
         public static readonly Fix64 Log2Max = new Fix64(LOG2MAX);
         public static readonly Fix64 Log2Min = new Fix64(LOG2MIN);
 
-        static readonly Fix64 LutInterval = (Fix64)(LUT_SIZE - 1) / PiOver2;
-        const int MAX_VALUE = int.MaxValue;
-        const int MIN_VALUE = int.MinValue;
-        const int NUM_BITS = 32;
-		const int NUM_BITS_MINUS_ONE = NUM_BITS - 1;
+		const int MAX_VALUE = int.MaxValue;
+		const int MIN_VALUE = int.MinValue;
+		const int NUM_BITS = 32;
 		const int FRACTIONAL_PLACES = 14;
+
+		const int NUM_BITS_MINUS_ONE = NUM_BITS - 1;
 		const int ONE = 1 << FRACTIONAL_PLACES;
 		const uint FRACTIONAL_MASK = ONE - 1;
-		const int PI = 0xC910;
-		const int PI_TIMES_2 = 0x19220;
-		const int PI_OVER_2 = 0x6488;
-		const int PI_OVER_4 = 0x3244;
-		const int PI_INV = 0x145F;
-		const int PI_OVER_2_INV = 0x28BE;
-		const int E_RAW = 0xADF8;
-        const int EPOW4 = 0xDA648;
-        const int LN2 = 0x2C5D;
-        const int LOG2MAX = 31 << FRACTIONAL_PLACES;
+		const int LOG2MAX = 31 << FRACTIONAL_PLACES;
 		const int LOG2MIN = -(32 << FRACTIONAL_PLACES);
 		const int LUT_SIZE_RS = FRACTIONAL_PLACES / 2 - 1;
 		const int LUT_SIZE = (int)(PI_OVER_2 >> LUT_SIZE_RS);
+		static readonly Fix64 LutInterval = (Fix64) (LUT_SIZE - 1) / PiOver2;
+
+		// Const before rounding
+		const decimal D_PI = ONE * (3.1415926535897932384626433832795028841971693993751058209749445923078164m);
+		const decimal D_PI_TIMES_2 = ONE * (2m * 3.1415926535897932384626433832795028841971693993751058209749445923078164m);
+		const decimal D_PI_OVER_2 = ONE * (3.1415926535897932384626433832795028841971693993751058209749445923078164m / 2m);
+		const decimal D_PI_OVER_4 = ONE * (3.1415926535897932384626433832795028841971693993751058209749445923078164m / 4m);
+		const decimal D_PI_INV = ONE * (1m / 3.1415926535897932384626433832795028841971693993751058209749445923078164m);
+		const decimal D_PI_OVER_2_INV = ONE * (1m / (3.1415926535897932384626433832795028841971693993751058209749445923078164m / 2m));
+		const decimal D_E_RAW = ONE * (2.71828182845904523536028747135266249775724709369995957496696762772407663035354759457138217852516642742746639193200m);
+		const decimal D_EPOW4 = ONE * (2.71828182845904523536028747135266249775724709369995957496696762772407663035354759457138217852516642742746639193200m * 2.71828182845904523536028747135266249775724709369995957496696762772407663035354759457138217852516642742746639193200m * 2.71828182845904523536028747135266249775724709369995957496696762772407663035354759457138217852516642742746639193200m * 2.71828182845904523536028747135266249775724709369995957496696762772407663035354759457138217852516642742746639193200m);
+		const decimal D_LN2 = ONE * (0.693147180559945309417232121458m);
+
+		// Const rounded to int instead of truncated
+		const int PI = (int) (D_PI < 0 ? D_PI - 0.5m : D_PI + 0.5m);
+		const int PI_TIMES_2 = (int) (D_PI_TIMES_2 < 0 ? D_PI_TIMES_2 - 0.5m : D_PI_TIMES_2 + 0.5m);
+		const int PI_OVER_2 = (int) (D_PI_OVER_2 < 0 ? D_PI_OVER_2 - 0.5m : D_PI_OVER_2 + 0.5m);
+		const int PI_OVER_4 = (int) (D_PI_OVER_4 < 0 ? D_PI_OVER_4 - 0.5m : D_PI_OVER_4 + 0.5m);
+		const int PI_INV = (int) (D_PI_INV < 0 ? D_PI_INV - 0.5m : D_PI_INV + 0.5m);
+		const int PI_OVER_2_INV = (int) (D_PI_OVER_2_INV < 0 ? D_PI_OVER_2_INV - 0.5m : D_PI_OVER_2_INV + 0.5m);
+		const int E_RAW = (int) (D_E_RAW < 0 ? D_E_RAW - 0.5m : D_E_RAW + 0.5m);
+		const int EPOW4 = (int) (D_EPOW4 < 0 ? D_EPOW4 - 0.5m : D_EPOW4 + 0.5m);
+		const int LN2 = (int) (D_LN2 < 0 ? D_LN2 - 0.5m : D_LN2 + 0.5m);
 
 		/// <summary>
 		/// Returns a number indicating the sign of a Fix64 number.
@@ -866,11 +879,12 @@ namespace FixMath.NET
 			RawValue = rawValue;
 		}
 
-		
-        static void GenerateSinLut(string where) {
+
+#if UNITY_EDITOR
+		static void GenerateSinLut(string where) {
 			CalculateLargePI(out Fix64 largePIF64, out int N);
 
-			using (var writer = new StreamWriter(where + "/Fix64SinLut.cs")) {
+			using (var writer = new System.IO.StreamWriter(where + "/Fix64SinLut.cs")) {
                 writer.Write(
 @"namespace FixMath.NET {
 	public partial struct Fix64 {
@@ -880,12 +894,12 @@ namespace FixMath.NET
 		internal static readonly long[] SinLut = new long[" + LUT_SIZE + "] {");
                 int lineCounter = 0;
                 for (int i = 0; i < LUT_SIZE; ++i) {
-                    var angle = i * Math.PI * 0.5 / (LUT_SIZE - 1);
+                    var angle = i * 3.1415926535897932384626433832795028841971693993751058209749445923078164m * 0.5m / (LUT_SIZE - 1);
                     if (lineCounter++ % 8 == 0) {
                         writer.WriteLine();
                         writer.Write("			");
                     }
-                    var sin = Math.Sin(angle);
+                    var sin = Math.Sin((double) angle);
                     var rawValue = ((Fix64)sin).RawValue;
                     writer.Write(string.Format("0x{0:X}L, ", rawValue));
                 }
@@ -898,19 +912,19 @@ namespace FixMath.NET
         }
 
         static void GenerateTanLut(string where) {
-            using (var writer = new StreamWriter(where + "/Fix64TanLut.cs")) {
+            using (var writer = new System.IO.StreamWriter(where + "/Fix64TanLut.cs")) {
                 writer.Write(
 @"namespace FixMath.NET {
 	public partial struct Fix64 {
 		internal static readonly long[] TanLut = new long[" + LUT_SIZE + "] {");
                 int lineCounter = 0;
                 for (int i = 0; i < LUT_SIZE; ++i) {
-                    var angle = i * Math.PI * 0.5 / (LUT_SIZE - 1);
+                    var angle = i * 3.1415926535897932384626433832795028841971693993751058209749445923078164m * 0.5m / (LUT_SIZE - 1);
                     if (lineCounter++ % 8 == 0) {
                         writer.WriteLine();
                         writer.Write("			");
                     }
-                    var tan = Math.Tan(angle);
+                    var tan = Math.Tan((double) angle);
                     if (tan > (double)MaxValue || tan < 0.0) {
                         tan = (double)MaxValue;
                     }
@@ -952,7 +966,7 @@ namespace FixMath.NET
 			largePIF64 = prevLargePI;
 		}
 
-        // turn into a Console Application and use this to generate the look-up tables
+		// turn into a Console Application and use this to generate the look-up tables
 		[UnityEditor.MenuItem("Tools/Fix64 Regenerate LUT")]
         static void GenerateLut() {
 			string thisFile = new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName();
@@ -962,5 +976,6 @@ namespace FixMath.NET
             GenerateTanLut(path);
 			UnityEditor.AssetDatabase.Refresh();
         }
+#endif
 	}
 }
