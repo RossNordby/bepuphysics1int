@@ -881,7 +881,7 @@ namespace FixMath.NET
                     return Zero;
                 return -PiOver2;
             }
-
+            Fix64 atan;
             var z = y / x;
 
             // Deal with overflow
@@ -889,13 +889,24 @@ namespace FixMath.NET
             {
                 return y.RawValue < 0 ? -PiOver2 : PiOver2;
             }
-            Fix64 atan = Atan(z);
 
-            if (xl < 0)
+            if (Abs(z) < One)
             {
+                atan = z / (One + (Fix64)0.28M * z * z);
+                if (xl < 0)
+                {
+                    if (yl < 0)
+                    {
+                        return atan - Pi;
+                    }
+                    return atan + Pi;
+                }
+            }
+            else
+            {
+                atan = PiOver2 - z / (z * z + (Fix64)0.28M);
                 if (yl < 0)
                     return atan - Pi;
-                return atan + Pi;
             }
 
             return atan;
