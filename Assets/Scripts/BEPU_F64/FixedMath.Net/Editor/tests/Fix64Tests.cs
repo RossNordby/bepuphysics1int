@@ -69,7 +69,10 @@ namespace FixMath.NET
         public void DoubleToFix64AndBack()
         {
             List<double> sources = new List<double>() {
-                -(double)Math.PI,
+				-int.MaxValue * 100d,
+				-int.MaxValue * 2d,
+				-int.MaxValue,
+				-(double)Math.PI,
                 -(double)Math.E,
                 -1.0,
                 -0.0,
@@ -77,7 +80,10 @@ namespace FixMath.NET
                 1.0,
                 (double)Math.PI,
                 (double)Math.E,
-            };
+				int.MaxValue,
+				int.MaxValue * 2d,
+				int.MaxValue * 100d,
+			};
 
 			Random r = new Random(0);
 
@@ -86,7 +92,10 @@ namespace FixMath.NET
 			}
 
             foreach (var value in sources) {
-				Assert.AreEqual(value, (double) (Fix64) value, (double) Fix64.Precision);
+				var expected = value > (double) Fix64.MaxValue ? (double) Fix64.MaxValue :
+					value < (double) Fix64.MinValue ? (double) Fix64.MinValue :
+					value;
+				Assert.AreEqual(expected, (double) (Fix64) value, (double) Fix64.Precision);
             }
         }
 
@@ -428,7 +437,10 @@ namespace FixMath.NET
                 var expected = Math.Min(Math.Pow(2, (double)e), (double)Fix64.MaxValue);
                 var actual = (double)Fix64.Pow2(e);
 
-				double maxDelta = Math.Abs((double) e) > 100000000 ? 0.5 : expected > 100000000 ? 10 : expected > 1000 ? 0.5 : 16 * (double) Fix64.Precision;
+				double maxDelta = Math.Abs((double) e) > 100000000 ? 0.5 :
+					expected > 100000000 ? 10 :
+					expected > 1000 ? 0.5 :
+					32 * (double) Fix64.Precision;
 
 				Assert.AreEqual(expected, actual, maxDelta, string.Format("Pow2({0}) = expected {1} but got {2}", e, expected, actual));
             }
@@ -457,11 +469,20 @@ namespace FixMath.NET
                     {
                         var expected = e == Fix64.Zero ? 1 : b == Fix64.Zero ? 0 : Math.Min(Math.Pow((double)b, (double)e), (double)Fix64.MaxValue);
 
-                        // Absolute precision deteriorates with large result values, take this into account
-                        // Similarly, large exponents reduce precision, even if result is small.
-                        double maxDelta = Math.Abs((double)e) > 100000000 ? 0.5 : expected > 100000000 ? 10 : expected > 1000 ? 0.5 : 16 * (double) Fix64.Precision;
+						// Absolute precision deteriorates with large result values, take this into account
+						// Similarly, large exponents reduce precision, even if result is small.
+						double maxDelta =
+							Math.Abs((double) e) > 100000000 ? 0.5 :
+							expected > 100000000 ? 10 :
+							expected > 10000 ? 1 :
+							expected > 1000 ? 0.5 :
+							expected > 100 ? 0.1 :
+							expected > 50 ? 0.01 :
+							expected > 10 ? 0.001 :
+							expected > 1 ? 0.0005 :
+							16 * (double) Fix64.Precision;
 
-                        var actual = (double)Fix64.Pow(b, e);
+						var actual = (double)Fix64.Pow(b, e);
                         var delta = Math.Abs(expected - actual);
 
                         Assert.AreEqual(expected, actual, maxDelta, string.Format("Pow({0}, {1}) = expected {2} but got {3}", b, e, expected, actual));

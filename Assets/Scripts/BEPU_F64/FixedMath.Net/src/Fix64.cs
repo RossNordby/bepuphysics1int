@@ -47,8 +47,8 @@ namespace FixMath.NET
 		const int NUM_BITS_MINUS_ONE = NUM_BITS - 1;
 		const int ONE = 1 << FRACTIONAL_PLACES;
 		const uint FRACTIONAL_MASK = ONE - 1;
-		const int LOG2MAX = 31 << FRACTIONAL_PLACES;
-		const int LOG2MIN = -(32 << FRACTIONAL_PLACES);
+		const int LOG2MAX = (NUM_BITS - 1) << FRACTIONAL_PLACES;
+		const int LOG2MIN = -(NUM_BITS << FRACTIONAL_PLACES);
 		const int LUT_SIZE_RS = FRACTIONAL_PLACES / 2 - 1;
 		const int LUT_SIZE = PI_OVER_2 >> LUT_SIZE_RS;
 		static readonly Fix64 LutInterval = (Fix64) (LUT_SIZE - 1) / PiOver2;
@@ -195,7 +195,7 @@ namespace FixMath.NET
 			if (x.RawValue == 0) return One;
 
             // Avoid negative arguments by exploiting that exp(-x) = 1/exp(x).
-            bool neg = (x.RawValue < 0);
+            bool neg = x.RawValue < 0;
             if (neg) x = -x;
 
             if (x == One)
@@ -807,7 +807,7 @@ namespace FixMath.NET
 		
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Fix64(float value) {
-            return new Fix64((int) (value * ONE));
+            return new Fix64((int) Clamp((double) value * ONE, MIN_VALUE, MAX_VALUE));
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator float(in Fix64 value) {
@@ -815,7 +815,7 @@ namespace FixMath.NET
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static explicit operator Fix64(double value) {
-			return new Fix64((int) (value * ONE));
+			return new Fix64((int) Clamp(value * ONE, MIN_VALUE, MAX_VALUE));
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static explicit operator double(in Fix64 value) {
@@ -836,6 +836,11 @@ namespace FixMath.NET
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static explicit operator decimal(in Fix64 value) {
 			return (decimal) value.RawValue / ONE;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static double Clamp(double value, double min, double max) {
+			return value > max ? max : value < min ? min : value;
 		}
 
 		public override bool Equals(object obj) {
