@@ -41,8 +41,8 @@ namespace FixMath.NET
 
 		const int MAX_VALUE = int.MaxValue;
 		const int MIN_VALUE = int.MinValue;
-		const int NUM_BITS = 32;
-		const int FRACTIONAL_PLACES = 14;
+		public const int NUM_BITS = 32;
+		public const int FRACTIONAL_PLACES = 14;
 
 		const int NUM_BITS_MINUS_ONE = NUM_BITS - 1;
 		const int ONE = 1 << FRACTIONAL_PLACES;
@@ -50,7 +50,7 @@ namespace FixMath.NET
 		const int LOG2MAX = 31 << FRACTIONAL_PLACES;
 		const int LOG2MIN = -(32 << FRACTIONAL_PLACES);
 		const int LUT_SIZE_RS = FRACTIONAL_PLACES / 2 - 1;
-		const int LUT_SIZE = (int)(PI_OVER_2 >> LUT_SIZE_RS);
+		const int LUT_SIZE = PI_OVER_2 >> LUT_SIZE_RS;
 		static readonly Fix64 LutInterval = (Fix64) (LUT_SIZE - 1) / PiOver2;
 
 		// Const before rounding

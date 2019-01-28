@@ -8,21 +8,25 @@ namespace FixMath.NET
 {
     public class Fix64Tests
     {
+		static int OneRaw = Fix64.One.ToRaw();
 
-        int[] m_testCases = new int[] {
+		int[] m_testCases = new int[] {
             // Small numbers
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
             -1, -2, -3, -4, -5, -6, -7, -8, -9, -10,
   
             // Integer numbers
-            0x4000, -0x4000, 0x5000, -0x5000, 0x6000, -0x6000,
-            0x7000, -0x7000, 0x8000, -0x8000, 0x9000, -0x9000,
+			1 * OneRaw, 1 * -OneRaw, 2 * OneRaw, 2 * -OneRaw, 3 * OneRaw, 3 * -OneRaw,
+			4 * OneRaw, 4 * -OneRaw, 5 * OneRaw, 5 * -OneRaw, 6 * OneRaw, 6 * -OneRaw,
+			7 * OneRaw, 7 * -OneRaw, 8 * OneRaw, 8 * -OneRaw, 9 * OneRaw, 9 * -OneRaw,
   
             // Fractions (1/2, 1/4, 1/8)
-            0x2000, -0x2000, 0x1000, -0x1000, 0x800, -0x800,
+			OneRaw / 2, -OneRaw / 2, OneRaw / 4, -OneRaw / 4, OneRaw / 8, -OneRaw / 8,
   
             // Problematic carry
-            0x3FFF, -0x3FFF, 0x7FFF, -0x7FFF, 0xFFFF, -0xFFFF,
+			OneRaw - 1, - (OneRaw - 1),
+			(OneRaw - 1) * 2 + 1, - ((OneRaw - 1) * 2 + 1),
+			(OneRaw - 1) * 4 + 3, - ((OneRaw - 1) * 4 + 3),
   
             // Smallest and largest values
             int.MaxValue, int.MinValue,
@@ -369,7 +373,7 @@ namespace FixMath.NET
         [Test]
         public void Log2()
         {
-            double maxDelta = (double)(Fix64.Precision * 4);
+            double maxDelta = 4 * (double) Fix64.Precision;
 
             for (int j = 0; j < m_testCases.Length; ++j)
             {
@@ -385,7 +389,7 @@ namespace FixMath.NET
                     var actual = (double)Fix64.Log2(b);
                     var delta = Math.Abs(expected - actual);
 
-                    Assert.True(delta <= maxDelta, string.Format("Ln({0}) = expected {1} but got {2}", b, expected, actual));
+					Assert.AreEqual(expected, actual, maxDelta, string.Format("Ln({0}) = expected {1} but got {2}", b, expected, actual));
                 }
             }
         }
@@ -393,7 +397,7 @@ namespace FixMath.NET
         [Test]
         public void Ln()
         {
-            double maxDelta = 0.00000001;
+            double maxDelta = 4 * (double) Fix64.Precision;
 
             for (int j = 0; j < m_testCases.Length; ++j)
             {
@@ -409,7 +413,7 @@ namespace FixMath.NET
                     var actual = (double)Fix64.Ln(b);
                     var delta = Math.Abs(expected - actual);
 
-                    Assert.True(delta <= maxDelta, string.Format("Ln({0}) = expected {1} but got {2}", b, expected, actual));
+                    Assert.AreEqual(expected, actual, maxDelta, string.Format("Ln({0}) = expected {1} but got {2}", b, expected, actual));
                 }
             }
         }
@@ -424,9 +428,10 @@ namespace FixMath.NET
                 var expected = Math.Min(Math.Pow(2, (double)e), (double)Fix64.MaxValue);
                 var actual = (double)Fix64.Pow2(e);
 
-                Assert.AreEqual(expected, actual, 32 * (double) Fix64.Precision, string.Format("Pow2({0}) = expected {1} but got {2}", e, expected, actual));
+				double maxDelta = Math.Abs((double) e) > 100000000 ? 0.5 : expected > 100000000 ? 10 : expected > 1000 ? 0.5 : 16 * (double) Fix64.Precision;
+
+				Assert.AreEqual(expected, actual, maxDelta, string.Format("Pow2({0}) = expected {1} but got {2}", e, expected, actual));
             }
-			UnityEngine.Debug.Log(32 * (double) Fix64.Precision);
         }
 
         [Test]
@@ -557,9 +562,8 @@ namespace FixMath.NET
             {
                 var f = Fix64.FromRaw(val);
                 var actualF = Fix64.Sin(f);
-                var expected = (decimal)Math.Sin((double)f);
-                var delta = Math.Abs(expected - (decimal)actualF);
-                Assert.LessOrEqual(delta, 16 * Fix64.Precision, string.Format("Sin({0}): expected {1} but got {2}", f, expected, actualF));
+                var expected = Math.Sin((double)f);
+                Assert.AreEqual(expected, (double) actualF, 16 * (double) Fix64.Precision, string.Format("Sin({0}): expected {1} but got {2}", f, expected, actualF));
             }
         }
 
@@ -588,7 +592,6 @@ namespace FixMath.NET
         [Test]
         public void Acos()
         {
-			var maxDelta = Fix64.Precision; // before was 0.00000001m;
             var deltas = new List<decimal>();
 
            Assert.AreEqual(Fix64.Zero, Fix64.Acos(Fix64.One));
@@ -599,11 +602,11 @@ namespace FixMath.NET
             for (var x = -1.0; x < 1.0; x += 0.001)
             {
                 var xf = (Fix64)x;
-                var actual = (decimal)Fix64.Acos(xf);
-                var expected = (decimal)Math.Acos((double)xf);
+                var actual = (double) Fix64.Acos(xf);
+                var expected = Math.Acos((double) xf);
                 var delta = Math.Abs(actual - expected);
-                deltas.Add(delta);
-                Assert.True(delta <= maxDelta, string.Format("Precision: Acos({0}): expected {1} but got {2}", xf, expected, actual));
+                deltas.Add((decimal) delta);
+				Assert.AreEqual(expected, actual, 12 * (double) Fix64.Precision, string.Format("Precision: Acos({0}): expected {1} but got {2}", xf, expected, actual));
             }
 
             for (int i = 0; i < m_testCases.Length; ++i)
@@ -616,11 +619,11 @@ namespace FixMath.NET
                 }
                 else
                 {
-                    var expected = (decimal)Math.Acos((double)b);
-                    var actual = (decimal)Fix64.Acos(b);
+                    var expected = Math.Acos((double) b);
+                    var actual = (double) Fix64.Acos(b);
                     var delta = Math.Abs(expected - actual);
-                    deltas.Add(delta);
-					Assert.LessOrEqual(delta, maxDelta, string.Format("Acos({0}) = expected {1} but got {2}", b, expected, actual));
+                    deltas.Add((decimal) delta);
+					Assert.AreEqual(expected, actual, 16 * (double) Fix64.Precision, string.Format("Acos({0}) = expected {1} but got {2}", b, expected, actual));
                 }
             }
             Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix64.Precision);
@@ -793,11 +796,11 @@ namespace FixMath.NET
                 {
                     var yf = (Fix64)y;
                     var xf = (Fix64)x;
-                    var actual = Fix64.Atan2(yf, xf);
-                    var expected = (decimal)Math.Atan2((double)yf, (double)xf);
-                    var delta = Math.Abs((decimal)actual - expected);
-                    deltas.Add(delta);
-                    Assert.True(delta <= 0.005M, string.Format("Precision: Atan2({0}, {1}): expected {2} but got {3}", yf, xf, expected, actual));
+                    var actual = (double) Fix64.Atan2(yf, xf);
+                    var expected = (double) Math.Atan2((double)yf, (double)xf);
+                    var delta = Math.Abs(actual - expected);
+					deltas.Add((decimal) delta);
+					Assert.AreEqual(expected, actual, 512 * (double) Fix64.Precision, string.Format("Precision: Atan2({0}, {1}): expected {2} but got {3}", yf, xf, expected, actual));
                 }
             }
 
@@ -808,11 +811,11 @@ namespace FixMath.NET
                 {
                     var yf = (Fix64)y;
                     var xf = (Fix64)x;
-                    var actual = (decimal)Fix64.Atan2(yf, xf);
-                    var expected = (decimal)Math.Atan2((double)yf, (double)xf);
+                    var actual = (double) Fix64.Atan2(yf, xf);
+                    var expected = (double) Math.Atan2((double) yf, (double) xf);
                     var delta = Math.Abs(actual - expected);
-                    deltas.Add(delta);
-                    Assert.True(delta <= 0.005M, string.Format("Scalability: Atan2({0}, {1}): expected {2} but got {3}", yf, xf, expected, actual));
+                    deltas.Add((decimal) delta);
+                    Assert.AreEqual(expected, actual, 512 * (double) Fix64.Precision, string.Format("Scalability: Atan2({0}, {1}): expected {2} but got {3}", yf, xf, expected, actual));
                 }
             }
             Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix64.Precision);
