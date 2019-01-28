@@ -8,9 +8,9 @@ namespace FixMath.NET
 {
     public class Fix64Tests
     {
-		static int OneRaw = Fix64.One.ToRaw();
+		static long OneRaw = Fix64.One.ToRaw();
 
-		int[] m_testCases = new int[] {
+		long[] m_testCases = new long[] {
             // Small numbers
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
             -1, -2, -3, -4, -5, -6, -7, -8, -9, -10,
@@ -759,7 +759,7 @@ namespace FixMath.NET
             // Scalability and edge cases
             foreach (var x in m_testCases)
             {
-                var xf = (Fix64)x;
+                var xf = Fix64.FromRaw(x);
                 var actual = (decimal)Fix64.Atan(xf);
                 var expected = (decimal)Math.Atan((double)xf);
                 var delta = Math.Abs(actual - expected);
@@ -830,8 +830,8 @@ namespace FixMath.NET
             {
                 foreach (var x in m_testCases)
                 {
-                    var yf = (Fix64)y;
-                    var xf = (Fix64)x;
+                    var yf = Fix64.FromRaw(y);
+                    var xf = Fix64.FromRaw(x);
                     var actual = (double) Fix64.Atan2(yf, xf);
                     var expected = (double) Math.Atan2((double) yf, (double) xf);
                     var delta = Math.Abs(actual - expected);

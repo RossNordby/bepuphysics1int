@@ -18,10 +18,10 @@ public class Fix64FloatDrawer : PropertyDrawer
 		}
 		else {
 			EditorGUI.BeginChangeCheck();
-			float floatValue = (float) Fix64.FromRaw(property.FindPropertyRelative("RawValue").intValue);
+			float floatValue = (float) Fix64.FromRaw(property.FindPropertyRelative("RawValue").longValue);
 			floatValue = EditorGUI.FloatField(r, label, floatValue);
 			if (EditorGUI.EndChangeCheck())
-				property.FindPropertyRelative("RawValue").intValue = ((Fix64) floatValue).ToRaw();
+				property.FindPropertyRelative("RawValue").longValue = ((Fix64) floatValue).ToRaw();
 		}
 
 		r.width = buttonWidth;

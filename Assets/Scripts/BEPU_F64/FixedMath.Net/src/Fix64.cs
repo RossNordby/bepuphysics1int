@@ -12,7 +12,7 @@ namespace FixMath.NET
     public partial struct Fix64 : IEquatable<Fix64>, IComparable<Fix64>
     {
 		[UnityEngine.SerializeField]
-		private int RawValue;
+		private long RawValue;
 
 		// Precision of this type is 2^-14, that is 6.103515625E-5
 		public static readonly decimal Precision = (decimal) (double) new Fix64(1);
@@ -39,16 +39,16 @@ namespace FixMath.NET
         public static readonly Fix64 Log2Max = new Fix64(LOG2MAX);
         public static readonly Fix64 Log2Min = new Fix64(LOG2MIN);
 
-		const int MAX_VALUE = int.MaxValue;
-		const int MIN_VALUE = int.MinValue;
-		public const int NUM_BITS = 32;
-		public const int FRACTIONAL_PLACES = 14;
+		const long MAX_VALUE = int.MaxValue;
+		const long MIN_VALUE = int.MinValue;
+		public const int NUM_BITS = 64;
+		public const int FRACTIONAL_PLACES = 32;
 
 		const int NUM_BITS_MINUS_ONE = NUM_BITS - 1;
-		const int ONE = 1 << FRACTIONAL_PLACES;
-		const uint FRACTIONAL_MASK = ONE - 1;
-		const int LOG2MAX = (NUM_BITS - 1) << FRACTIONAL_PLACES;
-		const int LOG2MIN = -(NUM_BITS << FRACTIONAL_PLACES);
+		const long ONE = 1 << FRACTIONAL_PLACES;
+		const ulong FRACTIONAL_MASK = ONE - 1;
+		const long LOG2MAX = (NUM_BITS - 1) << FRACTIONAL_PLACES;
+		const long LOG2MIN = -(NUM_BITS << FRACTIONAL_PLACES);
 		const int LUT_SIZE_RS = FRACTIONAL_PLACES / 2 - 1;
 		const int LUT_SIZE = PI_OVER_2 >> LUT_SIZE_RS;
 		static readonly Fix64 LutInterval = (Fix64) (LUT_SIZE - 1) / PiOver2;
@@ -102,7 +102,8 @@ namespace FixMath.NET
         /// Note: Abs(Fix64.MinValue) == Fix64.MaxValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Fix64 Abs(in Fix64 value) { 
+        public static Fix64 Abs(in Fix64 value) {
+			return (Fix64) Math.Abs((double) value);
             if (value.RawValue == MIN_VALUE) {
                 return MaxValue;
             }
@@ -118,8 +119,9 @@ namespace FixMath.NET
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fix64 FastAbs(in Fix64 value) {
-            // branchless implementation, see http://www.strchr.com/optimized_abs_function
-            var mask = value.RawValue >> NUM_BITS_MINUS_ONE;
+			return (Fix64) Math.Abs((double) value);
+			// branchless implementation, see http://www.strchr.com/optimized_abs_function
+			var mask = value.RawValue >> NUM_BITS_MINUS_ONE;
             return new Fix64((value.RawValue + mask) ^ mask);
         }
 
@@ -127,8 +129,9 @@ namespace FixMath.NET
         /// Returns the largest integer less than or equal to the specified number.
         /// </summary>
         public static Fix64 Floor(in Fix64 value) {
-            // Just zero out the fractional part
-            return new Fix64((int)((uint)value.RawValue & ~FRACTIONAL_MASK));
+			return (Fix64) Math.Floor((double) value);
+			// Just zero out the fractional part
+			return new Fix64((int)((uint)value.RawValue & ~FRACTIONAL_MASK));
         }
 
         /// <summary>
@@ -138,17 +141,18 @@ namespace FixMath.NET
         /// The argument was non-positive
         /// </exception>
         public static Fix64 Log2(in Fix64 x) {
-            if (x.RawValue <= 0)
+			return (Fix64) Math.Log((double) x, 2);
+			if (x.RawValue <= 0)
                 throw new ArgumentOutOfRangeException("Non-positive value passed to Ln", "x");
 
-            // This implementation is based on Clay. S. Turner's fast binary logarithm
-            // algorithm (C. S. Turner,  "A Fast Binary Logarithm Algorithm", IEEE Signal
-            //     Processing Mag., pp. 124,140, Sep. 2010.)
+			// This implementation is based on Clay. S. Turner's fast binary logarithm
+			// algorithm (C. S. Turner,  "A Fast Binary Logarithm Algorithm", IEEE Signal
+			//     Processing Mag., pp. 124,140, Sep. 2010.)
 
-            uint b = 1U << (FRACTIONAL_PLACES - 1);
-			uint y = 0;
+			long b = 1U << (FRACTIONAL_PLACES - 1);
+			long y = 0;
 
-			int rawX = x.RawValue;
+			var rawX = x.RawValue;
             while (rawX < ONE)
             {
                 rawX <<= 1;
@@ -183,15 +187,18 @@ namespace FixMath.NET
         /// <exception cref="ArgumentOutOfRangeException">
         /// The argument was non-positive
         /// </exception>
-        public static Fix64 Ln(in Fix64 x)
-        {
-            return Log2(x) * Ln2;
+        public static Fix64 Ln(in Fix64 x) {
+			return (Fix64) Math.Log((double) x);
+			return Log2(x) * Ln2;
         }
 
         /// <summary>
         /// Returns 2 raised to the specified power.
         /// </summary>
         public static Fix64 Pow2(Fix64 x) {
+			return (Fix64) Math.Pow(2, (double) x);
+			//UnityEngine.Debug.Log("Pow2() used");
+
 			if (x.RawValue == 0) return One;
 
             // Avoid negative arguments by exploiting that exp(-x) = 1/exp(x).
@@ -202,6 +209,9 @@ namespace FixMath.NET
                 return neg ? One / Two : Two;
             if (x >= Log2Max) return neg ? One / MaxValue : MaxValue;
             if (x <= Log2Min) return neg ? MaxValue : Zero;
+			
+
+			return (Fix64) Math.Pow(2, (neg ? -1 : 1) * (double) x); // HACKS!!!! HAAAAACKS!!!!!
 
             /* The algorithm is based on the power series for exp(x):
              * http://en.wikipedia.org/wiki/Exponential_function#Formal_definition
@@ -223,7 +233,7 @@ namespace FixMath.NET
                 i++;
             }
 
-            result = FromRaw(result.RawValue << integerPart);
+            result = new Fix64(result.RawValue << integerPart);
             if (neg) result = One / result;
 
             return result;
@@ -238,9 +248,9 @@ namespace FixMath.NET
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// The base was negative, with a non-zero exponent
 		/// </exception>
-		public static Fix64 Pow(in Fix64 b, in Fix64 exp)
-        {
-            if (b == One)
+		public static Fix64 Pow(in Fix64 b, in Fix64 exp) {
+			return (Fix64) Math.Pow((double) b, (double) exp);
+			if (b == One)
                 return One;
             if (exp.RawValue == 0)
                 return One;
@@ -260,9 +270,9 @@ namespace FixMath.NET
         /// <summary>
         /// Returns the arccos of of the specified number, calculated using Atan and Sqrt
         /// </summary>
-        public static Fix64 Acos(in Fix64 x)
-        {
-            if (x < -One || x > One)
+        public static Fix64 Acos(in Fix64 x) {
+			return (Fix64) Math.Acos((double) x);
+			if (x < -One || x > One)
                 throw new ArgumentOutOfRangeException(nameof(x));
 
             if (x.RawValue == 0)
@@ -276,7 +286,8 @@ namespace FixMath.NET
         /// Returns the smallest integral value that is greater than or equal to the specified number.
         /// </summary>
         public static Fix64 Ceiling(in Fix64 value) {
-            var hasFractionalPart = (value.RawValue & FRACTIONAL_MASK) != 0;
+			return (Fix64) Math.Ceiling((double) value);
+			var hasFractionalPart = ((ulong) value.RawValue & FRACTIONAL_MASK) != 0;
             return hasFractionalPart ? Floor(value) + One : value;
         }
 
@@ -285,7 +296,8 @@ namespace FixMath.NET
         /// If the value is halfway between an even and an uneven value, returns the even value.
         /// </summary>
         public static Fix64 Round(in Fix64 value) {
-            var fractionalPart = value.RawValue & FRACTIONAL_MASK;
+			return (Fix64) Math.Round((double) value);
+			var fractionalPart = (ulong) value.RawValue & FRACTIONAL_MASK;
             var integralPart = Floor(value);
             if (fractionalPart < (ONE >> 1)) {
                 return integralPart;
@@ -306,6 +318,7 @@ namespace FixMath.NET
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fix64 operator +(in Fix64 x, in Fix64 y) {
+			return (Fix64) ((double) x + (double) y);
 #if CHECKMATH
 			return SafeAdd(x, y);
 #else
@@ -313,8 +326,8 @@ namespace FixMath.NET
 #endif
 		}
 
-        public static Fix64 SafeAdd(in Fix64 x, in Fix64 y)
-        {
+        public static Fix64 SafeAdd(in Fix64 x, in Fix64 y) {
+			return (Fix64) ((double) x + (double) y);
 			uint xl = (uint) x.RawValue;
 			uint yl = (uint) y.RawValue;
 			uint sum = xl + yl;
@@ -344,6 +357,7 @@ namespace FixMath.NET
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fix64 operator -(in Fix64 x, in Fix64 y) {
+			return (Fix64) ((double) x - (double) y);
 #if CHECKMATH
 			return SafeSub(x, y);
 #else
@@ -355,9 +369,9 @@ namespace FixMath.NET
         /// Subtracts y from x. Performs saturating substraction, i.e. in case of overflow, 
         /// rounds to MinValue or MaxValue depending on sign of operands.
         /// </summary>
-        public static Fix64 SafeSub(in Fix64 x, in Fix64 y)
-        {
-            var xl = x.RawValue;
+        public static Fix64 SafeSub(in Fix64 x, in Fix64 y) {
+			return (Fix64) ((double) x - (double) y);
+			var xl = x.RawValue;
             var yl = y.RawValue;
             var diff = xl - yl;
             // if signs of operands are different and signs of sum and x are different
@@ -366,16 +380,10 @@ namespace FixMath.NET
             }
             return new Fix64(diff);
         }
-
-        static long AddOverflowHelper(long x, long y, ref bool overflow) {
-            var sum = x + y;
-            // x + y overflows if sign(x) ^ sign(y) != sign(sum)
-            overflow |= ((x ^ y ^ sum) & MIN_VALUE) != 0;
-            return sum;
-        }
-
+		
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fix64 operator *(in Fix64 x, in Fix64 y) {
+			return (Fix64) ((double) x * (double) y);
 #if CHECKMATH
 			return SafeMul(x, y);
 #else
@@ -385,6 +393,7 @@ namespace FixMath.NET
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Fix64 SafeMul(in Fix64 x, in Fix64 y) {
+			return (Fix64) ((double) x * (double) y);
 			long mult = ((long) x.RawValue * (long) y.RawValue) >> FRACTIONAL_PLACES;
 			return mult < MIN_VALUE ? MinValue :
 				mult > MAX_VALUE ? MaxValue :
@@ -400,7 +409,8 @@ namespace FixMath.NET
         }
 
         public static Fix64 operator /(in Fix64 x, in Fix64 y) {
-            long xl = x.RawValue;
+			return (Fix64) ((double) x / (double) y);
+			long xl = x.RawValue;
             long yl = y.RawValue;
 
             if (yl == 0) {
@@ -418,7 +428,8 @@ namespace FixMath.NET
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fix64 operator %(in Fix64 x, in Fix64 y) {
-            return new Fix64(
+			return (Fix64) ((double) x % (double) y);
+			return new Fix64(
                 x.RawValue == MIN_VALUE & y.RawValue == -1 ?
                 0 :
                 x.RawValue % y.RawValue);
@@ -429,13 +440,15 @@ namespace FixMath.NET
         /// Use the operator (%) for a more reliable but slower modulo.
         /// </summary>
         public static Fix64 FastMod(in Fix64 x, in Fix64 y) {
-            return new Fix64(x.RawValue % y.RawValue);
+			return (Fix64) ((double) x % (double) y);
+			return new Fix64(x.RawValue % y.RawValue);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fix64 operator -(in Fix64 x) {
-        	//return new Fix64(-x.RawValue);
-            return x.RawValue == MIN_VALUE ? MaxValue : new Fix64(-x.RawValue);
+			return (Fix64) (-(double) x);
+			//return new Fix64(-x.RawValue);
+			return x.RawValue == MIN_VALUE ? MaxValue : new Fix64(-x.RawValue);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -476,15 +489,18 @@ namespace FixMath.NET
         /// The argument was negative.
         /// </exception>
         public static Fix64 Sqrt(in Fix64 x) {
-            var xl = x.RawValue;
+			return (Fix64) Math.Sqrt((double) x);
+			var xl = x.RawValue;
             if (xl < 0) {
                 // We cannot represent infinities like Single and Double, and Sqrt is
                 // mathematically undefined for x < 0. So we just throw an exception.
                 throw new ArgumentOutOfRangeException("Negative value passed to Sqrt", "x");
-            }
-			
-            var num = (uint)xl;
-            var result = 0U;
+			}
+
+			return (Fix64) Math.Sqrt((double) x); // HACKS!!!! HAAAAACKS!!!!!
+
+			var num = (ulong) xl;
+            var result = 0UL;
 
             // second-to-top bit
             var bit = 1U << (NUM_BITS - 2);
@@ -541,6 +557,7 @@ namespace FixMath.NET
         /// The relative error is less than 1E-10 for x in [-2PI, 2PI], and less than 1E-7 in the worst case.
         /// </summary>
         public static Fix64 Sin(in Fix64 x) {
+			return (Fix64) Math.Sin((double) x);
 			var clampedRaw = ClampSinValue(x.RawValue, out var flipHorizontal, out var flipVertical);
             var clamped = new Fix64((int) clampedRaw);
 
@@ -569,11 +586,12 @@ namespace FixMath.NET
         /// however its accuracy is limited to 4-5 decimals, for small enough values of x.
         /// </summary>
         public static Fix64 FastSin(in Fix64 x) {
+			return (Fix64) Math.Sin((double) x);
 			var clampedL = ClampSinValue(x.RawValue, out bool flipHorizontal, out bool flipVertical);
 
 			// Here we use the fact that the SinLut table has a number of entries
 			// equal to (PI_OVER_2 >> LUT_SIZE_RS) to use the angle to index directly into it
-			var rawIndex = (uint)(clampedL >> LUT_SIZE_RS);
+			var rawIndex = (clampedL >> LUT_SIZE_RS);
             if (rawIndex >= LUT_SIZE) {
                 rawIndex = LUT_SIZE - 1;
             }
@@ -621,7 +639,8 @@ namespace FixMath.NET
         /// See Sin() for more details.
         /// </summary>
         public static Fix64 Cos(in Fix64 x) {
-            var xl = x.RawValue;
+			return (Fix64) Math.Cos((double) x);
+			var xl = x.RawValue;
             var rawAngle = xl + (xl > 0 ? -PI - PI_OVER_2 : PI_OVER_2);
             return Sin(new Fix64(rawAngle));
         }
@@ -631,7 +650,8 @@ namespace FixMath.NET
         /// See FastSin for more details.
         /// </summary>
         public static Fix64 FastCos(in Fix64 x) {
-            var xl = x.RawValue;
+			return (Fix64) Math.Cos((double) x);
+			var xl = x.RawValue;
             var rawAngle = xl + (xl > 0 ? -PI - PI_OVER_2 : PI_OVER_2);
             return FastSin(new Fix64(rawAngle));
         }
@@ -643,6 +663,9 @@ namespace FixMath.NET
         /// This function is not well-tested. It may be wildly inaccurate.
         /// </remarks>
         public static Fix64 Tan(in Fix64 x) {
+			return (Fix64) Math.Tan((double) x);
+
+			UnityEngine.Debug.Log("Tan() used");
 			var clampedPi = x.RawValue % PI;
             var flip = false;
             if (clampedPi < 0) {
@@ -671,7 +694,8 @@ namespace FixMath.NET
         }
 
         public static Fix64 FastAtan2(in Fix64 y, in Fix64 x) {
-            var yl = y.RawValue;
+			return (Fix64) Math.Atan2((double) y, (double) x);
+			var yl = y.RawValue;
             var xl = x.RawValue;
             if (xl == 0) {
                 if (yl > 0) {
@@ -711,9 +735,9 @@ namespace FixMath.NET
         /// <summary>
         /// Returns the arctan of of the specified number, calculated using Euler series
         /// </summary>
-        public static Fix64 Atan(Fix64 z)
-        {
-            if (z.RawValue == 0)
+        public static Fix64 Atan(Fix64 z) {
+			return (Fix64) Math.Atan((double) z);
+			if (z.RawValue == 0)
                 return Zero;
 
             // Force positive values for argument
@@ -762,9 +786,9 @@ namespace FixMath.NET
             return result;
         }
 
-        public static Fix64 Atan2(in Fix64 y, in Fix64 x)
-        {
-            var yl = y.RawValue;
+        public static Fix64 Atan2(in Fix64 y, in Fix64 x) {
+			return (Fix64) Math.Atan2((double) y, (double) x);
+			var yl = y.RawValue;
             var xl = x.RawValue;
             if (xl == 0)
             {
@@ -807,7 +831,7 @@ namespace FixMath.NET
 		
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Fix64(float value) {
-            return new Fix64((int) Clamp((double) value * ONE, MIN_VALUE, MAX_VALUE));
+            return new Fix64((int) Clamp(value * ONE, MIN_VALUE, MAX_VALUE));
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator float(in Fix64 value) {
@@ -822,12 +846,12 @@ namespace FixMath.NET
 			return (double) value.RawValue / ONE;
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static implicit operator Fix64(int value) {
-			return new Fix64((int) (value * ONE));
+		public static implicit operator Fix64(long value) {
+			return new Fix64((value * ONE));
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static implicit operator int(in Fix64 value) {
-			return (int) value.RawValue / ONE;
+		public static implicit operator long(in Fix64 value) {
+			return value.RawValue / ONE;
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static implicit operator Fix64(decimal value) {
@@ -842,9 +866,14 @@ namespace FixMath.NET
 		public static double Clamp(double value, double min, double max) {
 			return value > max ? max : value < min ? min : value;
 		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static double Clamp(float value, double min, double max) {
+			return value > max ? max : value < min ? min : value;
+		}
 
 		public override bool Equals(object obj) {
-            return obj is Fix64 && ((Fix64)obj).RawValue == RawValue;
+			UnityEngine.Debug.LogWarning("Pls no");
+			return obj is Fix64 && ((Fix64)obj).RawValue == RawValue;
         }
 
         public override int GetHashCode() {
@@ -860,6 +889,7 @@ namespace FixMath.NET
         }
 
         public override string ToString() {
+			UnityEngine.Debug.LogWarning("Pls no");
             return ((double)this).ToString("0.##########");
         }
 
@@ -867,12 +897,12 @@ namespace FixMath.NET
 		/// Intentionally kept out of the way so this is never accidentally called
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Fix64 FromRaw(int rawValue) {
+		public static Fix64 FromRaw(long rawValue) {
             return new Fix64(rawValue);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int ToRaw() {
+		public long ToRaw() {
 			return RawValue;
 		}
 
@@ -880,7 +910,7 @@ namespace FixMath.NET
 		/// This is the constructor from raw value; it can only be used interally.
 		/// </summary>
 		/// <param name="rawValue"></param>
-		private Fix64(int rawValue) {
+		private Fix64(long rawValue) {
 			RawValue = rawValue;
 		}
 
