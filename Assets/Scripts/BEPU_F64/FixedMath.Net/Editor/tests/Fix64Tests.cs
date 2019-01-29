@@ -223,37 +223,31 @@ namespace FixMath.NET
 		}
 
 		[Test]
-		public void EqualsTests() {
-			foreach (var op1 in m_testCases) {
-				foreach (var op2 in m_testCases) {
-					var d1 = (decimal) op1;
-					var d2 = (decimal) op2;
-					Assert.True(op1.Equals(op2) == d1.Equals(d2));
-				}
-			}
-		}
-
-		[Test]
-		public void EqualityAndInequalityOperators() {
-			var sources = m_testCases.Select(Fix64.FromRaw).ToList();
+		public void T7_EqualityInequalityComparisonOperators() {
+			List<Fix64> sources = m_testCases.Select(Fix64.FromRaw).ToList();
 			foreach (var op1 in sources) {
 				foreach (var op2 in sources) {
 					var d1 = (double) op1;
 					var d2 = (double) op2;
-					Assert.True((op1 == op2) == (d1 == d2));
-					Assert.True((op1 != op2) == (d1 != d2));
-					Assert.False((op1 == op2) && (op1 != op2));
+					Assert.AreEqual(d1 == d2, op1 == op2);
+					Assert.AreEqual(d1.Equals(d2), op1.Equals(op2));
+					Assert.AreEqual(d1 != d2, op1 != op2);
+					Assert.AreNotEqual(op1 != op2, op1 == op2);
+					Assert.AreEqual(d1 < d2, op1 < op2);
+					Assert.AreEqual(d1 <= d2, op1 <= op2);
+					Assert.AreEqual(d1 > d2, op1 > op2);
+					Assert.AreEqual(d1 >= d2, op1 >= op2);
 				}
 			}
 		}
 
 		[Test]
-		public void CompareTo() {
+		public void T8_CompareTo() {
 			var nums = m_testCases.Select(Fix64.FromRaw).ToArray();
 			var numsDecimal = nums.Select(t => (decimal) t).ToArray();
 			Array.Sort(nums);
 			Array.Sort(numsDecimal);
-			Assert.True(nums.Select(t => (decimal) t).SequenceEqual(numsDecimal));
+			CollectionAssert.AreEqual(numsDecimal, nums.Select(t => (decimal) t));
 		}
 
         [Test]
