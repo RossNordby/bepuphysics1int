@@ -199,15 +199,26 @@ namespace FixMath.NET
 #endif
             // Just zero out the fractional part
             return new Fix64(value.RawValue & INTEGER_MASK);
-        }
+		}
 
-        /// <summary>
-        /// Returns the base-2 logarithm of a specified number.
-        /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// The argument was non-positive
-        /// </exception>
-        public static Fix64 Log2(in Fix64 x) {
+		/// <summary>
+		/// Returns the smallest integral value that is greater than or equal to the specified number.
+		/// </summary>
+		public static Fix64 Ceiling(in Fix64 value) {
+#if USE_DOUBLES
+            return (Fix64) Math.Ceiling((double) value);
+#endif
+			var hasFractionalPart = (value.RawValue & FRACTIONAL_MASK) != 0;
+			return hasFractionalPart ? Floor(value) + One : value;
+		}
+
+		/// <summary>
+		/// Returns the base-2 logarithm of a specified number.
+		/// </summary>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The argument was non-positive
+		/// </exception>
+		public static Fix64 Log2(in Fix64 x) {
 #if USE_DOUBLES
             return (Fix64) Math.Log((double) x, 2);
 #endif
@@ -355,17 +366,6 @@ namespace FixMath.NET
 
             var result = Atan(Sqrt(One - x * x) / x);
             return x.RawValue < 0 ? result + Pi : result;
-        }
-
-        /// <summary>
-        /// Returns the smallest integral value that is greater than or equal to the specified number.
-        /// </summary>
-        public static Fix64 Ceiling(in Fix64 value) {
-#if USE_DOUBLES
-            return (Fix64) Math.Ceiling((double) value);
-#endif
-            var hasFractionalPart = (value.RawValue & FRACTIONAL_MASK) != 0;
-            return hasFractionalPart ? Floor(value) + One : value;
         }
 
         /// <summary>
