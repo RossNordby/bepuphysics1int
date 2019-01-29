@@ -208,7 +208,7 @@ namespace FixMath.NET
 		}
 
 		[Test]
-		public void Negation() {
+		public void T6_Negation() {
 			foreach (var operand1 in m_testCases) {
 				var f = Fix64.FromRaw(operand1);
 				if (f == Fix64.MinValue) {
