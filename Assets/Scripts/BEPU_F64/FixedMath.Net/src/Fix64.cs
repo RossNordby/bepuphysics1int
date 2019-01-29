@@ -245,12 +245,6 @@ namespace FixMath.NET
             return (Fix64) ((double) x * (double) y);
 #endif
 			long mult = ((long) x.RawValue * (long) y.RawValue) >> FRACTIONAL_PLACES;
-			return new Fix64((int) mult);
-			// Testing saturation. Didn't work
-			if (mult >> NUM_BITS > 0)
-				return new Fix64((int) ((((uint) (mult) >> 63) - 1U) ^ (1U << NUM_BITS_MINUS_ONE))); // Saturate
-			return new Fix64((int) mult);
-
 			return mult < MIN_VALUE ? MinValue :
 				mult > MAX_VALUE ? MaxValue :
 				new Fix64((int) mult);
