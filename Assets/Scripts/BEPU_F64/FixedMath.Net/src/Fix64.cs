@@ -119,20 +119,10 @@ namespace FixMath.NET
 #if USE_DOUBLES
             return (Fix64) ((double) x - (double) y);
 #endif
-
 			int xRaw = x.RawValue;
 			int yRaw = y.RawValue;
 			long sub = (long) xRaw - (long) yRaw; // TO TEST: Shift and operate to check overflow
-			int ret = (int) ((((uint) xRaw >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
-			return new Fix64(((int) sub) != sub ? ret : (int) sub);
-
-			/*
-			// Nearly same logic as addition
-			int xRaw = x.RawValue;
-			int yRaw = y.RawValue;
-			int ret = (int) ((((uint) xRaw >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
-			return new Fix64((xRaw < 0) == (yRaw > (xRaw - ret)) ? ret : xRaw - yRaw);
-			*/
+			return new Fix64(((int) sub) != sub ? (int) ((((uint) xRaw >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE)) : (int) sub);
 		}
 
 		/// <summary>
@@ -396,13 +386,6 @@ namespace FixMath.NET
             return (integralPart.RawValue & ONE) == 0
                        ? integralPart
                        : integralPart + One;
-        }
-
-        static long AddOverflowHelper(long x, long y, ref bool overflow) {
-            var sum = x + y;
-            // x + y overflows if sign(x) ^ sign(y) != sign(sum)
-            overflow |= ((x ^ y ^ sum) & MIN_VALUE) != 0;
-            return sum;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
