@@ -250,7 +250,20 @@ namespace FixMath.NET
 			CollectionAssert.AreEqual(numsDecimal, nums.Select(t => (decimal) t));
 		}
 
-        [Test]
+		[Test]
+		public void T9_Sign() {
+			var sources = new[] { Fix64.MinValue, (Fix64) (-1), Fix64.Zero, Fix64.One, Fix64.MaxValue };
+			var expecteds = new[] { -1, -1, 0, 1, 1 };
+			for (int i = 0; i < sources.Length; ++i) {
+				var actual = Fix64.Sign(sources[i]);
+				var expected = expecteds[i];
+				Assert.AreEqual(expected, (int) actual);
+			}
+		}
+
+
+
+		[Test]
         public void BasicMultiplication()
         {
             var term1s = new[] { 0m, 1m, -1m, 5m, -5m, 0.5m, -0.5m, -1.0m };
@@ -362,19 +375,6 @@ namespace FixMath.NET
             Assert.True(failures < 1);
         }
 		
-        [Test]
-        public void Sign()
-        {
-            var sources = new[] { Fix64.MinValue, (Fix64)(-1), Fix64.Zero, Fix64.One, Fix64.MaxValue };
-            var expecteds = new[] { -1, -1, 0, 1, 1 };
-            for (int i = 0; i < sources.Length; ++i)
-            {
-                var actual = Fix64.Sign(sources[i]);
-                var expected = expecteds[i];
-               Assert.AreEqual(expected, (int) actual);
-            }
-        }
-
         [Test]
         public void Abs()
         {
