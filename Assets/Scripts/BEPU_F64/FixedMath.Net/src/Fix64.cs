@@ -331,30 +331,31 @@ namespace FixMath.NET
                        : integralPart + One;
         }
 
-        /// <summary>
-        /// Adds x and y. Performs saturating addition, i.e. in case of overflow, 
-        /// rounds to MinValue or MaxValue depending on sign of operands.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Fix64 operator +(in Fix64 x, in Fix64 y) {
+		/// <summary>
+		/// Adds x and y. Performs saturating addition, i.e. in case of overflow, 
+		/// rounds to MinValue or MaxValue depending on sign of operands.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Fix64 operator +(in Fix64 x, in Fix64 y) {
 #if USE_DOUBLES
-            return (Fix64) ((double) x + (double) y);
+			return (Fix64) ((double) x + (double) y);
 #endif
-#if CHECKMATH
-			return SafeAdd(x, y);
-#else
-			return new Fix64(x.RawValue + y.RawValue);
-#endif
-		}
+			unchecked { // Adding unchecked makes it slightly faster
+				if (x.RawValue > 0) {
+					if (y.RawValue > MAX_VALUE - x.RawValue) {
+						return MaxValue;
+					}
+				}
+				else if (y.RawValue < MIN_VALUE - x.RawValue) {
+					return MinValue;
+				}
 
-        public static Fix64 SafeAdd(in Fix64 x, in Fix64 y)
-        {
-#if USE_DOUBLES
-            return (Fix64) ((double) x + (double) y);
-#endif
-			uint xl = (uint) x.RawValue;
-			uint yl = (uint) y.RawValue;
-			uint sum = xl + yl;
+				return new Fix64(x.RawValue + y.RawValue);
+			}
+
+			long xl = (long) x.RawValue;
+			long yl = (long) y.RawValue;
+			long sum = xl + yl;
 
 			/*
 			// Not using an if is slower
@@ -373,6 +374,14 @@ namespace FixMath.NET
 				return xl >= 0 ? MaxValue : MinValue; // Branched version of the previous code, for clarity. Slower
 			}
 			return new Fix64((int) sum);
+		}
+
+		/// <summary>
+		/// Adds x and y. Unfedined overflow
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Fix64 FastAdd(in Fix64 x, in Fix64 y) {
+			return new Fix64(x.RawValue + y.RawValue);
 		}
 
         /// <summary>
@@ -768,7 +777,7 @@ namespace FixMath.NET
             var z = y / x;
 
             // Deal with overflow
-			if (SafeAdd(One, SafeMul(SafeMul(C0p28, z), z)) == MaxValue) {
+			if (One + SafeMul(SafeMul(C0p28, z), z) == MaxValue) {
                 return y.RawValue < 0 ? -PiOver2 : PiOver2;
             }
 
@@ -866,7 +875,7 @@ namespace FixMath.NET
             var z = y / x;
 
             // Deal with overflow
-            if (SafeAdd(One, SafeMul(SafeMul((Fix64)0.28d, z), z)) == MaxValue)
+            if (One + SafeMul(SafeMul((Fix64)0.28d, z), z) == MaxValue)
             {
                 return y.RawValue < 0 ? -PiOver2 : PiOver2;
             }
