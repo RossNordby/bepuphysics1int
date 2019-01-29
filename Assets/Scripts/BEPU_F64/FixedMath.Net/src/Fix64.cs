@@ -340,11 +340,12 @@ namespace FixMath.NET
 #if USE_DOUBLES
 			return (Fix64) ((double) x + (double) y);
 #endif
+			int xRaw = x.RawValue;
+			int yRaw = y.RawValue;
+
 			// https://stackoverflow.com/questions/17580118/signed-saturated-add-of-64-bit-ints/17587197#17587197
 			// determine the lower or upper bound of the result
 			//int ret = (x.RawValue < 0) ? MIN_VALUE : MAX_VALUE;
-			int xRaw = x.RawValue;
-			int yRaw = y.RawValue;
 			int ret = (int) ((((uint) xRaw >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
 			// this is always well defined:
 			// if x < 0 this adds a positive value to INT64_MIN
