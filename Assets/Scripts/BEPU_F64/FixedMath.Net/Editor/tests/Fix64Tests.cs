@@ -52,7 +52,7 @@ namespace FixMath.NET
         };
 
         [Test]
-        public void T1_IntToFix64AndBack() {
+        public void T001_IntToFix64AndBack() {
 			List<int> sources = new List<int>() {
 				int.MinValue,
 				-1000000,
@@ -88,7 +88,7 @@ namespace FixMath.NET
 		}
 
         [Test]
-        public void T2_DoubleToFix64AndBack() {
+        public void T002_DoubleToFix64AndBack() {
             List<double> sources = new List<double>() {
 				-int.MaxValue * 100d,
 				-int.MaxValue * 2d,
@@ -122,7 +122,7 @@ namespace FixMath.NET
         }
 		
         [Test]
-        public void T3_DecimalToFix64AndBack() {
+        public void T003_DecimalToFix64AndBack() {
 			Assert.AreEqual(Fix64.MaxValue, (Fix64) (decimal) Fix64.MaxValue);
 			Assert.AreEqual(Fix64.MinValue, (Fix64) (decimal) Fix64.MinValue);
 			
@@ -159,7 +159,7 @@ namespace FixMath.NET
 		}
 
 		[Test]
-		public void T4_Addition() {
+		public void T004_Addition() {
 			var terms1 = new[] { Fix64.MinValue, (Fix64) (-1), Fix64.Zero, Fix64.One, Fix64.MaxValue };
 			var terms2 = new[] { (Fix64) (-1), (Fix64) 2, (Fix64) (-1.5m), (Fix64) (-2), Fix64.One };
 			var expecteds = new[] { Fix64.MinValue, Fix64.One, (Fix64) (-1.5m), (Fix64) (-1), Fix64.MaxValue };
@@ -184,7 +184,7 @@ namespace FixMath.NET
 		}
 
 		[Test]
-		public void T5_Substraction() {
+		public void T005_Substraction() {
 			var terms1 = new[] { Fix64.MinValue, (Fix64) (-1), Fix64.Zero, Fix64.One, Fix64.MaxValue };
 			var terms2 = new[] { Fix64.One, (Fix64) (-2), (Fix64) (1.5m), (Fix64) (2), (Fix64) (-1) };
 			var expecteds = new[] { Fix64.MinValue, Fix64.One, (Fix64) (-1.5m), (Fix64) (-1), Fix64.MaxValue };
@@ -208,7 +208,7 @@ namespace FixMath.NET
 		}
 
 		[Test]
-		public void T6_Negation() {
+		public void T006_Negation() {
 			foreach (var operand1 in m_testCases) {
 				var f = Fix64.FromRaw(operand1);
 				if (f == Fix64.MinValue) {
@@ -223,7 +223,7 @@ namespace FixMath.NET
 		}
 
 		[Test]
-		public void T7_EqualityInequalityComparisonOperators() {
+		public void T007_EqualityInequalityComparisonOperators() {
 			List<Fix64> sources = m_testCases.Select(Fix64.FromRaw).ToList();
 			foreach (var op1 in sources) {
 				foreach (var op2 in sources) {
@@ -242,7 +242,7 @@ namespace FixMath.NET
 		}
 
 		[Test]
-		public void T8_CompareTo() {
+		public void T008_CompareTo() {
 			var nums = m_testCases.Select(Fix64.FromRaw).ToArray();
 			var numsDecimal = nums.Select(t => (decimal) t).ToArray();
 			Array.Sort(nums);
@@ -251,7 +251,7 @@ namespace FixMath.NET
 		}
 
 		[Test]
-		public void T9_Sign() {
+		public void T009_Sign() {
 			var sources = new[] { Fix64.MinValue, (Fix64) (-128), (Fix64) (-100), (Fix64) (-1), Fix64.Zero, Fix64.One, (Fix64) 100, (Fix64) 128, Fix64.MaxValue };
 			var expecteds = new int[] { -1, -1, -1, -1, 0, 1, 1, 1, 1 };
 			for (int i = 0; i < sources.Length; ++i) {
@@ -262,6 +262,18 @@ namespace FixMath.NET
 
 				var actual2 = Fix64.SignI(sources[i]);
 				Assert.AreEqual((double) expected, (double) actual2, sources[i].ToString());
+			}
+		}
+
+		[Test]
+		public void T010_Abs() {
+			Assert.AreEqual(Fix64.MaxValue, Fix64.Abs(Fix64.MinValue));
+			var sources = new[] { -(int) Fix64.MaxValue, -1, 0, 1, (int) Fix64.MaxValue - 1, (int) Fix64.MaxValue };
+			var expecteds = new[] { (int) Fix64.MaxValue, 1, 0, 1, (int) Fix64.MaxValue - 1, (int) Fix64.MaxValue };
+			for (int i = 0; i < sources.Length; ++i) {
+				var actual = Fix64.Abs((Fix64) sources[i]);
+				var expected = (Fix64) expecteds[i];
+				Assert.AreEqual(expected, actual, sources[i].ToString());
 			}
 		}
 
@@ -379,20 +391,6 @@ namespace FixMath.NET
             Assert.True(failures < 1);
         }
 		
-        [Test]
-        public void Abs()
-        {
-           Assert.AreEqual(Fix64.MaxValue, Fix64.Abs(Fix64.MinValue));
-			var sources = new[] { -(int) Fix64.MaxValue, -1, 0, 1, (int) Fix64.MaxValue - 1, (int) Fix64.MaxValue };
-			var expecteds = new[] { (int) Fix64.MaxValue, 1, 0, 1, (int) Fix64.MaxValue - 1, (int) Fix64.MaxValue };
-			for (int i = 0; i < sources.Length; ++i)
-            {
-                var actual = Fix64.Abs((Fix64)sources[i]);
-                var expected = (Fix64)expecteds[i];
-               Assert.AreEqual(expected, actual, sources[i].ToString());
-            }
-        }
-
         [Test]
         public void FastAbs()
         {
