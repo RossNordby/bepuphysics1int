@@ -469,7 +469,7 @@ namespace FixMath.NET
             return (Fix64) (-(double) x);
 #endif
         	//return new Fix64(-x.RawValue);
-            return x.RawValue == MIN_VALUE ? MaxValue : new Fix64(-x.RawValue);
+            return new Fix64(x.RawValue == MIN_VALUE ? MAX_VALUE : -x.RawValue);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
