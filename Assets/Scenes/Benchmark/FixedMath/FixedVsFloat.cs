@@ -113,6 +113,11 @@ public class FixedVsFloat : MonoBehaviour {
 		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Abs(Fix64.FromRaw(i));
 		return sum;
 	}
+	static Fix64 FFastAbs(int iterations) {
+		Fix64 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.FastAbs(Fix64.FromRaw(i));
+		return sum;
+	}
 	static Fix64 FFloor(int iterations) {
 		Fix64 sum = 0;
 		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Floor(Fix64.FromRaw(i));
@@ -520,7 +525,7 @@ public class FixedVsFloat : MonoBehaviour {
 		GUILayout.Label("1/i " + TestFix64(FDiv1));
 		GUILayout.Label("% " + TestFix64(FModulo));
 		GUILayout.Label("Sign " + TestFix64(FSign) + "  Sign(I) " + TestFix64(FSignI));
-		GUILayout.Label("Abs " + TestFix64(FAbs));
+		GUILayout.Label("Abs " + TestFix64(FAbs) + "  Abs(fast) " + TestFix64(FFastAbs));
 		GUILayout.Label("Floor " + TestFix64(FFloor));
 		GUILayout.Label("Log2 " + TestFix64(FLog2));
 		GUILayout.Label("Ln " + TestFix64(FLn));

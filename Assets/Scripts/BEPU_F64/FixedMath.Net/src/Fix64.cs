@@ -186,7 +186,6 @@ namespace FixMath.NET
 #if USE_DOUBLES
             return (Fix64) Math.Abs((double) value);
 #endif
-            // branchless implementation, see http://www.strchr.com/optimized_abs_function
             var mask = value.RawValue >> NUM_BITS_MINUS_ONE;
             return new Fix64((value.RawValue + mask) ^ mask);
         }
@@ -199,7 +198,7 @@ namespace FixMath.NET
             return (Fix64) Math.Floor((double) value);
 #endif
             // Just zero out the fractional part
-            return new Fix64((int)((uint)value.RawValue & ~FRACTIONAL_MASK));
+            return new Fix64(value.RawValue & INTEGER_MASK);
         }
 
         /// <summary>

@@ -277,6 +277,39 @@ namespace FixMath.NET
 			}
 		}
 
+		[Test]
+		public void T011_FastAbs() {
+			Assert.AreEqual(Fix64.MinValue, Fix64.FastAbs(Fix64.MinValue));
+			var sources = new[] { -(int) Fix64.MaxValue, -1, 0, 1, (int) Fix64.MaxValue - 1, (int) Fix64.MaxValue };
+			var expecteds = new[] { (int) Fix64.MaxValue, 1, 0, 1, (int) Fix64.MaxValue - 1, (int) Fix64.MaxValue };
+			for (int i = 0; i < sources.Length; ++i) {
+				var actual = Fix64.FastAbs((Fix64) sources[i]);
+				var expected = (Fix64) expecteds[i];
+				Assert.AreEqual(expected, actual);
+			}
+		}
+
+		[Test]
+		public void T012_Floor() {
+			var sources = new[] { -5.1m, -1, 0, 1, 5.1m, (decimal) Fix64.MaxValue, (decimal) Fix64.MinValue };
+			var expecteds = new[] { -6m, -1, 0, 1, 5m, (int) Fix64.MaxValue, (decimal) Fix64.MinValue };
+			for (int i = 0; i < sources.Length; ++i) {
+				var actual = (decimal) Fix64.Floor((Fix64) sources[i]);
+				var expected = expecteds[i];
+				Assert.AreEqual(expected, actual, sources[i].ToString());
+			}
+		}
+
+		[Test]
+		public void T013_Ceiling() {
+			var sources = new[] { -5.1m, -1, 0, 1, 5.1m, (decimal) Fix64.MaxValue, (decimal) Fix64.MinValue };
+			var expecteds = new[] { -5m, -1, 0, 1, 6m, (decimal) Fix64.MaxValue, (decimal) Fix64.MinValue };
+			for (int i = 0; i < sources.Length; ++i) {
+				var actual = (decimal) Fix64.Ceiling((Fix64) sources[i]);
+				var expected = expecteds[i];
+				Assert.AreEqual(expected, actual, sources[i].ToString());
+			}
+		}
 
 
 		[Test]
@@ -391,48 +424,6 @@ namespace FixMath.NET
             Assert.True(failures < 1);
         }
 		
-        [Test]
-        public void FastAbs()
-        {
-           Assert.AreEqual(Fix64.MinValue, Fix64.FastAbs(Fix64.MinValue));
-            var sources = new[] { -(int) Fix64.MaxValue, -1, 0, 1, (int) Fix64.MaxValue - 1, (int) Fix64.MaxValue };
-            var expecteds = new[] { (int) Fix64.MaxValue, 1, 0, 1, (int) Fix64.MaxValue - 1, (int) Fix64.MaxValue };
-            for (int i = 0; i < sources.Length; ++i)
-            {
-                var actual = Fix64.FastAbs((Fix64)sources[i]);
-                var expected = (Fix64)expecteds[i];
-               Assert.AreEqual(expected, actual);
-            }
-        }
-
-        [Test]
-        public void Floor()
-        {
-            var sources = new[] { -5.1m, -1, 0, 1, 5.1m };
-            var expecteds = new[] { -6m, -1, 0, 1, 5m };
-            for (int i = 0; i < sources.Length; ++i)
-            {
-                var actual = (decimal)Fix64.Floor((Fix64)sources[i]);
-                var expected = expecteds[i];
-               Assert.AreEqual(expected, actual);
-            }
-        }
-
-        [Test]
-        public void Ceiling()
-        {
-            var sources = new[] { -5.1m, -1, 0, 1, 5.1m };
-            var expecteds = new[] { -5m, -1, 0, 1, 6m };
-            for (int i = 0; i < sources.Length; ++i)
-            {
-                var actual = (decimal)Fix64.Ceiling((Fix64)sources[i]);
-                var expected = expecteds[i];
-               Assert.AreEqual(expected, actual);
-            }
-
-           Assert.AreEqual(Fix64.MaxValue, Fix64.Ceiling(Fix64.MaxValue));
-        }
-
         [Test]
         public void Round()
         {
