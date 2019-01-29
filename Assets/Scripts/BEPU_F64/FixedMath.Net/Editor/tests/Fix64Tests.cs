@@ -325,65 +325,43 @@ namespace FixMath.NET
 		}
 
 		[Test]
-        public void BasicMultiplication()
-        {
-            var term1s = new[] { 0m, 1m, -1m, 5m, -5m, 0.5m, -0.5m, -1.0m };
-            var term2s = new[] { 16m, 16m, 16m, 16m, 16m, 16m, 16m, -1.0m };
-            var expecteds = new[] { 0L, 16, -16, 80, -80, 8, -8, 1 };
-            for (int i = 0; i < term1s.Length; ++i)
-            {
-                var expected = expecteds[i];
-                var actual = (long)((Fix64)term1s[i] * (Fix64)term2s[i]);
-               Assert.AreEqual(expected, actual, term1s[i] + " * " + term2s[i]);
-            }
-        }
+		public void T015_BasicMultiplication() {
+			var term1s = new[] { 0m, 1m, -1m, 5m, -5m, 0.5m, -0.5m, -1.0m };
+			var term2s = new[] { 16m, 16m, 16m, 16m, 16m, 16m, 16m, -1.0m };
+			var expecteds = new[] { 0L, 16, -16, 80, -80, 8, -8, 1 };
+			for (int i = 0; i < term1s.Length; ++i) {
+				var expected = expecteds[i];
+				var actual = (long) ((Fix64) term1s[i] * (Fix64) term2s[i]);
+				Assert.AreEqual(expected, actual, term1s[i] + " * " + term2s[i]);
+			}
+		}
 
-        [Test]
-        public void MultiplicationTestCases()
-        {
-            var sw = new Stopwatch();
-            int failures = 0;
-            for (int i = 0; i < m_testCases.Length; ++i)
-            {
-                for (int j = 0; j < m_testCases.Length; ++j)
-                {
-                    var x = Fix64.FromRaw(m_testCases[i]);
-                    var y = Fix64.FromRaw(m_testCases[j]);
-                    var xM = (decimal)x;
-                    var yM = (decimal)y;
-                    var expected = xM * yM;
-                    expected =
-                        expected > (decimal)Fix64.MaxValue
-                            ? (decimal)Fix64.MaxValue
-                            : expected < (decimal)Fix64.MinValue
-                                  ? (decimal)Fix64.MinValue
-                                  : expected;
-                    sw.Start();
-                    var actual = x * y;
-                    sw.Stop();
-                    var actualM = (decimal)actual;
-                    var maxDelta = (decimal)Fix64.FromRaw(1);
-                    if (Math.Abs(actualM - expected) > maxDelta)
-                    {
-                        Console.WriteLine("Failed for FromRaw({0}) * FromRaw({1}): expected {2} but got {3}",
-                                          m_testCases[i],
-                                          m_testCases[j],
-                                          (Fix64)expected,
-                                          actualM);
-                        ++failures;
-						Assert.Fail("Failed for FromRaw({0}) * FromRaw({1}): expected {2} but got {3}",
-										  m_testCases[i],
-										  m_testCases[j],
-										  (Fix64) expected,
-										  actualM);
-                    }
-                }
-            }
-            Console.WriteLine("{0} total, {1} per multiplication", sw.ElapsedMilliseconds, (double)sw.Elapsed.Milliseconds / (m_testCases.Length * m_testCases.Length));
-            Assert.True(failures < 1);
-        }
-		
-        [Test]
+		[Test]
+		public void T016_MultiplicationTestCases() {
+			var sw = new Stopwatch();
+			for (int i = 0; i < m_testCases.Length; ++i) {
+				for (int j = 0; j < m_testCases.Length; ++j) {
+					var x = Fix64.FromRaw(m_testCases[i]);
+					var y = Fix64.FromRaw(m_testCases[j]);
+					var xM = (decimal) x;
+					var yM = (decimal) y;
+					var expected = xM * yM;
+					expected =
+						expected > (decimal) Fix64.MaxValue ? (decimal) Fix64.MaxValue :
+						expected < (decimal) Fix64.MinValue ? (decimal) Fix64.MinValue :
+						expected;
+					sw.Start();
+					var actual = x * y;
+					sw.Stop();
+					var expextedM = (double) (Fix64) expected;
+					var actualM = (double) actual;
+					Assert.AreEqual(expextedM, actualM, (double) Fix64.Precision, x.ToString() + " * " + y.ToString());
+				}
+			}
+			Console.WriteLine("{0} total, {1} per multiplication", sw.ElapsedMilliseconds, (double) sw.Elapsed.Milliseconds / (m_testCases.Length * m_testCases.Length));
+		}
+
+		[Test]
         public void DivisionTestCases()
         {
             var sw = new Stopwatch();
