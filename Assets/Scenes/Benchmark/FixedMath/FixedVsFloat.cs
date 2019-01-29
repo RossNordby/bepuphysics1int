@@ -7,6 +7,7 @@ using UnityEngine;
 public class FixedVsFloat : MonoBehaviour {
 	public GUISkin skin;
 	public int iterations = 20000;
+	public int repeats = 2;
 
 	Dictionary<Func<int, Fix64>, string> fResults = new Dictionary<Func<int, Fix64>, string>();
 	Dictionary<Func<int, float>, string> dResults = new Dictionary<Func<int, float>, string>();
@@ -23,8 +24,10 @@ public class FixedVsFloat : MonoBehaviour {
 	string TestFix64(Func<int, Fix64> f) {
 		if (fResults.ContainsKey(f)) return fResults[f];
 		var sw = Stopwatch.StartNew();
-		var tmp = f(iterations);
-		return fResults[f] = " = " + sw.Elapsed.TotalMilliseconds / iterations * 1000000 + " ns";
+		Fix64 tmp;
+		for (int i = 0; i < repeats; i++)
+			tmp = f(iterations);
+		return fResults[f] = " = " + sw.Elapsed.TotalMilliseconds / iterations / repeats * 1000000 + " ns";
 	}
 
 	static Fix64 FAdd(int iterations) {
@@ -32,9 +35,19 @@ public class FixedVsFloat : MonoBehaviour {
 		for (int i = 0; i < iterations; i++) sum += Fix64.One;
 		return sum;
 	}
+	static Fix64 FAddFast(int iterations) {
+		Fix64 sum = 0;
+		for (int i = 0; i < iterations; i++) sum = Fix64.FastAdd(sum, Fix64.One);
+		return sum;
+	}
 	static Fix64 FSub(int iterations) {
 		Fix64 sum = 0;
 		for (int i = 0; i < iterations; i++) sum -= Fix64.One;
+		return sum;
+	}
+	static Fix64 FSubFast(int iterations) {
+		Fix64 sum = 0;
+		for (int i = 0; i < iterations; i++) sum = Fix64.FastSub(sum, Fix64.One);
 		return sum;
 	}
 	static Fix64 FInv(int iterations) {
@@ -235,8 +248,10 @@ public class FixedVsFloat : MonoBehaviour {
 	string TestDouble(Func<int, float> f) {
 		if (dResults.ContainsKey(f)) return dResults[f];
 		var sw = Stopwatch.StartNew();
-		var tmp = f(iterations);
-		return dResults[f] = " = " + sw.Elapsed.TotalMilliseconds / iterations * 1000000 + " ns";
+		float tmp;
+		for (int i = 0; i < repeats; i++)
+			tmp = f(iterations);
+		return dResults[f] = " = " + sw.Elapsed.TotalMilliseconds / iterations / repeats * 1000000 + " ns";
 	}
 
 	static float DAdd(int iterations) {
@@ -434,8 +449,8 @@ public class FixedVsFloat : MonoBehaviour {
 
 		GUILayout.BeginVertical("box");
 		GUILayout.Label("Fix64");
-		GUILayout.Label("+ " + TestFix64(FAdd));
-		GUILayout.Label("- " + TestFix64(FSub));
+		GUILayout.Label("+ " + TestFix64(FAdd) + "  +(fast) " + TestFix64(FAddFast));
+		GUILayout.Label("- " + TestFix64(FSub) + "  -(fast) " + TestFix64(FSubFast));
 		GUILayout.Label("-(inv) " + TestFix64(FInv));
 		GUILayout.Label("*2 " + TestFix64(FMul2));
 		GUILayout.Label("/2 " + TestFix64(FDiv2));
