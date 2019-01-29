@@ -164,17 +164,17 @@ namespace FixMath.NET
         /// Note: Abs(Fix64.MinValue) == Fix64.MaxValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Fix64 Abs(in Fix64 value) { 
+        public static Fix64 Abs(in Fix64 v) { 
 #if USE_DOUBLES
-			return (Fix64) Math.Abs((double) value);
+			return (Fix64) Math.Abs((double) v);
 #endif
-            if (value.RawValue == MIN_VALUE) {
+            if (v.RawValue == MIN_VALUE) {
                 return MaxValue;
             }
 
             // branchless implementation, see http://www.strchr.com/optimized_abs_function
-            var mask = value.RawValue >> NUM_BITS_MINUS_ONE;
-            return new Fix64((value.RawValue + mask) ^ mask);
+            var mask = v.RawValue >> NUM_BITS_MINUS_ONE;
+            return new Fix64((v.RawValue + mask) ^ mask);
         }
 
         /// <summary>
@@ -182,34 +182,36 @@ namespace FixMath.NET
         /// FastAbs(Fix64.MinValue) is undefined.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Fix64 FastAbs(in Fix64 value) {
+        public static Fix64 FastAbs(in Fix64 v) {
 #if USE_DOUBLES
-            return (Fix64) Math.Abs((double) value);
+            return (Fix64) Math.Abs((double) v);
 #endif
-            var mask = value.RawValue >> NUM_BITS_MINUS_ONE;
-            return new Fix64((value.RawValue + mask) ^ mask);
+            var mask = v.RawValue >> NUM_BITS_MINUS_ONE;
+            return new Fix64((v.RawValue + mask) ^ mask);
         }
 
-        /// <summary>
-        /// Returns the largest integer less than or equal to the specified number.
-        /// </summary>
-        public static Fix64 Floor(in Fix64 value) {
+		/// <summary>
+		/// Returns the largest integer less than or equal to the specified number.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Fix64 Floor(in Fix64 v) {
 #if USE_DOUBLES
-            return (Fix64) Math.Floor((double) value);
+            return (Fix64) Math.Floor((double) v);
 #endif
             // Just zero out the fractional part
-            return new Fix64(value.RawValue & INTEGER_MASK);
+            return new Fix64(v.RawValue & INTEGER_MASK);
 		}
 
 		/// <summary>
 		/// Returns the smallest integral value that is greater than or equal to the specified number.
 		/// </summary>
-		public static Fix64 Ceiling(in Fix64 value) {
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Fix64 Ceiling(in Fix64 v) {
 #if USE_DOUBLES
-            return (Fix64) Math.Ceiling((double) value);
+            return (Fix64) Math.Ceiling((double) v);
 #endif
-			var hasFractionalPart = (value.RawValue & FRACTIONAL_MASK) != 0;
-			return hasFractionalPart ? Floor(value) + One : value;
+			int vRaw = v.RawValue;
+			return (vRaw & FRACTIONAL_MASK) != 0 ? new Fix64(vRaw & INTEGER_MASK) + One : v;
 		}
 
 		/// <summary>
