@@ -41,8 +41,8 @@ namespace FixMath.NET
 
 		const long MAX_VALUE = int.MaxValue;
 		const long MIN_VALUE = int.MinValue;
-		public const int NUM_BITS = 64;
-		public const int FRACTIONAL_PLACES = 32;
+		public const int NUM_BITS = 32;
+		public const int FRACTIONAL_PLACES = 14;
 
 		const int NUM_BITS_MINUS_ONE = NUM_BITS - 1;
 		const long ONE = 1 << FRACTIONAL_PLACES;
@@ -889,7 +889,6 @@ namespace FixMath.NET
         }
 
         public override string ToString() {
-			UnityEngine.Debug.LogWarning("Pls no");
             return ((double)this).ToString("0.##########");
         }
 

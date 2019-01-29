@@ -18,12 +18,12 @@ namespace BEPUutilities
         /// <summary>
         /// Large tolerance value. Defaults to 1e-5f.
         /// </summary>
-        public static Fix64 BigEpsilon = F64.C1 / 100000;
+        public static Fix64 BigEpsilon = 128 * (Fix64) Fix64.Precision;
 
         /// <summary>
         /// Tolerance value. Defaults to 1e-7f.
         /// </summary>
-        public static Fix64 Epsilon = F64.C1 / 10000000;
+        public static Fix64 Epsilon = 2 * (Fix64) Fix64.Precision;
 
         /// <summary>
         /// Represents an invalid Vector3.
