@@ -50,6 +50,7 @@ namespace FixMath.NET
 		const int NUM_BITS_MINUS_ONE = NUM_BITS - 1;
 		const int ONE = 1 << FRACTIONAL_PLACES;
 		const uint FRACTIONAL_MASK = ONE - 1;
+		const int INTEGER_MASK = unchecked((int) ~FRACTIONAL_MASK);
 		const int LOG2MAX = (NUM_BITS - 1) << FRACTIONAL_PLACES;
 		const int LOG2MIN = -(NUM_BITS << FRACTIONAL_PLACES);
 		const int LUT_SIZE_RS = FRACTIONAL_PLACES / 2 - 1;
@@ -140,20 +141,21 @@ namespace FixMath.NET
 		/// Returns 1 if the value is positive, 0 if is 0, and -1 if it is negative.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int SignI(in Fix64 value) {
-            return
-                value.RawValue < 0 ? -1 :
-                value.RawValue > 0 ? 1 :
-                0;
+        public static int SignI(in Fix64 v) {
+			//https://stackoverflow.com/questions/14579920/fast-sign-of-integer-in-c/14612418#14612418
+			int vRaw = v.RawValue;
+			return (vRaw >> NUM_BITS_MINUS_ONE) | (int) (((uint) -vRaw) >> NUM_BITS_MINUS_ONE);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Fix64 Sign(in Fix64 v)
-        {
-            return
-                v.RawValue < 0 ? MinusOne :
-                v.RawValue > 0 ? One :
-                Zero;
+		/// <summary>
+		/// Returns a number indicating the sign of a Fix64 number.
+		/// Returns 1 if the value is positive, 0 if is 0, and -1 if it is negative.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Fix64 Sign(in Fix64 v) {
+			int vRaw = v.RawValue;
+			const int RS = NUM_BITS_MINUS_ONE - FRACTIONAL_PLACES;
+			return new Fix64(((vRaw >> RS) | (int) (((uint) -vRaw) >> RS)) & INTEGER_MASK);
         }
 
 

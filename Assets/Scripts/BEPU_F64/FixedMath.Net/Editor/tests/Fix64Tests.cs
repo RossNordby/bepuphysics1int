@@ -252,12 +252,16 @@ namespace FixMath.NET
 
 		[Test]
 		public void T9_Sign() {
-			var sources = new[] { Fix64.MinValue, (Fix64) (-1), Fix64.Zero, Fix64.One, Fix64.MaxValue };
-			var expecteds = new[] { -1, -1, 0, 1, 1 };
+			var sources = new[] { Fix64.MinValue, (Fix64) (-128), (Fix64) (-100), (Fix64) (-1), Fix64.Zero, Fix64.One, (Fix64) 100, (Fix64) 128, Fix64.MaxValue };
+			var expecteds = new int[] { -1, -1, -1, -1, 0, 1, 1, 1, 1 };
 			for (int i = 0; i < sources.Length; ++i) {
-				var actual = Fix64.Sign(sources[i]);
 				var expected = expecteds[i];
-				Assert.AreEqual(expected, (int) actual);
+
+				var actual = Fix64.Sign(sources[i]);
+				Assert.AreEqual((double) expected, (double) actual, sources[i].ToString());
+
+				var actual2 = Fix64.SignI(sources[i]);
+				Assert.AreEqual((double) expected, (double) actual2, sources[i].ToString());
 			}
 		}
 
