@@ -76,6 +76,64 @@ namespace FixMath.NET
 		const int EPOW4 = (int) (D_EPOW4 < 0 ? D_EPOW4 - 0.5m : D_EPOW4 + 0.5m);
 		const int LN2 = (int) (D_LN2 < 0 ? D_LN2 - 0.5m : D_LN2 + 0.5m);
 
+
+		/// <summary>
+		/// Adds x and y. Performs saturating addition, i.e. in case of overflow, 
+		/// rounds to MinValue or MaxValue depending on sign of operands.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Fix64 operator +(in Fix64 x, in Fix64 y) {
+#if USE_DOUBLES
+			return (Fix64) ((double) x + (double) y);
+#endif
+			int xRaw = x.RawValue;
+			int yRaw = y.RawValue;
+
+			// https://stackoverflow.com/questions/17580118/signed-saturated-add-of-64-bit-ints/17587197#17587197
+			// determine the lower or upper bound of the result
+			//int ret = (x.RawValue < 0) ? MIN_VALUE : MAX_VALUE;
+			int ret = (int) ((((uint) xRaw >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
+			// this is always well defined:
+			// if x < 0 this adds a positive value to INT64_MIN
+			// if x > 0 this subtracts a positive value from INT64_MAX
+			//int comp = ret - xRaw;
+			// the condition is equivalent to
+			// ((x < 0) && (y > comp)) || ((x >=0) && (y <= comp))
+			return new Fix64((xRaw < 0) != (yRaw > (ret - xRaw)) ? ret : xRaw + yRaw);
+		}
+
+		/// <summary>
+		/// Adds x and y. Doesn't saturate, truncates instead.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Fix64 FastAdd(in Fix64 x, in Fix64 y) {
+			return new Fix64(x.RawValue + y.RawValue);
+		}
+
+		/// <summary>
+		/// Subtracts y from x. Performs saturating substraction, i.e. in case of overflow, 
+		/// rounds to MinValue or MaxValue depending on sign of operands.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Fix64 operator -(in Fix64 x, in Fix64 y) {
+#if USE_DOUBLES
+            return (Fix64) ((double) x - (double) y);
+#endif
+			// Nearly same logic as addition
+			int xRaw = x.RawValue;
+			int yRaw = y.RawValue;
+			int ret = (int) ((((uint) xRaw >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
+			return new Fix64((xRaw < 0) != (yRaw > (ret - xRaw)) ? ret : xRaw - yRaw);
+		}
+
+		/// <summary>
+		/// Subtracts y from x. Doesn't saturate, truncates instead.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Fix64 FastSub(in Fix64 x, in Fix64 y) {
+			return new Fix64(x.RawValue - y.RawValue);
+		}
+
 		/// <summary>
 		/// Returns a number indicating the sign of a Fix64 number.
 		/// Returns 1 if the value is positive, 0 if is 0, and -1 if it is negative.
@@ -329,67 +387,6 @@ namespace FixMath.NET
             return (integralPart.RawValue & ONE) == 0
                        ? integralPart
                        : integralPart + One;
-        }
-
-		/// <summary>
-		/// Adds x and y. Performs saturating addition, i.e. in case of overflow, 
-		/// rounds to MinValue or MaxValue depending on sign of operands.
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Fix64 operator +(in Fix64 x, in Fix64 y) {
-#if USE_DOUBLES
-			return (Fix64) ((double) x + (double) y);
-#endif
-			int xRaw = x.RawValue;
-			int yRaw = y.RawValue;
-
-			// https://stackoverflow.com/questions/17580118/signed-saturated-add-of-64-bit-ints/17587197#17587197
-			// determine the lower or upper bound of the result
-			//int ret = (x.RawValue < 0) ? MIN_VALUE : MAX_VALUE;
-			int ret = (int) ((((uint) xRaw >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
-			// this is always well defined:
-			// if x < 0 this adds a positive value to INT64_MIN
-			// if x > 0 this subtracts a positive value from INT64_MAX
-			//int comp = ret - x.RawValue;
-			// the condition is equivalent to
-			// ((x < 0) && (y > comp)) || ((x >=0) && (y <= comp))
-			return new Fix64((xRaw < 0) != (yRaw > (ret - xRaw)) ? ret : xRaw + yRaw);
-		}
-
-		/// <summary>
-		/// Adds x and y. Doesn't saturate, truncates instead.
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Fix64 FastAdd(in Fix64 x, in Fix64 y) {
-			return new Fix64(x.RawValue + y.RawValue);
-		}
-
-        /// <summary>
-        /// Subtracts y from x. Performs saturating substraction, i.e. in case of overflow, 
-        /// rounds to MinValue or MaxValue depending on sign of operands.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Fix64 operator -(in Fix64 x, in Fix64 y) {
-#if USE_DOUBLES
-            return (Fix64) ((double) x - (double) y);
-#endif
-
-			var xl = x.RawValue;
-			var yl = y.RawValue;
-			var diff = xl - yl;
-			// if signs of operands are different and signs of sum and x are different
-			if ((((xl ^ yl) & (xl ^ diff)) & MIN_VALUE) != 0) {
-				return xl < 0 ? MinValue : MaxValue;
-			}
-			return new Fix64(diff);
-		}
-
-		/// <summary>
-		/// Subtracts y from x. Doesn't saturate, truncates instead.
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Fix64 FastSub(in Fix64 x, in Fix64 y) {
-			return new Fix64(x.RawValue - y.RawValue);
         }
 
         static long AddOverflowHelper(long x, long y, ref bool overflow) {

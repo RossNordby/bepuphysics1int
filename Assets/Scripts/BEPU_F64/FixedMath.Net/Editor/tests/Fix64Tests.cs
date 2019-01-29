@@ -160,18 +160,28 @@ namespace FixMath.NET
 		}
 
         [Test]
-        public void Substraction()
-        {
-            var terms1 = new[] { Fix64.MinValue, (Fix64)(-1), Fix64.Zero, Fix64.One, Fix64.MaxValue };
-            var terms2 = new[] { Fix64.One, (Fix64)(-2), (Fix64)(1.5m), (Fix64)(2), (Fix64)(-1) };
-            var expecteds = new[] { Fix64.MinValue, Fix64.One, (Fix64)(-1.5m), (Fix64)(-1), Fix64.MaxValue };
-            for (int i = 0; i < terms1.Length; ++i)
-            {
-                var actual = terms1[i] - terms2[i];
-                var expected = expecteds[i];
-               Assert.AreEqual(expected, actual, terms1[i] + " - " + terms2[i]);
-            }
-        }
+        public void Substraction() {
+			var terms1 = new[] { Fix64.MinValue, (Fix64)(-1), Fix64.Zero, Fix64.One, Fix64.MaxValue };
+			var terms2 = new[] { Fix64.One, (Fix64)(-2), (Fix64)(1.5m), (Fix64)(2), (Fix64)(-1) };
+			var expecteds = new[] { Fix64.MinValue, Fix64.One, (Fix64)(-1.5m), (Fix64)(-1), Fix64.MaxValue };
+			for (int i = 0; i < terms1.Length; ++i) {
+				var actual = terms1[i] - terms2[i];
+				var expected = expecteds[i];
+				Assert.AreEqual(expected, actual, terms1[i] + " - " + terms2[i]);
+			}
+			
+			for (int i = 0; i < m_testCases.Length; ++i) {
+				for (int j = 0; j < m_testCases.Length; ++j) {
+					var x = Fix64.FromRaw(m_testCases[i]);
+					var y = Fix64.FromRaw(m_testCases[j]);
+
+					double expected = Saturate((double) x - (double) y);
+					double actual = (double) (x - y);
+
+					Assert.AreEqual(expected, actual, x.ToString() + " - " + y.ToString());
+				}
+			}
+		}
 
         [Test]
         public void BasicMultiplication()
