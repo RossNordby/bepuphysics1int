@@ -49,8 +49,8 @@ namespace FixMath.NET
 
 		const int NUM_BITS_MINUS_ONE = NUM_BITS - 1;
 		const int ONE = 1 << FRACTIONAL_PLACES;
-		const uint FRACTIONAL_MASK = ONE - 1;
-		const int INTEGER_MASK = unchecked((int) ~FRACTIONAL_MASK);
+		const int FRACTIONAL_MASK = ONE - 1;
+		const int INTEGER_MASK = ~FRACTIONAL_MASK;
 		const int LOG2MAX = (NUM_BITS - 1) << FRACTIONAL_PLACES;
 		const int LOG2MIN = -(NUM_BITS << FRACTIONAL_PLACES);
 		const int LUT_SIZE_RS = FRACTIONAL_PLACES / 2 - 1;
@@ -211,7 +211,8 @@ namespace FixMath.NET
             return (Fix64) Math.Ceiling((double) v);
 #endif
 			int vRaw = v.RawValue;
-			return (vRaw & FRACTIONAL_MASK) != 0 ? new Fix64(vRaw & INTEGER_MASK) + One : v;
+			var hasFractionalPart = (vRaw & FRACTIONAL_MASK) != 0;
+			return hasFractionalPart ? new Fix64(vRaw & INTEGER_MASK) + One : v;
 		}
 
 		/// <summary>
