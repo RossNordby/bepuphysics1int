@@ -177,6 +177,11 @@ public class FixedVsFloat : MonoBehaviour {
 		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Round(Fix64.FromRaw(i));
 		return sum;
 	}
+	static Fix64 FFastRound(int iterations) {
+		Fix64 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.FastRound(Fix64.FromRaw(i));
+		return sum;
+	}
 	static Fix64 FEqualEqual(int iterations) {
 		bool tmp;
 		Fix64 sum = 0;
@@ -527,7 +532,7 @@ public class FixedVsFloat : MonoBehaviour {
 		GUI.skin = skin;
 		GUILayout.BeginHorizontal();
 
-		GUILayout.BeginVertical("box");
+		GUILayout.BeginVertical("box", GUILayout.MinWidth(400));
 		GUILayout.Label("Fix64");
 		GUILayout.Label("+ " + TestFix64(FAdd) + "  +(fast) " + TestFix64(FAddFast));
 		GUILayout.Label("- " + TestFix64(FSub) + "  -(fast) " + TestFix64(FSubFast));
@@ -545,7 +550,7 @@ public class FixedVsFloat : MonoBehaviour {
 		GUILayout.Label("Pow " + TestFix64(FPow));
 		GUILayout.Label("Acos " + TestFix64(FAcos));
 		GUILayout.Label("Ceiling " + TestFix64(FCeiling));
-		GUILayout.Label("Round " + TestFix64(FRound));
+		GUILayout.Label("Round " + TestFix64(FRound) + "  Round(fast) " + TestFix64(FFastRound));
 		GUILayout.Label("== " + TestFix64(FEqualEqual));
 		GUILayout.Label("!= " + TestFix64(FNotEqual));
 		GUILayout.Label("> " + TestFix64(FGreater));
@@ -572,7 +577,7 @@ public class FixedVsFloat : MonoBehaviour {
 		GUILayout.Label("FromDouble " + TestFix64(FFromDouble));
 		GUILayout.EndVertical();
 
-		GUILayout.BeginVertical("box");
+		GUILayout.BeginVertical("box", GUILayout.MinWidth(400));
 		GUILayout.Label("Float");
 		GUILayout.Label("+ " + TestDouble(DAdd));
 		GUILayout.Label("- " + TestDouble(DSub));

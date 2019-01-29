@@ -313,15 +313,27 @@ namespace FixMath.NET
 
 		[Test]
 		public void T014_Round() {
-			var sources = new[] { -5.5m, -5.1m, -4.5m, -4.4m, -1, 0, 1, 4.5m, 4.6m, 5.4m, 5.5m };
-			var expecteds = new[] { -6m, -5m, -4m, -4m, -1, 0, 1, 4m, 5m, 5m, 6m };
+			var sources = new[] { 5.5m, 5.4m, 4.6m, 4.5m, 1, 0, -1, -4.4m, -4.5m, -5.1m, -5.5m };
+			var expecteds = new[] { 6m, 5m, 5m, 4m, 1, 0, -1, -4m, -4m, -5m, -6m };
 			for (int i = 0; i < sources.Length; ++i) {
 				var actualFix64 = Fix64.Round((Fix64) sources[i]);
 				var actual = (decimal) actualFix64;
 				var expected = expecteds[i];
-				Assert.AreEqual(expected, actual);
+				Assert.AreEqual(expected, actual, sources[i].ToString());
 			}
 			Assert.AreEqual(Fix64.MaxValue, Fix64.Round(Fix64.MaxValue));
+		}
+
+		[Test]
+		public void T0141_FastRound() {
+			var sources = new[] { 5.5m, 5.4m, 4.6m, 4.5m, 1, 0, -1, -4.4m, -4.5m, -5.1m, -5.5m };
+			var expecteds = new[] { 6m, 5m, 5m, 4m, 1, 0, -1, -4m, -4m, -5m, -6m };
+			for (int i = 0; i < sources.Length; ++i) {
+				var actualFix64 = Fix64.FastRound((Fix64) sources[i]);
+				var actual = (decimal) actualFix64;
+				var expected = expecteds[i];
+				Assert.AreEqual(expected, actual, sources[i].ToString());
+			}
 		}
 
 		[Test]

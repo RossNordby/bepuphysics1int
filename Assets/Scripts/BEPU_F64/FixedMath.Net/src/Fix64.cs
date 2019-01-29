@@ -46,6 +46,7 @@ namespace FixMath.NET
 		const int MIN_INT_VALUE = int.MinValue >> FRACTIONAL_PLACES;
 		public const int NUM_BITS = 32;
 		public const int FRACTIONAL_PLACES = 14;
+		const int SIGNED_INTEGER_PLACES = NUM_BITS - FRACTIONAL_PLACES;
 
 		const int NUM_BITS_MINUS_ONE = NUM_BITS - 1;
 		const int ONE = 1 << FRACTIONAL_PLACES;
@@ -239,12 +240,39 @@ namespace FixMath.NET
 				integralPart + One;
 		}
 
+		/// <summary>
+		/// Rounds a value to the nearest integral value.
+		/// If the value is halfway between an even and an uneven value, returns the even value.
+		/// FastRount(Fix64.MaxValue) is undefined
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Fix64 FastRound(in Fix64 v) {
+#if USE_DOUBLES
+            return (Fix64) Math.Round((double) value);
+#endif
+			// https://sestevenson.wordpress.com/2009/08/19/rounding-in-fixed-point-number-conversions/
+			int vRaw = v.RawValue;
+			int odd = (vRaw & ONE) >> FRACTIONAL_PLACES;
+			return new Fix64((vRaw + (ONE / 2 - 1) + odd) & INTEGER_MASK);
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Fix64 operator *(in Fix64 x, in Fix64 y) {
 #if USE_DOUBLES
             return (Fix64) ((double) x * (double) y);
 #endif
 			long mult = ((long) x.RawValue * (long) y.RawValue) >> FRACTIONAL_PLACES;
+
+			//int ret = (x.RawValue < 0) ? MIN_VALUE : MAX_VALUE;
+			int sat = (int) ((((ulong) mult >> 63) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
+
+			return new Fix64(mult < MIN_VALUE || mult > MAX_VALUE ? sat : (int) mult);
+
+			// Testing saturation. Didn't work
+			/*if (mult >> NUM_BITS > 0)
+				return new Fix64((int) ((((uint) (mult) >> 63) - 1U) ^ (1U << NUM_BITS_MINUS_ONE))); // Saturate
+			return new Fix64((int) mult);
+			*/
 			return mult < MIN_VALUE ? MinValue :
 				mult > MAX_VALUE ? MaxValue :
 				new Fix64((int) mult);
