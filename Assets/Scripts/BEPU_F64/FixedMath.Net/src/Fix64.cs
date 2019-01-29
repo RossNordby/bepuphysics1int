@@ -239,6 +239,36 @@ namespace FixMath.NET
 				integralPart + One;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Fix64 operator *(in Fix64 x, in Fix64 y) {
+#if USE_DOUBLES
+            return (Fix64) ((double) x * (double) y);
+#endif
+			long mult = ((long) x.RawValue * (long) y.RawValue) >> FRACTIONAL_PLACES;
+			return new Fix64((int) mult);
+			// Testing saturation. Didn't work
+			if (mult >> NUM_BITS > 0)
+				return new Fix64((int) ((((uint) (mult) >> 63) - 1U) ^ (1U << NUM_BITS_MINUS_ONE))); // Saturate
+			return new Fix64((int) mult);
+
+			return mult < MIN_VALUE ? MinValue :
+				mult > MAX_VALUE ? MaxValue :
+				new Fix64((int) mult);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Obsolete]
+		public static Fix64 SafeMul(in Fix64 x, in Fix64 y) {
+			return x * y;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Fix64 FastMul(in Fix64 x, in Fix64 y) {
+#if USE_DOUBLES
+			return (Fix64) ((double) x * (double) y);
+#endif
+			return new Fix64((int) (((long) x.RawValue * (long) y.RawValue) >> FRACTIONAL_PLACES));
+		}
+		
 		/// <summary>
 		/// Returns the base-2 logarithm of a specified number.
 		/// </summary>
@@ -374,7 +404,7 @@ namespace FixMath.NET
             }
             
             Fix64 log2 = Log2(b);
-            return Pow2(SafeMul(exp, log2));
+            return Pow2(exp * log2);
         }
 
         /// <summary>
@@ -393,29 +423,6 @@ namespace FixMath.NET
 
             var result = Atan(Sqrt(One - x * x) / x);
             return x.RawValue < 0 ? result + Pi : result;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Fix64 operator *(in Fix64 x, in Fix64 y) {
-#if USE_DOUBLES
-            return (Fix64) ((double) x * (double) y);
-#endif
-#if CHECKMATH
-			return SafeMul(x, y);
-#else
-			return new Fix64((int) (((long) x.RawValue * (long) y.RawValue) >> FRACTIONAL_PLACES));
-#endif
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Fix64 SafeMul(in Fix64 x, in Fix64 y) {
-#if USE_DOUBLES
-			return (Fix64) ((double) x * (double) y);
-#endif
-			long mult = ((long) x.RawValue * (long) y.RawValue) >> FRACTIONAL_PLACES;
-			return mult < MIN_VALUE ? MinValue :
-				mult > MAX_VALUE ? MaxValue :
-				new Fix64((int) mult);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -746,7 +753,7 @@ namespace FixMath.NET
             var z = y / x;
 
             // Deal with overflow
-			if (One + SafeMul(SafeMul(C0p28, z), z) == MaxValue) {
+			if (One + (C0p28 * z * z) == MaxValue) {
                 return y.RawValue < 0 ? -PiOver2 : PiOver2;
             }
 
@@ -844,7 +851,7 @@ namespace FixMath.NET
             var z = y / x;
 
             // Deal with overflow
-            if (One + SafeMul(SafeMul((Fix64)0.28d, z), z) == MaxValue)
+            if (One + ((Fix64)0.28d * z * z) == MaxValue)
             {
                 return y.RawValue < 0 ? -PiOver2 : PiOver2;
             }

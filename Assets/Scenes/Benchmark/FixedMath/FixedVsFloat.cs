@@ -55,47 +55,66 @@ public class FixedVsFloat : MonoBehaviour {
 		for (int i = 0; i < iterations; i++) sum = -Fix64.One;
 		return sum;
 	}
-	static Fix64 FMul2(int iterations) {
+	static Fix64[] Fcoeffs = new Fix64[] {
+		(Fix64) 0f, (Fix64) 0.0001f, (Fix64) 0.001f, (Fix64) 0.01f,
+		(Fix64) 0.1f, (Fix64) 1f, (Fix64) 10f, (Fix64) 100f,
+		(Fix64) 1000f, (Fix64) 10000f,
+
+		(Fix64) (-0f), (Fix64) (-0.0001f), (Fix64) (-0.001f), (Fix64) (-0.01f),
+		(Fix64) (-0.1f), (Fix64) (-1f), (Fix64) (-10f), (Fix64) (-100f),
+		(Fix64) (-1000f), (Fix64) (-10000f)
+	};
+	static Fix64 FMul(int iterations) {
+		iterations /= Fcoeffs.Length;
+		iterations /= Fcoeffs.Length;
 		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i * Fix64.Two;
+		for (int k = 0; k < iterations; k++)
+			for (int i = 0; i < Fcoeffs.Length; i++)
+				for (int j = 0; j < Fcoeffs.Length; j++)
+					sum = Fcoeffs[i] * Fcoeffs[j];
 		return sum;
 	}
-	static Fix64 FDiv2(int iterations) {
+	static Fix64 FMulFast(int iterations) {
+		iterations /= Fcoeffs.Length;
+		iterations /= Fcoeffs.Length;
 		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i / Fix64.Two;
+		for (int k = 0; k < iterations; k++)
+			for (int i = 0; i < Fcoeffs.Length; i++)
+				for (int j = 0; j < Fcoeffs.Length; j++)
+					sum = Fix64.FastMul(Fcoeffs[i], Fcoeffs[j]);
 		return sum;
 	}
-	static Fix64 FMul3(int iterations) {
+	static Fix64 FDiv(int iterations) {
+		iterations /= Fcoeffs.Length;
+		iterations /= Fcoeffs.Length;
 		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i * Fix64.Three;
+		for (int k = 0; k < iterations; k++)
+			for (int i = 0; i < Fcoeffs.Length; i++)
+				for (int j = 0; j < Fcoeffs.Length; j++)
+					sum = Fcoeffs[i] / Fcoeffs[j];
 		return sum;
 	}
-	static Fix64 FDiv3(int iterations) {
+	/*
+	static Fix64 FDivFast(int iterations) {
+		iterations /= coeffs.Length;
 		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i / Fix64.Three;
+		for (int i = -iterations / 2; i < iterations / 2; i++)
+			for (int j = 0; j < coeffs.Length; j++)
+				sum = Fix64.FastDiv(i, coeffs[j]);
 		return sum;
 	}
-	static Fix64 FMul12345(int iterations) {
-		Fix64 f12345 = Fix64.FromRaw(12345);
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i * f12345;
-		return sum;
-	}
-	static Fix64 FDiv12345(int iterations) {
-		Fix64 f12345 = Fix64.FromRaw(12345);
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i / f12345;
-		return sum;
-	}
+	*/
 	static Fix64 FDiv1(int iterations) {
 		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = 1 / Fix64.FromRaw(i);
+		Fix64 f1 = 1;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = f1 / Fix64.FromRaw(i);
 		return sum;
 	}
 	static Fix64 FModulo(int iterations) {
 		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < 0; i++) sum = 11 * 5 * 3 % Fix64.FromRaw(i);
-		for (int i = 1; i < iterations / 2; i++) sum = 11 * 5 * 3 % Fix64.FromRaw(i);
+		Fix64 fMod = 11 * 5 * 3;
+		for (int i = -iterations / 2; i < 0; i++) sum = fMod % Fix64.FromRaw(i);
+		for (int i = 1; i < iterations / 2; i++) sum = fMod % Fix64.FromRaw(i);
 		return sum;
 	}
 	static Fix64 FSign(int iterations) {
@@ -310,36 +329,33 @@ public class FixedVsFloat : MonoBehaviour {
 		for (int i = 0; i < iterations; i++) sum = -1f;
 		return sum;
 	}
-	static float DMul2(int iterations) {
+	static float[] Dcoeffs = new float[] {
+		0f, 0.0001f, 0.001f, 0.01f,
+		0.1f, 1f, 10f, 100f,
+		1000f, 10000f,
+
+		(-0f), (-0.0001f), (-0.001f), (-0.01f),
+		(-0.1f), (-1f), (-10f), (-100f),
+		(-1000f), (-10000f)
+	};
+	static float DMul(int iterations) {
+		iterations /= Fcoeffs.Length;
+		iterations /= Fcoeffs.Length;
 		float sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i * 2f;
+		for (int k = 0; k < iterations; k++)
+			for (int i = 0; i < Fcoeffs.Length; i++)
+				for (int j = 0; j < Fcoeffs.Length; j++)
+					sum = Dcoeffs[i] * Dcoeffs[j];
 		return sum;
 	}
-	static float DDiv2(int iterations) {
+	static float DDiv(int iterations) {
+		iterations /= Fcoeffs.Length;
+		iterations /= Fcoeffs.Length;
 		float sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i / 2f;
-		return sum;
-	}
-	static float DMul3(int iterations) {
-		float sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i * 3f;
-		return sum;
-	}
-	static float DDiv3(int iterations) {
-		float sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i / 3f;
-		return sum;
-	}
-	static float DMul12345(int iterations) {
-		float f12345 = (12345);
-		float sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i * f12345;
-		return sum;
-	}
-	static float DDiv12345(int iterations) {
-		float f12345 = (12345);
-		float sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i / f12345;
+		for (int k = 0; k < iterations; k++)
+			for (int i = 0; i < Fcoeffs.Length; i++)
+				for (int j = 0; j < Fcoeffs.Length; j++)
+					sum = Dcoeffs[i] / Dcoeffs[j];
 		return sum;
 	}
 	static float DDiv1(int iterations) {
@@ -516,13 +532,9 @@ public class FixedVsFloat : MonoBehaviour {
 		GUILayout.Label("+ " + TestFix64(FAdd) + "  +(fast) " + TestFix64(FAddFast));
 		GUILayout.Label("- " + TestFix64(FSub) + "  -(fast) " + TestFix64(FSubFast));
 		GUILayout.Label("-(inv) " + TestFix64(FInv));
-		GUILayout.Label("*2 " + TestFix64(FMul2));
-		GUILayout.Label("/2 " + TestFix64(FDiv2));
-		GUILayout.Label("*3 " + TestFix64(FMul3));
-		GUILayout.Label("/3 " + TestFix64(FDiv3));
-		GUILayout.Label("*12345 " + TestFix64(FMul12345));
-		GUILayout.Label("/12345 " + TestFix64(FDiv12345));
-		GUILayout.Label("1/i " + TestFix64(FDiv1));
+		GUILayout.Label("* " + TestFix64(FMul) + "  *(fast) " + TestFix64(FMulFast));
+		GUILayout.Label("/ " + TestFix64(FDiv));
+		GUILayout.Label("1/x " + TestFix64(FDiv1));
 		GUILayout.Label("% " + TestFix64(FModulo));
 		GUILayout.Label("Sign " + TestFix64(FSign) + "  Sign(I) " + TestFix64(FSignI));
 		GUILayout.Label("Abs " + TestFix64(FAbs) + "  Abs(fast) " + TestFix64(FFastAbs));
@@ -565,13 +577,9 @@ public class FixedVsFloat : MonoBehaviour {
 		GUILayout.Label("+ " + TestDouble(DAdd));
 		GUILayout.Label("- " + TestDouble(DSub));
 		GUILayout.Label("-(inv) " + TestDouble(DInv));
-		GUILayout.Label("*2 " + TestDouble(DMul2));
-		GUILayout.Label("/2 " + TestDouble(DDiv2));
-		GUILayout.Label("*3 " + TestDouble(DMul3));
-		GUILayout.Label("/3 " + TestDouble(DDiv3));
-		GUILayout.Label("*12345 " + TestDouble(DMul12345));
-		GUILayout.Label("/12345 " + TestDouble(DDiv12345));
-		GUILayout.Label("1/i " + TestDouble(DDiv1));
+		GUILayout.Label("* " + TestDouble(DMul));
+		GUILayout.Label("/ " + TestDouble(DDiv));
+		GUILayout.Label("1/x " + TestDouble(DDiv1));
 		GUILayout.Label("% " + TestDouble(DModulo));
 		GUILayout.Label("Sign " + TestDouble(DSign));
 		GUILayout.Label("Abs " + TestDouble(DAbs));
