@@ -239,6 +239,37 @@ public class FixedVsFloat : MonoBehaviour {
 		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.FromRaw(i).CompareTo(Fix64.FromRaw(i));
 		return sum;
 	}
+
+	static Fix64 FToInt(int iterations) {
+		int sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = (int) Fix64.FromRaw(i);
+		return sum;
+	}
+	static Fix64 FFromInt(int iterations) {
+		Fix64 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = (Fix64) i;
+		return sum;
+	}
+	static Fix64 FToFloat(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = (float) Fix64.FromRaw(i);
+		return (Fix64) sum;
+	}
+	static Fix64 FFromFloat(int iterations) {
+		Fix64 sum = 0;
+		for (float i = -iterations / 2; i < iterations / 2; i++) sum = (Fix64) i;
+		return sum;
+	}
+	static Fix64 FToDouble(int iterations) {
+		double sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = (double) Fix64.FromRaw(i);
+		return (Fix64) sum;
+	}
+	static Fix64 FFromDouble(int iterations) {
+		Fix64 sum = 0;
+		for (double i = -iterations / 2; i < iterations / 2; i++) sum = (Fix64) i;
+		return sum;
+	}
 	#endregion
 
 	#region Double
@@ -441,6 +472,29 @@ public class FixedVsFloat : MonoBehaviour {
 		for (int i = -iterations / 2; i < iterations / 2; i++) sum = (i).CompareTo((i));
 		return sum;
 	}
+
+	static float DToInt(int iterations) {
+		int sum = 0;
+		for (float i = -iterations / 2; i < iterations / 2; i++) sum = (int) i;
+		return sum;
+	}
+	static float DFromInt(int iterations) {
+		float sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = (float) i;
+		return sum;
+	}
+	static float DToFloat(int iterations) { return 0; }
+	static float DFromFloat(int iterations) { return 0; }
+	static float DToDouble(int iterations) {
+		double sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = (double) i;
+		return (float) sum;
+	}
+	static float DFromDouble(int iterations) {
+		float sum = 0;
+		for (double i = -iterations / 2; i < iterations / 2; i++) sum = (float) i;
+		return sum;
+	}
 	#endregion
 
 	private void OnGUI() {
@@ -485,18 +539,19 @@ public class FixedVsFloat : MonoBehaviour {
 		GUILayout.Label("Atan " + TestFix64(FAtan));
 		GUILayout.Label("Atan2 " + TestFix64(FAtan2));
 		GUILayout.Label("FastAtan2 " + TestFix64(FFastAtan2));
-		/*GUILayout.Label("ToLong " + TestFix64());
-		GUILayout.Label("FromLong " + TestFix64());
-		GUILayout.Label("ToFloat " + TestFix64());
-		GUILayout.Label("FromFloat " + TestFix64());
-		GUILayout.Label("ToDouble " + TestFix64());
-		GUILayout.Label("FromDouble " + TestFix64());*/
 		GUILayout.Label("Equals " + TestFix64(FEquals));
 		GUILayout.Label("CompareTo " + TestFix64(FCompareTo));
+
+		GUILayout.Label("ToInt " + TestFix64(FToInt));
+		GUILayout.Label("FromInt " + TestFix64(FFromInt));
+		GUILayout.Label("ToFloat " + TestFix64(FToFloat));
+		GUILayout.Label("FromFloat " + TestFix64(FFromFloat));
+		GUILayout.Label("ToDouble " + TestFix64(FToDouble));
+		GUILayout.Label("FromDouble " + TestFix64(FFromDouble));
 		GUILayout.EndVertical();
 
 		GUILayout.BeginVertical("box");
-		GUILayout.Label("Double");
+		GUILayout.Label("Float");
 		GUILayout.Label("+ " + TestDouble(DAdd));
 		GUILayout.Label("- " + TestDouble(DSub));
 		GUILayout.Label("-(inv) " + TestDouble(DInv));
@@ -533,15 +588,15 @@ public class FixedVsFloat : MonoBehaviour {
 		GUILayout.Label("Atan " + TestDouble(DAtan));
 		GUILayout.Label("Atan2 " + TestDouble(DAtan2));
 		GUILayout.Label("FastAtan2 " + TestDouble(DFastAtan2));
-		/*GUILayout.Label("ToLong " + TestDouble());
-		GUILayout.Label("FromLong " + TestDouble());
-		GUILayout.Label("ToFloat " + TestDouble());
-		GUILayout.Label("FromFloat " + TestDouble());
-		GUILayout.Label("ToDouble " + TestDouble());
-		GUILayout.Label("FromDouble " + TestDouble());*/
 		GUILayout.Label("Equals " + TestDouble(DEquals));
 		GUILayout.Label("CompareTo " + TestDouble(DCompareTo));
 
+		GUILayout.Label("ToInt " + TestDouble(DToInt));
+		GUILayout.Label("FromInt " + TestDouble(DFromInt));
+		GUILayout.Label("ToFloat " + TestDouble(DToFloat));
+		GUILayout.Label("FromFloat " + TestDouble(DFromFloat));
+		GUILayout.Label("ToDouble " + TestDouble(DToDouble));
+		GUILayout.Label("FromDouble " + TestDouble(DFromDouble));
 		GUILayout.EndVertical();
 
 		GUILayout.EndHorizontal();

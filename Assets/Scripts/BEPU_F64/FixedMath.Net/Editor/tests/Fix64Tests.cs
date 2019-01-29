@@ -52,26 +52,48 @@ namespace FixMath.NET
         };
 
         [Test]
-        public void IntToFix64AndBack()
-        {
-            var sources = new int[] { int.MinValue, unchecked(int.MinValue - 1), int.MinValue, -1, 0, 1, int.MaxValue, unchecked(int.MaxValue + 1), int.MaxValue };
-            var expecteds = new int[] { 0, int.MaxValue, int.MinValue, -1, 0, 1, int.MaxValue, int.MinValue, -1 };
-            for (int i = 0; i < sources.Length; ++i)
-            {
-                var expected = expecteds[i];
-                var f = (Fix64)sources[i];
-                var actual = (int)f;
-                Assert.AreEqual(expected, actual, sources[i].ToString());
-            }
-        }
+        public void T1_IntToFix64AndBack() {
+			List<int> sources = new List<int>() {
+				int.MinValue,
+				-1000000,
+				-100000,
+				-10000,
+				-1000,
+				-100,
+				-10,
+				-1,
+				0,
+				1,
+				10,
+				100,
+				1000,
+				10000,
+				100000,
+				1000000,
+				int.MaxValue,
+			};
+
+			Random r = new Random(0);
+
+			for (int i = 0; i < 100; i++) {
+				sources.Add(r.Next());
+			}
+
+			foreach (var value in sources) {
+				int expected = value > (int) Fix64.MaxValue ? (int) Fix64.MaxValue :
+					value < (int) Fix64.MinValue ? (int) Fix64.MinValue :
+					value;
+				Assert.AreEqual(expected, (int) (Fix64) value, value.ToString());
+			}
+		}
 
         [Test]
-        public void DoubleToFix64AndBack()
-        {
+        public void T2_DoubleToFix64AndBack() {
             List<double> sources = new List<double>() {
 				-int.MaxValue * 100d,
 				-int.MaxValue * 2d,
 				-int.MaxValue,
+				int.MinValue,
 				-(double)Math.PI,
                 -(double)Math.E,
                 -1.0,
@@ -98,40 +120,46 @@ namespace FixMath.NET
 				Assert.AreEqual(expected, (double) (Fix64) value, (double) Fix64.Precision);
             }
         }
-
-        static void AreEqualWithinPrecision(decimal value1, decimal value2)
-        {
-            Assert.True(Math.Abs(value2 - value1) < Fix64.Precision);
-        }
-
+		
         [Test]
-        public void DecimalToFix64AndBack()
-        {
+        public void T3_DecimalToFix64AndBack() {
+			Assert.AreEqual(Fix64.MaxValue, (Fix64) (decimal) Fix64.MaxValue);
+			Assert.AreEqual(Fix64.MinValue, (Fix64) (decimal) Fix64.MinValue);
+			
+			List<decimal> sources = new List<decimal>() {
+				-int.MaxValue * 100m,
+				-int.MaxValue * 2m,
+				-int.MaxValue,
+				int.MinValue,
+				-(decimal)Math.PI,
+				-(decimal)Math.E,
+				-1.0m,
+				-0.0m,
+				0.0m,
+				1.0m,
+				(decimal)Math.PI,
+				(decimal)Math.E,
+				int.MaxValue,
+				int.MaxValue * 2m,
+				int.MaxValue * 100m,
+			};
 
-           Assert.AreEqual(Fix64.MaxValue, (Fix64)(decimal)Fix64.MaxValue);
-           Assert.AreEqual(Fix64.MinValue, (Fix64)(decimal)Fix64.MinValue);
+			Random r = new Random(0);
 
-            var sources = new[] {
-                int.MinValue,
-                -(decimal)Math.PI,
-                -(decimal)Math.E,
-                -1.0m,
-                -0.0m,
-                0.0m,
-                1.0m,
-                (decimal)Math.PI,
-                (decimal)Math.E,
-                int.MaxValue
-            };
+			for (int i = 0; i < 100; i++) {
+				sources.Add((decimal) r.NextDouble());
+			}
 
-            foreach (var value in sources)
-            {
-                AreEqualWithinPrecision(value, (decimal)(Fix64)value);
-            }
-        }
+			foreach (var value in sources) {
+				var expected = value > (decimal) Fix64.MaxValue ? (decimal) Fix64.MaxValue :
+					value < (decimal) Fix64.MinValue ? (decimal) Fix64.MinValue :
+					value;
+				Assert.AreEqual((double) expected, (double) (decimal) (Fix64) value, (double) Fix64.Precision);
+			}
+		}
 
 		[Test]
-		public void Addition() {
+		public void T4_Addition() {
 			var terms1 = new[] { Fix64.MinValue, (Fix64) (-1), Fix64.Zero, Fix64.One, Fix64.MaxValue };
 			var terms2 = new[] { (Fix64) (-1), (Fix64) 2, (Fix64) (-1.5m), (Fix64) (-2), Fix64.One };
 			var expecteds = new[] { Fix64.MinValue, Fix64.One, (Fix64) (-1.5m), (Fix64) (-1), Fix64.MaxValue };
@@ -155,21 +183,17 @@ namespace FixMath.NET
 			}
 		}
 
-		static double Saturate(double v) {
-			return Math.Max((double) Fix64.MinValue, Math.Min((double) Fix64.MaxValue, v));
-		}
-
-        [Test]
-        public void Substraction() {
-			var terms1 = new[] { Fix64.MinValue, (Fix64)(-1), Fix64.Zero, Fix64.One, Fix64.MaxValue };
-			var terms2 = new[] { Fix64.One, (Fix64)(-2), (Fix64)(1.5m), (Fix64)(2), (Fix64)(-1) };
-			var expecteds = new[] { Fix64.MinValue, Fix64.One, (Fix64)(-1.5m), (Fix64)(-1), Fix64.MaxValue };
+		[Test]
+		public void T5_Substraction() {
+			var terms1 = new[] { Fix64.MinValue, (Fix64) (-1), Fix64.Zero, Fix64.One, Fix64.MaxValue };
+			var terms2 = new[] { Fix64.One, (Fix64) (-2), (Fix64) (1.5m), (Fix64) (2), (Fix64) (-1) };
+			var expecteds = new[] { Fix64.MinValue, Fix64.One, (Fix64) (-1.5m), (Fix64) (-1), Fix64.MaxValue };
 			for (int i = 0; i < terms1.Length; ++i) {
 				var actual = terms1[i] - terms2[i];
 				var expected = expecteds[i];
 				Assert.AreEqual(expected, actual, terms1[i] + " - " + terms2[i]);
 			}
-			
+
 			for (int i = 0; i < m_testCases.Length; ++i) {
 				for (int j = 0; j < m_testCases.Length; ++j) {
 					var x = Fix64.FromRaw(m_testCases[i]);
@@ -181,6 +205,55 @@ namespace FixMath.NET
 					Assert.AreEqual(expected, actual, x.ToString() + " - " + y.ToString());
 				}
 			}
+		}
+
+		[Test]
+		public void Negation() {
+			foreach (var operand1 in m_testCases) {
+				var f = Fix64.FromRaw(operand1);
+				if (f == Fix64.MinValue) {
+					Assert.AreEqual(-f, Fix64.MaxValue);
+				}
+				else {
+					var expected = -((decimal) f);
+					var actual = (decimal) (-f);
+					Assert.AreEqual(expected, actual);
+				}
+			}
+		}
+
+		[Test]
+		public void EqualsTests() {
+			foreach (var op1 in m_testCases) {
+				foreach (var op2 in m_testCases) {
+					var d1 = (decimal) op1;
+					var d2 = (decimal) op2;
+					Assert.True(op1.Equals(op2) == d1.Equals(d2));
+				}
+			}
+		}
+
+		[Test]
+		public void EqualityAndInequalityOperators() {
+			var sources = m_testCases.Select(Fix64.FromRaw).ToList();
+			foreach (var op1 in sources) {
+				foreach (var op2 in sources) {
+					var d1 = (double) op1;
+					var d2 = (double) op2;
+					Assert.True((op1 == op2) == (d1 == d2));
+					Assert.True((op1 != op2) == (d1 != d2));
+					Assert.False((op1 == op2) && (op1 != op2));
+				}
+			}
+		}
+
+		[Test]
+		public void CompareTo() {
+			var nums = m_testCases.Select(Fix64.FromRaw).ToArray();
+			var numsDecimal = nums.Select(t => (decimal) t).ToArray();
+			Array.Sort(nums);
+			Array.Sort(numsDecimal);
+			Assert.True(nums.Select(t => (decimal) t).SequenceEqual(numsDecimal));
 		}
 
         [Test]
@@ -241,10 +314,7 @@ namespace FixMath.NET
             Console.WriteLine("{0} total, {1} per multiplication", sw.ElapsedMilliseconds, (double)sw.Elapsed.Milliseconds / (m_testCases.Length * m_testCases.Length));
             Assert.True(failures < 1);
         }
-
-
-        static void Ignore<T>(T value) { }
-
+		
         [Test]
         public void DivisionTestCases()
         {
@@ -297,9 +367,7 @@ namespace FixMath.NET
             Console.WriteLine("{0} total, {1} per division", sw.ElapsedMilliseconds, (double)sw.Elapsed.Milliseconds / (m_testCases.Length * m_testCases.Length));
             Assert.True(failures < 1);
         }
-
-
-
+		
         [Test]
         public void Sign()
         {
@@ -383,8 +451,7 @@ namespace FixMath.NET
             }
            Assert.AreEqual(Fix64.MaxValue, Fix64.Round(Fix64.MaxValue));
         }
-
-
+		
         [Test]
         public void Sqrt()
         {
@@ -901,67 +968,7 @@ namespace FixMath.NET
         }
 		*/
 
-        [Test]
-        public void Negation()
-        {
-            foreach (var operand1 in m_testCases)
-            {
-                var f = Fix64.FromRaw(operand1);
-                if (f == Fix64.MinValue)
-                {
-                   Assert.AreEqual(-f, Fix64.MaxValue);
-                }
-                else
-                {
-                    var expected = -((decimal)f);
-                    var actual = (decimal)(-f);
-                   Assert.AreEqual(expected, actual);
-                }
-            }
-        }
-
-        [Test]
-        public void EqualsTests()
-        {
-            foreach (var op1 in m_testCases)
-            {
-                foreach (var op2 in m_testCases)
-                {
-                    var d1 = (decimal)op1;
-                    var d2 = (decimal)op2;
-                    Assert.True(op1.Equals(op2) == d1.Equals(d2));
-                }
-            }
-        }
-
-        [Test]
-        public void EqualityAndInequalityOperators()
-        {
-            var sources = m_testCases.Select(Fix64.FromRaw).ToList();
-            foreach (var op1 in sources)
-            {
-                foreach (var op2 in sources)
-                {
-                    var d1 = (double)op1;
-                    var d2 = (double)op2;
-                    Assert.True((op1 == op2) == (d1 == d2));
-                    Assert.True((op1 != op2) == (d1 != d2));
-                    Assert.False((op1 == op2) && (op1 != op2));
-                }
-            }
-        }
-
-        [Test]
-        public void CompareTo()
-        {
-            var nums = m_testCases.Select(Fix64.FromRaw).ToArray();
-            var numsDecimal = nums.Select(t => (decimal)t).ToArray();
-            Array.Sort(nums);
-            Array.Sort(numsDecimal);
-            Assert.True(nums.Select(t => (decimal)t).SequenceEqual(numsDecimal));
-        }
-
-#if UNITY_EDITOR
+#if UNITY_EDITOR // Only override Console inside Unity
 		public static class Console {
 			public static void WriteLine(string text) {
 				UnityEngine.Debug.Log(text);
@@ -969,7 +976,11 @@ namespace FixMath.NET
 			public static void WriteLine(string text, params object[] args) {
 				UnityEngine.Debug.LogFormat(text, args);
 			}
-#endif
 		}
-    }
+#endif
+
+		static double Saturate(double v) {
+			return Math.Max((double) Fix64.MinValue, Math.Min((double) Fix64.MaxValue, v));
+		}
+	}
 }

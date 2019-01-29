@@ -42,6 +42,8 @@ namespace FixMath.NET
 
 		const int MAX_VALUE = int.MaxValue;
 		const int MIN_VALUE = int.MinValue;
+		const int MAX_INT_VALUE = int.MaxValue >> FRACTIONAL_PLACES;
+		const int MIN_INT_VALUE = int.MinValue >> FRACTIONAL_PLACES;
 		public const int NUM_BITS = 32;
 		public const int FRACTIONAL_PLACES = 14;
 
@@ -103,7 +105,7 @@ namespace FixMath.NET
 		}
 
 		/// <summary>
-		/// Adds x and y. Doesn't saturate, truncates instead.
+		/// Adds x and y. Doesn't saturate, wraps around when overflows.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Fix64 FastAdd(in Fix64 x, in Fix64 y) {
@@ -126,7 +128,7 @@ namespace FixMath.NET
 		}
 
 		/// <summary>
-		/// Subtracts y from x. Doesn't saturate, truncates instead.
+		/// Subtracts y from x. Doesn't saturate, wraps around when overflows.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Fix64 FastSub(in Fix64 x, in Fix64 y) {
@@ -881,32 +883,32 @@ namespace FixMath.NET
 			return (double) value.RawValue / ONE;
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static explicit operator Fix64(int value) {
-			return new Fix64((int) Clamp(value * ONE, MIN_VALUE, MAX_VALUE));
-		}
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static explicit operator int(in Fix64 value) {
-			return (int) value.RawValue / ONE;
-		}
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static implicit operator Fix64(decimal value) {
-			return new Fix64((int) (value * ONE));
+			return new Fix64((int) Clamp(value * ONE, MIN_VALUE, MAX_VALUE));
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static explicit operator decimal(in Fix64 value) {
 			return (decimal) value.RawValue / ONE;
 		}
-
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static double Clamp(double value, double min, double max) {
-			return value > max ? max : value < min ? min : value;
+		public static explicit operator Fix64(int value) {
+			return new Fix64(value > MAX_INT_VALUE ? MAX_VALUE : value < MIN_INT_VALUE ? MIN_VALUE : value * ONE);
 		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static explicit operator int(in Fix64 value) {
+			return (int) value.RawValue / ONE;
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static double Clamp(float value, double min, double max) {
 			return value > max ? max : value < min ? min : value;
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static double Clamp(int value, int min, int max) {
+		public static double Clamp(double value, double min, double max) {
+			return value > max ? max : value < min ? min : value;
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static decimal Clamp(decimal value, decimal min, decimal max) {
 			return value > max ? max : value < min ? min : value;
 		}
 
