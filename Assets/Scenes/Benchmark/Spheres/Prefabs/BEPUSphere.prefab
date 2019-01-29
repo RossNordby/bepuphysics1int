@@ -105,8 +105,8 @@ MonoBehaviour:
     Z:
       RawValue: 0
     W:
-      RawValue: 4294967296
+      RawValue: 16384
   m_mass:
-    RawValue: 4294967296
+    RawValue: 16384
   m_radius:
-    RawValue: 2147483648
+    RawValue: 8192
