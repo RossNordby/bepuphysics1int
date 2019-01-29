@@ -344,7 +344,7 @@ namespace FixMath.NET
 			// determine the lower or upper bound of the result
 			//int ret = (x.RawValue < 0) ? MIN_VALUE : MAX_VALUE;
 			int xRaw = x.RawValue;
-			//int yRaw = y.RawValue;
+			int yRaw = y.RawValue;
 			int ret = (int) ((((uint) xRaw >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
 			// this is always well defined:
 			// if x < 0 this adds a positive value to INT64_MIN
@@ -352,43 +352,7 @@ namespace FixMath.NET
 			//int comp = ret - x.RawValue;
 			// the condition is equivalent to
 			// ((x < 0) && (y > comp)) || ((x >=0) && (y <= comp))
-			if ((xRaw < 0) == (y.RawValue > (ret - xRaw))) ret = xRaw + y.RawValue;
-			return new Fix64(ret);
-
-
-
-			if (x.RawValue > 0) {
-				if (y.RawValue > MAX_VALUE - x.RawValue) {
-					return MaxValue;
-				}
-			}
-			else if (y.RawValue < MIN_VALUE - x.RawValue) {
-				return MinValue;
-			}
-
-			return new Fix64(x.RawValue + y.RawValue);
-
-			long xl = (long) x.RawValue;
-			long yl = (long) y.RawValue;
-			long sum = xl + yl;
-
-			/*
-			// Not using an if is slower
-			uint saturated = ((xl >> BITS_MINUS_ONE) - 1U) ^ (1U << BITS_MINUS_ONE);
-			uint overflow = (~(xl ^ yl) & (xl ^ sum)) & unchecked((uint) MIN_VALUE);
-			overflow >>= 31;
-
-			uint maskSumOrSaturation = overflow - 1;
-
-			return new Fix64((int) ((sum & maskSumOrSaturation) | (saturated & ~maskSumOrSaturation)));
-			*/
-
-			// if signs of operands are equal and signs of sum and x are different
-			if (((~(xl ^ yl) & (xl ^ sum)) & MIN_VALUE) != 0) {
-				return new Fix64((int) (((xl >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE)));
-				return xl >= 0 ? MaxValue : MinValue; // Branched version of the previous code, for clarity. Slower
-			}
-			return new Fix64((int) sum);
+			return new Fix64((xRaw < 0) != (yRaw > (ret - xRaw)) ? ret : xRaw + yRaw);
 		}
 
 		/// <summary>
