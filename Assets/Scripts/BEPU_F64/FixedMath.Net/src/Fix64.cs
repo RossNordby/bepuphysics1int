@@ -123,7 +123,7 @@ namespace FixMath.NET
 			int xRaw = x.RawValue;
 			int yRaw = y.RawValue;
 			int ret = (int) ((((uint) xRaw >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
-			return new Fix64((xRaw < 0) != (yRaw > (ret - xRaw)) ? ret : xRaw - yRaw);
+			return new Fix64((xRaw < 0) == (yRaw > (xRaw - ret)) ? ret : xRaw - yRaw);
 		}
 
 		/// <summary>
