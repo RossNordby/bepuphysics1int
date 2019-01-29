@@ -119,11 +119,20 @@ namespace FixMath.NET
 #if USE_DOUBLES
             return (Fix64) ((double) x - (double) y);
 #endif
+
+			int xRaw = x.RawValue;
+			int yRaw = y.RawValue;
+			long sub = (long) xRaw - (long) yRaw; // TO TEST: Shift and operate to check overflow
+			int ret = (int) ((((uint) xRaw >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
+			return new Fix64(((int) sub) != sub ? ret : (int) sub);
+
+			/*
 			// Nearly same logic as addition
 			int xRaw = x.RawValue;
 			int yRaw = y.RawValue;
 			int ret = (int) ((((uint) xRaw >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
 			return new Fix64((xRaw < 0) == (yRaw > (xRaw - ret)) ? ret : xRaw - yRaw);
+			*/
 		}
 
 		/// <summary>
