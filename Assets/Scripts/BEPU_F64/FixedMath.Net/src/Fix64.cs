@@ -216,6 +216,29 @@ namespace FixMath.NET
 		}
 
 		/// <summary>
+		/// Rounds a value to the nearest integral value.
+		/// If the value is halfway between an even and an uneven value, returns the even value.
+		/// </summary>
+		public static Fix64 Round(in Fix64 value) {
+#if USE_DOUBLES
+            return (Fix64) Math.Round((double) value);
+#endif
+			var fractionalPart = value.RawValue & FRACTIONAL_MASK;
+			var integralPart = Floor(value);
+			if (fractionalPart < (ONE >> 1)) {
+				return integralPart;
+			}
+			if (fractionalPart > (ONE >> 1)) {
+				return integralPart + One;
+			}
+			// if number is halfway between two values, round to the nearest even number
+			// this is the method used by System.Math.Round().
+			return (integralPart.RawValue & ONE) == 0
+					   ? integralPart
+					   : integralPart + One;
+		}
+
+		/// <summary>
 		/// Returns the base-2 logarithm of a specified number.
 		/// </summary>
 		/// <exception cref="ArgumentOutOfRangeException">
@@ -369,29 +392,6 @@ namespace FixMath.NET
 
             var result = Atan(Sqrt(One - x * x) / x);
             return x.RawValue < 0 ? result + Pi : result;
-        }
-
-        /// <summary>
-        /// Rounds a value to the nearest integral value.
-        /// If the value is halfway between an even and an uneven value, returns the even value.
-        /// </summary>
-        public static Fix64 Round(in Fix64 value) {
-#if USE_DOUBLES
-            return (Fix64) Math.Round((double) value);
-#endif
-            var fractionalPart = value.RawValue & FRACTIONAL_MASK;
-            var integralPart = Floor(value);
-            if (fractionalPart < (ONE >> 1)) {
-                return integralPart;
-            }
-            if (fractionalPart > (ONE >> 1)) {
-                return integralPart + One;
-            }
-            // if number is halfway between two values, round to the nearest even number
-            // this is the method used by System.Math.Round().
-            return (integralPart.RawValue & ONE) == 0
-                       ? integralPart
-                       : integralPart + One;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
