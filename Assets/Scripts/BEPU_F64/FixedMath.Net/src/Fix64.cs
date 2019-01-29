@@ -219,12 +219,13 @@ namespace FixMath.NET
 		/// Rounds a value to the nearest integral value.
 		/// If the value is halfway between an even and an uneven value, returns the even value.
 		/// </summary>
-		public static Fix64 Round(in Fix64 value) {
+		public static Fix64 Round(in Fix64 v) {
 #if USE_DOUBLES
             return (Fix64) Math.Round((double) value);
 #endif
-			var fractionalPart = value.RawValue & FRACTIONAL_MASK;
-			var integralPart = Floor(value);
+			int vRaw = v.RawValue;
+			var fractionalPart = vRaw & FRACTIONAL_MASK;
+			var integralPart = new Fix64(vRaw & INTEGER_MASK);
 			if (fractionalPart < (ONE >> 1)) {
 				return integralPart;
 			}
@@ -233,9 +234,9 @@ namespace FixMath.NET
 			}
 			// if number is halfway between two values, round to the nearest even number
 			// this is the method used by System.Math.Round().
-			return (integralPart.RawValue & ONE) == 0
-					   ? integralPart
-					   : integralPart + One;
+			return (integralPart.RawValue & ONE) == 0 ?
+				integralPart : 
+				integralPart + One;
 		}
 
 		/// <summary>
