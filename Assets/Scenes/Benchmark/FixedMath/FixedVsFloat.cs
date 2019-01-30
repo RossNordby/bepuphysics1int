@@ -27,7 +27,7 @@ public class FixedVsFloat : MonoBehaviour {
 		Fix64 tmp;
 		for (int i = 0; i < repeats; i++)
 			tmp = f(iterations);
-		return fResults[f] = " = " + sw.Elapsed.TotalMilliseconds / iterations / repeats * 1000000 + " ns";
+		return fResults[f] = " = " + (sw.Elapsed.TotalMilliseconds / iterations / repeats * 1000000).ToString("0.0000") + " ns";
 	}
 
 	static Fix64 FAdd(int iterations) {
@@ -316,7 +316,7 @@ public class FixedVsFloat : MonoBehaviour {
 		float tmp;
 		for (int i = 0; i < repeats; i++)
 			tmp = f(iterations);
-		return dResults[f] = " = " + sw.Elapsed.TotalMilliseconds / iterations / repeats * 1000000 + " ns";
+		return dResults[f] = " = " + (sw.Elapsed.TotalMilliseconds / iterations / repeats * 1000000).ToString("0.0000") + " ns";
 	}
 
 	static float DAdd(int iterations) {

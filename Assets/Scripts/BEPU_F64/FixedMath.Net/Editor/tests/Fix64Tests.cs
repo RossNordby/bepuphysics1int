@@ -337,19 +337,31 @@ namespace FixMath.NET
 		}
 
 		[Test]
-		public void T015_BasicMultiplication() {
-			var term1s = new[] { 0m, 1m, -1m, 5m, -5m, 0.5m, -0.5m, -1.0m };
-			var term2s = new[] { 16m, 16m, 16m, 16m, 16m, 16m, 16m, -1.0m };
-			var expecteds = new[] { 0L, 16, -16, 80, -80, 8, -8, 1 };
+		public void T015_BasicMult() {
+			var term1s = new decimal[] { 0m, 1m, -1m, 5m, -5m, 0.5m, -0.5m, -1.0m };
+			var term2s = new decimal[] { 16m, 16m, 16m, 16m, 16m, 16m, 16m, -1.0m };
+			var expecteds = new double[] { 0, 16, -16, 80, -80, 8, -8, 1 };
 			for (int i = 0; i < term1s.Length; ++i) {
-				var expected = expecteds[i];
-				var actual = (long) ((Fix64) term1s[i] * (Fix64) term2s[i]);
+				var expected = (double) expecteds[i];
+				var actual = (double) ((Fix64) term1s[i] * (Fix64) term2s[i]);
 				Assert.AreEqual(expected, actual, term1s[i] + " * " + term2s[i]);
 			}
 		}
 
 		[Test]
-		public void T016_MultiplicationTestCases() {
+		public void T0151_BasicFastMult() {
+			var term1s = new[] { 0m, 1m, -1m, 5m, -5m, 0.5m, -0.5m, -1.0m };
+			var term2s = new[] { 16m, 16m, 16m, 16m, 16m, 16m, 16m, -1.0m };
+			var expecteds = new[] { 0L, 16, -16, 80, -80, 8, -8, 1 };
+			for (int i = 0; i < term1s.Length; ++i) {
+				var expected = expecteds[i];
+				var actual = (double) Fix64.FastMul((Fix64) term1s[i], (Fix64) term2s[i]);
+				Assert.AreEqual(expected, actual, term1s[i] + " * " + term2s[i]);
+			}
+		}
+
+		[Test]
+		public void T016_Mult() {
 			var sw = new Stopwatch();
 			for (int i = 0; i < m_testCases.Length; ++i) {
 				for (int j = 0; j < m_testCases.Length; ++j) {

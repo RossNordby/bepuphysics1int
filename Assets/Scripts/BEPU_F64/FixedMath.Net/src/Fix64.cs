@@ -261,21 +261,13 @@ namespace FixMath.NET
 #if USE_DOUBLES
             return (Fix64) ((double) x * (double) y);
 #endif
-			long mult = ((long) x.RawValue * (long) y.RawValue) >> FRACTIONAL_PLACES;
+			int xRaw = x.RawValue;
+			int yRaw = y.RawValue;
+			long mult = ((long) xRaw * (long) yRaw) >> FRACTIONAL_PLACES;
 
-			//int ret = (x.RawValue < 0) ? MIN_VALUE : MAX_VALUE;
-			int sat = (int) ((((ulong) mult >> 63) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
-
-			return new Fix64(mult < MIN_VALUE || mult > MAX_VALUE ? sat : (int) mult);
-
-			// Testing saturation. Didn't work
-			/*if (mult >> NUM_BITS > 0)
-				return new Fix64((int) ((((uint) (mult) >> 63) - 1U) ^ (1U << NUM_BITS_MINUS_ONE))); // Saturate
-			return new Fix64((int) mult);
-			*/
-			return mult < MIN_VALUE ? MinValue :
-				mult > MAX_VALUE ? MaxValue :
-				new Fix64((int) mult);
+			return new Fix64(mult < MIN_VALUE || mult > MAX_VALUE ? 
+				(int) ((((ulong) mult >> 63) - 1U) ^ (1U << NUM_BITS_MINUS_ONE)) : 
+				(int) mult);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Obsolete]
