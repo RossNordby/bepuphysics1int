@@ -13,14 +13,14 @@ public class Fix32FloatDrawer : PropertyDrawer
 		var r = position;
 		r.width = r.width - (buttonWidth + 20);
 		if (viewRaw) {
-			EditorGUI.PropertyField(r, property.FindPropertyRelative("RawValue"), label);
+			EditorGUI.PropertyField(r, property, label);
 		}
 		else {
 			EditorGUI.BeginChangeCheck();
-			float floatValue = property.FindPropertyRelative("RawValue").intValue.ToFix32().ToFloat();
+			float floatValue = ((Fix32) property.intValue).ToFloat();
 			floatValue = EditorGUI.FloatField(r, label, floatValue);
 			if (EditorGUI.EndChangeCheck())
-				property.FindPropertyRelative("RawValue").intValue = (int) floatValue.ToFix32();
+				property.intValue = (int) floatValue.ToFix32();
 		}
 
 		r.width = buttonWidth;

@@ -158,29 +158,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 250249
-    Z:
-      RawValue: 4259
+    X: 0
+    Y: 1000996
+    Z: 17039
   m_startOrientation:
-    X:
-      RawValue: 3112
-    Y:
-      RawValue: -1246
-    Z:
-      RawValue: 15608
-    W:
-      RawValue: -3682
-  m_mass:
-    RawValue: 163840
-  m_width:
-    RawValue: 163840
-  m_height:
-    RawValue: 16384
-  m_length:
-    RawValue: 163840
+    X: 12448
+    Y: -4987
+    Z: 62435
+    W: -14728
+  m_mass: 655360
+  m_width: 655360
+  m_height: 65536
+  m_length: 655360
 --- !u!23 &10349200
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -354,25 +343,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: -6062
-    Y:
-      RawValue: 281640
-    Z:
-      RawValue: 11141
+    X: -24248
+    Y: 1126563
+    Z: 44564
   m_startOrientation:
-    X:
-      RawValue: 3112
-    Y:
-      RawValue: -1246
-    Z:
-      RawValue: 15608
-    W:
-      RawValue: -3682
-  m_mass:
-    RawValue: 16384
-  m_radius:
-    RawValue: 8192
+    X: 12448
+    Y: -4987
+    Z: 62435
+    W: -14728
+  m_mass: 65536
+  m_radius: 32768
 --- !u!23 &293210191
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -555,29 +535,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 29065
-    Z:
-      RawValue: 4259
+    X: 0
+    Y: 116260
+    Z: 17039
   m_startOrientation:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 0
-    Z:
-      RawValue: 0
-    W:
-      RawValue: 16384
-  m_mass:
-    RawValue: 163840
-  m_width:
-    RawValue: 163840
-  m_height:
-    RawValue: 16384
-  m_length:
-    RawValue: 163840
+    X: 0
+    Y: 0
+    Z: 0
+    W: 65536
+  m_mass: 655360
+  m_width: 655360
+  m_height: 65536
+  m_length: 655360
 --- !u!23 &410779972
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -777,29 +746,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: -71270
-    Z:
-      RawValue: 132055
+    X: 0
+    Y: -285081
+    Z: 528220
   m_startOrientation:
-    X:
-      RawValue: -2138
-    Y:
-      RawValue: 0
-    Z:
-      RawValue: 0
-    W:
-      RawValue: 16243
-  m_mass:
-    RawValue: 0
-  m_width:
-    RawValue: 163840
-  m_height:
-    RawValue: 16384
-  m_length:
-    RawValue: 163840
+    X: -8554
+    Y: 0
+    Z: 0
+    W: 64975
+  m_mass: 0
+  m_width: 655360
+  m_height: 65536
+  m_length: 655360
 --- !u!23 &671820692
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -891,25 +849,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: -6062
-    Y:
-      RawValue: -21528
-    Z:
-      RawValue: 11141
+    X: -24248
+    Y: -86114
+    Z: 44564
   m_startOrientation:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 0
-    Z:
-      RawValue: 0
-    W:
-      RawValue: 16384
-  m_mass:
-    RawValue: 16384
-  m_radius:
-    RawValue: 8192
+    X: 0
+    Y: 0
+    Z: 0
+    W: 65536
+  m_mass: 65536
+  m_radius: 32768
 --- !u!23 &706810552
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1001,29 +950,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 127369
-    Z:
-      RawValue: 4259
+    X: 0
+    Y: 509476
+    Z: 17039
   m_startOrientation:
-    X:
-      RawValue: -2489
-    Y:
-      RawValue: -7133
-    Z:
-      RawValue: -1465
-    W:
-      RawValue: 14463
-  m_mass:
-    RawValue: 163840
-  m_width:
-    RawValue: 163840
-  m_height:
-    RawValue: 16384
-  m_length:
-    RawValue: 163840
+    X: -9959
+    Y: -28534
+    Z: -5862
+    W: 57855
+  m_mass: 655360
+  m_width: 655360
+  m_height: 65536
+  m_length: 655360
 --- !u!23 &804701020
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1257,25 +1195,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 19988
-    Y:
-      RawValue: 182255
-    Z:
-      RawValue: 3768
+    X: 79953
+    Y: 729022
+    Z: 15073
   m_startOrientation:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 0
-    Z:
-      RawValue: 0
-    W:
-      RawValue: 16384
-  m_mass:
-    RawValue: 16384
-  m_radius:
-    RawValue: 8192
+    X: 0
+    Y: 0
+    Z: 0
+    W: 65536
+  m_mass: 65536
+  m_radius: 32768
 --- !u!23 &1002323703
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1367,29 +1296,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 290553
-    Z:
-      RawValue: -26869
+    X: 0
+    Y: 1162215
+    Z: -107479
   m_startOrientation:
-    X:
-      RawValue: 8271
-    Y:
-      RawValue: -1004
-    Z:
-      RawValue: 11770
-    W:
-      RawValue: -7775
-  m_mass:
-    RawValue: 16384
-  m_width:
-    RawValue: 16384
-  m_height:
-    RawValue: 16384
-  m_length:
-    RawValue: 16384
+    X: 33084
+    Y: -4018
+    Z: 47082
+    W: -31103
+  m_mass: 65536
+  m_width: 65536
+  m_height: 65536
+  m_length: 65536
 --- !u!23 &1059910797
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1481,29 +1399,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 167673
-    Z:
-      RawValue: -26869
+    X: 0
+    Y: 670695
+    Z: -107479
   m_startOrientation:
-    X:
-      RawValue: -320
-    Y:
-      RawValue: 5277
-    Z:
-      RawValue: 5201
-    W:
-      RawValue: 14608
-  m_mass:
-    RawValue: 16384
-  m_width:
-    RawValue: 16384
-  m_height:
-    RawValue: 16384
-  m_length:
-    RawValue: 16384
+    X: -1282
+    Y: 21111
+    Z: 20805
+    W: 58435
+  m_mass: 65536
+  m_width: 65536
+  m_height: 65536
+  m_length: 65536
 --- !u!23 &1067977326
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1595,25 +1502,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: -6062
-    Y:
-      RawValue: 158760
-    Z:
-      RawValue: 11141
+    X: -24248
+    Y: 635043
+    Z: 44564
   m_startOrientation:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 0
-    Z:
-      RawValue: 0
-    W:
-      RawValue: 16384
-  m_mass:
-    RawValue: 16384
-  m_radius:
-    RawValue: 8192
+    X: 0
+    Y: 0
+    Z: 0
+    W: 65536
+  m_mass: 65536
+  m_radius: 32768
 --- !u!23 &1113588193
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1749,29 +1647,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: -12615
-    Z:
-      RawValue: -26869
+    X: 0
+    Y: -50462
+    Z: -107479
   m_startOrientation:
-    X:
-      RawValue: -320
-    Y:
-      RawValue: 5277
-    Z:
-      RawValue: 5201
-    W:
-      RawValue: 14608
-  m_mass:
-    RawValue: 16384
-  m_width:
-    RawValue: 16384
-  m_height:
-    RawValue: 16384
-  m_length:
-    RawValue: 16384
+    X: -1282
+    Y: 21111
+    Z: 20805
+    W: 58435
+  m_mass: 65536
+  m_width: 65536
+  m_height: 65536
+  m_length: 65536
 --- !u!23 &1191022150
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1863,25 +1750,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: -22609
-    Y:
-      RawValue: 305135
-    Z:
-      RawValue: -4587
+    X: -90439
+    Y: 1220542
+    Z: -18350
   m_startOrientation:
-    X:
-      RawValue: 3112
-    Y:
-      RawValue: -1246
-    Z:
-      RawValue: 15608
-    W:
-      RawValue: -3682
-  m_mass:
-    RawValue: 16384
-  m_radius:
-    RawValue: 8192
+    X: 12448
+    Y: -4987
+    Z: 62435
+    W: -14728
+  m_mass: 65536
+  m_radius: 32768
 --- !u!23 &1281921770
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1973,29 +1851,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 69369
-    Z:
-      RawValue: -26869
+    X: 0
+    Y: 277479
+    Z: -107479
   m_startOrientation:
-    X:
-      RawValue: -320
-    Y:
-      RawValue: 5277
-    Z:
-      RawValue: 5201
-    W:
-      RawValue: 14608
-  m_mass:
-    RawValue: 16384
-  m_width:
-    RawValue: 16384
-  m_height:
-    RawValue: 16384
-  m_length:
-    RawValue: 16384
+    X: -1282
+    Y: 21111
+    Z: 20805
+    W: 58435
+  m_mass: 65536
+  m_width: 65536
+  m_height: 65536
+  m_length: 65536
 --- !u!23 &1285051675
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2087,25 +1954,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 19988
-    Y:
-      RawValue: 83951
-    Z:
-      RawValue: 3768
+    X: 79953
+    Y: 335806
+    Z: 15073
   m_startOrientation:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 0
-    Z:
-      RawValue: 0
-    W:
-      RawValue: 16384
-  m_mass:
-    RawValue: 16384
-  m_radius:
-    RawValue: 8192
+    X: 0
+    Y: 0
+    Z: 0
+    W: 65536
+  m_mass: 65536
+  m_radius: 32768
 --- !u!23 &1445393299
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2266,25 +2124,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 19988
-    Y:
-      RawValue: 305135
-    Z:
-      RawValue: 3768
+    X: 79953
+    Y: 1220542
+    Z: 15073
   m_startOrientation:
-    X:
-      RawValue: 3112
-    Y:
-      RawValue: -1246
-    Z:
-      RawValue: 15608
-    W:
-      RawValue: -3682
-  m_mass:
-    RawValue: 16384
-  m_radius:
-    RawValue: 8192
+    X: 12448
+    Y: -4987
+    Z: 62435
+    W: -14728
+  m_mass: 65536
+  m_radius: 32768
 --- !u!23 &1581296776
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2376,25 +2225,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 19988
-    Y:
-      RawValue: 1966
-    Z:
-      RawValue: 3768
+    X: 79953
+    Y: 7864
+    Z: 15073
   m_startOrientation:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 0
-    Z:
-      RawValue: 0
-    W:
-      RawValue: 16384
-  m_mass:
-    RawValue: 16384
-  m_radius:
-    RawValue: 8192
+    X: 0
+    Y: 0
+    Z: 0
+    W: 65536
+  m_mass: 65536
+  m_radius: 32768
 --- !u!23 &1673573574
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2594,25 +2434,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: -22609
-    Y:
-      RawValue: 1966
-    Z:
-      RawValue: -4587
+    X: -90439
+    Y: 7864
+    Z: -18350
   m_startOrientation:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 0
-    Z:
-      RawValue: 0
-    W:
-      RawValue: 16384
-  m_mass:
-    RawValue: 16384
-  m_radius:
-    RawValue: 8192
+    X: 0
+    Y: 0
+    Z: 0
+    W: 65536
+  m_mass: 65536
+  m_radius: 32768
 --- !u!23 &1816068480
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2704,25 +2535,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: -22609
-    Y:
-      RawValue: 83951
-    Z:
-      RawValue: -4587
+    X: -90439
+    Y: 335806
+    Z: -18350
   m_startOrientation:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 0
-    Z:
-      RawValue: 0
-    W:
-      RawValue: 16384
-  m_mass:
-    RawValue: 16384
-  m_radius:
-    RawValue: 8192
+    X: 0
+    Y: 0
+    Z: 0
+    W: 65536
+  m_mass: 65536
+  m_radius: 32768
 --- !u!23 &1893428026
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2814,25 +2636,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: -22609
-    Y:
-      RawValue: 182255
-    Z:
-      RawValue: -4587
+    X: -90439
+    Y: 729022
+    Z: -18350
   m_startOrientation:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 0
-    Z:
-      RawValue: 0
-    W:
-      RawValue: 16384
-  m_mass:
-    RawValue: 16384
-  m_radius:
-    RawValue: 8192
+    X: 0
+    Y: 0
+    Z: 0
+    W: 65536
+  m_mass: 65536
+  m_radius: 32768
 --- !u!23 &1958434936
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2924,29 +2737,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: -52920
-    Z:
-      RawValue: 4259
+    X: 0
+    Y: -211681
+    Z: 17039
   m_startOrientation:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 0
-    Z:
-      RawValue: 0
-    W:
-      RawValue: 16384
-  m_mass:
-    RawValue: 163840
-  m_width:
-    RawValue: 163840
-  m_height:
-    RawValue: 16384
-  m_length:
-    RawValue: 163840
+    X: 0
+    Y: 0
+    Z: 0
+    W: 65536
+  m_mass: 655360
+  m_width: 655360
+  m_height: 65536
+  m_length: 655360
 --- !u!23 &1961706435
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3022,12 +2824,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_gravity:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: -160563
-    Z:
-      RawValue: 0
+    X: 0
+    Y: -642252
+    Z: 0
 --- !u!4 &2006153452
 Transform:
   m_ObjectHideFlags: 0
@@ -3110,25 +2909,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: -6062
-    Y:
-      RawValue: 60456
-    Z:
-      RawValue: 11141
+    X: -24248
+    Y: 241827
+    Z: 44564
   m_startOrientation:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: 0
-    Z:
-      RawValue: 0
-    W:
-      RawValue: 16384
-  m_mass:
-    RawValue: 16384
-  m_radius:
-    RawValue: 8192
+    X: 0
+    Y: 0
+    Z: 0
+    W: 65536
+  m_mass: 65536
+  m_radius: 32768
 --- !u!23 &2064297580
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3220,29 +3010,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_startPosition:
-    X:
-      RawValue: 0
-    Y:
-      RawValue: -77168
-    Z:
-      RawValue: 0
+    X: 0
+    Y: -308674
+    Z: 0
   m_startOrientation:
-    X:
-      RawValue: 1427
-    Y:
-      RawValue: 0
-    Z:
-      RawValue: 0
-    W:
-      RawValue: 16321
-  m_mass:
-    RawValue: 0
-  m_width:
-    RawValue: 163840
-  m_height:
-    RawValue: 16384
-  m_length:
-    RawValue: 163840
+    X: 5711
+    Y: 0
+    Z: 0
+    W: 65286
+  m_mass: 0
+  m_width: 655360
+  m_height: 65536
+  m_length: 655360
 --- !u!23 &2144327258
 MeshRenderer:
   m_ObjectHideFlags: 0

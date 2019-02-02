@@ -44,8 +44,8 @@ namespace BEPUUnity
         {
             if (Application.isPlaying)
             {
-                transform.position = new Vector3((float)m_entity.position.X, (float)m_entity.position.Y, (float)m_entity.position.Z);
-                transform.rotation = new Quaternion((float)m_entity.orientation.X, (float)m_entity.orientation.Y, (float)m_entity.orientation.Z, (float)m_entity.orientation.W);
+                transform.position = new Vector3(m_entity.position.X.ToFloat(), m_entity.position.Y.ToFloat(), m_entity.position.Z.ToFloat());
+                transform.rotation = new Quaternion(m_entity.orientation.X.ToFloat(), m_entity.orientation.Y.ToFloat(), m_entity.orientation.Z.ToFloat(), m_entity.orientation.W.ToFloat());
             }
         }
     }

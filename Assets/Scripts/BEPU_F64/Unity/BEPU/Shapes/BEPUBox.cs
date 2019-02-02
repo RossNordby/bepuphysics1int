@@ -19,9 +19,9 @@ namespace BEPUUnity
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
-            Gizmos.color = ((float)m_mass > 0) ? Color.green : Color.red;
+            Gizmos.color = (m_mass > 0) ? Color.green : Color.red;
 			Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one);
-			Gizmos.DrawWireCube(Vector3.zero, new Vector3((float) m_width, (float) m_height, (float) m_length));
+			Gizmos.DrawWireCube(Vector3.zero, new Vector3( m_width.ToFloat(),  m_height.ToFloat(),  m_length.ToFloat()));
         }
 #endif
     }
