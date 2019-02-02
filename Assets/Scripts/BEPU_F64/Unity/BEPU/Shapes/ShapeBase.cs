@@ -3,7 +3,6 @@ using BEPUphysics.Entities;
 
 namespace BEPUUnity
 {
-    [ExecuteInEditMode]
     public abstract class ShapeBase : MonoBehaviour
     {
         [SerializeField] protected BEPUutilities.Vector3 m_startPosition;
@@ -12,13 +11,29 @@ namespace BEPUUnity
 
         protected Entity m_entity = null;
 
+		private Space space;
+
         public Entity GetEntity()
         {
             return m_entity;
-        }
+		}
+
+		protected abstract void SetEntity();
+
+		private void OnEnable() {
+			if (m_entity == null) SetEntity();
+			if (null == space) space = GetComponentInParent<Space>();
+			// register to a space
+			space.Add(this);
+		}
+
+		private void OnDisable() {
+			// register to a space
+			space.Remove(this);
+		}
 
 #if UNITY_EDITOR
-        private void Update()
+		private void Update()
         {
             if (!Application.isPlaying)
             {

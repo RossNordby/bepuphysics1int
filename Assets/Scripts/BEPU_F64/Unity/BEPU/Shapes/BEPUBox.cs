@@ -10,7 +10,7 @@ namespace BEPUUnity
         [SerializeField] private Fix32 m_height = Fix32.One;
         [SerializeField] private Fix32 m_length = Fix32.One;
 
-        private void Awake()
+        protected override void SetEntity()
         {
             m_entity = new Box(m_startPosition, m_width, m_height, m_length, m_mass);
             m_entity.Orientation = m_startOrientation;

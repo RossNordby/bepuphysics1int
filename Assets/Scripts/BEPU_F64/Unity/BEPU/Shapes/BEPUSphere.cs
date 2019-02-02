@@ -7,7 +7,7 @@ namespace BEPUUnity
     {
         [SerializeField] private Fix32 m_radius = Fix32.One;
 
-        private void Awake()
+        protected override void SetEntity()
         {
             m_entity = new Sphere(m_startPosition, m_radius, m_mass);
             m_entity.Orientation = m_startOrientation;
