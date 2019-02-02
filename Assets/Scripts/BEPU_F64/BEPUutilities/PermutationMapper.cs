@@ -15,8 +15,8 @@ namespace BEPUutilities
         /// </summary>
         public PermutationMapper()
         {
-            PermutationIndex = 0;
-        }
+			SetPermutationIndex(0);
+		}
 
         private long permutationIndex;
 
@@ -32,16 +32,20 @@ namespace BEPUutilities
             }
             set
             {
-                permutationIndex = value < 0 ? value + long.MaxValue + 1 : value;
-                currentPrime = primes[permutationIndex % primes.Length];
-
-                currentOffset = currentPrime * permutationIndex;
-
-                if (currentOffset < 0)
-                    currentOffset = currentOffset + long.MaxValue + 1;
-
-            }
+				return;
+				SetPermutationIndex(value);
+			}
         }
+
+		private void SetPermutationIndex(long v) {
+			permutationIndex = v < 0 ? v + long.MaxValue + 1 : v;
+			currentPrime = primes[permutationIndex % primes.Length];
+
+			currentOffset = currentPrime * permutationIndex;
+
+			if (currentOffset < 0)
+				currentOffset = currentOffset + long.MaxValue + 1;
+		}
 
 
         long currentOffset;
@@ -103,17 +107,6 @@ namespace BEPUutilities
 
                                };
 
-
-        /// <summary>
-        /// Gets a remapped index.
-        /// </summary>
-        /// <param name="index">Original index of an element in the set to be redirected to a shuffled position.</param>
-        /// <param name="setSize">Size of the set being permuted. Must be smaller than 350000041.</param>
-        /// <returns>The remapped index.</returns>
-        public long GetMappedIndex(long index, int setSize)
-        {
-            return (index * currentPrime + currentOffset) % setSize;
-        }
 
         /// <summary>
         /// Gets a remapped index.
