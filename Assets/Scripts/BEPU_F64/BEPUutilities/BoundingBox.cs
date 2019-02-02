@@ -1,5 +1,4 @@
-﻿using FixMath.NET;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -115,9 +114,9 @@ namespace BEPUutilities
             else
                 clampedLocation.Z = boundingSphere.Center.Z;
 
-			Fix64 distanceSquared;
+			Fix32 distanceSquared;
             Vector3.DistanceSquared(ref clampedLocation, ref boundingSphere.Center, out distanceSquared);
-            intersects = distanceSquared <= boundingSphere.Radius * boundingSphere.Radius;
+            intersects = distanceSquared <= boundingSphere.Radius.Mul(boundingSphere.Radius);
 
         }
 
@@ -222,14 +221,13 @@ namespace BEPUutilities
         /// <param name="boundingBox">Bounding box created from the bounding sphere.</param>
         public static void CreateFromSphere(ref BoundingSphere boundingSphere, out BoundingBox boundingBox)
         {
-            boundingBox.Min.X = boundingSphere.Center.X - boundingSphere.Radius;
-            boundingBox.Min.Y = boundingSphere.Center.Y - boundingSphere.Radius;
-            boundingBox.Min.Z = boundingSphere.Center.Z - boundingSphere.Radius;
+            boundingBox.Min.X = boundingSphere.Center.X.Sub(boundingSphere.Radius);
+            boundingBox.Min.Y = boundingSphere.Center.Y.Sub(boundingSphere.Radius);
+            boundingBox.Min.Z = boundingSphere.Center.Z.Sub(boundingSphere.Radius);
 
-            boundingBox.Max.X = boundingSphere.Center.X + boundingSphere.Radius;
-            boundingBox.Max.Y = boundingSphere.Center.Y + boundingSphere.Radius;
-            boundingBox.Max.Z = boundingSphere.Center.Z + boundingSphere.Radius;
+            boundingBox.Max.X = boundingSphere.Center.X.Add(boundingSphere.Radius);
+            boundingBox.Max.Y = boundingSphere.Center.Y.Add(boundingSphere.Radius);
+            boundingBox.Max.Z = boundingSphere.Center.Z.Add(boundingSphere.Radius);
         }
-
     }
 }

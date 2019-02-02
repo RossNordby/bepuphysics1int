@@ -2,7 +2,7 @@
 using BEPUphysics.Entities;
 
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Vehicle
 {
@@ -14,32 +14,32 @@ namespace BEPUphysics.Vehicle
         private readonly SpringSettings springSettings = new SpringSettings();
 
 
-        internal Fix64 accumulatedImpulse;
+        internal Fix32 accumulatedImpulse;
 
-        //Fix64 linearBX, linearBY, linearBZ;
-        private Fix64 angularAX, angularAY, angularAZ;
-        private Fix64 angularBX, angularBY, angularBZ;
-        private Fix64 bias;
+        //Fix32 linearBX, linearBY, linearBZ;
+        private Fix32 angularAX, angularAY, angularAZ;
+        private Fix32 angularBX, angularBY, angularBZ;
+        private Fix32 bias;
 
         internal bool isActive = true;
-        private Fix64 linearAX, linearAY, linearAZ;
-        private Fix64 allowedCompression = (Fix64).01m;
-        internal Fix64 currentLength;
+        private Fix32 linearAX, linearAY, linearAZ;
+        private Fix32 allowedCompression = .01m.ToFix32();
+        internal Fix32 currentLength;
         internal Vector3 localAttachmentPoint;
         internal Vector3 localDirection;
-        private Fix64 maximumSpringCorrectionSpeed = Fix64.MaxValue;
-        private Fix64 maximumSpringForce = Fix64.MaxValue;
-        internal Fix64 restLength;
+        private Fix32 maximumSpringCorrectionSpeed = Fix32.MaxValue;
+        private Fix32 maximumSpringForce = Fix32.MaxValue;
+        internal Fix32 restLength;
         internal SolverSettings solverSettings = new SolverSettings();
         private Wheel wheel;
         internal Vector3 worldAttachmentPoint;
         internal Vector3 worldDirection;
         internal int numIterationsAtZeroImpulse;
         private Entity vehicleEntity, supportEntity;
-        private Fix64 softness;
+        private Fix32 softness;
 
         //Inverse effective mass matrix
-        private Fix64 velocityToImpulse;
+        private Fix32 velocityToImpulse;
         private bool supportIsDynamic;
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace BEPUphysics.Vehicle
         /// <param name="localDirection">Direction of the suspension in the vehicle's local space.  For a normal, straight down suspension, this would be (0, -1, 0).</param>
         /// <param name="restLength">Length of the suspension when uncompressed.</param>
         /// <param name="localAttachmentPoint">Place where the suspension hooks up to the body of the vehicle.</param>
-        public WheelSuspension(Fix64 stiffnessConstant, Fix64 dampingConstant, Vector3 localDirection, Fix64 restLength, Vector3 localAttachmentPoint)
+        public WheelSuspension(Fix32 stiffnessConstant, Fix32 dampingConstant, Vector3 localDirection, Fix32 restLength, Vector3 localAttachmentPoint)
         {
             SpringSettings.Stiffness = stiffnessConstant;
             SpringSettings.Damping = dampingConstant;
@@ -68,17 +68,17 @@ namespace BEPUphysics.Vehicle
         /// Gets or sets the allowed compression of the suspension before suspension forces take effect.
         /// Usually a very small number.  Used to prevent 'jitter' where the wheel leaves the ground due to spring forces repeatedly.
         /// </summary>
-        public Fix64 AllowedCompression
+        public Fix32 AllowedCompression
         {
             get { return allowedCompression; }
-            set { allowedCompression = MathHelper.Max(F64.C0, value); }
+            set { allowedCompression = MathHelper.Max(Fix32.Zero, value); }
         }
 
         /// <summary>
         /// Gets the the current length of the suspension.
         /// This will be less than the RestLength if the suspension is compressed.
         /// </summary>
-        public Fix64 CurrentLength
+        public Fix32 CurrentLength
         {
             get { return currentLength; }
         }
@@ -107,25 +107,25 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the maximum speed at which the suspension will try to return the suspension to rest length.
         /// </summary>
-        public Fix64 MaximumSpringCorrectionSpeed
+        public Fix32 MaximumSpringCorrectionSpeed
         {
             get { return maximumSpringCorrectionSpeed; }
-            set { maximumSpringCorrectionSpeed = MathHelper.Max(F64.C0, value); }
+            set { maximumSpringCorrectionSpeed = MathHelper.Max(Fix32.Zero, value); }
         }
 
         /// <summary>
         /// Gets or sets the maximum force that can be applied by this suspension.
         /// </summary>
-        public Fix64 MaximumSpringForce
+        public Fix32 MaximumSpringForce
         {
             get { return maximumSpringForce; }
-            set { maximumSpringForce = MathHelper.Max(F64.C0, value); }
+            set { maximumSpringForce = MathHelper.Max(Fix32.Zero, value); }
         }
 
         /// <summary>
         /// Gets or sets the length of the uncompressed suspension.
         /// </summary>
-        public Fix64 RestLength
+        public Fix32 RestLength
         {
             get { return restLength; }
             set
@@ -139,9 +139,9 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets the force that the suspension is applying to support the vehicle.
         /// </summary>
-        public Fix64 TotalImpulse
+        public Fix32 TotalImpulse
         {
-            get { return -accumulatedImpulse; }
+            get { return accumulatedImpulse.Neg(); }
         }
 
         /// <summary>
@@ -236,32 +236,32 @@ namespace BEPUphysics.Vehicle
         ///<summary>
         /// Gets the relative velocity along the support normal at the contact point.
         ///</summary>
-        public Fix64 RelativeVelocity
+        public Fix32 RelativeVelocity
         {
             get
             {
-                Fix64 velocity = vehicleEntity.linearVelocity.X * linearAX + vehicleEntity.linearVelocity.Y * linearAY + vehicleEntity.linearVelocity.Z * linearAZ +
-                                 vehicleEntity.angularVelocity.X * angularAX + vehicleEntity.angularVelocity.Y * angularAY + vehicleEntity.angularVelocity.Z * angularAZ;
+                Fix32 velocity = vehicleEntity.linearVelocity.X .Mul (linearAX) .Add (vehicleEntity.linearVelocity.Y .Mul (linearAY)) .Add (vehicleEntity.linearVelocity.Z .Mul (linearAZ)) .Add
+                                 (vehicleEntity.angularVelocity.X .Mul (angularAX)) .Add (vehicleEntity.angularVelocity.Y .Mul (angularAY)) .Add (vehicleEntity.angularVelocity.Z .Mul (angularAZ));
                 if (supportEntity != null)
-                    velocity += -supportEntity.linearVelocity.X * linearAX - supportEntity.linearVelocity.Y * linearAY - supportEntity.linearVelocity.Z * linearAZ +
-                                supportEntity.angularVelocity.X * angularBX + supportEntity.angularVelocity.Y * angularBY + supportEntity.angularVelocity.Z * angularBZ;
+                    velocity = velocity .Add (supportEntity.linearVelocity.X.Neg() .Mul (linearAX) .Sub (supportEntity.linearVelocity.Y .Mul (linearAY)) .Sub (supportEntity.linearVelocity.Z .Mul (linearAZ)) .Add
+                                (supportEntity.angularVelocity.X .Mul (angularBX)) .Add (supportEntity.angularVelocity.Y .Mul (angularBY)) .Add (supportEntity.angularVelocity.Z .Mul (angularBZ)));
                 return velocity;
             }
         }
 
-        internal Fix64 ApplyImpulse()
+        internal Fix32 ApplyImpulse()
         {
             //Compute relative velocity
-            Fix64 lambda = (RelativeVelocity
-                            + bias //Add in position correction
-                            + softness * accumulatedImpulse) //Add in squishiness
-                           * velocityToImpulse; //convert to impulse
+            Fix32 lambda = (RelativeVelocity
+                            .Add (bias) //Add in position correction
+                            .Add (softness .Mul (accumulatedImpulse))) //Add in squishiness
+                           .Mul (velocityToImpulse); //convert to impulse
 
 
             //Clamp accumulated impulse
-            Fix64 previousAccumulatedImpulse = accumulatedImpulse;
-            accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse + lambda, -maximumSpringForce, F64.C0);
-            lambda = accumulatedImpulse - previousAccumulatedImpulse;
+            Fix32 previousAccumulatedImpulse = accumulatedImpulse;
+            accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse .Add (lambda), maximumSpringForce.Neg(), Fix32.Zero);
+            lambda = accumulatedImpulse .Sub (previousAccumulatedImpulse);
 
             //Apply the impulse
 #if !WINDOWS
@@ -270,25 +270,25 @@ namespace BEPUphysics.Vehicle
 #else
             Vector3 linear, angular;
 #endif
-            linear.X = lambda * linearAX;
-            linear.Y = lambda * linearAY;
-            linear.Z = lambda * linearAZ;
+            linear.X = lambda .Mul (linearAX);
+            linear.Y = lambda .Mul (linearAY);
+            linear.Z = lambda .Mul (linearAZ);
             if (vehicleEntity.isDynamic)
             {
-                angular.X = lambda * angularAX;
-                angular.Y = lambda * angularAY;
-                angular.Z = lambda * angularAZ;
+                angular.X = lambda .Mul (angularAX);
+                angular.Y = lambda .Mul (angularAY);
+                angular.Z = lambda .Mul (angularAZ);
                 vehicleEntity.ApplyLinearImpulse(ref linear);
                 vehicleEntity.ApplyAngularImpulse(ref angular);
             }
             if (supportIsDynamic)
             {
-                linear.X = -linear.X;
-                linear.Y = -linear.Y;
-                linear.Z = -linear.Z;
-                angular.X = lambda * angularBX;
-                angular.Y = lambda * angularBY;
-                angular.Z = lambda * angularBZ;
+                linear.X = linear.X.Neg();
+                linear.Y = linear.Y.Neg();
+                linear.Z = linear.Z.Neg();
+                angular.X = lambda .Mul (angularBX);
+                angular.Y = lambda .Mul (angularBY);
+                angular.Z = lambda .Mul (angularBZ);
                 supportEntity.ApplyLinearImpulse(ref linear);
                 supportEntity.ApplyAngularImpulse(ref angular);
             }
@@ -312,7 +312,7 @@ namespace BEPUphysics.Vehicle
             LocalAttachmentPoint = LocalAttachmentPoint;
         }
 
-        internal void PreStep(Fix64 dt)
+        internal void PreStep(Fix32 dt)
         {
             vehicleEntity = wheel.vehicle.Body;
             supportEntity = wheel.supportingEntity;
@@ -322,56 +322,56 @@ namespace BEPUphysics.Vehicle
             //Vector3.TransformNormal(ref myLocalDirection, ref parentA.myInternalOrientationMatrix, out myWorldDirection);
 
             //Set up the jacobians.
-            linearAX = -wheel.normal.X; //myWorldDirection.X;
-            linearAY = -wheel.normal.Y; //myWorldDirection.Y;
-            linearAZ = -wheel.normal.Z; // myWorldDirection.Z;
+            linearAX = wheel.normal.X.Neg(); //myWorldDirection.X;
+            linearAY = wheel.normal.Y.Neg(); //myWorldDirection.Y;
+            linearAZ = wheel.normal.Z.Neg(); // myWorldDirection.Z;
             //linearBX = -linearAX;
             //linearBY = -linearAY;
             //linearBZ = -linearAZ;
 
             //angular A = Ra x N
-            angularAX = (wheel.ra.Y * linearAZ) - (wheel.ra.Z * linearAY);
-            angularAY = (wheel.ra.Z * linearAX) - (wheel.ra.X * linearAZ);
-            angularAZ = (wheel.ra.X * linearAY) - (wheel.ra.Y * linearAX);
+            angularAX = (wheel.ra.Y .Mul (linearAZ)) .Sub (wheel.ra.Z .Mul (linearAY));
+            angularAY = (wheel.ra.Z .Mul (linearAX)) .Sub (wheel.ra.X .Mul (linearAZ));
+            angularAZ = (wheel.ra.X .Mul (linearAY)) .Sub (wheel.ra.Y .Mul (linearAX));
 
             //Angular B = N x Rb
-            angularBX = (linearAY * wheel.rb.Z) - (linearAZ * wheel.rb.Y);
-            angularBY = (linearAZ * wheel.rb.X) - (linearAX * wheel.rb.Z);
-            angularBZ = (linearAX * wheel.rb.Y) - (linearAY * wheel.rb.X);
+            angularBX = (linearAY .Mul (wheel.rb.Z)) .Sub (linearAZ .Mul (wheel.rb.Y));
+            angularBY = (linearAZ .Mul (wheel.rb.X)) .Sub (linearAX .Mul (wheel.rb.Z));
+            angularBZ = (linearAX .Mul (wheel.rb.Y)) .Sub (linearAY .Mul (wheel.rb.X));
 
             //Compute inverse effective mass matrix
-            Fix64 entryA, entryB;
+            Fix32 entryA, entryB;
 
             //these are the transformed coordinates
-            Fix64 tX, tY, tZ;
+            Fix32 tX, tY, tZ;
             if (vehicleEntity.isDynamic)
             {
-                tX = angularAX * vehicleEntity.inertiaTensorInverse.M11 + angularAY * vehicleEntity.inertiaTensorInverse.M21 + angularAZ * vehicleEntity.inertiaTensorInverse.M31;
-                tY = angularAX * vehicleEntity.inertiaTensorInverse.M12 + angularAY * vehicleEntity.inertiaTensorInverse.M22 + angularAZ * vehicleEntity.inertiaTensorInverse.M32;
-                tZ = angularAX * vehicleEntity.inertiaTensorInverse.M13 + angularAY * vehicleEntity.inertiaTensorInverse.M23 + angularAZ * vehicleEntity.inertiaTensorInverse.M33;
-                entryA = tX * angularAX + tY * angularAY + tZ * angularAZ + vehicleEntity.inverseMass;
+                tX = angularAX .Mul (vehicleEntity.inertiaTensorInverse.M11) .Add (angularAY .Mul (vehicleEntity.inertiaTensorInverse.M21)) .Add (angularAZ .Mul (vehicleEntity.inertiaTensorInverse.M31));
+                tY = angularAX .Mul (vehicleEntity.inertiaTensorInverse.M12) .Add (angularAY .Mul (vehicleEntity.inertiaTensorInverse.M22)) .Add (angularAZ .Mul (vehicleEntity.inertiaTensorInverse.M32));
+                tZ = angularAX .Mul (vehicleEntity.inertiaTensorInverse.M13) .Add (angularAY .Mul (vehicleEntity.inertiaTensorInverse.M23)) .Add (angularAZ .Mul (vehicleEntity.inertiaTensorInverse.M33));
+                entryA = tX .Mul (angularAX) .Add (tY .Mul (angularAY)).Add(tZ .Mul (angularAZ)) .Add (vehicleEntity.inverseMass);
             }
             else
-                entryA = F64.C0;
+                entryA = Fix32.Zero;
 
             if (supportIsDynamic)
             {
-                tX = angularBX * supportEntity.inertiaTensorInverse.M11 + angularBY * supportEntity.inertiaTensorInverse.M21 + angularBZ * supportEntity.inertiaTensorInverse.M31;
-                tY = angularBX * supportEntity.inertiaTensorInverse.M12 + angularBY * supportEntity.inertiaTensorInverse.M22 + angularBZ * supportEntity.inertiaTensorInverse.M32;
-                tZ = angularBX * supportEntity.inertiaTensorInverse.M13 + angularBY * supportEntity.inertiaTensorInverse.M23 + angularBZ * supportEntity.inertiaTensorInverse.M33;
-                entryB = tX * angularBX + tY * angularBY + tZ * angularBZ + supportEntity.inverseMass;
+                tX = angularBX .Mul (supportEntity.inertiaTensorInverse.M11) .Add (angularBY .Mul (supportEntity.inertiaTensorInverse.M21)) .Add (angularBZ .Mul (supportEntity.inertiaTensorInverse.M31));
+                tY = angularBX .Mul (supportEntity.inertiaTensorInverse.M12) .Add (angularBY .Mul (supportEntity.inertiaTensorInverse.M22)) .Add (angularBZ .Mul (supportEntity.inertiaTensorInverse.M32));
+                tZ = angularBX .Mul (supportEntity.inertiaTensorInverse.M13) .Add (angularBY .Mul (supportEntity.inertiaTensorInverse.M23)) .Add (angularBZ .Mul (supportEntity.inertiaTensorInverse.M33));
+                entryB = tX .Mul (angularBX) .Add (tY .Mul (angularBY)).Add(tZ .Mul (angularBZ)) .Add (supportEntity.inverseMass);
             }
             else
-                entryB = F64.C0;
+                entryB = Fix32.Zero;
 
             //Convert spring constant and damping constant into ERP and CFM.
-            Fix64 biasFactor;
-            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 / dt, out biasFactor, out softness);
+            Fix32 biasFactor;
+            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 .Div (dt), out biasFactor, out softness);
 
-            velocityToImpulse = -1 / (entryA + entryB + softness);
+            velocityToImpulse = Fix32.MinusOne .Div (entryA .Add (entryB) .Add (softness));
 
             //Correction velocity
-            bias = MathHelper.Min(MathHelper.Max(F64.C0, (restLength - currentLength) - allowedCompression) * biasFactor, maximumSpringCorrectionSpeed);
+            bias = MathHelper.Min(MathHelper.Max(Fix32.Zero, (restLength - currentLength) - allowedCompression) .Mul (biasFactor), maximumSpringCorrectionSpeed);
 
 
         }
@@ -385,25 +385,25 @@ namespace BEPUphysics.Vehicle
 #else
             Vector3 linear, angular;
 #endif
-            linear.X = accumulatedImpulse * linearAX;
-            linear.Y = accumulatedImpulse * linearAY;
-            linear.Z = accumulatedImpulse * linearAZ;
+            linear.X = accumulatedImpulse .Mul (linearAX);
+            linear.Y = accumulatedImpulse .Mul (linearAY);
+            linear.Z = accumulatedImpulse .Mul (linearAZ);
             if (vehicleEntity.isDynamic)
             {
-                angular.X = accumulatedImpulse * angularAX;
-                angular.Y = accumulatedImpulse * angularAY;
-                angular.Z = accumulatedImpulse * angularAZ;
+                angular.X = accumulatedImpulse .Mul (angularAX);
+                angular.Y = accumulatedImpulse .Mul (angularAY);
+                angular.Z = accumulatedImpulse .Mul (angularAZ);
                 vehicleEntity.ApplyLinearImpulse(ref linear);
                 vehicleEntity.ApplyAngularImpulse(ref angular);
             }
             if (supportIsDynamic)
             {
-                linear.X = -linear.X;
-                linear.Y = -linear.Y;
-                linear.Z = -linear.Z;
-                angular.X = accumulatedImpulse * angularBX;
-                angular.Y = accumulatedImpulse * angularBY;
-                angular.Z = accumulatedImpulse * angularBZ;
+                linear.X = linear.X.Neg();
+                linear.Y = linear.Y.Neg();
+                linear.Z = linear.Z.Neg();
+                angular.X = accumulatedImpulse .Mul (angularBX);
+                angular.Y = accumulatedImpulse .Mul (angularBY);
+                angular.Z = accumulatedImpulse .Mul (angularBZ);
                 supportEntity.ApplyLinearImpulse(ref linear);
                 supportEntity.ApplyAngularImpulse(ref angular);
             }

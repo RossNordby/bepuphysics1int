@@ -1,6 +1,4 @@
-﻿using FixMath.NET;
-
-namespace BEPUutilities
+﻿namespace BEPUutilities
 {
     ///<summary>
     /// Contains ray hit data.
@@ -19,6 +17,6 @@ namespace BEPUutilities
         /// T parameter of the ray hit.  
         /// The ray hit location is equal to the ray origin added to the ray direction multiplied by T.
         ///</summary>
-        public Fix64 T;
+        public Fix32 T;
     }
 }

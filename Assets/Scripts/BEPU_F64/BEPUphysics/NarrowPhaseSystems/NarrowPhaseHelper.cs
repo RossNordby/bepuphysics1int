@@ -428,7 +428,7 @@ namespace BEPUphysics.NarrowPhaseSystems
             if (pairHandler == null)
                 return false;
             pairHandler.SuppressEvents = true;
-            pairHandler.UpdateCollision(F64.C0);
+            pairHandler.UpdateCollision(Fix32.Zero);
             bool toReturn = pairHandler.Colliding;
             pairHandler.SuppressEvents = false;
             pairHandler.CleanUp();

@@ -6,7 +6,7 @@ using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionShapes.ConvexShapes
 {
@@ -27,8 +27,8 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         }
         Vector3[] vertices;
 
-        private readonly Fix64 unexpandedMinimumRadius;
-        private readonly Fix64 unexpandedMaximumRadius;
+        private readonly Fix32 unexpandedMinimumRadius;
+        private readonly Fix32 unexpandedMaximumRadius;
 
         ///<summary>
         /// Constructs a new convex hull shape.
@@ -53,8 +53,8 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             CommonResources.GiveBack(hullTriangleIndices);
             CommonResources.GiveBack(surfaceVertices);
 
-            unexpandedMaximumRadius = MaximumRadius - collisionMargin;
-            unexpandedMinimumRadius = MinimumRadius - collisionMargin;
+            unexpandedMaximumRadius = MaximumRadius .Sub (collisionMargin);
+            unexpandedMinimumRadius = MinimumRadius .Sub (collisionMargin);
         }
 
         ///<summary>
@@ -78,8 +78,8 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             CommonResources.GiveBack(hullTriangleIndices);
             CommonResources.GiveBack(surfaceVertices);
 
-            unexpandedMaximumRadius = MaximumRadius - collisionMargin;
-            unexpandedMinimumRadius = MinimumRadius - collisionMargin;
+            unexpandedMaximumRadius = MaximumRadius .Sub (collisionMargin);
+            unexpandedMinimumRadius = MinimumRadius .Sub (collisionMargin);
 
         }
 
@@ -101,8 +101,8 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             this.vertices = new Vector3[outputUniqueSurfaceVertices.Count];
             outputUniqueSurfaceVertices.CopyTo(this.vertices, 0);
 
-            unexpandedMaximumRadius = MaximumRadius - collisionMargin;
-            unexpandedMinimumRadius = MinimumRadius - collisionMargin;
+            unexpandedMaximumRadius = MaximumRadius .Sub (collisionMargin);
+            unexpandedMinimumRadius = MinimumRadius .Sub (collisionMargin);
 
         }
 
@@ -117,8 +117,8 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             if (localSurfaceVertices.Count == 0)
                 throw new ArgumentException("Vertices list used to create a ConvexHullShape cannot be empty.");
 
-            unexpandedMaximumRadius = description.MaximumRadius - collisionMargin;
-            unexpandedMinimumRadius = description.MinimumRadius - collisionMargin;
+            unexpandedMaximumRadius = description.MaximumRadius .Sub (collisionMargin);
+            unexpandedMinimumRadius = description.MinimumRadius .Sub (collisionMargin);
             vertices = new Vector3[localSurfaceVertices.Count];
             localSurfaceVertices.CopyTo(vertices, 0);
             UpdateConvexShapeInfo(description);
@@ -135,8 +135,8 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             UpdateConvexShapeInfo(new ConvexShapeDescription
             {
                 EntityShapeVolume = new EntityShapeVolumeDescription { Volume = Volume, VolumeDistribution = VolumeDistribution },
-                MinimumRadius = unexpandedMinimumRadius + collisionMargin,
-                MaximumRadius = unexpandedMaximumRadius + collisionMargin,
+                MinimumRadius = unexpandedMinimumRadius .Add (collisionMargin),
+                MaximumRadius = unexpandedMaximumRadius .Add (collisionMargin),
                 CollisionMargin = collisionMargin
             });
             base.OnShapeChanged();
@@ -152,7 +152,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// Each group of 3 indices represents a triangle on the surface of the hull.</param>
         /// <param name="outputUniqueSurfaceVertices">Computed nonredundant list of vertices composing the outer shell of the input point set. Recentered on the local origin.</param>
         /// <returns>Description required to define a convex shape.</returns>
-        public static ConvexShapeDescription ComputeDescription(IList<Vector3> vertices, Fix64 collisionMargin, out Vector3 center, IList<int> outputHullTriangleIndices, IList<Vector3> outputUniqueSurfaceVertices)
+        public static ConvexShapeDescription ComputeDescription(IList<Vector3> vertices, Fix32 collisionMargin, out Vector3 center, IList<int> outputHullTriangleIndices, IList<Vector3> outputUniqueSurfaceVertices)
         {
             if (outputHullTriangleIndices.Count != 0 || outputUniqueSurfaceVertices.Count != 0)
                 throw new ArgumentException("Output lists must start empty.");
@@ -168,7 +168,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 outputUniqueSurfaceVertices[i] -= center;
             }
 
-            description.MinimumRadius = InertiaHelper.ComputeMinimumRadius(vertices, outputHullTriangleIndices, ref center) + collisionMargin;
+            description.MinimumRadius = InertiaHelper.ComputeMinimumRadius(vertices, outputHullTriangleIndices, ref center) .Add (collisionMargin);
             description.MaximumRadius = ComputeMaximumRadius(outputUniqueSurfaceVertices, collisionMargin);
 
             description.CollisionMargin = collisionMargin;
@@ -182,18 +182,18 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <param name="localSurfaceVertices">Surface vertices of the convex hull.</param>
         /// <param name="collisionMargin">Collision margin of the shape.</param>
         /// <returns>Maximum radius of the convex hull.</returns>
-        public static Fix64 ComputeMaximumRadius(IList<Vector3> localSurfaceVertices, Fix64 collisionMargin)
+        public static Fix32 ComputeMaximumRadius(IList<Vector3> localSurfaceVertices, Fix32 collisionMargin)
         {
-            Fix64 longestLengthSquared = F64.C0;
+            Fix32 longestLengthSquared = Fix32.Zero;
             for (int i = 0; i < localSurfaceVertices.Count; ++i)
             {
-                Fix64 lengthCandidate = localSurfaceVertices[i].LengthSquared();
+                Fix32 lengthCandidate = localSurfaceVertices[i].LengthSquared();
                 if (lengthCandidate > longestLengthSquared)
                 {
                     longestLengthSquared = lengthCandidate;
                 }
             }
-            return Fix64.Sqrt(longestLengthSquared) + collisionMargin;
+            return longestLengthSquared.Sqrt() .Add (collisionMargin);
         }
 
 
@@ -213,9 +213,9 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             Matrix3x3 o;
             Matrix3x3.CreateFromQuaternion(ref shapeTransform.Orientation, out o);
 
-            Fix64 minX, maxX;
-            Fix64 minY, maxY;
-            Fix64 minZ, maxZ;
+            Fix32 minX, maxX;
+            Fix32 minY, maxY;
+            Fix32 minZ, maxZ;
             var right = new Vector3(o.M11, o.M21, o.M31);
             var up = new Vector3(o.M12, o.M22, o.M32);
             var backward = new Vector3(o.M13, o.M23, o.M33);
@@ -233,7 +233,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             int maxZIndex = 0;
             for (int i = 1; i < vertices.Length; ++i)
             {
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref vertices[i], ref right, out dot);
                 if (dot < minX)
                 {
@@ -277,24 +277,24 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             TransformLocalExtremePoints(ref vertices[minXIndex], ref vertices[minYIndex], ref vertices[minZIndex], ref o, out negative);
 
             //The positive and negative vectors represent the X, Y and Z coordinates of the extreme points in world space along the world space axes.
-            boundingBox.Max.X = shapeTransform.Position.X + positive.X + collisionMargin;
-            boundingBox.Max.Y = shapeTransform.Position.Y + positive.Y + collisionMargin;
-            boundingBox.Max.Z = shapeTransform.Position.Z + positive.Z + collisionMargin;
+            boundingBox.Max.X = shapeTransform.Position.X .Add (positive.X) .Add (collisionMargin);
+            boundingBox.Max.Y = shapeTransform.Position.Y .Add (positive.Y) .Add (collisionMargin);
+            boundingBox.Max.Z = shapeTransform.Position.Z .Add (positive.Z) .Add (collisionMargin);
 
-            boundingBox.Min.X = shapeTransform.Position.X + negative.X - collisionMargin;
-            boundingBox.Min.Y = shapeTransform.Position.Y + negative.Y - collisionMargin;
-            boundingBox.Min.Z = shapeTransform.Position.Z + negative.Z - collisionMargin;
+            boundingBox.Min.X = shapeTransform.Position.X .Add (negative.X) .Sub (collisionMargin);
+            boundingBox.Min.Y = shapeTransform.Position.Y .Add (negative.Y) .Sub (collisionMargin);
+            boundingBox.Min.Z = shapeTransform.Position.Z .Add (negative.Z) .Sub (collisionMargin);
         }
 
 
         public override void GetLocalExtremePointWithoutMargin(ref Vector3 direction, out Vector3 extremePoint)
         {
-            Fix64 max;
+            Fix32 max;
             Vector3.Dot(ref vertices[0], ref direction, out max);
             int maxIndex = 0;
             for (int i = 1; i < vertices.Length; i++)
             {
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref vertices[i], ref direction, out dot);
                 if (dot > max)
                 {

@@ -1,6 +1,4 @@
-﻿using FixMath.NET;
-
-namespace BEPUphysics.UpdateableSystems
+﻿namespace BEPUphysics.UpdateableSystems
 {
     ///<summary>
     /// Defines an object which is updated by the space before the solver runs.
@@ -11,7 +9,7 @@ namespace BEPUphysics.UpdateableSystems
         /// Updates the updateable before the solver.
         ///</summary>
         ///<param name="dt">Time step duration.</param>
-        void Update(Fix64 dt);
+        void Update(Fix32 dt);
 
     }
 }

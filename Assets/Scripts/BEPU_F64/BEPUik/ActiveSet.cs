@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
 
 namespace BEPUik
 {
@@ -38,30 +37,30 @@ namespace BEPUik
         /// </summary>
         public bool UseAutomass { get; set; }
 
-        private Fix64 automassUnstressedFalloff = (Fix64)0.9m;
+        private Fix32 automassUnstressedFalloff = 0.9m.ToFix32();
         /// <summary>
         /// Gets or sets the multiplier applied to the mass of a bone before distributing it to the child bones.
         /// Used only when UseAutomass is set to true.
         /// </summary>
-        public Fix64 AutomassUnstressedFalloff
+        public Fix32 AutomassUnstressedFalloff
         {
             get { return automassUnstressedFalloff; }
             set
             {
-                automassUnstressedFalloff = MathHelper.Max(value, F64.C0);
+                automassUnstressedFalloff = MathHelper.Max(value, Fix32.Zero);
             }
         }
 
-        private Fix64 automassTarget = F64.C1;
+        private Fix32 automassTarget = Fix32.One;
         /// <summary>
         /// Gets or sets the mass that the heaviest bones will have when automass is enabled.
         /// </summary>
-        public Fix64 AutomassTarget
+        public Fix32 AutomassTarget
         {
             get { return automassTarget; }
             set
             {
-                if (value <= F64.C0)
+                if (value <= Fix32.Zero)
                     throw new ArgumentException("Mass must be positive.");
                 automassTarget = value;
             }
@@ -252,7 +251,7 @@ namespace BEPUik
             //We distribute a portion of the current bone's total mass to the child bones.
             //By applying a multiplier automassUnstressedFalloff, we guarantee that a chain has a certain maximum weight (excluding cycles).
             //This is thanks to the convergent geometric series sum(automassUnstressedFalloff^n, 1, infinity).
-            Fix64 massPerChild = uniqueChildren.Count > 0 ? automassUnstressedFalloff * bone.Mass / uniqueChildren.Count : F64.C0;
+            Fix32 massPerChild = uniqueChildren.Count > 0 ? automassUnstressedFalloff .Mul (bone.Mass) .Div (uniqueChildren.Count.ToFix32()) : Fix32.Zero;
 
             uniqueChildren.Clear();
             //(If the number of children is 0, then the only bones which can exist are either bones which were already traversed and will be skipped
@@ -341,7 +340,7 @@ namespace BEPUik
                 else
                 {
                     //The mass of stressed bones is a multiplier on the number of stressed paths overlapping the bone.
-                    bone.Mass = bone.stressCount;
+                    bone.Mass = bone.stressCount.ToFix32();
                 }
                 //This bone is not an unstressed branch root. Continue the breadth first search!
                 foreach (var joint in bone.joints)
@@ -364,19 +363,19 @@ namespace BEPUik
             }
 
             //Normalize the masses of objects so that the heaviest bones have AutomassTarget mass.
-            Fix64 lowestInverseMass = Fix64.MaxValue;
+            Fix32 lowestInverseMass = Fix32.MaxValue;
             foreach (var bone in bones)
             {
                 if (bone.inverseMass < lowestInverseMass)
                     lowestInverseMass = bone.inverseMass;
             }
 
-            Fix64 inverseMassScale = F64.C1 / (AutomassTarget * lowestInverseMass);
+            Fix32 inverseMassScale = Fix32.One .Div (AutomassTarget .Mul (lowestInverseMass));
 
             foreach (var bone in bones)
             {
-                //Normalize the mass to the AutomassTarget.
-                bone.inverseMass *= inverseMassScale;
+				//Normalize the mass to the AutomassTarget.
+				bone.inverseMass = bone.inverseMass .Mul (inverseMassScale);
 
                 //Also clear the traversal flags while we're at it.
                 bone.IsActive = false;

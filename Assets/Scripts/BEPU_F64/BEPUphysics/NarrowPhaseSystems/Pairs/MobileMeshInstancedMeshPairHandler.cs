@@ -3,7 +3,7 @@ using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUutilities.ResourceManagement;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.NarrowPhaseSystems.Pairs
 {
@@ -50,7 +50,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
             //The bounding box doesn't update by itself.
             toReturn.worldTransform.Position = center;
             toReturn.worldTransform.Orientation = Quaternion.Identity;
-            toReturn.UpdateBoundingBoxInternal(F64.C0);
+            toReturn.UpdateBoundingBoxInternal(Fix32.Zero);
             shape.sidedness = mesh.Sidedness;
             shape.collisionMargin = mobileMesh.Shape.MeshCollisionMargin;
             return toReturn;
@@ -58,7 +58,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
       
 
-        protected override void ConfigureCollidable(TriangleEntry entry, Fix64 dt)
+        protected override void ConfigureCollidable(TriangleEntry entry, Fix32 dt)
         {
 
         }
@@ -103,7 +103,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
 
 
-        protected override void UpdateContainedPairs(Fix64 dt)
+        protected override void UpdateContainedPairs(Fix32 dt)
         {
             var overlappedElements = CommonResources.GetIntList();
             BoundingBox localBoundingBox;

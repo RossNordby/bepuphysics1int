@@ -54,7 +54,7 @@ namespace BEPUphysics.Constraints.SolverGroups
             AngularJoint = new SwivelHingeAngularJoint(connectionA, connectionB, hingeAxis, -BallSocketJoint.OffsetB);
             HingeLimit = new RevoluteLimit(connectionA, connectionB);
             HingeMotor = new RevoluteMotor(connectionA, connectionB, hingeAxis);
-            TwistLimit = new TwistLimit(connectionA, connectionB, BallSocketJoint.OffsetA, -BallSocketJoint.OffsetB, F64.C0, F64.C0);
+            TwistLimit = new TwistLimit(connectionA, connectionB, BallSocketJoint.OffsetA, -BallSocketJoint.OffsetB, Fix32.Zero, Fix32.Zero);
             TwistMotor = new TwistMotor(connectionA, connectionB, BallSocketJoint.OffsetA, -BallSocketJoint.OffsetB);
             HingeLimit.IsActive = false;
             HingeMotor.IsActive = false;
@@ -65,7 +65,7 @@ namespace BEPUphysics.Constraints.SolverGroups
             Vector3 baseAxis = anchor - connectionA.position;
             if (baseAxis.LengthSquared() < Toolbox.BigEpsilon) //anchor and connection a in same spot, so try the other way.
                 baseAxis = connectionB.position - anchor;
-            baseAxis -= Vector3.Dot(baseAxis, hingeAxis) * hingeAxis;
+            baseAxis = baseAxis - (Vector3.Dot(baseAxis, hingeAxis) * hingeAxis);
             if (baseAxis.LengthSquared() < Toolbox.BigEpsilon)
             {
                 //However, if the free axis is totally aligned (like in an axis constraint), pick another reasonable direction.
@@ -79,7 +79,7 @@ namespace BEPUphysics.Constraints.SolverGroups
             HingeMotor.Basis.SetWorldAxes(hingeAxis, baseAxis, connectionA.orientationMatrix);
 
             baseAxis = connectionB.position - anchor;
-            baseAxis -= Vector3.Dot(baseAxis, hingeAxis) * hingeAxis;
+            baseAxis = baseAxis - (Vector3.Dot(baseAxis, hingeAxis) * hingeAxis);
             if (baseAxis.LengthSquared() < Toolbox.BigEpsilon)
             {
                 //However, if the free axis is totally aligned (like in an axis constraint), pick another reasonable direction.

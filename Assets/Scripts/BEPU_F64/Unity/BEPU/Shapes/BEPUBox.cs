@@ -1,4 +1,4 @@
-﻿using FixMath.NET;
+﻿
 using UnityEngine;
 using BEPUphysics.Entities.Prefabs;
 
@@ -6,9 +6,9 @@ namespace BEPUUnity
 {
     public class BEPUBox : ShapeBase
     {
-        [SerializeField] private Fix64 m_width = Fix64.One;
-        [SerializeField] private Fix64 m_height = Fix64.One;
-        [SerializeField] private Fix64 m_length = Fix64.One;
+        [SerializeField] private Fix32 m_width = Fix32.One;
+        [SerializeField] private Fix32 m_height = Fix32.One;
+        [SerializeField] private Fix32 m_length = Fix32.One;
 
         private void Awake()
         {

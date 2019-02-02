@@ -5,7 +5,7 @@ using BEPUutilities;
 
 using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionShapes.ConvexShapes
 {
@@ -89,7 +89,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             shapes.Add(firstShape);
             shapes.Add(secondShape);
             UpdateConvexShapeInfo();
-            shapes.Changed += ShapesChanged;
+            shapes.Changed += (ShapesChanged);
         }
 
 
@@ -121,7 +121,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 shapes.Add(shapeEntries[i]);
             }
             UpdateConvexShapeInfo();
-            shapes.Changed += ShapesChanged;
+            shapes.Changed += (ShapesChanged);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             }
             this.localOffset = localOffset;
             UpdateConvexShapeInfo(description);
-            shapes.Changed += ShapesChanged;
+            shapes.Changed += (ShapesChanged);
         }
 
 
@@ -185,7 +185,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             var triangles = CommonResources.GetIntList();
             ConvexHullHelper.GetConvexHull(samples, triangles);
 
-            Fix64 volume;
+            Fix32 volume;
             Vector3 center;
             InertiaHelper.ComputeShapeDistribution(samples, triangles, out center, out volume, out volumeDistribution);
             Volume = volume;
@@ -196,15 +196,15 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             CommonResources.GiveBack(triangles);
 
             //Compute the radii.
-            Fix64 minRadius = F64.C0, maxRadius = F64.C0;
+            Fix32 minRadius = Fix32.Zero, maxRadius = Fix32.Zero;
             for (int i = 0; i < shapes.Count; i++)
             {
-                minRadius += shapes.WrappedList.Elements[i].CollisionShape.MinimumRadius;
-                maxRadius += shapes.WrappedList.Elements[i].CollisionShape.MaximumRadius;
+                minRadius = minRadius .Add (shapes.WrappedList.Elements[i].CollisionShape.MinimumRadius);
+                maxRadius = maxRadius .Add (shapes.WrappedList.Elements[i].CollisionShape.MaximumRadius);
             }
 
-            MinimumRadius = minRadius + collisionMargin;
-            MaximumRadius = maxRadius + collisionMargin;
+            MinimumRadius = minRadius .Add (collisionMargin);
+            MaximumRadius = maxRadius .Add (collisionMargin);
 
 
 

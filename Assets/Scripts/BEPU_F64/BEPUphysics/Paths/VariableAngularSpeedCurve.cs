@@ -1,5 +1,4 @@
 ﻿using BEPUutilities;
-using FixMath.NET;
 
 namespace BEPUphysics.Paths
 {
@@ -16,7 +15,7 @@ namespace BEPUphysics.Paths
         /// </summary>
         /// <param name="speedCurve">Curve defining speeds to use.</param>
         /// <param name="curve">Curve to wrap.</param>
-        public VariableAngularSpeedCurve(Path<Fix64> speedCurve, Curve<Quaternion> curve)
+        public VariableAngularSpeedCurve(Path<Fix32> speedCurve, Curve<Quaternion> curve)
             : base(speedCurve, curve)
         {
         }
@@ -28,12 +27,12 @@ namespace BEPUphysics.Paths
         /// <param name="curve">Curve to wrap.</param>
         /// <param name="sampleCount">Number of samples to use when constructing the wrapper curve.
         /// More samples increases the accuracy of the speed requirement at the cost of performance.</param>
-        public VariableAngularSpeedCurve(Path<Fix64> speedCurve, Curve<Quaternion> curve, int sampleCount)
+        public VariableAngularSpeedCurve(Path<Fix32> speedCurve, Curve<Quaternion> curve, int sampleCount)
             : base(speedCurve, curve, sampleCount)
         {
         }
 
-        protected override Fix64 GetDistance(Quaternion start, Quaternion end)
+        protected override Fix32 GetDistance(Quaternion start, Quaternion end)
         {
             Quaternion.Conjugate(ref end, out end);
             Quaternion.Multiply(ref end, ref start, out end);

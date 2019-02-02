@@ -31,12 +31,12 @@ namespace BEPUphysics.BroadPhaseEntries.Events
         {
             add
             {
-                InternalCollisionEnded += value;
+                InternalCollisionEnded = InternalCollisionEnded + (value);
                 AddToEventfuls();
             }
             remove
             {
-                InternalCollisionEnded -= value;
+                InternalCollisionEnded = InternalCollisionEnded - (value);
                 VerifyEventStatus();
             }
         }
@@ -55,12 +55,12 @@ namespace BEPUphysics.BroadPhaseEntries.Events
         {
             add
             {
-                InternalPairTouched += value;
+                InternalPairTouched = InternalPairTouched + (value);
                 AddToEventfuls();
             }
             remove
             {
-                InternalPairTouched -= value;
+                InternalPairTouched = InternalPairTouched - (value);
                 VerifyEventStatus();
             }
         }
@@ -79,12 +79,12 @@ namespace BEPUphysics.BroadPhaseEntries.Events
         {
             add
             {
-                InternalContactCreated += value;
+                InternalContactCreated = InternalContactCreated + (value);
                 AddToEventfuls();
             }
             remove
             {
-                InternalContactCreated -= value;
+                InternalContactCreated = InternalContactCreated - (value);
                 VerifyEventStatus();
             }
         }
@@ -96,12 +96,12 @@ namespace BEPUphysics.BroadPhaseEntries.Events
         {
             add
             {
-                InternalContactRemoved += value;
+                InternalContactRemoved = InternalContactRemoved + (value);
                 AddToEventfuls();
             }
             remove
             {
-                InternalContactRemoved -= value;
+                InternalContactRemoved = InternalContactRemoved - (value);
                 VerifyEventStatus();
             }
         }
@@ -127,12 +127,12 @@ namespace BEPUphysics.BroadPhaseEntries.Events
         {
             add
             {
-                InternalInitialCollisionDetected += value;
+                InternalInitialCollisionDetected = InternalInitialCollisionDetected + (value);
                 AddToEventfuls();
             }
             remove
             {
-                InternalInitialCollisionDetected -= value;
+                InternalInitialCollisionDetected = InternalInitialCollisionDetected - (value);
                 VerifyEventStatus();
             }
         }

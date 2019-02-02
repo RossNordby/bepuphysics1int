@@ -1,5 +1,4 @@
 ﻿using BEPUutilities;
-using FixMath.NET;
 
 namespace BEPUik
 {
@@ -84,9 +83,9 @@ namespace BEPUik
             Vector3 separation;
             Vector3.Subtract(ref anchorB, ref anchorA, out separation);
             //This entire constraint is very similar to the IKDistanceLimit, except the current distance is along an axis.
-            Fix64 currentDistance;
+            Fix32 currentDistance;
             Vector3.Dot(ref separation, ref lineDirection, out currentDistance);
-            velocityBias = new Vector3(errorCorrectionFactor * currentDistance, F64.C0, F64.C0);
+            velocityBias = new Vector3(errorCorrectionFactor.Mul(currentDistance), Fix32.Zero, Fix32.Zero);
 
             //Compute jacobians
             Vector3 angularA, angularB;
@@ -99,10 +98,9 @@ namespace BEPUik
 
             //Put all the 1x3 jacobians into a 3x3 matrix representation.
             linearJacobianA = new Matrix3x3 { M11 = lineDirection.X, M12 = lineDirection.Y, M13 = lineDirection.Z };
-            linearJacobianB = new Matrix3x3 { M11 = -lineDirection.X, M12 = -lineDirection.Y, M13 = -lineDirection.Z };
+            linearJacobianB = new Matrix3x3 { M11 = lineDirection.X.Neg(), M12 = lineDirection.Y.Neg(), M13 = lineDirection.Z.Neg() };
             angularJacobianA = new Matrix3x3 { M11 = angularA.X, M12 = angularA.Y, M13 = angularA.Z };
             angularJacobianB = new Matrix3x3 { M11 = angularB.X, M12 = angularB.Y, M13 = angularB.Z };
-
         }
     }
 }

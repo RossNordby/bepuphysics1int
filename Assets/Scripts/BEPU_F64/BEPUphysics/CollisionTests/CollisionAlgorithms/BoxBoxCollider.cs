@@ -4,7 +4,7 @@ using BEPUutilities.DataStructures;
 using BEPUutilities;
  
 using BEPUphysics.CollisionShapes.ConvexShapes;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 {
@@ -22,7 +22,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         /// <summary>
         /// Depth of the candidate contact.
         /// </summary>
-        public Fix64 Depth;
+        public Fix32 Depth;
 
         /// <summary>
         /// Id of the candidate contact.
@@ -99,13 +99,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         /// <returns>Whether or not the boxes collide.</returns>
         public static bool AreBoxesColliding(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB)
         {
-            Fix64 aX = a.HalfWidth;
-            Fix64 aY = a.HalfHeight;
-            Fix64 aZ = a.HalfLength;
+            Fix32 aX = a.HalfWidth;
+            Fix32 aY = a.HalfHeight;
+            Fix32 aZ = a.HalfLength;
 
-            Fix64 bX = b.HalfWidth;
-            Fix64 bY = b.HalfHeight;
-            Fix64 bZ = b.HalfLength;
+            Fix32 bX = b.HalfWidth;
+            Fix32 bY = b.HalfHeight;
+            Fix32 bZ = b.HalfLength;
 
             //Relative rotation from A to B.
             Matrix3x3 bR;
@@ -119,119 +119,119 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 t;
             Vector3.Subtract(ref transformB.Position, ref transformA.Position, out t);
 
-            bR.M11 = aO.M11 * bO.M11 + aO.M12 * bO.M12 + aO.M13 * bO.M13;
-            bR.M12 = aO.M11 * bO.M21 + aO.M12 * bO.M22 + aO.M13 * bO.M23;
-            bR.M13 = aO.M11 * bO.M31 + aO.M12 * bO.M32 + aO.M13 * bO.M33;
+            bR.M11 = (aO.M11 .Mul (bO.M11)) .Add (aO.M12 .Mul (bO.M12)) .Add (aO.M13 .Mul (bO.M13));
+            bR.M12 = (aO.M11 .Mul (bO.M21)) .Add (aO.M12 .Mul (bO.M22)) .Add (aO.M13 .Mul (bO.M23));
+            bR.M13 = (aO.M11 .Mul (bO.M31)) .Add (aO.M12 .Mul (bO.M32)) .Add (aO.M13 .Mul (bO.M33));
             Matrix3x3 absBR;
             //Epsilons are added to deal with near-parallel edges.
-            absBR.M11 = Fix64.Abs(bR.M11) + Toolbox.Epsilon;
-            absBR.M12 = Fix64.Abs(bR.M12) + Toolbox.Epsilon;
-            absBR.M13 = Fix64.Abs(bR.M13) + Toolbox.Epsilon;
-            Fix64 tX = t.X;
-            t.X = t.X * aO.M11 + t.Y * aO.M12 + t.Z * aO.M13;
+            absBR.M11 = bR.M11.Abs() .Add (Toolbox.Epsilon);
+            absBR.M12 = bR.M12.Abs() .Add (Toolbox.Epsilon);
+            absBR.M13 = bR.M13.Abs() .Add (Toolbox.Epsilon);
+            Fix32 tX = t.X;
+            t.X = (t.X .Mul (aO.M11)) .Add (t.Y .Mul (aO.M12)) .Add (t.Z .Mul (aO.M13));
 
             //Test the axes defines by entity A's rotation matrix.
             //A.X
-            Fix64 rb = bX * absBR.M11 + bY * absBR.M12 + bZ * absBR.M13;
-            if (Fix64.Abs(t.X) > aX + rb)
+            Fix32 rb = (bX .Mul (absBR.M11)) .Add (bY .Mul (absBR.M12)) .Add (bZ .Mul (absBR.M13));
+            if (t.X.Abs() > aX .Add (rb))
                 return false;
-            bR.M21 = aO.M21 * bO.M11 + aO.M22 * bO.M12 + aO.M23 * bO.M13;
-            bR.M22 = aO.M21 * bO.M21 + aO.M22 * bO.M22 + aO.M23 * bO.M23;
-            bR.M23 = aO.M21 * bO.M31 + aO.M22 * bO.M32 + aO.M23 * bO.M33;
-            absBR.M21 = Fix64.Abs(bR.M21) + Toolbox.Epsilon;
-            absBR.M22 = Fix64.Abs(bR.M22) + Toolbox.Epsilon;
-            absBR.M23 = Fix64.Abs(bR.M23) + Toolbox.Epsilon;
-            Fix64 tY = t.Y;
-            t.Y = tX * aO.M21 + t.Y * aO.M22 + t.Z * aO.M23;
+            bR.M21 = (aO.M21 .Mul (bO.M11)) .Add (aO.M22 .Mul (bO.M12)) .Add (aO.M23 .Mul (bO.M13));
+            bR.M22 = (aO.M21 .Mul (bO.M21)) .Add (aO.M22 .Mul (bO.M22)) .Add (aO.M23 .Mul (bO.M23));
+            bR.M23 = (aO.M21 .Mul (bO.M31)) .Add (aO.M22 .Mul (bO.M32)) .Add (aO.M23 .Mul (bO.M33));
+            absBR.M21 = bR.M21.Abs() .Add (Toolbox.Epsilon);
+            absBR.M22 = bR.M22.Abs() .Add (Toolbox.Epsilon);
+            absBR.M23 = bR.M23.Abs() .Add (Toolbox.Epsilon);
+            Fix32 tY = t.Y;
+            t.Y = tX .Mul (aO.M21) .Add (t.Y .Mul (aO.M22)) .Add (t.Z .Mul (aO.M23));
 
             //A.Y
-            rb = bX * absBR.M21 + bY * absBR.M22 + bZ * absBR.M23;
-            if (Fix64.Abs(t.Y) > aY + rb)
+            rb = (bX .Mul (absBR.M21)) .Add (bY .Mul (absBR.M22)) .Add (bZ .Mul (absBR.M23));
+            if (t.Y.Abs() > aY .Add (rb))
                 return false;
 
-            bR.M31 = aO.M31 * bO.M11 + aO.M32 * bO.M12 + aO.M33 * bO.M13;
-            bR.M32 = aO.M31 * bO.M21 + aO.M32 * bO.M22 + aO.M33 * bO.M23;
-            bR.M33 = aO.M31 * bO.M31 + aO.M32 * bO.M32 + aO.M33 * bO.M33;
-            absBR.M31 = Fix64.Abs(bR.M31) + Toolbox.Epsilon;
-            absBR.M32 = Fix64.Abs(bR.M32) + Toolbox.Epsilon;
-            absBR.M33 = Fix64.Abs(bR.M33) + Toolbox.Epsilon;
-            t.Z = tX * aO.M31 + tY * aO.M32 + t.Z * aO.M33;
+            bR.M31 = (aO.M31 .Mul (bO.M11)) .Add (aO.M32 .Mul (bO.M12)) .Add (aO.M33 .Mul (bO.M13));
+            bR.M32 = (aO.M31 .Mul (bO.M21)) .Add (aO.M32 .Mul (bO.M22)) .Add (aO.M33 .Mul (bO.M23));
+            bR.M33 = (aO.M31 .Mul (bO.M31)) .Add (aO.M32 .Mul (bO.M32)) .Add (aO.M33 .Mul (bO.M33));
+            absBR.M31 = bR.M31.Abs() .Add (Toolbox.Epsilon);
+            absBR.M32 = bR.M32.Abs() .Add (Toolbox.Epsilon);
+            absBR.M33 = bR.M33.Abs() .Add (Toolbox.Epsilon);
+            t.Z = (tX .Mul (aO.M31)) .Add (tY .Mul (aO.M32)) .Add (t.Z .Mul (aO.M33));
 
             //A.Z
-            rb = bX * absBR.M31 + bY * absBR.M32 + bZ * absBR.M33;
-            if (Fix64.Abs(t.Z) > aZ + rb)
+            rb = (bX .Mul (absBR.M31)) .Add (bY .Mul (absBR.M32)) .Add (bZ .Mul (absBR.M33));
+            if (t.Z.Abs() > aZ .Add (rb))
                 return false;
 
             //Test the axes defines by entity B's rotation matrix.
             //B.X
-            Fix64 ra = aX * absBR.M11 + aY * absBR.M21 + aZ * absBR.M31;
-            if (Fix64.Abs(t.X * bR.M11 + t.Y * bR.M21 + t.Z * bR.M31) > ra + bX)
+            Fix32 ra = (aX .Mul (absBR.M11)) .Add (aY .Mul (absBR.M21)) .Add (aZ .Mul (absBR.M31));
+            if ((t.X .Mul (bR.M11)) .Add (t.Y .Mul (bR.M21)) .Add (t.Z .Mul (bR.M31)).Abs() > ra .Add (bX))
                 return false;
 
             //B.Y
-            ra = aX * absBR.M12 + aY * absBR.M22 + aZ * absBR.M32;
-            if (Fix64.Abs(t.X * bR.M12 + t.Y * bR.M22 + t.Z * bR.M32) > ra + bY)
+            ra = (aX .Mul (absBR.M12)) .Add (aY .Mul (absBR.M22)) .Add (aZ .Mul (absBR.M32));
+            if (((t.X .Mul (bR.M12)) .Add (t.Y .Mul (bR.M22)) .Add (t.Z .Mul (bR.M32))).Abs() > ra .Add (bY))
                 return false;
 
             //B.Z
-            ra = aX * absBR.M13 + aY * absBR.M23 + aZ * absBR.M33;
-            if (Fix64.Abs(t.X * bR.M13 + t.Y * bR.M23 + t.Z * bR.M33) > ra + bZ)
+            ra = (aX .Mul (absBR.M13)) .Add (aY .Mul (absBR.M23)) .Add (aZ .Mul (absBR.M33));
+            if (((t.X .Mul (bR.M13)) .Add (t.Y .Mul (bR.M23)) .Add (t.Z .Mul (bR.M33))).Abs() > ra .Add (bZ))
                 return false;
 
             //Now for the edge-edge cases.
             //A.X x B.X
-            ra = aY * absBR.M31 + aZ * absBR.M21;
-            rb = bY * absBR.M13 + bZ * absBR.M12;
-            if (Fix64.Abs(t.Z * bR.M21 - t.Y * bR.M31) > ra + rb)
+            ra = (aY .Mul (absBR.M31)) .Add (aZ .Mul (absBR.M21));
+            rb = (bY .Mul (absBR.M13)) .Add (bZ .Mul (absBR.M12));
+            if (((t.Z .Mul (bR.M21)) .Sub (t.Y .Mul (bR.M31))).Abs() > ra .Add (rb))
                 return false;
 
             //A.X x B.Y
-            ra = aY * absBR.M32 + aZ * absBR.M22;
-            rb = bX * absBR.M13 + bZ * absBR.M11;
-            if (Fix64.Abs(t.Z * bR.M22 - t.Y * bR.M32) > ra + rb)
+            ra = (aY .Mul (absBR.M32)) .Add (aZ .Mul (absBR.M22));
+            rb = (bX .Mul (absBR.M13)) .Add (bZ .Mul (absBR.M11));
+            if (((t.Z .Mul (bR.M22)) .Sub (t.Y .Mul (bR.M32))).Abs() > ra .Add (rb))
                 return false;
 
             //A.X x B.Z
-            ra = aY * absBR.M33 + aZ * absBR.M23;
-            rb = bX * absBR.M12 + bY * absBR.M11;
-            if (Fix64.Abs(t.Z * bR.M23 - t.Y * bR.M33) > ra + rb)
+            ra = (aY .Mul (absBR.M33)) .Add (aZ .Mul (absBR.M23));
+            rb = (bX .Mul (absBR.M12)) .Add (bY .Mul (absBR.M11));
+            if (((t.Z .Mul (bR.M23)) .Sub (t.Y .Mul (bR.M33))).Abs() > ra .Add (rb))
                 return false;
 
 
             //A.Y x B.X
-            ra = aX * absBR.M31 + aZ * absBR.M11;
-            rb = bY * absBR.M23 + bZ * absBR.M22;
-            if (Fix64.Abs(t.X * bR.M31 - t.Z * bR.M11) > ra + rb)
+            ra = (aX .Mul (absBR.M31)) .Add (aZ .Mul (absBR.M11));
+            rb = (bY .Mul (absBR.M23)) .Add (bZ .Mul (absBR.M22));
+            if (((t.X .Mul (bR.M31)) .Sub (t.Z .Mul (bR.M11))).Abs() > ra .Add (rb))
                 return false;
 
             //A.Y x B.Y
-            ra = aX * absBR.M32 + aZ * absBR.M12;
-            rb = bX * absBR.M23 + bZ * absBR.M21;
-            if (Fix64.Abs(t.X * bR.M32 - t.Z * bR.M12) > ra + rb)
+            ra = (aX .Mul (absBR.M32)) .Add (aZ .Mul (absBR.M12));
+            rb = (bX .Mul (absBR.M23)) .Add (bZ .Mul (absBR.M21));
+            if (((t.X .Mul (bR.M32)) .Sub (t.Z .Mul (bR.M12))).Abs() > ra .Add (rb))
                 return false;
 
             //A.Y x B.Z
-            ra = aX * absBR.M33 + aZ * absBR.M13;
-            rb = bX * absBR.M22 + bY * absBR.M21;
-            if (Fix64.Abs(t.X * bR.M33 - t.Z * bR.M13) > ra + rb)
+            ra = (aX .Mul (absBR.M33)) .Add (aZ .Mul (absBR.M13));
+            rb = (bX .Mul (absBR.M22)) .Add (bY .Mul (absBR.M21));
+            if (((t.X .Mul (bR.M33)) .Sub (t.Z .Mul (bR.M13))).Abs() > ra .Add (rb))
                 return false;
 
             //A.Z x B.X
-            ra = aX * absBR.M21 + aY * absBR.M11;
-            rb = bY * absBR.M33 + bZ * absBR.M32;
-            if (Fix64.Abs(t.Y * bR.M11 - t.X * bR.M21) > ra + rb)
+            ra = (aX .Mul (absBR.M21)) .Add (aY .Mul (absBR.M11));
+            rb = (bY .Mul (absBR.M33)) .Add (bZ .Mul (absBR.M32));
+            if (((t.Y .Mul (bR.M11)) .Sub (t.X .Mul (bR.M21))).Abs() > ra .Add (rb))
                 return false;
 
             //A.Z x B.Y
-            ra = aX * absBR.M22 + aY * absBR.M12;
-            rb = bX * absBR.M33 + bZ * absBR.M31;
-            if (Fix64.Abs(t.Y * bR.M12 - t.X * bR.M22) > ra + rb)
+            ra = (aX .Mul (absBR.M22)) .Add (aY .Mul (absBR.M12));
+            rb = (bX .Mul (absBR.M33)) .Add (bZ .Mul (absBR.M31));
+            if (((t.Y.Mul(bR.M12)).Sub(t.X.Mul(bR.M22))).Abs() > ra .Add (rb))
                 return false;
 
             //A.Z x B.Z
-            ra = aX * absBR.M23 + aY * absBR.M13;
-            rb = bX * absBR.M32 + bY * absBR.M31;
-            if (Fix64.Abs(t.Y * bR.M13 - t.X * bR.M23) > ra + rb)
+            ra = (aX .Mul (absBR.M23)) .Add (aY .Mul (absBR.M13));
+            rb = (bX .Mul (absBR.M32)) .Add (bY .Mul (absBR.M31));
+            if (((t.Y .Mul (bR.M13)) .Sub (t.X .Mul (bR.M23))).Abs() > ra .Add (rb))
                 return false;
 
             return true;
@@ -247,15 +247,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         /// <param name="transformA">Transform to apply to shape A.</param>
         /// <param name="transformB">Transform to apply to shape B.</param>
         /// <returns>Whether or not the boxes collide.</returns>
-        public static bool AreBoxesColliding(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB, out Fix64 separationDistance, out Vector3 separatingAxis)
+        public static bool AreBoxesColliding(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB, out Fix32 separationDistance, out Vector3 separatingAxis)
         {
-            Fix64 aX = a.HalfWidth;
-            Fix64 aY = a.HalfHeight;
-            Fix64 aZ = a.HalfLength;
+            Fix32 aX = a.HalfWidth;
+            Fix32 aY = a.HalfHeight;
+            Fix32 aZ = a.HalfLength;
 
-            Fix64 bX = b.HalfWidth;
-            Fix64 bY = b.HalfHeight;
-            Fix64 bZ = b.HalfLength;
+            Fix32 bX = b.HalfWidth;
+            Fix32 bY = b.HalfHeight;
+            Fix32 bZ = b.HalfLength;
 
             //Relative rotation from A to B.
             Matrix3x3 bR;
@@ -271,78 +271,78 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             #region A Face Normals
 
-            bR.M11 = aO.M11 * bO.M11 + aO.M12 * bO.M12 + aO.M13 * bO.M13;
-            bR.M12 = aO.M11 * bO.M21 + aO.M12 * bO.M22 + aO.M13 * bO.M23;
-            bR.M13 = aO.M11 * bO.M31 + aO.M12 * bO.M32 + aO.M13 * bO.M33;
+            bR.M11 = (aO.M11 .Mul (bO.M11)) .Add (aO.M12 .Mul (bO.M12)) .Add (aO.M13 .Mul (bO.M13));
+            bR.M12 = (aO.M11 .Mul (bO.M21)) .Add (aO.M12 .Mul (bO.M22)) .Add (aO.M13 .Mul (bO.M23));
+            bR.M13 = (aO.M11 .Mul (bO.M31)) .Add (aO.M12 .Mul (bO.M32)) .Add (aO.M13 .Mul (bO.M33));
             Matrix3x3 absBR;
             //Epsilons are added to deal with near-parallel edges.
-            absBR.M11 = Fix64.Abs(bR.M11) + Toolbox.Epsilon;
-            absBR.M12 = Fix64.Abs(bR.M12) + Toolbox.Epsilon;
-            absBR.M13 = Fix64.Abs(bR.M13) + Toolbox.Epsilon;
-            Fix64 tX = t.X;
-            t.X = t.X * aO.M11 + t.Y * aO.M12 + t.Z * aO.M13;
+            absBR.M11 = bR.M11.Abs() .Add (Toolbox.Epsilon);
+            absBR.M12 = bR.M12.Abs() .Add (Toolbox.Epsilon);
+            absBR.M13 = bR.M13.Abs() .Add (Toolbox.Epsilon);
+            Fix32 tX = t.X;
+            t.X = (t.X .Mul (aO.M11)) .Add (t.Y .Mul (aO.M12)) .Add (t.Z .Mul (aO.M13));
 
             //Test the axes defines by entity A's rotation matrix.
             //A.X
-            Fix64 rarb = aX + bX * absBR.M11 + bY * absBR.M12 + bZ * absBR.M13;
+            Fix32 rarb = aX .Add (bX .Mul (absBR.M11)) .Add (bY .Mul (absBR.M12)) .Add (bZ .Mul (absBR.M13));
             if (t.X > rarb)
             {
-                separationDistance = t.X - rarb;
+                separationDistance = t.X .Sub (rarb);
                 separatingAxis = new Vector3(aO.M11, aO.M12, aO.M13);
                 return false;
             }
-            if (t.X < -rarb)
+            if (t.X < rarb.Neg())
             {
-                separationDistance = -t.X - rarb;
-                separatingAxis = new Vector3(-aO.M11, -aO.M12, -aO.M13);
+                separationDistance = t.X.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((aO.M11).Neg(), (aO.M12).Neg(), (aO.M13).Neg());
                 return false;
             }
 
 
-            bR.M21 = aO.M21 * bO.M11 + aO.M22 * bO.M12 + aO.M23 * bO.M13;
-            bR.M22 = aO.M21 * bO.M21 + aO.M22 * bO.M22 + aO.M23 * bO.M23;
-            bR.M23 = aO.M21 * bO.M31 + aO.M22 * bO.M32 + aO.M23 * bO.M33;
-            absBR.M21 = Fix64.Abs(bR.M21) + Toolbox.Epsilon;
-            absBR.M22 = Fix64.Abs(bR.M22) + Toolbox.Epsilon;
-            absBR.M23 = Fix64.Abs(bR.M23) + Toolbox.Epsilon;
-            Fix64 tY = t.Y;
-            t.Y = tX * aO.M21 + t.Y * aO.M22 + t.Z * aO.M23;
+            bR.M21 = (aO.M21 .Mul (bO.M11)) .Add (aO.M22 .Mul (bO.M12)) .Add (aO.M23 .Mul (bO.M13));
+            bR.M22 = (aO.M21 .Mul (bO.M21)) .Add (aO.M22 .Mul (bO.M22)) .Add (aO.M23 .Mul (bO.M23));
+            bR.M23 = (aO.M21 .Mul (bO.M31)) .Add (aO.M22 .Mul (bO.M32)) .Add (aO.M23 .Mul (bO.M33));
+            absBR.M21 = bR.M21.Abs() .Add (Toolbox.Epsilon);
+            absBR.M22 = bR.M22.Abs() .Add (Toolbox.Epsilon);
+            absBR.M23 = bR.M23.Abs() .Add (Toolbox.Epsilon);
+            Fix32 tY = t.Y;
+            t.Y = (tX .Mul (aO.M21)) .Add (t.Y .Mul (aO.M22)) .Add (t.Z .Mul (aO.M23));
 
             //A.Y
-            rarb = aY + bX * absBR.M21 + bY * absBR.M22 + bZ * absBR.M23;
+            rarb = aY .Add (bX .Mul (absBR.M21)) .Add (bY .Mul (absBR.M22)) .Add (bZ .Mul (absBR.M23));
             if (t.Y > rarb)
             {
-                separationDistance = t.Y - rarb;
+                separationDistance = t.Y .Sub (rarb);
                 separatingAxis = new Vector3(aO.M21, aO.M22, aO.M23);
                 return false;
             }
-            if (t.Y < -rarb)
+            if (t.Y < rarb.Neg())
             {
-                separationDistance = -t.Y - rarb;
-                separatingAxis = new Vector3(-aO.M21, -aO.M22, -aO.M23);
+                separationDistance = t.Y.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((aO.M21).Neg(), (aO.M22).Neg(), (aO.M23).Neg());
                 return false;
             }
 
-            bR.M31 = aO.M31 * bO.M11 + aO.M32 * bO.M12 + aO.M33 * bO.M13;
-            bR.M32 = aO.M31 * bO.M21 + aO.M32 * bO.M22 + aO.M33 * bO.M23;
-            bR.M33 = aO.M31 * bO.M31 + aO.M32 * bO.M32 + aO.M33 * bO.M33;
-            absBR.M31 = Fix64.Abs(bR.M31) + Toolbox.Epsilon;
-            absBR.M32 = Fix64.Abs(bR.M32) + Toolbox.Epsilon;
-            absBR.M33 = Fix64.Abs(bR.M33) + Toolbox.Epsilon;
-            t.Z = tX * aO.M31 + tY * aO.M32 + t.Z * aO.M33;
+            bR.M31 = (aO.M31 .Mul (bO.M11)) .Add (aO.M32 .Mul (bO.M12)) .Add (aO.M33 .Mul (bO.M13));
+            bR.M32 = (aO.M31 .Mul (bO.M21)) .Add (aO.M32 .Mul (bO.M22)) .Add (aO.M33 .Mul (bO.M23));
+            bR.M33 = (aO.M31 .Mul (bO.M31)) .Add (aO.M32 .Mul (bO.M32)) .Add (aO.M33 .Mul (bO.M33));
+            absBR.M31 = bR.M31.Abs() .Add (Toolbox.Epsilon);
+            absBR.M32 = bR.M32.Abs() .Add (Toolbox.Epsilon);
+            absBR.M33 = bR.M33.Abs() .Add (Toolbox.Epsilon);
+            t.Z = (tX .Mul (aO.M31)) .Add (tY .Mul (aO.M32)) .Add (t.Z .Mul (aO.M33));
 
             //A.Z
-            rarb = aZ + bX * absBR.M31 + bY * absBR.M32 + bZ * absBR.M33;
+            rarb = aZ .Add (bX .Mul (absBR.M31)) .Add (bY .Mul (absBR.M32)) .Add (bZ .Mul (absBR.M33));
             if (t.Z > rarb)
             {
-                separationDistance = t.Z - rarb;
+                separationDistance = t.Z .Sub (rarb);
                 separatingAxis = new Vector3(aO.M31, aO.M32, aO.M33);
                 return false;
             }
-            if (t.Z < -rarb)
+            if (t.Z < rarb.Neg())
             {
-                separationDistance = -t.Z - rarb;
-                separatingAxis = new Vector3(-aO.M31, -aO.M32, -aO.M33);
+                separationDistance = t.Z.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((aO.M31).Neg(), (aO.M32).Neg(), (aO.M33).Neg());
                 return false;
             }
 
@@ -352,51 +352,51 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             //Test the axes defines by entity B's rotation matrix.
             //B.X
-            rarb = bX + aX * absBR.M11 + aY * absBR.M21 + aZ * absBR.M31;
-            Fix64 tl = t.X * bR.M11 + t.Y * bR.M21 + t.Z * bR.M31;
+            rarb = bX .Add (aX .Mul (absBR.M11)) .Add (aY .Mul (absBR.M21)) .Add (aZ .Mul (absBR.M31));
+            Fix32 tl = (t.X .Mul (bR.M11)) .Add (t.Y .Mul (bR.M21)) .Add (t.Z .Mul (bR.M31));
             if (tl > rarb)
             {
-                separationDistance = tl - rarb;
+                separationDistance = tl .Sub (rarb);
                 separatingAxis = new Vector3(bO.M11, bO.M12, bO.M13);
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                separationDistance = -tl - rarb;
-                separatingAxis = new Vector3(-bO.M11, -bO.M12, -bO.M13);
+                separationDistance = tl.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((bO.M11).Neg(), (bO.M12).Neg(), (bO.M13).Neg());
                 return false;
             }
 
             //B.Y
-            rarb = bY + aX * absBR.M12 + aY * absBR.M22 + aZ * absBR.M32;
-            tl = t.X * bR.M12 + t.Y * bR.M22 + t.Z * bR.M32;
+            rarb = bY .Add (aX .Mul (absBR.M12)) .Add (aY .Mul (absBR.M22)) .Add (aZ .Mul (absBR.M32));
+            tl = (t.X .Mul (bR.M12)) .Add (t.Y .Mul (bR.M22)) .Add (t.Z .Mul (bR.M32));
             if (tl > rarb)
             {
-                separationDistance = tl - rarb;
+                separationDistance = tl .Sub (rarb);
                 separatingAxis = new Vector3(bO.M21, bO.M22, bO.M23);
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                separationDistance = -tl - rarb;
-                separatingAxis = new Vector3(-bO.M21, -bO.M22, -bO.M23);
+                separationDistance = tl.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((bO.M21).Neg(), (bO.M22).Neg(), (bO.M23).Neg());
                 return false;
             }
 
 
             //B.Z
-            rarb = bZ + aX * absBR.M13 + aY * absBR.M23 + aZ * absBR.M33;
-            tl = t.X * bR.M13 + t.Y * bR.M23 + t.Z * bR.M33;
+            rarb = bZ .Add (aX .Mul (absBR.M13)) .Add (aY .Mul (absBR.M23)) .Add (aZ .Mul (absBR.M33));
+            tl = (t.X .Mul (bR.M13)) .Add (t.Y .Mul (bR.M23)) .Add (t.Z .Mul (bR.M33));
             if (tl > rarb)
             {
-                separationDistance = tl - rarb;
+                separationDistance = tl .Sub (rarb);
                 separatingAxis = new Vector3(bO.M31, bO.M32, bO.M33);
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                separationDistance = -tl - rarb;
-                separatingAxis = new Vector3(-bO.M31, -bO.M32, -bO.M33);
+                separationDistance = tl.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((bO.M31).Neg(), (bO.M32).Neg(), (bO.M33).Neg());
                 return false;
             }
 
@@ -406,65 +406,65 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             //Now for the edge-edge cases.
             //A.X x B.X
-            rarb = aY * absBR.M31 + aZ * absBR.M21 +
-                   bY * absBR.M13 + bZ * absBR.M12;
-            tl = t.Z * bR.M21 - t.Y * bR.M31;
+            rarb = (aY .Mul (absBR.M31)) .Add (aZ .Mul (absBR.M21)) .Add
+                   (bY .Mul (absBR.M13)) .Add (bZ .Mul (absBR.M12));
+            tl = (t.Z .Mul (bR.M21)) .Sub (t.Y .Mul (bR.M31));
             if (tl > rarb)
             {
-                separationDistance = tl - rarb;
-                separatingAxis = new Vector3(aO.M12 * bO.M13 - aO.M13 * bO.M12,
-                                             aO.M13 * bO.M11 - aO.M11 * bO.M13,
-                                             aO.M11 * bO.M12 - aO.M12 * bO.M11);
+                separationDistance = tl .Sub (rarb);
+                separatingAxis = new Vector3((aO.M12 .Mul (bO.M13)) .Sub (aO.M13 .Mul (bO.M12)),
+                                             (aO.M13 .Mul (bO.M11)) .Sub (aO.M11 .Mul (bO.M13)),
+                                             (aO.M11 .Mul (bO.M12)) .Sub (aO.M12 .Mul (bO.M11)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                separationDistance = -tl - rarb;
-                separatingAxis = new Vector3(bO.M12 * aO.M13 - bO.M13 * aO.M12,
-                                             bO.M13 * aO.M11 - bO.M11 * aO.M13,
-                                             bO.M11 * aO.M12 - bO.M12 * aO.M11);
+                separationDistance = tl.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((bO.M12 .Mul (aO.M13)) .Sub (bO.M13 .Mul (aO.M12)),
+                                             (bO.M13 .Mul (aO.M11)) .Sub (bO.M11 .Mul (aO.M13)),
+                                             (bO.M11 .Mul (aO.M12)) .Sub (bO.M12 .Mul (aO.M11)));
                 return false;
             }
 
             //A.X x B.Y
-            rarb = aY * absBR.M32 + aZ * absBR.M22 +
-                   bX * absBR.M13 + bZ * absBR.M11;
-            tl = t.Z * bR.M22 - t.Y * bR.M32;
+            rarb = (aY .Mul (absBR.M32)) .Add (aZ .Mul (absBR.M22)) .Add
+                   (bX .Mul (absBR.M13)) .Add (bZ .Mul (absBR.M11));
+            tl = (t.Z .Mul (bR.M22)) .Sub (t.Y .Mul (bR.M32));
             if (tl > rarb)
             {
-                separationDistance = tl - rarb;
-                separatingAxis = new Vector3(aO.M12 * bO.M23 - aO.M13 * bO.M22,
-                                             aO.M13 * bO.M21 - aO.M11 * bO.M23,
-                                             aO.M11 * bO.M22 - aO.M12 * bO.M21);
+                separationDistance = tl .Sub (rarb);
+                separatingAxis = new Vector3((aO.M12 .Mul (bO.M23)) .Sub (aO.M13 .Mul (bO.M22)),
+                                             (aO.M13 .Mul (bO.M21)) .Sub (aO.M11 .Mul (bO.M23)),
+                                             (aO.M11 .Mul (bO.M22)) .Sub (aO.M12 .Mul (bO.M21)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                separationDistance = -tl - rarb;
-                separatingAxis = new Vector3(bO.M22 * aO.M13 - bO.M23 * aO.M12,
-                                             bO.M23 * aO.M11 - bO.M21 * aO.M13,
-                                             bO.M21 * aO.M12 - bO.M22 * aO.M11);
+                separationDistance = tl.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((bO.M22 .Mul (aO.M13)) .Sub (bO.M23 .Mul (aO.M12)),
+                                             (bO.M23 .Mul (aO.M11)) .Sub (bO.M21 .Mul (aO.M13)),
+                                             (bO.M21 .Mul (aO.M12)) .Sub (bO.M22 .Mul (aO.M11)));
                 return false;
             }
 
             //A.X x B.Z
-            rarb = aY * absBR.M33 + aZ * absBR.M23 +
-                   bX * absBR.M12 + bY * absBR.M11;
-            tl = t.Z * bR.M23 - t.Y * bR.M33;
+            rarb = (aY .Mul (absBR.M33)) .Add (aZ .Mul (absBR.M23)) .Add
+                   (bX .Mul (absBR.M12)) .Add (bY .Mul (absBR.M11));
+            tl = (t.Z .Mul (bR.M23)) .Sub (t.Y .Mul (bR.M33));
             if (tl > rarb)
             {
-                separationDistance = tl - rarb;
-                separatingAxis = new Vector3(aO.M12 * bO.M33 - aO.M13 * bO.M32,
-                                             aO.M13 * bO.M31 - aO.M11 * bO.M33,
-                                             aO.M11 * bO.M32 - aO.M12 * bO.M31);
+                separationDistance = tl .Sub (rarb);
+                separatingAxis = new Vector3((aO.M12 .Mul (bO.M33)) .Sub (aO.M13 .Mul (bO.M32)),
+                                             (aO.M13 .Mul (bO.M31)) .Sub (aO.M11 .Mul (bO.M33)),
+                                             (aO.M11 .Mul (bO.M32)) .Sub (aO.M12 .Mul (bO.M31)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                separationDistance = -tl - rarb;
-                separatingAxis = new Vector3(bO.M32 * aO.M13 - bO.M33 * aO.M12,
-                                             bO.M33 * aO.M11 - bO.M31 * aO.M13,
-                                             bO.M31 * aO.M12 - bO.M32 * aO.M11);
+                separationDistance = tl.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((bO.M32 .Mul (aO.M13)) .Sub (bO.M33 .Mul (aO.M12)),
+                                             (bO.M33 .Mul (aO.M11)) .Sub (bO.M31 .Mul (aO.M13)),
+                                             (bO.M31 .Mul (aO.M12)) .Sub (bO.M32 .Mul (aO.M11)));
                 return false;
             }
 
@@ -473,65 +473,65 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             #region A.Y x B.()
 
             //A.Y x B.X
-            rarb = aX * absBR.M31 + aZ * absBR.M11 +
-                   bY * absBR.M23 + bZ * absBR.M22;
-            tl = t.X * bR.M31 - t.Z * bR.M11;
+            rarb = (aX .Mul (absBR.M31)) .Add (aZ .Mul (absBR.M11)) .Add
+                   (bY .Mul (absBR.M23)) .Add (bZ .Mul (absBR.M22));
+            tl = (t.X .Mul (bR.M31)) .Sub (t.Z .Mul (bR.M11));
             if (tl > rarb)
             {
-                separationDistance = tl - rarb;
-                separatingAxis = new Vector3(aO.M22 * bO.M13 - aO.M23 * bO.M12,
-                                             aO.M23 * bO.M11 - aO.M21 * bO.M13,
-                                             aO.M21 * bO.M12 - aO.M22 * bO.M11);
+                separationDistance = tl .Sub (rarb);
+                separatingAxis = new Vector3((aO.M22 .Mul (bO.M13)) .Sub (aO.M23 .Mul (bO.M12)),
+                                             (aO.M23 .Mul (bO.M11)) .Sub (aO.M21 .Mul (bO.M13)),
+                                             (aO.M21 .Mul (bO.M12)) .Sub (aO.M22 .Mul (bO.M11)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                separationDistance = -tl - rarb;
-                separatingAxis = new Vector3(bO.M12 * aO.M23 - bO.M13 * aO.M22,
-                                             bO.M13 * aO.M21 - bO.M11 * aO.M23,
-                                             bO.M11 * aO.M22 - bO.M12 * aO.M21);
+                separationDistance = tl.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((bO.M12 .Mul (aO.M23)) .Sub (bO.M13 .Mul (aO.M22)),
+                                             (bO.M13 .Mul (aO.M21)) .Sub (bO.M11 .Mul (aO.M23)),
+                                             (bO.M11 .Mul (aO.M22)) .Sub (bO.M12 .Mul (aO.M21)));
                 return false;
             }
 
             //A.Y x B.Y
-            rarb = aX * absBR.M32 + aZ * absBR.M12 +
-                   bX * absBR.M23 + bZ * absBR.M21;
-            tl = t.X * bR.M32 - t.Z * bR.M12;
+            rarb = (aX .Mul (absBR.M32)) .Add (aZ .Mul (absBR.M12)) .Add
+                   (bX .Mul (absBR.M23)) .Add (bZ .Mul (absBR.M21));
+            tl = (t.X .Mul (bR.M32)) .Sub (t.Z .Mul (bR.M12));
             if (tl > rarb)
             {
-                separationDistance = tl - rarb;
-                separatingAxis = new Vector3(aO.M22 * bO.M23 - aO.M23 * bO.M22,
-                                             aO.M23 * bO.M21 - aO.M21 * bO.M23,
-                                             aO.M21 * bO.M22 - aO.M22 * bO.M21);
+                separationDistance = tl .Sub (rarb);
+                separatingAxis = new Vector3((aO.M22 .Mul (bO.M23)) .Sub (aO.M23 .Mul (bO.M22)),
+                                             (aO.M23 .Mul (bO.M21)) .Sub (aO.M21 .Mul (bO.M23)),
+                                             (aO.M21 .Mul (bO.M22)) .Sub (aO.M22 .Mul (bO.M21)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                separationDistance = -tl - rarb;
-                separatingAxis = new Vector3(bO.M22 * aO.M23 - bO.M23 * aO.M22,
-                                             bO.M23 * aO.M21 - bO.M21 * aO.M23,
-                                             bO.M21 * aO.M22 - bO.M22 * aO.M21);
+                separationDistance = tl.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((bO.M22 .Mul (aO.M23)) .Sub (bO.M23 .Mul (aO.M22)),
+                                             (bO.M23 .Mul (aO.M21)) .Sub (bO.M21 .Mul (aO.M23)),
+                                             (bO.M21 .Mul (aO.M22)) .Sub (bO.M22 .Mul (aO.M21)));
                 return false;
             }
 
             //A.Y x B.Z
-            rarb = aX * absBR.M33 + aZ * absBR.M13 +
-                   bX * absBR.M22 + bY * absBR.M21;
-            tl = t.X * bR.M33 - t.Z * bR.M13;
+            rarb = (aX .Mul (absBR.M33)) .Add (aZ .Mul (absBR.M13)) .Add
+                   (bX .Mul (absBR.M22)) .Add (bY .Mul (absBR.M21));
+            tl = (t.X .Mul (bR.M33)) .Sub (t.Z .Mul (bR.M13));
             if (tl > rarb)
             {
-                separationDistance = tl - rarb;
-                separatingAxis = new Vector3(aO.M22 * bO.M33 - aO.M23 * bO.M32,
-                                             aO.M23 * bO.M31 - aO.M21 * bO.M33,
-                                             aO.M21 * bO.M32 - aO.M22 * bO.M31);
+                separationDistance = tl .Sub (rarb);
+                separatingAxis = new Vector3((aO.M22 .Mul (bO.M33)) .Sub (aO.M23 .Mul (bO.M32)),
+                                             (aO.M23 .Mul (bO.M31)) .Sub (aO.M21 .Mul (bO.M33)),
+                                             (aO.M21 .Mul (bO.M32)) .Sub (aO.M22 .Mul (bO.M31)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                separationDistance = -tl - rarb;
-                separatingAxis = new Vector3(bO.M32 * aO.M23 - bO.M33 * aO.M22,
-                                             bO.M33 * aO.M21 - bO.M31 * aO.M23,
-                                             bO.M31 * aO.M22 - bO.M32 * aO.M21);
+                separationDistance = tl.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((bO.M32 .Mul (aO.M23)) .Sub (bO.M33 .Mul (aO.M22)),
+                                             (bO.M33 .Mul (aO.M21)) .Sub (bO.M31 .Mul (aO.M23)),
+                                             (bO.M31 .Mul (aO.M22)) .Sub (bO.M32 .Mul (aO.M21)));
                 return false;
             }
 
@@ -540,71 +540,71 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             #region A.Z x B.()
 
             //A.Z x B.X
-            rarb = aX * absBR.M21 + aY * absBR.M11 +
-                   bY * absBR.M33 + bZ * absBR.M32;
-            tl = t.Y * bR.M11 - t.X * bR.M21;
+            rarb = (aX .Mul (absBR.M21)) .Add (aY .Mul (absBR.M11)) .Add
+                   (bY .Mul (absBR.M33)) .Add (bZ .Mul (absBR.M32));
+            tl = (t.Y .Mul (bR.M11)) .Sub (t.X .Mul (bR.M21));
             if (tl > rarb)
             {
-                separationDistance = tl - rarb;
-                separatingAxis = new Vector3(aO.M32 * bO.M13 - aO.M33 * bO.M12,
-                                             aO.M33 * bO.M11 - aO.M31 * bO.M13,
-                                             aO.M31 * bO.M12 - aO.M32 * bO.M11);
+                separationDistance = tl .Sub (rarb);
+                separatingAxis = new Vector3((aO.M32 .Mul (bO.M13)) .Sub (aO.M33 .Mul (bO.M12)),
+                                             (aO.M33 .Mul (bO.M11)) .Sub (aO.M31 .Mul (bO.M13)),
+                                             (aO.M31 .Mul (bO.M12)) .Sub (aO.M32 .Mul (bO.M11)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                separationDistance = -tl - rarb;
-                separatingAxis = new Vector3(bO.M12 * aO.M33 - bO.M13 * aO.M32,
-                                             bO.M13 * aO.M31 - bO.M11 * aO.M33,
-                                             bO.M11 * aO.M32 - bO.M12 * aO.M31);
+                separationDistance = tl.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((bO.M12 .Mul (aO.M33)) .Sub (bO.M13 .Mul (aO.M32)),
+                                             (bO.M13 .Mul (aO.M31)) .Sub (bO.M11 .Mul (aO.M33)),
+                                             (bO.M11 .Mul (aO.M32)) .Sub (bO.M12 .Mul (aO.M31)));
                 return false;
             }
 
             //A.Z x B.Y
-            rarb = aX * absBR.M22 + aY * absBR.M12 +
-                   bX * absBR.M33 + bZ * absBR.M31;
-            tl = t.Y * bR.M12 - t.X * bR.M22;
+            rarb = (aX .Mul (absBR.M22)) .Add (aY .Mul (absBR.M12)) .Add
+                   (bX .Mul (absBR.M33)) .Add (bZ .Mul (absBR.M31));
+            tl = (t.Y .Mul (bR.M12)) .Sub (t.X .Mul (bR.M22));
             if (tl > rarb)
             {
-                separationDistance = tl - rarb;
-                separatingAxis = new Vector3(aO.M32 * bO.M23 - aO.M33 * bO.M22,
-                                             aO.M33 * bO.M21 - aO.M31 * bO.M23,
-                                             aO.M31 * bO.M22 - aO.M32 * bO.M21);
+                separationDistance = tl .Sub (rarb);
+                separatingAxis = new Vector3((aO.M32 .Mul (bO.M23)) .Sub (aO.M33 .Mul (bO.M22)),
+                                             (aO.M33 .Mul (bO.M21)) .Sub (aO.M31 .Mul (bO.M23)),
+                                             (aO.M31 .Mul (bO.M22)) .Sub (aO.M32 .Mul (bO.M21)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                separationDistance = -tl - rarb;
-                separatingAxis = new Vector3(bO.M22 * aO.M33 - bO.M23 * aO.M32,
-                                             bO.M23 * aO.M31 - bO.M21 * aO.M33,
-                                             bO.M21 * aO.M32 - bO.M22 * aO.M31);
+                separationDistance = tl.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((bO.M22 .Mul (aO.M33)) .Sub (bO.M23 .Mul (aO.M32)),
+                                             (bO.M23 .Mul (aO.M31)) .Sub (bO.M21 .Mul (aO.M33)),
+                                             (bO.M21 .Mul (aO.M32)) .Sub (bO.M22 .Mul (aO.M31)));
                 return false;
             }
 
             //A.Z x B.Z
-            rarb = aX * absBR.M23 + aY * absBR.M13 +
-                   bX * absBR.M32 + bY * absBR.M31;
-            tl = t.Y * bR.M13 - t.X * bR.M23;
+            rarb = (aX .Mul (absBR.M23)) .Add (aY .Mul (absBR.M13)) .Add
+                   (bX .Mul (absBR.M32)) .Add (bY .Mul (absBR.M31));
+            tl = (t.Y .Mul (bR.M13)) .Sub (t.X .Mul (bR.M23));
             if (tl > rarb)
             {
-                separationDistance = tl - rarb;
-                separatingAxis = new Vector3(aO.M32 * bO.M33 - aO.M33 * bO.M32,
-                                             aO.M33 * bO.M31 - aO.M31 * bO.M33,
-                                             aO.M31 * bO.M32 - aO.M32 * bO.M31);
+                separationDistance = tl .Sub (rarb);
+                separatingAxis = new Vector3((aO.M32 .Mul (bO.M33)) .Sub (aO.M33 .Mul (bO.M32)),
+                                             (aO.M33 .Mul (bO.M31)) .Sub (aO.M31 .Mul (bO.M33)),
+                                             (aO.M31 .Mul (bO.M32)) .Sub (aO.M32 .Mul (bO.M31)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                separationDistance = -tl - rarb;
-                separatingAxis = new Vector3(bO.M32 * aO.M33 - bO.M33 * aO.M32,
-                                             bO.M33 * aO.M31 - bO.M31 * aO.M33,
-                                             bO.M31 * aO.M32 - bO.M32 * aO.M31);
+                separationDistance = tl.Neg() .Sub (rarb);
+                separatingAxis = new Vector3((bO.M32 .Mul (aO.M33)) .Sub (bO.M33 .Mul (aO.M32)),
+                                             (bO.M33 .Mul (aO.M31)) .Sub (bO.M31 .Mul (aO.M33)),
+                                             (bO.M31 .Mul (aO.M32)) .Sub (bO.M32 .Mul (aO.M31)));
                 return false;
             }
 
             #endregion
 
-            separationDistance = F64.C0;
+            separationDistance = Fix32.Zero;
             separatingAxis = Vector3.Zero;
             return true;
         }
@@ -619,15 +619,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         /// <param name="transformA">Transform to apply to shape A.</param>
         /// <param name="transformB">Transform to apply to shape B.</param>
         /// <returns>Whether or not the boxes collide.</returns>
-        public static bool AreBoxesCollidingWithPenetration(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB, out Fix64 distance, out Vector3 axis)
+        public static bool AreBoxesCollidingWithPenetration(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB, out Fix32 distance, out Vector3 axis)
         {
-            Fix64 aX = a.HalfWidth;
-            Fix64 aY = a.HalfHeight;
-            Fix64 aZ = a.HalfLength;
+            Fix32 aX = a.HalfWidth;
+            Fix32 aY = a.HalfHeight;
+            Fix32 aZ = a.HalfLength;
 
-            Fix64 bX = b.HalfWidth;
-            Fix64 bY = b.HalfHeight;
-            Fix64 bZ = b.HalfLength;
+            Fix32 bX = b.HalfWidth;
+            Fix32 bY = b.HalfHeight;
+            Fix32 bZ = b.HalfLength;
 
             //Relative rotation from A to B.
             Matrix3x3 bR;
@@ -641,42 +641,42 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 t;
             Vector3.Subtract(ref transformB.Position, ref transformA.Position, out t);
 
-            Fix64 tempDistance;
-            Fix64 minimumDistance = -Fix64.MaxValue;
+            Fix32 tempDistance;
+            Fix32 minimumDistance = Fix32.MaxValue.Neg();
             var minimumAxis = new Vector3();
 
             #region A Face Normals
 
-            bR.M11 = aO.M11 * bO.M11 + aO.M12 * bO.M12 + aO.M13 * bO.M13;
-            bR.M12 = aO.M11 * bO.M21 + aO.M12 * bO.M22 + aO.M13 * bO.M23;
-            bR.M13 = aO.M11 * bO.M31 + aO.M12 * bO.M32 + aO.M13 * bO.M33;
+            bR.M11 = (aO.M11 .Mul (bO.M11)) .Add (aO.M12 .Mul (bO.M12)) .Add (aO.M13 .Mul (bO.M13));
+            bR.M12 = (aO.M11 .Mul (bO.M21)) .Add (aO.M12 .Mul (bO.M22)) .Add (aO.M13 .Mul (bO.M23));
+            bR.M13 = (aO.M11 .Mul (bO.M31)) .Add (aO.M12 .Mul (bO.M32)) .Add (aO.M13 .Mul (bO.M33));
             Matrix3x3 absBR;
             //Epsilons are added to deal with near-parallel edges.
-            absBR.M11 = Fix64.Abs(bR.M11) + Toolbox.Epsilon;
-            absBR.M12 = Fix64.Abs(bR.M12) + Toolbox.Epsilon;
-            absBR.M13 = Fix64.Abs(bR.M13) + Toolbox.Epsilon;
-            Fix64 tX = t.X;
-            t.X = t.X * aO.M11 + t.Y * aO.M12 + t.Z * aO.M13;
+            absBR.M11 = bR.M11.Abs() .Add (Toolbox.Epsilon);
+            absBR.M12 = bR.M12.Abs() .Add (Toolbox.Epsilon);
+            absBR.M13 = bR.M13.Abs() .Add (Toolbox.Epsilon);
+            Fix32 tX = t.X;
+            t.X = (t.X .Mul (aO.M11)) .Add (t.Y .Mul (aO.M12)) .Add (t.Z .Mul (aO.M13));
 
             //Test the axes defines by entity A's rotation matrix.
             //A.X
-            Fix64 rarb = aX + bX * absBR.M11 + bY * absBR.M12 + bZ * absBR.M13;
+            Fix32 rarb = aX .Add (bX .Mul (absBR.M11)) .Add (bY .Mul (absBR.M12)) .Add (bZ .Mul (absBR.M13));
             if (t.X > rarb)
             {
-                distance = t.X - rarb;
+                distance = t.X .Sub (rarb);
                 axis = new Vector3(aO.M11, aO.M12, aO.M13);
                 return false;
             }
-            if (t.X < -rarb)
+            if (t.X < rarb.Neg())
             {
-                distance = -t.X - rarb;
-                axis = new Vector3(-aO.M11, -aO.M12, -aO.M13);
+                distance = t.X.Neg() .Sub (rarb);
+                axis = new Vector3((aO.M11).Neg(), (aO.M12).Neg(), (aO.M13).Neg());
                 return false;
             }
             //Inside
-            if (t.X > F64.C0)
+            if (t.X > Fix32.Zero)
             {
-                tempDistance = t.X - rarb;
+                tempDistance = t.X .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
@@ -685,42 +685,42 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
             else
             {
-                tempDistance = -t.X - rarb;
+                tempDistance = t.X.Neg() .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    minimumAxis = new Vector3(-aO.M11, -aO.M12, -aO.M13);
+                    minimumAxis = new Vector3((aO.M11).Neg(), (aO.M12).Neg(), (aO.M13).Neg());
                 }
             }
 
 
-            bR.M21 = aO.M21 * bO.M11 + aO.M22 * bO.M12 + aO.M23 * bO.M13;
-            bR.M22 = aO.M21 * bO.M21 + aO.M22 * bO.M22 + aO.M23 * bO.M23;
-            bR.M23 = aO.M21 * bO.M31 + aO.M22 * bO.M32 + aO.M23 * bO.M33;
-            absBR.M21 = Fix64.Abs(bR.M21) + Toolbox.Epsilon;
-            absBR.M22 = Fix64.Abs(bR.M22) + Toolbox.Epsilon;
-            absBR.M23 = Fix64.Abs(bR.M23) + Toolbox.Epsilon;
-            Fix64 tY = t.Y;
-            t.Y = tX * aO.M21 + t.Y * aO.M22 + t.Z * aO.M23;
+            bR.M21 = (aO.M21 .Mul (bO.M11)) .Add (aO.M22 .Mul (bO.M12)) .Add (aO.M23 .Mul (bO.M13));
+            bR.M22 = (aO.M21 .Mul (bO.M21)) .Add (aO.M22 .Mul (bO.M22)) .Add (aO.M23 .Mul (bO.M23));
+            bR.M23 = (aO.M21 .Mul (bO.M31)) .Add (aO.M22 .Mul (bO.M32)) .Add (aO.M23 .Mul (bO.M33));
+            absBR.M21 = bR.M21.Abs() .Add (Toolbox.Epsilon);
+            absBR.M22 = bR.M22.Abs() .Add (Toolbox.Epsilon);
+            absBR.M23 = bR.M23.Abs() .Add (Toolbox.Epsilon);
+            Fix32 tY = t.Y;
+            t.Y = (tX .Mul (aO.M21)) .Add (t.Y .Mul (aO.M22)) .Add (t.Z .Mul (aO.M23));
 
             //A.Y
-            rarb = aY + bX * absBR.M21 + bY * absBR.M22 + bZ * absBR.M23;
+            rarb = aY .Add (bX .Mul (absBR.M21)) .Add (bY .Mul (absBR.M22)) .Add (bZ .Mul (absBR.M23));
             if (t.Y > rarb)
             {
-                distance = t.Y - rarb;
+                distance = t.Y .Sub (rarb);
                 axis = new Vector3(aO.M21, aO.M22, aO.M23);
                 return false;
             }
-            if (t.Y < -rarb)
+            if (t.Y < rarb.Neg())
             {
-                distance = -t.Y - rarb;
-                axis = new Vector3(-aO.M21, -aO.M22, -aO.M23);
+                distance = t.Y.Neg() .Sub (rarb);
+                axis = new Vector3((aO.M21).Neg(), (aO.M22).Neg(), (aO.M23).Neg());
                 return false;
             }
             //Inside
-            if (t.Y > F64.C0)
+            if (t.Y > Fix32.Zero)
             {
-                tempDistance = t.Y - rarb;
+                tempDistance = t.Y .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
@@ -729,40 +729,40 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
             else
             {
-                tempDistance = -t.Y - rarb;
+                tempDistance = t.Y.Neg() .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    minimumAxis = new Vector3(-aO.M21, -aO.M22, -aO.M23);
+                    minimumAxis = new Vector3((aO.M21).Neg(), (aO.M22).Neg(), (aO.M23).Neg());
                 }
             }
 
-            bR.M31 = aO.M31 * bO.M11 + aO.M32 * bO.M12 + aO.M33 * bO.M13;
-            bR.M32 = aO.M31 * bO.M21 + aO.M32 * bO.M22 + aO.M33 * bO.M23;
-            bR.M33 = aO.M31 * bO.M31 + aO.M32 * bO.M32 + aO.M33 * bO.M33;
-            absBR.M31 = Fix64.Abs(bR.M31) + Toolbox.Epsilon;
-            absBR.M32 = Fix64.Abs(bR.M32) + Toolbox.Epsilon;
-            absBR.M33 = Fix64.Abs(bR.M33) + Toolbox.Epsilon;
-            t.Z = tX * aO.M31 + tY * aO.M32 + t.Z * aO.M33;
+            bR.M31 = (aO.M31 .Mul (bO.M11)) .Add (aO.M32 .Mul (bO.M12)) .Add (aO.M33 .Mul (bO.M13));
+            bR.M32 = (aO.M31 .Mul (bO.M21)) .Add (aO.M32 .Mul (bO.M22)) .Add (aO.M33 .Mul (bO.M23));
+            bR.M33 = (aO.M31 .Mul (bO.M31)) .Add (aO.M32 .Mul (bO.M32)) .Add (aO.M33 .Mul (bO.M33));
+            absBR.M31 = bR.M31.Abs() .Add (Toolbox.Epsilon);
+            absBR.M32 = bR.M32.Abs() .Add (Toolbox.Epsilon);
+            absBR.M33 = bR.M33.Abs() .Add (Toolbox.Epsilon);
+            t.Z = (tX .Mul (aO.M31)) .Add (tY .Mul (aO.M32)) .Add (t.Z .Mul (aO.M33));
 
             //A.Z
-            rarb = aZ + bX * absBR.M31 + bY * absBR.M32 + bZ * absBR.M33;
+            rarb = aZ .Add (bX .Mul (absBR.M31)) .Add (bY .Mul (absBR.M32)) .Add (bZ .Mul (absBR.M33));
             if (t.Z > rarb)
             {
-                distance = t.Z - rarb;
+                distance = t.Z .Sub (rarb);
                 axis = new Vector3(aO.M31, aO.M32, aO.M33);
                 return false;
             }
-            if (t.Z < -rarb)
+            if (t.Z < rarb.Neg())
             {
-                distance = -t.Z - rarb;
-                axis = new Vector3(-aO.M31, -aO.M32, -aO.M33);
+                distance = t.Z.Neg() .Sub (rarb);
+                axis = new Vector3((aO.M31).Neg(), (aO.M32).Neg(), (aO.M33).Neg());
                 return false;
             }
             //Inside
-            if (t.Z > F64.C0)
+            if (t.Z > Fix32.Zero)
             {
-                tempDistance = t.Z - rarb;
+                tempDistance = t.Z .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
@@ -771,11 +771,11 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
             else
             {
-                tempDistance = -t.Z - rarb;
+                tempDistance = t.Z.Neg() .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    minimumAxis = new Vector3(-aO.M31, -aO.M32, -aO.M33);
+                    minimumAxis = new Vector3((aO.M31).Neg(), (aO.M32).Neg(), (aO.M33).Neg());
                 }
             }
 
@@ -785,24 +785,24 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             //Test the axes defines by entity B's rotation matrix.
             //B.X
-            rarb = bX + aX * absBR.M11 + aY * absBR.M21 + aZ * absBR.M31;
-            Fix64 tl = t.X * bR.M11 + t.Y * bR.M21 + t.Z * bR.M31;
+            rarb = bX .Add (aX .Mul (absBR.M11)) .Add (aY .Mul (absBR.M21)) .Add (aZ .Mul (absBR.M31));
+            Fix32 tl = (t.X .Mul (bR.M11)) .Add (t.Y .Mul (bR.M21)) .Add (t.Z .Mul (bR.M31));
             if (tl > rarb)
             {
-                distance = tl - rarb;
+                distance = tl .Sub (rarb);
                 axis = new Vector3(bO.M11, bO.M12, bO.M13);
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(-bO.M11, -bO.M12, -bO.M13);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((bO.M11).Neg(), (bO.M12).Neg(), (bO.M13).Neg());
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempDistance = tl - rarb;
+                tempDistance = tl .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
@@ -811,33 +811,33 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
             else
             {
-                tempDistance = -tl - rarb;
+                tempDistance = tl.Neg() .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    minimumAxis = new Vector3(-bO.M11, -bO.M12, -bO.M13);
+                    minimumAxis = new Vector3((bO.M11).Neg(), (bO.M12).Neg(), (bO.M13).Neg());
                 }
             }
 
             //B.Y
-            rarb = bY + aX * absBR.M12 + aY * absBR.M22 + aZ * absBR.M32;
-            tl = t.X * bR.M12 + t.Y * bR.M22 + t.Z * bR.M32;
+            rarb = bY .Add (aX .Mul (absBR.M12)) .Add (aY .Mul (absBR.M22)) .Add (aZ .Mul (absBR.M32));
+            tl = (t.X .Mul (bR.M12)) .Add (t.Y .Mul (bR.M22)) .Add (t.Z .Mul (bR.M32));
             if (tl > rarb)
             {
-                distance = tl - rarb;
+                distance = tl .Sub (rarb);
                 axis = new Vector3(bO.M21, bO.M22, bO.M23);
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(-bO.M21, -bO.M22, -bO.M23);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((bO.M21).Neg(), (bO.M22).Neg(), (bO.M23).Neg());
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempDistance = tl - rarb;
+                tempDistance = tl .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
@@ -846,33 +846,33 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
             else
             {
-                tempDistance = -tl - rarb;
+                tempDistance = tl.Neg() .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    minimumAxis = new Vector3(-bO.M21, -bO.M22, -bO.M23);
+                    minimumAxis = new Vector3((bO.M21).Neg(), (bO.M22).Neg(), (bO.M23).Neg());
                 }
             }
 
             //B.Z
-            rarb = bZ + aX * absBR.M13 + aY * absBR.M23 + aZ * absBR.M33;
-            tl = t.X * bR.M13 + t.Y * bR.M23 + t.Z * bR.M33;
+            rarb = bZ .Add (aX .Mul (absBR.M13)) .Add (aY .Mul (absBR.M23)) .Add (aZ .Mul (absBR.M33));
+            tl = (t.X .Mul (bR.M13)) .Add (t.Y .Mul (bR.M23)) .Add (t.Z .Mul (bR.M33));
             if (tl > rarb)
             {
-                distance = tl - rarb;
+                distance = tl .Sub (rarb);
                 axis = new Vector3(bO.M31, bO.M32, bO.M33);
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(-bO.M31, -bO.M32, -bO.M33);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((bO.M31).Neg(), (bO.M32).Neg(), (bO.M33).Neg());
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempDistance = tl - rarb;
+                tempDistance = tl .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
@@ -881,180 +881,180 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
             else
             {
-                tempDistance = -tl - rarb;
+                tempDistance = tl.Neg() .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    minimumAxis = new Vector3(-bO.M31, -bO.M32, -bO.M33);
+                    minimumAxis = new Vector3((bO.M31).Neg(), (bO.M32).Neg(), (bO.M33).Neg());
                 }
             }
 
             #endregion
 
-            Fix64 axisLengthInverse;
+            Fix32 axisLengthInverse;
             Vector3 tempAxis;
 
             #region A.X x B.()
 
             //Now for the edge-edge cases.
             //A.X x B.X
-            rarb = aY * absBR.M31 + aZ * absBR.M21 +
-                   bY * absBR.M13 + bZ * absBR.M12;
-            tl = t.Z * bR.M21 - t.Y * bR.M31;
+            rarb = (aY .Mul (absBR.M31)) .Add (aZ .Mul (absBR.M21)) .Add
+                   (bY .Mul (absBR.M13)) .Add (bZ .Mul (absBR.M12));
+            tl = (t.Z .Mul (bR.M21)) .Sub (t.Y .Mul (bR.M31));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(aO.M12 * bO.M13 - aO.M13 * bO.M12,
-                                   aO.M13 * bO.M11 - aO.M11 * bO.M13,
-                                   aO.M11 * bO.M12 - aO.M12 * bO.M11);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((aO.M12 .Mul (bO.M13)) .Sub (aO.M13 .Mul (bO.M12)),
+                                   (aO.M13 .Mul (bO.M11)) .Sub (aO.M11 .Mul (bO.M13)),
+                                   (aO.M11 .Mul (bO.M12)) .Sub (aO.M12 .Mul (bO.M11)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(bO.M12 * aO.M13 - bO.M13 * aO.M12,
-                                   bO.M13 * aO.M11 - bO.M11 * aO.M13,
-                                   bO.M11 * aO.M12 - bO.M12 * aO.M11);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((bO.M12 .Mul (aO.M13)) .Sub (bO.M13 .Mul (aO.M12)),
+                                   (bO.M13 .Mul (aO.M11)) .Sub (bO.M11 .Mul (aO.M13)),
+                                   (bO.M11 .Mul (aO.M12)) .Sub (bO.M12 .Mul (aO.M11)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(aO.M12 * bO.M13 - aO.M13 * bO.M12,
-                                       aO.M13 * bO.M11 - aO.M11 * bO.M13,
-                                       aO.M11 * bO.M12 - aO.M12 * bO.M11);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((aO.M12 .Mul (bO.M13)) .Sub (aO.M13 .Mul (bO.M12)),
+                                       (aO.M13 .Mul (bO.M11)) .Sub (aO.M11 .Mul (bO.M13)),
+                                       (aO.M11 .Mul (bO.M12)) .Sub (aO.M12 .Mul (bO.M11)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(bO.M12 * aO.M13 - bO.M13 * aO.M12,
-                                       bO.M13 * aO.M11 - bO.M11 * aO.M13,
-                                       bO.M11 * aO.M12 - bO.M12 * aO.M11);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((bO.M12 .Mul (aO.M13)) .Sub (bO.M13 .Mul (aO.M12)),
+                                       (bO.M13 .Mul (aO.M11)) .Sub (bO.M11 .Mul (aO.M13)),
+                                       (bO.M11 .Mul (aO.M12)) .Sub (bO.M12 .Mul (aO.M11)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
 
             //A.X x B.Y
-            rarb = aY * absBR.M32 + aZ * absBR.M22 +
-                   bX * absBR.M13 + bZ * absBR.M11;
-            tl = t.Z * bR.M22 - t.Y * bR.M32;
+            rarb = (aY .Mul (absBR.M32)) .Add (aZ .Mul (absBR.M22)) .Add
+                   (bX .Mul (absBR.M13)) .Add (bZ .Mul (absBR.M11));
+            tl = (t.Z .Mul (bR.M22)) .Sub (t.Y .Mul (bR.M32));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(aO.M12 * bO.M23 - aO.M13 * bO.M22,
-                                   aO.M13 * bO.M21 - aO.M11 * bO.M23,
-                                   aO.M11 * bO.M22 - aO.M12 * bO.M21);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((aO.M12 .Mul (bO.M23)) .Sub (aO.M13 .Mul (bO.M22)),
+                                   (aO.M13 .Mul (bO.M21)) .Sub (aO.M11 .Mul (bO.M23)),
+                                   (aO.M11 .Mul (bO.M22)) .Sub (aO.M12 .Mul (bO.M21)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(bO.M22 * aO.M13 - bO.M23 * aO.M12,
-                                   bO.M23 * aO.M11 - bO.M21 * aO.M13,
-                                   bO.M21 * aO.M12 - bO.M22 * aO.M11);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((bO.M22 .Mul (aO.M13)) .Sub (bO.M23 .Mul (aO.M12)),
+                                   (bO.M23 .Mul (aO.M11)) .Sub (bO.M21 .Mul (aO.M13)),
+                                   (bO.M21 .Mul (aO.M12)) .Sub (bO.M22 .Mul (aO.M11)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(aO.M12 * bO.M23 - aO.M13 * bO.M22,
-                                       aO.M13 * bO.M21 - aO.M11 * bO.M23,
-                                       aO.M11 * bO.M22 - aO.M12 * bO.M21);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((aO.M12 .Mul (bO.M23)) .Sub (aO.M13 .Mul (bO.M22)),
+                                       (aO.M13 .Mul (bO.M21)) .Sub (aO.M11 .Mul (bO.M23)),
+                                       (aO.M11 .Mul (bO.M22)) .Sub (aO.M12 .Mul (bO.M21)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(bO.M22 * aO.M13 - bO.M23 * aO.M12,
-                                       bO.M23 * aO.M11 - bO.M21 * aO.M13,
-                                       bO.M21 * aO.M12 - bO.M22 * aO.M11);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((bO.M22 .Mul (aO.M13)) .Sub (bO.M23 .Mul (aO.M12)),
+                                       (bO.M23 .Mul (aO.M11)) .Sub (bO.M21 .Mul (aO.M13)),
+                                       (bO.M21 .Mul (aO.M12)) .Sub (bO.M22 .Mul (aO.M11)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
 
             //A.X x B.Z
-            rarb = aY * absBR.M33 + aZ * absBR.M23 +
-                   bX * absBR.M12 + bY * absBR.M11;
-            tl = t.Z * bR.M23 - t.Y * bR.M33;
+            rarb = (aY .Mul (absBR.M33)) .Add (aZ .Mul (absBR.M23)) .Add
+                   (bX .Mul (absBR.M12)) .Add (bY .Mul (absBR.M11));
+            tl = (t.Z .Mul (bR.M23)) .Sub (t.Y .Mul (bR.M33));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(aO.M12 * bO.M33 - aO.M13 * bO.M32,
-                                   aO.M13 * bO.M31 - aO.M11 * bO.M33,
-                                   aO.M11 * bO.M32 - aO.M12 * bO.M31);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((aO.M12 .Mul (bO.M33)) .Sub (aO.M13 .Mul (bO.M32)),
+                                   (aO.M13 .Mul (bO.M31)) .Sub (aO.M11 .Mul (bO.M33)),
+                                   (aO.M11 .Mul (bO.M32)) .Sub (aO.M12 .Mul (bO.M31)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(bO.M32 * aO.M13 - bO.M33 * aO.M12,
-                                   bO.M33 * aO.M11 - bO.M31 * aO.M13,
-                                   bO.M31 * aO.M12 - bO.M32 * aO.M11);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((bO.M32 .Mul (aO.M13)) .Sub (bO.M33 .Mul (aO.M12)),
+                                   (bO.M33 .Mul (aO.M11)) .Sub (bO.M31 .Mul (aO.M13)),
+                                   (bO.M31 .Mul (aO.M12)) .Sub (bO.M32 .Mul (aO.M11)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(aO.M12 * bO.M33 - aO.M13 * bO.M32,
-                                       aO.M13 * bO.M31 - aO.M11 * bO.M33,
-                                       aO.M11 * bO.M32 - aO.M12 * bO.M31);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((aO.M12 .Mul (bO.M33)) .Sub (aO.M13 .Mul (bO.M32)),
+                                       (aO.M13 .Mul (bO.M31)) .Sub (aO.M11 .Mul (bO.M33)),
+                                       (aO.M11 .Mul (bO.M32)) .Sub (aO.M12 .Mul (bO.M31)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(bO.M32 * aO.M13 - bO.M33 * aO.M12,
-                                       bO.M33 * aO.M11 - bO.M31 * aO.M13,
-                                       bO.M31 * aO.M12 - bO.M32 * aO.M11);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((bO.M32 .Mul (aO.M13)) .Sub (bO.M33 .Mul (aO.M12)),
+                                       (bO.M33 .Mul (aO.M11)) .Sub (bO.M31 .Mul (aO.M13)),
+                                       (bO.M31 .Mul (aO.M12)) .Sub (bO.M32 .Mul (aO.M11)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1064,163 +1064,163 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             #region A.Y x B.()
 
             //A.Y x B.X
-            rarb = aX * absBR.M31 + aZ * absBR.M11 +
-                   bY * absBR.M23 + bZ * absBR.M22;
-            tl = t.X * bR.M31 - t.Z * bR.M11;
+            rarb = (aX .Mul (absBR.M31)) .Add (aZ .Mul (absBR.M11)) .Add
+                   (bY .Mul (absBR.M23)) .Add (bZ .Mul (absBR.M22));
+            tl = (t.X .Mul (bR.M31)) .Sub (t.Z .Mul (bR.M11));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(aO.M22 * bO.M13 - aO.M23 * bO.M12,
-                                   aO.M23 * bO.M11 - aO.M21 * bO.M13,
-                                   aO.M21 * bO.M12 - aO.M22 * bO.M11);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((aO.M22 .Mul (bO.M13)) .Sub (aO.M23 .Mul (bO.M12)),
+                                   (aO.M23 .Mul (bO.M11)) .Sub (aO.M21 .Mul (bO.M13)),
+                                   (aO.M21 .Mul (bO.M12)) .Sub (aO.M22 .Mul (bO.M11)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(bO.M12 * aO.M23 - bO.M13 * aO.M22,
-                                   bO.M13 * aO.M21 - bO.M11 * aO.M23,
-                                   bO.M11 * aO.M22 - bO.M12 * aO.M21);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((bO.M12 .Mul (aO.M23)) .Sub (bO.M13 .Mul (aO.M22)),
+                                   (bO.M13 .Mul (aO.M21)) .Sub (bO.M11 .Mul (aO.M23)),
+                                   (bO.M11 .Mul (aO.M22)) .Sub (bO.M12 .Mul (aO.M21)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(aO.M22 * bO.M13 - aO.M23 * bO.M12,
-                                       aO.M23 * bO.M11 - aO.M21 * bO.M13,
-                                       aO.M21 * bO.M12 - aO.M22 * bO.M11);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((aO.M22 .Mul (bO.M13)) .Sub (aO.M23 .Mul (bO.M12)),
+                                       (aO.M23 .Mul (bO.M11)) .Sub (aO.M21 .Mul (bO.M13)),
+                                       (aO.M21 .Mul (bO.M12)) .Sub (aO.M22 .Mul (bO.M11)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(bO.M12 * aO.M23 - bO.M13 * aO.M22,
-                                       bO.M13 * aO.M21 - bO.M11 * aO.M23,
-                                       bO.M11 * aO.M22 - bO.M12 * aO.M21);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((bO.M12 .Mul (aO.M23)) .Sub (bO.M13 .Mul (aO.M22)),
+                                       (bO.M13 .Mul (aO.M21)) .Sub (bO.M11 .Mul (aO.M23)),
+                                       (bO.M11 .Mul (aO.M22)) .Sub (bO.M12 .Mul (aO.M21)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
 
             //A.Y x B.Y
-            rarb = aX * absBR.M32 + aZ * absBR.M12 +
-                   bX * absBR.M23 + bZ * absBR.M21;
-            tl = t.X * bR.M32 - t.Z * bR.M12;
+            rarb = (aX .Mul (absBR.M32)) .Add (aZ .Mul (absBR.M12)) .Add
+                   (bX .Mul (absBR.M23)) .Add (bZ .Mul (absBR.M21));
+            tl = (t.X .Mul (bR.M32)) .Sub (t.Z .Mul (bR.M12));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(aO.M22 * bO.M23 - aO.M23 * bO.M22,
-                                   aO.M23 * bO.M21 - aO.M21 * bO.M23,
-                                   aO.M21 * bO.M22 - aO.M22 * bO.M21);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((aO.M22 .Mul (bO.M23)) .Sub (aO.M23 .Mul (bO.M22)),
+                                   (aO.M23 .Mul (bO.M21)) .Sub (aO.M21 .Mul (bO.M23)),
+                                   (aO.M21 .Mul (bO.M22)) .Sub (aO.M22 .Mul (bO.M21)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(bO.M22 * aO.M23 - bO.M23 * aO.M22,
-                                   bO.M23 * aO.M21 - bO.M21 * aO.M23,
-                                   bO.M21 * aO.M22 - bO.M22 * aO.M21);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((bO.M22 .Mul (aO.M23)) .Sub (bO.M23 .Mul (aO.M22)),
+                                   (bO.M23 .Mul (aO.M21)) .Sub (bO.M21 .Mul (aO.M23)),
+                                   (bO.M21 .Mul (aO.M22)) .Sub (bO.M22 .Mul (aO.M21)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(aO.M22 * bO.M23 - aO.M23 * bO.M22,
-                                       aO.M23 * bO.M21 - aO.M21 * bO.M23,
-                                       aO.M21 * bO.M22 - aO.M22 * bO.M21);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((aO.M22 .Mul (bO.M23)) .Sub (aO.M23 .Mul (bO.M22)),
+                                       (aO.M23 .Mul (bO.M21)) .Sub (aO.M21 .Mul (bO.M23)),
+                                       (aO.M21 .Mul (bO.M22)) .Sub (aO.M22 .Mul (bO.M21)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(bO.M22 * aO.M23 - bO.M23 * aO.M22,
-                                       bO.M23 * aO.M21 - bO.M21 * aO.M23,
-                                       bO.M21 * aO.M22 - bO.M22 * aO.M21);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((bO.M22 .Mul (aO.M23)) .Sub (bO.M23 .Mul (aO.M22)),
+                                       (bO.M23 .Mul (aO.M21)) .Sub (bO.M21 .Mul (aO.M23)),
+                                       (bO.M21 .Mul (aO.M22)) .Sub (bO.M22 .Mul (aO.M21)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
 
             //A.Y x B.Z
-            rarb = aX * absBR.M33 + aZ * absBR.M13 +
-                   bX * absBR.M22 + bY * absBR.M21;
-            tl = t.X * bR.M33 - t.Z * bR.M13;
+            rarb = (aX .Mul (absBR.M33)) .Add (aZ .Mul (absBR.M13)) .Add
+                   (bX .Mul (absBR.M22)) .Add (bY .Mul (absBR.M21));
+            tl = (t.X .Mul (bR.M33)) .Sub (t.Z .Mul (bR.M13));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(aO.M22 * bO.M33 - aO.M23 * bO.M32,
-                                   aO.M23 * bO.M31 - aO.M21 * bO.M33,
-                                   aO.M21 * bO.M32 - aO.M22 * bO.M31);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((aO.M22 .Mul (bO.M33)) .Sub (aO.M23 .Mul (bO.M32)),
+                                   (aO.M23 .Mul (bO.M31)) .Sub (aO.M21 .Mul (bO.M33)),
+                                   (aO.M21 .Mul (bO.M32)) .Sub (aO.M22 .Mul (bO.M31)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(bO.M32 * aO.M23 - bO.M33 * aO.M22,
-                                   bO.M33 * aO.M21 - bO.M31 * aO.M23,
-                                   bO.M31 * aO.M22 - bO.M32 * aO.M21);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((bO.M32 .Mul (aO.M23)) .Sub (bO.M33 .Mul (aO.M22)),
+                                   (bO.M33 .Mul (aO.M21)) .Sub (bO.M31 .Mul (aO.M23)),
+                                   (bO.M31 .Mul (aO.M22)) .Sub (bO.M32 .Mul (aO.M21)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(aO.M22 * bO.M33 - aO.M23 * bO.M32,
-                                       aO.M23 * bO.M31 - aO.M21 * bO.M33,
-                                       aO.M21 * bO.M32 - aO.M22 * bO.M31);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((aO.M22 .Mul (bO.M33)) .Sub (aO.M23 .Mul (bO.M32)),
+                                       (aO.M23 .Mul (bO.M31)) .Sub (aO.M21 .Mul (bO.M33)),
+                                       (aO.M21 .Mul (bO.M32)) .Sub (aO.M22 .Mul (bO.M31)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(bO.M32 * aO.M23 - bO.M33 * aO.M22,
-                                       bO.M33 * aO.M21 - bO.M31 * aO.M23,
-                                       bO.M31 * aO.M22 - bO.M32 * aO.M21);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((bO.M32 .Mul (aO.M23)) .Sub (bO.M33 .Mul (aO.M22)),
+                                       (bO.M33 .Mul (aO.M21)) .Sub (bO.M31 .Mul (aO.M23)),
+                                       (bO.M31 .Mul (aO.M22)) .Sub (bO.M32 .Mul (aO.M21)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1230,163 +1230,163 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             #region A.Z x B.()
 
             //A.Z x B.X
-            rarb = aX * absBR.M21 + aY * absBR.M11 +
-                   bY * absBR.M33 + bZ * absBR.M32;
-            tl = t.Y * bR.M11 - t.X * bR.M21;
+            rarb = (aX .Mul (absBR.M21)) .Add (aY .Mul (absBR.M11)) .Add
+                   (bY .Mul (absBR.M33)) .Add (bZ .Mul (absBR.M32));
+            tl = (t.Y .Mul (bR.M11)) .Sub (t.X .Mul (bR.M21));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(aO.M32 * bO.M13 - aO.M33 * bO.M12,
-                                   aO.M33 * bO.M11 - aO.M31 * bO.M13,
-                                   aO.M31 * bO.M12 - aO.M32 * bO.M11);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((aO.M32 .Mul (bO.M13)) .Sub (aO.M33 .Mul (bO.M12)),
+                                   (aO.M33 .Mul (bO.M11)) .Sub (aO.M31 .Mul (bO.M13)),
+                                   (aO.M31 .Mul (bO.M12)) .Sub (aO.M32 .Mul (bO.M11)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(bO.M12 * aO.M33 - bO.M13 * aO.M32,
-                                   bO.M13 * aO.M31 - bO.M11 * aO.M33,
-                                   bO.M11 * aO.M32 - bO.M12 * aO.M31);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((bO.M12 .Mul (aO.M33)) .Sub (bO.M13 .Mul (aO.M32)),
+                                   (bO.M13 .Mul (aO.M31)) .Sub (bO.M11 .Mul (aO.M33)),
+                                   (bO.M11 .Mul (aO.M32)) .Sub (bO.M12 .Mul (aO.M31)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(aO.M32 * bO.M13 - aO.M33 * bO.M12,
-                                       aO.M33 * bO.M11 - aO.M31 * bO.M13,
-                                       aO.M31 * bO.M12 - aO.M32 * bO.M11);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((aO.M32 .Mul (bO.M13)) .Sub (aO.M33 .Mul (bO.M12)),
+                                       (aO.M33 .Mul (bO.M11)) .Sub (aO.M31 .Mul (bO.M13)),
+                                       (aO.M31 .Mul (bO.M12)) .Sub (aO.M32 .Mul (bO.M11)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(bO.M12 * aO.M33 - bO.M13 * aO.M32,
-                                       bO.M13 * aO.M31 - bO.M11 * aO.M33,
-                                       bO.M11 * aO.M32 - bO.M12 * aO.M31);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((bO.M12 .Mul (aO.M33)) .Sub (bO.M13 .Mul (aO.M32)),
+                                       (bO.M13 .Mul (aO.M31)) .Sub (bO.M11 .Mul (aO.M33)),
+                                       (bO.M11 .Mul (aO.M32)) .Sub (bO.M12 .Mul (aO.M31)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
 
             //A.Z x B.Y
-            rarb = aX * absBR.M22 + aY * absBR.M12 +
-                   bX * absBR.M33 + bZ * absBR.M31;
-            tl = t.Y * bR.M12 - t.X * bR.M22;
+            rarb = (aX .Mul (absBR.M22)) .Add (aY .Mul (absBR.M12)) .Add
+                   (bX .Mul (absBR.M33)) .Add (bZ .Mul (absBR.M31));
+            tl = (t.Y .Mul (bR.M12)) .Sub (t.X .Mul (bR.M22));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(aO.M32 * bO.M23 - aO.M33 * bO.M22,
-                                   aO.M33 * bO.M21 - aO.M31 * bO.M23,
-                                   aO.M31 * bO.M22 - aO.M32 * bO.M21);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((aO.M32 .Mul (bO.M23)) .Sub (aO.M33 .Mul (bO.M22)),
+                                   (aO.M33 .Mul (bO.M21)) .Sub (aO.M31 .Mul (bO.M23)),
+                                   (aO.M31 .Mul (bO.M22)) .Sub (aO.M32 .Mul (bO.M21)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(bO.M22 * aO.M33 - bO.M23 * aO.M32,
-                                   bO.M23 * aO.M31 - bO.M21 * aO.M33,
-                                   bO.M21 * aO.M32 - bO.M22 * aO.M31);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((bO.M22 .Mul (aO.M33)) .Sub (bO.M23 .Mul (aO.M32)),
+                                   (bO.M23 .Mul (aO.M31)) .Sub (bO.M21 .Mul (aO.M33)),
+                                   (bO.M21 .Mul (aO.M32)) .Sub (bO.M22 .Mul (aO.M31)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(aO.M32 * bO.M23 - aO.M33 * bO.M22,
-                                       aO.M33 * bO.M21 - aO.M31 * bO.M23,
-                                       aO.M31 * bO.M22 - aO.M32 * bO.M21);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((aO.M32 .Mul (bO.M23)) .Sub (aO.M33 .Mul (bO.M22)),
+                                       (aO.M33 .Mul (bO.M21)) .Sub (aO.M31 .Mul (bO.M23)),
+                                       (aO.M31 .Mul (bO.M22)) .Sub (aO.M32 .Mul (bO.M21)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(bO.M22 * aO.M33 - bO.M23 * aO.M32,
-                                       bO.M23 * aO.M31 - bO.M21 * aO.M33,
-                                       bO.M21 * aO.M32 - bO.M22 * aO.M31);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((bO.M22 .Mul (aO.M33)) .Sub (bO.M23 .Mul (aO.M32)),
+                                       (bO.M23 .Mul (aO.M31)) .Sub (bO.M21 .Mul (aO.M33)),
+                                       (bO.M21 .Mul (aO.M32)) .Sub (bO.M22 .Mul (aO.M31)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
 
             //A.Z x B.Z
-            rarb = aX * absBR.M23 + aY * absBR.M13 +
-                   bX * absBR.M32 + bY * absBR.M31;
-            tl = t.Y * bR.M13 - t.X * bR.M23;
+            rarb = (aX .Mul (absBR.M23)) .Add (aY .Mul (absBR.M13)) .Add
+                   (bX .Mul (absBR.M32)) .Add (bY .Mul (absBR.M31));
+            tl = (t.Y .Mul (bR.M13)) .Sub (t.X .Mul (bR.M23));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(aO.M32 * bO.M33 - aO.M33 * bO.M32,
-                                   aO.M33 * bO.M31 - aO.M31 * bO.M33,
-                                   aO.M31 * bO.M32 - aO.M32 * bO.M31);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((aO.M32 .Mul (bO.M33)) .Sub (aO.M33 .Mul (bO.M32)),
+                                   (aO.M33 .Mul (bO.M31)) .Sub (aO.M31 .Mul (bO.M33)),
+                                   (aO.M31 .Mul (bO.M32)) .Sub (aO.M32 .Mul (bO.M31)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(bO.M32 * aO.M33 - bO.M33 * aO.M32,
-                                   bO.M33 * aO.M31 - bO.M31 * aO.M33,
-                                   bO.M31 * aO.M32 - bO.M32 * aO.M31);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((bO.M32 .Mul (aO.M33)) .Sub (bO.M33 .Mul (aO.M32)),
+                                   (bO.M33 .Mul (aO.M31)) .Sub (bO.M31 .Mul (aO.M33)),
+                                   (bO.M31 .Mul (aO.M32)) .Sub (bO.M32 .Mul (aO.M31)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(aO.M32 * bO.M33 - aO.M33 * bO.M32,
-                                       aO.M33 * bO.M31 - aO.M31 * bO.M33,
-                                       aO.M31 * bO.M32 - aO.M32 * bO.M31);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((aO.M32 .Mul (bO.M33)) .Sub (aO.M33 .Mul (bO.M32)),
+                                       (aO.M33 .Mul (bO.M31)) .Sub (aO.M31 .Mul (bO.M33)),
+                                       (aO.M31 .Mul (bO.M32)) .Sub (aO.M32 .Mul (bO.M31)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(bO.M32 * aO.M33 - bO.M33 * aO.M32,
-                                       bO.M33 * aO.M31 - bO.M31 * aO.M33,
-                                       bO.M31 * aO.M32 - bO.M32 * aO.M31);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((bO.M32 .Mul (aO.M33)) .Sub (bO.M33 .Mul (aO.M32)),
+                                       (bO.M33 .Mul (aO.M31)) .Sub (bO.M31 .Mul (aO.M33)),
+                                       (bO.M31 .Mul (aO.M32)) .Sub (bO.M32 .Mul (aO.M31)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1410,7 +1410,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         /// <param name="transformA">Transform to apply to shape A.</param>
         /// <param name="transformB">Transform to apply to shape B.</param>
         /// <returns>Whether or not the boxes collide.</returns>
-        public static unsafe bool AreBoxesColliding(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB, out Fix64 distance, out Vector3 axis, out TinyStructList<BoxContactData> contactData)
+        public static unsafe bool AreBoxesColliding(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB, out Fix32 distance, out Vector3 axis, out TinyStructList<BoxContactData> contactData)
         {
             BoxContactDataCache tempData;
             bool toReturn = AreBoxesColliding(a, b, ref transformA, ref transformB, out distance, out axis, out tempData);
@@ -1436,18 +1436,18 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         /// <param name="transformB">Transform to apply to shape B.</param>
         /// <returns>Whether or not the boxes collide.</returns>
 #if ALLOWUNSAFE
-        public static bool AreBoxesColliding(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB, out Fix64 distance, out Vector3 axis, out BoxContactDataCache contactData)
+        public static bool AreBoxesColliding(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB, out Fix32 distance, out Vector3 axis, out BoxContactDataCache contactData)
 #else
-        public static bool AreBoxesColliding(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB, out Fix64 distance, out Vector3 axis, out TinyStructList<BoxContactData> contactData)
+        public static bool AreBoxesColliding(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB, out Fix32 distance, out Vector3 axis, out TinyStructList<BoxContactData> contactData)
 #endif
         {
-            Fix64 aX = a.HalfWidth;
-            Fix64 aY = a.HalfHeight;
-            Fix64 aZ = a.HalfLength;
+            Fix32 aX = a.HalfWidth;
+            Fix32 aY = a.HalfHeight;
+            Fix32 aZ = a.HalfLength;
 
-            Fix64 bX = b.HalfWidth;
-            Fix64 bY = b.HalfHeight;
-            Fix64 bZ = b.HalfLength;
+            Fix32 bX = b.HalfWidth;
+            Fix32 bY = b.HalfHeight;
+            Fix32 bZ = b.HalfLength;
 
 #if ALLOWUNSAFE
             contactData = new BoxContactDataCache();
@@ -1466,53 +1466,53 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 t;
             Vector3.Subtract(ref transformB.Position, ref transformA.Position, out t);
 
-            Fix64 tempDistance;
-            Fix64 minimumDistance = -Fix64.MaxValue;
+            Fix32 tempDistance;
+            Fix32 minimumDistance = Fix32.MaxValue.Neg();
             var minimumAxis = new Vector3();
             byte minimumFeature = 2; //2 means edge.  0-> A face, 1 -> B face.
 
             #region A Face Normals
 
-            bR.M11 = aO.M11 * bO.M11 + aO.M12 * bO.M12 + aO.M13 * bO.M13;
-            bR.M12 = aO.M11 * bO.M21 + aO.M12 * bO.M22 + aO.M13 * bO.M23;
-            bR.M13 = aO.M11 * bO.M31 + aO.M12 * bO.M32 + aO.M13 * bO.M33;
+            bR.M11 = (aO.M11 .Mul (bO.M11)) .Add (aO.M12 .Mul (bO.M12)) .Add (aO.M13 .Mul (bO.M13));
+            bR.M12 = (aO.M11 .Mul (bO.M21)) .Add (aO.M12 .Mul (bO.M22)) .Add (aO.M13 .Mul (bO.M23));
+            bR.M13 = (aO.M11 .Mul (bO.M31)) .Add (aO.M12 .Mul (bO.M32)) .Add (aO.M13 .Mul (bO.M33));
             Matrix3x3 absBR;
             //Epsilons are added to deal with near-parallel edges.
-            absBR.M11 = Fix64.Abs(bR.M11) + Toolbox.Epsilon;
-            absBR.M12 = Fix64.Abs(bR.M12) + Toolbox.Epsilon;
-            absBR.M13 = Fix64.Abs(bR.M13) + Toolbox.Epsilon;
-            Fix64 tX = t.X;
-            t.X = t.X * aO.M11 + t.Y * aO.M12 + t.Z * aO.M13;
+            absBR.M11 = bR.M11.Abs() .Add (Toolbox.Epsilon);
+            absBR.M12 = bR.M12.Abs() .Add (Toolbox.Epsilon);
+            absBR.M13 = bR.M13.Abs() .Add (Toolbox.Epsilon);
+            Fix32 tX = t.X;
+            t.X = (t.X .Mul (aO.M11)) .Add (t.Y .Mul (aO.M12)) .Add (t.Z .Mul (aO.M13));
 
             //Test the axes defines by entity A's rotation matrix.
             //A.X
-            Fix64 rarb = aX + bX * absBR.M11 + bY * absBR.M12 + bZ * absBR.M13;
+            Fix32 rarb = aX .Add (bX .Mul (absBR.M11)) .Add (bY .Mul (absBR.M12)) .Add (bZ .Mul (absBR.M13));
             if (t.X > rarb)
             {
-                distance = t.X - rarb;
-                axis = new Vector3(-aO.M11, -aO.M12, -aO.M13);
+                distance = t.X .Sub (rarb);
+                axis = new Vector3((aO.M11).Neg(), (aO.M12).Neg(), (aO.M13).Neg());
                 return false;
             }
-            if (t.X < -rarb)
+            if (t.X < rarb.Neg())
             {
-                distance = -t.X - rarb;
+                distance = t.X.Neg() .Sub (rarb);
                 axis = new Vector3(aO.M11, aO.M12, aO.M13);
                 return false;
             }
             //Inside
-            if (t.X > F64.C0)
+            if (t.X > Fix32.Zero)
             {
-                tempDistance = t.X - rarb;
+                tempDistance = t.X .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    minimumAxis = new Vector3(-aO.M11, -aO.M12, -aO.M13);
+                    minimumAxis = new Vector3((aO.M11).Neg(), (aO.M12).Neg(), (aO.M13).Neg());
                     minimumFeature = 0;
                 }
             }
             else
             {
-                tempDistance = -t.X - rarb;
+                tempDistance = t.X.Neg() .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
@@ -1522,43 +1522,43 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
 
 
-            bR.M21 = aO.M21 * bO.M11 + aO.M22 * bO.M12 + aO.M23 * bO.M13;
-            bR.M22 = aO.M21 * bO.M21 + aO.M22 * bO.M22 + aO.M23 * bO.M23;
-            bR.M23 = aO.M21 * bO.M31 + aO.M22 * bO.M32 + aO.M23 * bO.M33;
-            absBR.M21 = Fix64.Abs(bR.M21) + Toolbox.Epsilon;
-            absBR.M22 = Fix64.Abs(bR.M22) + Toolbox.Epsilon;
-            absBR.M23 = Fix64.Abs(bR.M23) + Toolbox.Epsilon;
-            Fix64 tY = t.Y;
-            t.Y = tX * aO.M21 + t.Y * aO.M22 + t.Z * aO.M23;
+            bR.M21 = (aO.M21 .Mul (bO.M11)) .Add (aO.M22 .Mul (bO.M12)) .Add (aO.M23 .Mul (bO.M13));
+            bR.M22 = (aO.M21 .Mul (bO.M21)) .Add (aO.M22 .Mul (bO.M22)) .Add (aO.M23 .Mul (bO.M23));
+            bR.M23 = (aO.M21 .Mul (bO.M31)) .Add (aO.M22 .Mul (bO.M32)) .Add (aO.M23 .Mul (bO.M33));
+            absBR.M21 = bR.M21.Abs() .Add (Toolbox.Epsilon);
+            absBR.M22 = bR.M22.Abs() .Add (Toolbox.Epsilon);
+            absBR.M23 = bR.M23.Abs() .Add (Toolbox.Epsilon);
+            Fix32 tY = t.Y;
+            t.Y = (tX .Mul (aO.M21)) .Add (t.Y .Mul (aO.M22)) .Add (t.Z .Mul (aO.M23));
 
             //A.Y
-            rarb = aY + bX * absBR.M21 + bY * absBR.M22 + bZ * absBR.M23;
+            rarb = aY .Add (bX .Mul (absBR.M21)) .Add (bY .Mul (absBR.M22)) .Add (bZ .Mul (absBR.M23));
             if (t.Y > rarb)
             {
-                distance = t.Y - rarb;
-                axis = new Vector3(-aO.M21, -aO.M22, -aO.M23);
+                distance = t.Y .Sub (rarb);
+                axis = new Vector3((aO.M21).Neg(), (aO.M22).Neg(), (aO.M23).Neg());
                 return false;
             }
-            if (t.Y < -rarb)
+            if (t.Y < rarb.Neg())
             {
-                distance = -t.Y - rarb;
+                distance = t.Y.Neg() .Sub (rarb);
                 axis = new Vector3(aO.M21, aO.M22, aO.M23);
                 return false;
             }
             //Inside
-            if (t.Y > F64.C0)
+            if (t.Y > Fix32.Zero)
             {
-                tempDistance = t.Y - rarb;
+                tempDistance = t.Y .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    minimumAxis = new Vector3(-aO.M21, -aO.M22, -aO.M23);
+                    minimumAxis = new Vector3((aO.M21).Neg(), (aO.M22).Neg(), (aO.M23).Neg());
                     minimumFeature = 0;
                 }
             }
             else
             {
-                tempDistance = -t.Y - rarb;
+                tempDistance = t.Y.Neg() .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
@@ -1567,42 +1567,42 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 }
             }
 
-            bR.M31 = aO.M31 * bO.M11 + aO.M32 * bO.M12 + aO.M33 * bO.M13;
-            bR.M32 = aO.M31 * bO.M21 + aO.M32 * bO.M22 + aO.M33 * bO.M23;
-            bR.M33 = aO.M31 * bO.M31 + aO.M32 * bO.M32 + aO.M33 * bO.M33;
-            absBR.M31 = Fix64.Abs(bR.M31) + Toolbox.Epsilon;
-            absBR.M32 = Fix64.Abs(bR.M32) + Toolbox.Epsilon;
-            absBR.M33 = Fix64.Abs(bR.M33) + Toolbox.Epsilon;
-            t.Z = tX * aO.M31 + tY * aO.M32 + t.Z * aO.M33;
+            bR.M31 = (aO.M31 .Mul (bO.M11)) .Add (aO.M32 .Mul (bO.M12)) .Add (aO.M33 .Mul (bO.M13));
+            bR.M32 = (aO.M31 .Mul (bO.M21)) .Add (aO.M32 .Mul (bO.M22)) .Add (aO.M33 .Mul (bO.M23));
+            bR.M33 = (aO.M31 .Mul (bO.M31)) .Add (aO.M32 .Mul (bO.M32)) .Add (aO.M33 .Mul (bO.M33));
+            absBR.M31 = bR.M31.Abs() .Add (Toolbox.Epsilon);
+            absBR.M32 = bR.M32.Abs() .Add (Toolbox.Epsilon);
+            absBR.M33 = bR.M33.Abs() .Add (Toolbox.Epsilon);
+            t.Z = (tX .Mul (aO.M31)) .Add (tY .Mul (aO.M32)) .Add (t.Z .Mul (aO.M33));
 
             //A.Z
-            rarb = aZ + bX * absBR.M31 + bY * absBR.M32 + bZ * absBR.M33;
+            rarb = aZ .Add (bX .Mul (absBR.M31)) .Add (bY .Mul (absBR.M32)) .Add (bZ .Mul (absBR.M33));
             if (t.Z > rarb)
             {
-                distance = t.Z - rarb;
-                axis = new Vector3(-aO.M31, -aO.M32, -aO.M33);
+                distance = t.Z .Sub (rarb);
+                axis = new Vector3((aO.M31).Neg(), (aO.M32).Neg(), (aO.M33).Neg());
                 return false;
             }
-            if (t.Z < -rarb)
+            if (t.Z < rarb.Neg())
             {
-                distance = -t.Z - rarb;
+                distance = t.Z.Neg() .Sub (rarb);
                 axis = new Vector3(aO.M31, aO.M32, aO.M33);
                 return false;
             }
             //Inside
-            if (t.Z > F64.C0)
+            if (t.Z > Fix32.Zero)
             {
-                tempDistance = t.Z - rarb;
+                tempDistance = t.Z .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    minimumAxis = new Vector3(-aO.M31, -aO.M32, -aO.M33);
+                    minimumAxis = new Vector3((aO.M31).Neg(), (aO.M32).Neg(), (aO.M33).Neg());
                     minimumFeature = 0;
                 }
             }
             else
             {
-                tempDistance = -t.Z - rarb;
+                tempDistance = t.Z.Neg() .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
@@ -1613,41 +1613,41 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
 			#endregion
 
-			Fix64 antiBBias = F64.C0p01;
-            minimumDistance += antiBBias;
+			Fix32 antiBBias = F64.C0p01;
+            minimumDistance = minimumDistance .Add (antiBBias);
 
             #region B Face Normals
 
             //Test the axes defines by entity B's rotation matrix.
             //B.X
-            rarb = bX + aX * absBR.M11 + aY * absBR.M21 + aZ * absBR.M31;
-            Fix64 tl = t.X * bR.M11 + t.Y * bR.M21 + t.Z * bR.M31;
+            rarb = bX .Add (aX .Mul (absBR.M11)) .Add (aY .Mul (absBR.M21)) .Add (aZ .Mul (absBR.M31));
+            Fix32 tl = (t.X .Mul (bR.M11)) .Add (t.Y .Mul (bR.M21)) .Add (t.Z .Mul (bR.M31));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(-bO.M11, -bO.M12, -bO.M13);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((bO.M11).Neg(), (bO.M12).Neg(), (bO.M13).Neg());
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
+                distance = tl.Neg() .Sub (rarb);
                 axis = new Vector3(bO.M11, bO.M12, bO.M13);
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempDistance = tl - rarb;
+                tempDistance = tl .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    minimumAxis = new Vector3(-bO.M11, -bO.M12, -bO.M13);
+                    minimumAxis = new Vector3((bO.M11).Neg(), (bO.M12).Neg(), (bO.M13).Neg());
                     minimumFeature = 1;
                 }
             }
             else
             {
-                tempDistance = -tl - rarb;
+                tempDistance = tl.Neg() .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
@@ -1657,34 +1657,34 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
 
             //B.Y
-            rarb = bY + aX * absBR.M12 + aY * absBR.M22 + aZ * absBR.M32;
-            tl = t.X * bR.M12 + t.Y * bR.M22 + t.Z * bR.M32;
+            rarb = bY .Add (aX .Mul (absBR.M12)) .Add (aY .Mul (absBR.M22)) .Add (aZ .Mul (absBR.M32));
+            tl = (t.X .Mul (bR.M12)) .Add (t.Y .Mul (bR.M22)) .Add (t.Z .Mul (bR.M32));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(-bO.M21, -bO.M22, -bO.M23);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((bO.M21).Neg(), (bO.M22).Neg(), (bO.M23).Neg());
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
+                distance = tl.Neg() .Sub (rarb);
                 axis = new Vector3(bO.M21, bO.M22, bO.M23);
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempDistance = tl - rarb;
+                tempDistance = tl .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    minimumAxis = new Vector3(-bO.M21, -bO.M22, -bO.M23);
+                    minimumAxis = new Vector3((bO.M21).Neg(), (bO.M22).Neg(), (bO.M23).Neg());
                     minimumFeature = 1;
                 }
             }
             else
             {
-                tempDistance = -tl - rarb;
+                tempDistance = tl.Neg() .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
@@ -1694,34 +1694,34 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
 
             //B.Z
-            rarb = bZ + aX * absBR.M13 + aY * absBR.M23 + aZ * absBR.M33;
-            tl = t.X * bR.M13 + t.Y * bR.M23 + t.Z * bR.M33;
+            rarb = bZ .Add (aX .Mul (absBR.M13)) .Add (aY .Mul (absBR.M23)) .Add (aZ .Mul (absBR.M33));
+            tl = (t.X .Mul (bR.M13)) .Add (t.Y .Mul (bR.M23)) .Add (t.Z .Mul (bR.M33));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(-bO.M31, -bO.M32, -bO.M33);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((bO.M31).Neg(), (bO.M32).Neg(), (bO.M33).Neg());
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
+                distance = tl.Neg() .Sub (rarb);
                 axis = new Vector3(bO.M31, bO.M32, bO.M33);
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempDistance = tl - rarb;
+                tempDistance = tl .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-                    minimumAxis = new Vector3(-bO.M31, -bO.M32, -bO.M33);
+                    minimumAxis = new Vector3((bO.M31).Neg(), (bO.M32).Neg(), (bO.M33).Neg());
                     minimumFeature = 1;
                 }
             }
             else
             {
-                tempDistance = -tl - rarb;
+                tempDistance = tl.Neg() .Sub (rarb);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
@@ -1733,185 +1733,185 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             #endregion
 
             if (minimumFeature != 1)
-                minimumDistance -= antiBBias;
+                minimumDistance = minimumDistance .Sub (antiBBias);
 
-            Fix64 antiEdgeBias = F64.C0p01;
-            minimumDistance += antiEdgeBias;
-            Fix64 axisLengthInverse;
+            Fix32 antiEdgeBias = F64.C0p01;
+			minimumDistance = minimumDistance .Add (antiEdgeBias);
+            Fix32 axisLengthInverse;
             Vector3 tempAxis;
 
             #region A.X x B.()
 
             //Now for the edge-edge cases.
             //A.X x B.X
-            rarb = aY * absBR.M31 + aZ * absBR.M21 +
-                   bY * absBR.M13 + bZ * absBR.M12;
-            tl = t.Z * bR.M21 - t.Y * bR.M31;
+            rarb = (aY .Mul (absBR.M31)) .Add (aZ .Mul (absBR.M21)) .Add
+                   (bY .Mul (absBR.M13)) .Add (bZ .Mul (absBR.M12));
+            tl = (t.Z .Mul (bR.M21)) .Sub (t.Y .Mul (bR.M31));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(bO.M12 * aO.M13 - bO.M13 * aO.M12,
-                                   bO.M13 * aO.M11 - bO.M11 * aO.M13,
-                                   bO.M11 * aO.M12 - bO.M12 * aO.M11);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((bO.M12 .Mul (aO.M13)) .Sub (bO.M13 .Mul (aO.M12)),
+                                   (bO.M13 .Mul (aO.M11)) .Sub (bO.M11 .Mul (aO.M13)),
+                                   (bO.M11 .Mul (aO.M12)) .Sub (bO.M12 .Mul (aO.M11)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(aO.M12 * bO.M13 - aO.M13 * bO.M12,
-                                   aO.M13 * bO.M11 - aO.M11 * bO.M13,
-                                   aO.M11 * bO.M12 - aO.M12 * bO.M11);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((aO.M12 .Mul (bO.M13)) .Sub (aO.M13 .Mul (bO.M12)),
+                                   (aO.M13 .Mul (bO.M11)) .Sub (aO.M11 .Mul (bO.M13)),
+                                   (aO.M11 .Mul (bO.M12)) .Sub (aO.M12 .Mul (bO.M11)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(bO.M12 * aO.M13 - bO.M13 * aO.M12,
-                                       bO.M13 * aO.M11 - bO.M11 * aO.M13,
-                                       bO.M11 * aO.M12 - bO.M12 * aO.M11);
+                tempAxis = new Vector3((bO.M12 .Mul (aO.M13)) .Sub (bO.M13 .Mul (aO.M12)),
+                                       (bO.M13 .Mul (aO.M11)) .Sub (bO.M11 .Mul (aO.M13)),
+                                       (bO.M11 .Mul (aO.M12)) .Sub (bO.M12 .Mul (aO.M11)));
 
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(aO.M12 * bO.M13 - aO.M13 * bO.M12,
-                                       aO.M13 * bO.M11 - aO.M11 * bO.M13,
-                                       aO.M11 * bO.M12 - aO.M12 * bO.M11);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((aO.M12 .Mul (bO.M13)) .Sub (aO.M13 .Mul (bO.M12)),
+                                       (aO.M13 .Mul (bO.M11)) .Sub (aO.M11 .Mul (bO.M13)),
+                                       (aO.M11 .Mul (bO.M12)) .Sub (aO.M12 .Mul (bO.M11)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
 
             //A.X x B.Y
-            rarb = aY * absBR.M32 + aZ * absBR.M22 +
-                   bX * absBR.M13 + bZ * absBR.M11;
-            tl = t.Z * bR.M22 - t.Y * bR.M32;
+            rarb = (aY .Mul (absBR.M32)) .Add (aZ .Mul (absBR.M22)) .Add
+                   (bX .Mul (absBR.M13)) .Add (bZ .Mul (absBR.M11));
+            tl = (t.Z .Mul (bR.M22)) .Sub (t.Y .Mul (bR.M32));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(bO.M22 * aO.M13 - bO.M23 * aO.M12,
-                                   bO.M23 * aO.M11 - bO.M21 * aO.M13,
-                                   bO.M21 * aO.M12 - bO.M22 * aO.M11);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((bO.M22 .Mul (aO.M13)) .Sub (bO.M23 .Mul (aO.M12)),
+                                   (bO.M23 .Mul (aO.M11)) .Sub (bO.M21 .Mul (aO.M13)),
+                                   (bO.M21 .Mul (aO.M12)) .Sub (bO.M22 .Mul (aO.M11)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(aO.M12 * bO.M23 - aO.M13 * bO.M22,
-                                   aO.M13 * bO.M21 - aO.M11 * bO.M23,
-                                   aO.M11 * bO.M22 - aO.M12 * bO.M21);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((aO.M12 .Mul (bO.M23)) .Sub (aO.M13 .Mul (bO.M22)),
+                                   (aO.M13 .Mul (bO.M21)) .Sub (aO.M11 .Mul (bO.M23)),
+                                   (aO.M11 .Mul (bO.M22)) .Sub (aO.M12 .Mul (bO.M21)));
 
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(bO.M22 * aO.M13 - bO.M23 * aO.M12,
-                                       bO.M23 * aO.M11 - bO.M21 * aO.M13,
-                                       bO.M21 * aO.M12 - bO.M22 * aO.M11);
+                tempAxis = new Vector3((bO.M22 .Mul (aO.M13)) .Sub (bO.M23 .Mul (aO.M12)),
+                                       (bO.M23 .Mul (aO.M11)) .Sub (bO.M21 .Mul (aO.M13)),
+                                       (bO.M21 .Mul (aO.M12)) .Sub (bO.M22 .Mul (aO.M11)));
 
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(aO.M12 * bO.M23 - aO.M13 * bO.M22,
-                                       aO.M13 * bO.M21 - aO.M11 * bO.M23,
-                                       aO.M11 * bO.M22 - aO.M12 * bO.M21);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((aO.M12 .Mul (bO.M23)) .Sub (aO.M13 .Mul (bO.M22)),
+                                       (aO.M13 .Mul (bO.M21)) .Sub (aO.M11 .Mul (bO.M23)),
+                                       (aO.M11 .Mul (bO.M22)) .Sub (aO.M12 .Mul (bO.M21)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
 
             //A.X x B.Z
-            rarb = aY * absBR.M33 + aZ * absBR.M23 +
-                   bX * absBR.M12 + bY * absBR.M11;
-            tl = t.Z * bR.M23 - t.Y * bR.M33;
+            rarb = (aY .Mul (absBR.M33)) .Add (aZ .Mul (absBR.M23)) .Add
+                   (bX .Mul (absBR.M12)) .Add (bY .Mul (absBR.M11));
+            tl = (t.Z .Mul (bR.M23)) .Sub (t.Y .Mul (bR.M33));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(bO.M32 * aO.M13 - bO.M33 * aO.M12,
-                                   bO.M33 * aO.M11 - bO.M31 * aO.M13,
-                                   bO.M31 * aO.M12 - bO.M32 * aO.M11);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((bO.M32 .Mul (aO.M13)) .Sub (bO.M33 .Mul (aO.M12)),
+                                   (bO.M33 .Mul (aO.M11)) .Sub (bO.M31 .Mul (aO.M13)),
+                                   (bO.M31 .Mul (aO.M12)) .Sub (bO.M32 .Mul (aO.M11)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
+                distance = tl.Neg() .Sub (rarb);
 
-                axis = new Vector3(aO.M12 * bO.M33 - aO.M13 * bO.M32,
-                                   aO.M13 * bO.M31 - aO.M11 * bO.M33,
-                                   aO.M11 * bO.M32 - aO.M12 * bO.M31);
+                axis = new Vector3((aO.M12 .Mul (bO.M33)) .Sub (aO.M13 .Mul (bO.M32)),
+                                   (aO.M13 .Mul (bO.M31)) .Sub (aO.M11 .Mul (bO.M33)),
+                                   (aO.M11 .Mul (bO.M32)) .Sub (aO.M12 .Mul (bO.M31)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(bO.M32 * aO.M13 - bO.M33 * aO.M12,
-                                       bO.M33 * aO.M11 - bO.M31 * aO.M13,
-                                       bO.M31 * aO.M12 - bO.M32 * aO.M11);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((bO.M32 .Mul (aO.M13)) .Sub (bO.M33 .Mul (aO.M12)),
+                                       (bO.M33 .Mul (aO.M11)) .Sub (bO.M31 .Mul (aO.M13)),
+                                       (bO.M31 .Mul (aO.M12)) .Sub (bO.M32 .Mul (aO.M11)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(aO.M12 * bO.M33 - aO.M13 * bO.M32,
-                                       aO.M13 * bO.M31 - aO.M11 * bO.M33,
-                                       aO.M11 * bO.M32 - aO.M12 * bO.M31);
+                tempAxis = new Vector3((aO.M12 .Mul (bO.M33)) .Sub (aO.M13 .Mul (bO.M32)),
+                                       (aO.M13 .Mul (bO.M31)) .Sub (aO.M11 .Mul (bO.M33)),
+                                       (aO.M11 .Mul (bO.M32)) .Sub (aO.M12 .Mul (bO.M31)));
 
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1921,175 +1921,175 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             #region A.Y x B.()
 
             //A.Y x B.X
-            rarb = aX * absBR.M31 + aZ * absBR.M11 +
-                   bY * absBR.M23 + bZ * absBR.M22;
-            tl = t.X * bR.M31 - t.Z * bR.M11;
+            rarb = (aX .Mul (absBR.M31)) .Add (aZ .Mul (absBR.M11)) .Add
+                   (bY .Mul (absBR.M23)) .Add (bZ .Mul (absBR.M22));
+            tl = (t.X .Mul (bR.M31)) .Sub (t.Z .Mul (bR.M11));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(bO.M12 * aO.M23 - bO.M13 * aO.M22,
-                                   bO.M13 * aO.M21 - bO.M11 * aO.M23,
-                                   bO.M11 * aO.M22 - bO.M12 * aO.M21);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((bO.M12 .Mul (aO.M23)) .Sub (bO.M13 .Mul (aO.M22)),
+                                   (bO.M13 .Mul (aO.M21)) .Sub (bO.M11 .Mul (aO.M23)),
+                                   (bO.M11 .Mul (aO.M22)) .Sub (bO.M12 .Mul (aO.M21)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(aO.M22 * bO.M13 - aO.M23 * bO.M12,
-                                   aO.M23 * bO.M11 - aO.M21 * bO.M13,
-                                   aO.M21 * bO.M12 - aO.M22 * bO.M11);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3((aO.M22 .Mul (bO.M13)) .Sub (aO.M23 .Mul (bO.M12)),
+                                   (aO.M23 .Mul (bO.M11)) .Sub (aO.M21 .Mul (bO.M13)),
+                                   (aO.M21 .Mul (bO.M12)) .Sub (aO.M22 .Mul (bO.M11)));
 
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(bO.M12 * aO.M23 - bO.M13 * aO.M22,
-                                       bO.M13 * aO.M21 - bO.M11 * aO.M23,
-                                       bO.M11 * aO.M22 - bO.M12 * aO.M21);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((bO.M12 .Mul (aO.M23)) .Sub (bO.M13 .Mul (aO.M22)),
+                                       (bO.M13 .Mul (aO.M21)) .Sub (bO.M11 .Mul (aO.M23)),
+                                       (bO.M11 .Mul (aO.M22)) .Sub (bO.M12 .Mul (aO.M21)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(aO.M22 * bO.M13 - aO.M23 * bO.M12,
-                                       aO.M23 * bO.M11 - aO.M21 * bO.M13,
-                                       aO.M21 * bO.M12 - aO.M22 * bO.M11);
+                tempAxis = new Vector3((aO.M22 .Mul (bO.M13)) .Sub (aO.M23 .Mul (bO.M12)),
+                                       (aO.M23 .Mul (bO.M11)) .Sub (aO.M21 .Mul (bO.M13)),
+                                       (aO.M21 .Mul (bO.M12)) .Sub (aO.M22 .Mul (bO.M11)));
 
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
 
             //A.Y x B.Y
-            rarb = aX * absBR.M32 + aZ * absBR.M12 +
-                   bX * absBR.M23 + bZ * absBR.M21;
-            tl = t.X * bR.M32 - t.Z * bR.M12;
+            rarb = (aX .Mul (absBR.M32)) .Add (aZ .Mul (absBR.M12)) .Add
+                   (bX .Mul (absBR.M23)) .Add (bZ .Mul (absBR.M21));
+            tl = (t.X .Mul (bR.M32)) .Sub (t.Z .Mul (bR.M12));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(bO.M22 * aO.M23 - bO.M23 * aO.M22,
-                                   bO.M23 * aO.M21 - bO.M21 * aO.M23,
-                                   bO.M21 * aO.M22 - bO.M22 * aO.M21);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((bO.M22 .Mul (aO.M23)) .Sub (bO.M23 .Mul (aO.M22)),
+                                   (bO.M23 .Mul (aO.M21)) .Sub (bO.M21 .Mul (aO.M23)),
+                                   (bO.M21 .Mul (aO.M22)) .Sub (bO.M22 .Mul (aO.M21)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
+                distance = tl.Neg() .Sub (rarb);
 
-                axis = new Vector3(aO.M22 * bO.M23 - aO.M23 * bO.M22,
-                                   aO.M23 * bO.M21 - aO.M21 * bO.M23,
-                                   aO.M21 * bO.M22 - aO.M22 * bO.M21);
+                axis = new Vector3((aO.M22 .Mul (bO.M23)) .Sub (aO.M23 .Mul (bO.M22)),
+                                   (aO.M23 .Mul (bO.M21)) .Sub (aO.M21 .Mul (bO.M23)),
+                                   (aO.M21 .Mul (bO.M22)) .Sub (aO.M22 .Mul (bO.M21)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(bO.M22 * aO.M23 - bO.M23 * aO.M22,
-                                       bO.M23 * aO.M21 - bO.M21 * aO.M23,
-                                       bO.M21 * aO.M22 - bO.M22 * aO.M21);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((bO.M22 .Mul (aO.M23)) .Sub (bO.M23 .Mul (aO.M22)),
+                                       (bO.M23 .Mul (aO.M21)) .Sub (bO.M21 .Mul (aO.M23)),
+                                       (bO.M21 .Mul (aO.M22)) .Sub (bO.M22 .Mul (aO.M21)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(aO.M22 * bO.M23 - aO.M23 * bO.M22,
-                                       aO.M23 * bO.M21 - aO.M21 * bO.M23,
-                                       aO.M21 * bO.M22 - aO.M22 * bO.M21);
+                tempAxis = new Vector3((aO.M22 .Mul (bO.M23)) .Sub (aO.M23 .Mul (bO.M22)),
+                                       (aO.M23 .Mul (bO.M21)) .Sub (aO.M21 .Mul (bO.M23)),
+                                       (aO.M21 .Mul (bO.M22)) .Sub (aO.M22 .Mul (bO.M21)));
 
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
 
             //A.Y x B.Z
-            rarb = aX * absBR.M33 + aZ * absBR.M13 +
-                   bX * absBR.M22 + bY * absBR.M21;
-            tl = t.X * bR.M33 - t.Z * bR.M13;
+            rarb = (aX .Mul (absBR.M33)) .Add (aZ .Mul (absBR.M13)) .Add
+                   (bX .Mul (absBR.M22)) .Add (bY .Mul (absBR.M21));
+            tl = (t.X .Mul (bR.M33)) .Sub (t.Z .Mul (bR.M13));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(bO.M32 * aO.M23 - bO.M33 * aO.M22,
-                                   bO.M33 * aO.M21 - bO.M31 * aO.M23,
-                                   bO.M31 * aO.M22 - bO.M32 * aO.M21);
+                distance = tl .Sub (rarb);
+                axis = new Vector3((bO.M32 .Mul (aO.M23)) .Sub (bO.M33 .Mul (aO.M22)),
+                                   (bO.M33 .Mul (aO.M21)) .Sub (bO.M31 .Mul (aO.M23)),
+                                   (bO.M31 .Mul (aO.M22)) .Sub (bO.M32 .Mul (aO.M21)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
+                distance = tl.Neg() .Sub (rarb);
 
-                axis = new Vector3(aO.M22 * bO.M33 - aO.M23 * bO.M32,
-                                   aO.M23 * bO.M31 - aO.M21 * bO.M33,
-                                   aO.M21 * bO.M32 - aO.M22 * bO.M31);
+                axis = new Vector3((aO.M22 .Mul (bO.M33)) .Sub (aO.M23 .Mul (bO.M32)),
+                                   (aO.M23 .Mul (bO.M31)) .Sub (aO.M21 .Mul (bO.M33)),
+                                   (aO.M21 .Mul (bO.M32)) .Sub (aO.M22 .Mul (bO.M31)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(bO.M32 * aO.M23 - bO.M33 * aO.M22,
-                                       bO.M33 * aO.M21 - bO.M31 * aO.M23,
-                                       bO.M31 * aO.M22 - bO.M32 * aO.M21);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3((bO.M32 .Mul (aO.M23)) .Sub (bO.M33 .Mul (aO.M22)),
+                                       (bO.M33 .Mul (aO.M21)) .Sub (bO.M31 .Mul (aO.M23)),
+                                       (bO.M31 .Mul (aO.M22)) .Sub (bO.M32 .Mul (aO.M21)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(aO.M22 * bO.M33 - aO.M23 * bO.M32,
-                                       aO.M23 * bO.M31 - aO.M21 * bO.M33,
-                                       aO.M21 * bO.M32 - aO.M22 * bO.M31);
+                tempAxis = new Vector3((aO.M22 .Mul (bO.M33)) .Sub (aO.M23 .Mul (bO.M32)),
+                                       (aO.M23 .Mul (bO.M31)) .Sub (aO.M21 .Mul (bO.M33)),
+                                       (aO.M21 .Mul (bO.M32)) .Sub (aO.M22 .Mul (bO.M31)));
 
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
@@ -2099,173 +2099,173 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             #region A.Z x B.()
 
             //A.Z x B.X
-            rarb = aX * absBR.M21 + aY * absBR.M11 +
-                   bY * absBR.M33 + bZ * absBR.M32;
-            tl = t.Y * bR.M11 - t.X * bR.M21;
+            rarb = aX .Mul (absBR.M21) .Add (aY .Mul (absBR.M11)) .Add
+                   (bY .Mul (absBR.M33) .Add (bZ .Mul (absBR.M32)));
+            tl = t.Y .Mul (bR.M11) .Sub (t.X .Mul (bR.M21));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(bO.M12 * aO.M33 - bO.M13 * aO.M32,
-                                   bO.M13 * aO.M31 - bO.M11 * aO.M33,
-                                   bO.M11 * aO.M32 - bO.M12 * aO.M31);
+                distance = tl .Sub (rarb);
+                axis = new Vector3(bO.M12 .Mul (aO.M33) .Sub (bO.M13 .Mul (aO.M32)),
+                                   bO.M13 .Mul (aO.M31) .Sub (bO.M11 .Mul (aO.M33)),
+                                   bO.M11 .Mul (aO.M32) .Sub (bO.M12 .Mul (aO.M31)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
+                distance = tl.Neg() .Sub (rarb);
 
-                axis = new Vector3(aO.M32 * bO.M13 - aO.M33 * bO.M12,
-                                   aO.M33 * bO.M11 - aO.M31 * bO.M13,
-                                   aO.M31 * bO.M12 - aO.M32 * bO.M11);
+                axis = new Vector3(aO.M32 .Mul (bO.M13) .Sub (aO.M33 .Mul (bO.M12)),
+                                   aO.M33 .Mul (bO.M11) .Sub (aO.M31 .Mul (bO.M13)),
+                                   aO.M31 .Mul (bO.M12) .Sub (aO.M32 .Mul (bO.M11)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(bO.M12 * aO.M33 - bO.M13 * aO.M32,
-                                       bO.M13 * aO.M31 - bO.M11 * aO.M33,
-                                       bO.M11 * aO.M32 - bO.M12 * aO.M31);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3(bO.M12 .Mul (aO.M33) .Sub (bO.M13 .Mul (aO.M32)),
+                                       bO.M13 .Mul (aO.M31) .Sub (bO.M11 .Mul (aO.M33)),
+                                       bO.M11 .Mul (aO.M32) .Sub (bO.M12 .Mul (aO.M31)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+					tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(aO.M32 * bO.M13 - aO.M33 * bO.M12,
-                                       aO.M33 * bO.M11 - aO.M31 * bO.M13,
-                                       aO.M31 * bO.M12 - aO.M32 * bO.M11);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3(aO.M32 .Mul (bO.M13) .Sub (aO.M33 .Mul (bO.M12)),
+                                       aO.M33 .Mul (bO.M11) .Sub (aO.M31 .Mul (bO.M13)),
+                                       aO.M31 .Mul (bO.M12) .Sub (aO.M32 .Mul (bO.M11)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
 
             //A.Z x B.Y
-            rarb = aX * absBR.M22 + aY * absBR.M12 +
-                   bX * absBR.M33 + bZ * absBR.M31;
-            tl = t.Y * bR.M12 - t.X * bR.M22;
+            rarb = aX .Mul (absBR.M22) .Add (aY .Mul (absBR.M12)) .Add
+                   (bX .Mul (absBR.M33) .Add (bZ .Mul (absBR.M31)));
+            tl = t.Y .Mul (bR.M12) .Sub (t.X .Mul (bR.M22));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(bO.M22 * aO.M33 - bO.M23 * aO.M32,
-                                   bO.M23 * aO.M31 - bO.M21 * aO.M33,
-                                   bO.M21 * aO.M32 - bO.M22 * aO.M31);
+                distance = tl .Sub (rarb);
+                axis = new Vector3(bO.M22 .Mul (aO.M33) .Sub (bO.M23 .Mul (aO.M32)),
+                                   bO.M23 .Mul (aO.M31) .Sub (bO.M21 .Mul (aO.M33)),
+                                   bO.M21 .Mul (aO.M32) .Sub (bO.M22 .Mul (aO.M31)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
+                distance = tl.Neg() .Sub (rarb);
 
-                axis = new Vector3(aO.M32 * bO.M23 - aO.M33 * bO.M22,
-                                   aO.M33 * bO.M21 - aO.M31 * bO.M23,
-                                   aO.M31 * bO.M22 - aO.M32 * bO.M21);
+                axis = new Vector3(aO.M32 .Mul (bO.M23) .Sub (aO.M33 .Mul (bO.M22)),
+                                   aO.M33 .Mul (bO.M21) .Sub (aO.M31 .Mul (bO.M23)),
+                                   aO.M31 .Mul (bO.M22) .Sub (aO.M32 .Mul (bO.M21)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(bO.M22 * aO.M33 - bO.M23 * aO.M32,
-                                       bO.M23 * aO.M31 - bO.M21 * aO.M33,
-                                       bO.M21 * aO.M32 - bO.M22 * aO.M31);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3(bO.M22 .Mul (aO.M33) .Sub (bO.M23 .Mul (aO.M32)),
+                                       bO.M23 .Mul (aO.M31) .Sub (bO.M21 .Mul (aO.M33)),
+                                       bO.M21 .Mul (aO.M32) .Sub (bO.M22 .Mul (aO.M31)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+					tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(aO.M32 * bO.M23 - aO.M33 * bO.M22,
-                                       aO.M33 * bO.M21 - aO.M31 * bO.M23,
-                                       aO.M31 * bO.M22 - aO.M32 * bO.M21);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3(aO.M32 .Mul (bO.M23) .Sub (aO.M33 .Mul (bO.M22)),
+                                       aO.M33 .Mul (bO.M21) .Sub (aO.M31 .Mul (bO.M23)),
+                                       aO.M31 .Mul (bO.M22) .Sub (aO.M32 .Mul (bO.M21)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+                    tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
 
             //A.Z x B.Z
-            rarb = aX * absBR.M23 + aY * absBR.M13 +
-                   bX * absBR.M32 + bY * absBR.M31;
-            tl = t.Y * bR.M13 - t.X * bR.M23;
+            rarb = aX .Mul (absBR.M23) .Add (aY .Mul (absBR.M13)) .Add
+                   (bX .Mul (absBR.M32) .Add (bY .Mul (absBR.M31)));
+            tl = t.Y .Mul (bR.M13) .Sub (t.X .Mul (bR.M23));
             if (tl > rarb)
             {
-                distance = tl - rarb;
-                axis = new Vector3(bO.M32 * aO.M33 - bO.M33 * aO.M32,
-                                   bO.M33 * aO.M31 - bO.M31 * aO.M33,
-                                   bO.M31 * aO.M32 - bO.M32 * aO.M31);
+                distance = tl .Sub (rarb);
+                axis = new Vector3(bO.M32 .Mul (aO.M33) .Sub (bO.M33 .Mul (aO.M32)),
+                                   bO.M33 .Mul (aO.M31) .Sub (bO.M31 .Mul (aO.M33)),
+                                   bO.M31 .Mul (aO.M32) .Sub (bO.M32 .Mul (aO.M31)));
                 return false;
             }
-            if (tl < -rarb)
+            if (tl < rarb.Neg())
             {
-                distance = -tl - rarb;
-                axis = new Vector3(aO.M32 * bO.M33 - aO.M33 * bO.M32,
-                                   aO.M33 * bO.M31 - aO.M31 * bO.M33,
-                                   aO.M31 * bO.M32 - aO.M32 * bO.M31);
+                distance = tl.Neg() .Sub (rarb);
+                axis = new Vector3(aO.M32 .Mul (bO.M33) .Sub (aO.M33 .Mul (bO.M32)),
+                                   aO.M33 .Mul (bO.M31) .Sub (aO.M31 .Mul (bO.M33)),
+                                   aO.M31 .Mul (bO.M32) .Sub (aO.M32 .Mul (bO.M31)));
                 return false;
             }
             //Inside
-            if (tl > F64.C0)
+            if (tl > Fix32.Zero)
             {
-                tempAxis = new Vector3(bO.M32 * aO.M33 - bO.M33 * aO.M32,
-                                       bO.M33 * aO.M31 - bO.M31 * aO.M33,
-                                       bO.M31 * aO.M32 - bO.M32 * aO.M31);
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (tl - rarb) * axisLengthInverse;
+                tempAxis = new Vector3(bO.M32 .Mul (aO.M33) .Sub (bO.M33 .Mul (aO.M32)),
+                                       bO.M33 .Mul (aO.M31) .Sub (bO.M31 .Mul (aO.M33)),
+                                       bO.M31 .Mul (aO.M32) .Sub (bO.M32 .Mul (aO.M31)));
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
+                    tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+                    tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+					tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
                     minimumAxis = tempAxis;
                 }
             }
             else
             {
-                tempAxis = new Vector3(aO.M32 * bO.M33 - aO.M33 * bO.M32,
-                                       aO.M33 * bO.M31 - aO.M31 * bO.M33,
-                                       aO.M31 * bO.M32 - aO.M32 * bO.M31);
+                tempAxis = new Vector3(aO.M32 .Mul (bO.M33) .Sub (aO.M33 .Mul (bO.M32)),
+                                       aO.M33 .Mul (bO.M31) .Sub (aO.M31 .Mul (bO.M33)),
+                                       aO.M31 .Mul (bO.M32) .Sub (aO.M32 .Mul (bO.M31)));
 
-                axisLengthInverse = F64.C1 / tempAxis.Length();
-                tempDistance = (-tl - rarb) * axisLengthInverse;
+                axisLengthInverse = F64.C1 .Div (tempAxis.Length());
+                tempDistance = (tl.Neg() .Sub (rarb)) .Mul (axisLengthInverse);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-                    tempAxis.X *= axisLengthInverse;
-                    tempAxis.Y *= axisLengthInverse;
-                    tempAxis.Z *= axisLengthInverse;
-                    minimumAxis = tempAxis;
+					tempAxis.X = tempAxis.X .Mul (axisLengthInverse);
+					tempAxis.Y = tempAxis.Y .Mul (axisLengthInverse);
+					tempAxis.Z = tempAxis.Z .Mul (axisLengthInverse);
+					minimumAxis = tempAxis;
                 }
             }
 
@@ -2278,7 +2278,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 GetEdgeEdgeContact(a, b, ref transformA.Position, ref aO, ref transformB.Position, ref bO, minimumDistance, ref minimumAxis, out contactData);
 
                 //Vector3 position;
-                //Fix64 depth;
+                //Fix32 depth;
                 //int id;
                 //                GetEdgeEdgeContact(a, b, ref transformA.Position, ref aO, ref transformB.Position, ref bO, ref minimumAxis, out position, out id);
                 //#if ALLOWUNSAFE
@@ -2296,7 +2296,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
             else
             {
-                minimumDistance -= antiEdgeBias;
+                minimumDistance = minimumDistance .Sub (antiEdgeBias);
                 GetFaceContacts(a, b, ref transformA.Position, ref aO, ref transformB.Position, ref bO, minimumFeature == 0, ref minimumAxis, out contactData);
 
             }
@@ -2307,9 +2307,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         }
 
 #if ALLOWUNSAFE
-        internal static void GetEdgeEdgeContact(BoxShape a, BoxShape b, ref Vector3 positionA, ref Matrix3x3 orientationA, ref Vector3 positionB, ref Matrix3x3 orientationB, Fix64 depth, ref Vector3 mtd, out BoxContactDataCache contactData)
+        internal static void GetEdgeEdgeContact(BoxShape a, BoxShape b, ref Vector3 positionA, ref Matrix3x3 orientationA, ref Vector3 positionB, ref Matrix3x3 orientationB, Fix32 depth, ref Vector3 mtd, out BoxContactDataCache contactData)
 #else
-        internal static void GetEdgeEdgeContact(BoxShape a, BoxShape b, ref Vector3 positionA, ref Matrix3x3 orientationA, ref Vector3 positionB, ref Matrix3x3 orientationB, Fix64 depth, ref Vector3 mtd, out TinyStructList<BoxContactData> contactData)
+        internal static void GetEdgeEdgeContact(BoxShape a, BoxShape b, ref Vector3 positionA, ref Matrix3x3 orientationA, ref Vector3 positionB, ref Matrix3x3 orientationB, Fix32 depth, ref Vector3 mtd, out TinyStructList<BoxContactData> contactData)
 #endif
         {
             //Edge-edge contacts conceptually can only create one contact in perfectly rigid collisions.
@@ -2361,13 +2361,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 edgeAStart1, edgeAEnd1, edgeAStart2, edgeAEnd2;
             Vector3 edgeBStart1, edgeBEnd1, edgeBStart2, edgeBEnd2;
 #endif
-            Fix64 aHalfWidth = a.halfWidth;
-            Fix64 aHalfHeight = a.halfHeight;
-            Fix64 aHalfLength = a.halfLength;
+            Fix32 aHalfWidth = a.halfWidth;
+            Fix32 aHalfHeight = a.halfHeight;
+            Fix32 aHalfLength = a.halfLength;
 
-            Fix64 bHalfWidth = b.halfWidth;
-            Fix64 bHalfHeight = b.halfHeight;
-            Fix64 bHalfLength = b.halfLength;
+            Fix32 bHalfWidth = b.halfWidth;
+            Fix32 bHalfHeight = b.halfHeight;
+            Fix32 bHalfLength = b.halfLength;
 
             //Letter stands for owner.  Number stands for edge (1 or 2).
             int edgeAStart1Id, edgeAEnd1Id, edgeAStart2Id, edgeAEnd2Id;
@@ -2379,16 +2379,16 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             #region Edge A
 
-            if (Fix64.Abs(mtdA.X) < Toolbox.Epsilon)
+            if (mtdA.X.Abs() < Toolbox.Epsilon)
             {
                 //mtd is in the Y-Z plane.
                 //Perform an implicit dot with the edge location relative to the center.
                 //Find the two edges furthest in the direction of the mtdA.
-                var dots = new TinyList<Fix64>();
-                dots.Add(-aHalfHeight * mtdA.Y - aHalfLength * mtdA.Z);
-                dots.Add(-aHalfHeight * mtdA.Y + aHalfLength * mtdA.Z);
-                dots.Add(aHalfHeight * mtdA.Y - aHalfLength * mtdA.Z);
-                dots.Add(aHalfHeight * mtdA.Y + aHalfLength * mtdA.Z);
+                var dots = new TinyList<Fix32>();
+                dots.Add(aHalfHeight.Neg() .Mul (mtdA.Y) .Sub (aHalfLength .Mul (mtdA.Z)));
+                dots.Add(aHalfHeight.Neg() .Mul (mtdA.Y) .Add (aHalfLength .Mul (mtdA.Z)));
+                dots.Add(aHalfHeight .Mul (mtdA.Y) .Sub (aHalfLength .Mul (mtdA.Z)));
+                dots.Add(aHalfHeight .Mul (mtdA.Y) .Add (aHalfLength .Mul (mtdA.Z)));
 
                 //Find the first and second highest indices.
                 int highestIndex, secondHighestIndex;
@@ -2399,16 +2399,16 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
 
             }
-            else if (Fix64.Abs(mtdA.Y) < Toolbox.Epsilon)
+            else if (mtdA.Y.Abs() < Toolbox.Epsilon)
             {
                 //mtd is in the X-Z plane
                 //Perform an implicit dot with the edge location relative to the center.
                 //Find the two edges furthest in the direction of the mtdA.
-                var dots = new TinyList<Fix64>();
-                dots.Add(-aHalfWidth * mtdA.X - aHalfLength * mtdA.Z);
-                dots.Add(-aHalfWidth * mtdA.X + aHalfLength * mtdA.Z);
-                dots.Add(aHalfWidth * mtdA.X - aHalfLength * mtdA.Z);
-                dots.Add(aHalfWidth * mtdA.X + aHalfLength * mtdA.Z);
+                var dots = new TinyList<Fix32>();
+                dots.Add(aHalfWidth.Neg() .Mul (mtdA.X) .Sub (aHalfLength .Mul (mtdA.Z)));
+                dots.Add(aHalfWidth.Neg() .Mul (mtdA.X) .Add (aHalfLength .Mul (mtdA.Z)));
+                dots.Add(aHalfWidth .Mul (mtdA.X) .Sub (aHalfLength .Mul (mtdA.Z)));
+                dots.Add(aHalfWidth .Mul (mtdA.X) .Add (aHalfLength .Mul (mtdA.Z)));
 
                 //Find the first and second highest indices.
                 int highestIndex, secondHighestIndex;
@@ -2422,11 +2422,11 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 //mtd is in the X-Y plane
                 //Perform an implicit dot with the edge location relative to the center.
                 //Find the two edges furthest in the direction of the mtdA.
-                var dots = new TinyList<Fix64>();
-                dots.Add(-aHalfWidth * mtdA.X - aHalfHeight * mtdA.Y);
-                dots.Add(-aHalfWidth * mtdA.X + aHalfHeight * mtdA.Y);
-                dots.Add(aHalfWidth * mtdA.X - aHalfHeight * mtdA.Y);
-                dots.Add(aHalfWidth * mtdA.X + aHalfHeight * mtdA.Y);
+                var dots = new TinyList<Fix32>();
+                dots.Add(aHalfWidth.Neg() .Mul (mtdA.X) .Sub (aHalfHeight .Mul (mtdA.Y)));
+                dots.Add(aHalfWidth.Neg() .Mul (mtdA.X) .Add (aHalfHeight .Mul (mtdA.Y)));
+                dots.Add(aHalfWidth .Mul (mtdA.X) .Sub (aHalfHeight .Mul (mtdA.Y)));
+                dots.Add(aHalfWidth .Mul (mtdA.X) .Add (aHalfHeight .Mul (mtdA.Y)));
 
                 //Find the first and second highest indices.
                 int highestIndex, secondHighestIndex;
@@ -2440,16 +2440,16 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             #region Edge B
 
-            if (Fix64.Abs(mtdB.X) < Toolbox.Epsilon)
+            if (mtdB.X.Abs() < Toolbox.Epsilon)
             {
                 //mtd is in the Y-Z plane.
                 //Perform an implicit dot with the edge location relative to the center.
                 //Find the two edges furthest in the direction of the mtdB.
-                var dots = new TinyList<Fix64>();
-                dots.Add(-bHalfHeight * mtdB.Y - bHalfLength * mtdB.Z);
-                dots.Add(-bHalfHeight * mtdB.Y + bHalfLength * mtdB.Z);
-                dots.Add(bHalfHeight * mtdB.Y - bHalfLength * mtdB.Z);
-                dots.Add(bHalfHeight * mtdB.Y + bHalfLength * mtdB.Z);
+                var dots = new TinyList<Fix32>();
+                dots.Add(bHalfHeight.Neg() .Mul (mtdB.Y) .Sub (bHalfLength .Mul (mtdB.Z)));
+                dots.Add(bHalfHeight.Neg() .Mul (mtdB.Y) .Add (bHalfLength .Mul (mtdB.Z)));
+                dots.Add(bHalfHeight .Mul (mtdB.Y) .Sub (bHalfLength .Mul (mtdB.Z)));
+                dots.Add(bHalfHeight .Mul (mtdB.Y) .Add (bHalfLength .Mul (mtdB.Z)));
 
                 //Find the first and second highest indices.
                 int highestIndex, secondHighestIndex;
@@ -2460,16 +2460,16 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
 
             }
-            else if (Fix64.Abs(mtdB.Y) < Toolbox.Epsilon)
+            else if (mtdB.Y.Abs() < Toolbox.Epsilon)
             {
                 //mtd is in the X-Z plane
                 //Perform an implicit dot with the edge location relative to the center.
                 //Find the two edges furthest in the direction of the mtdB.
-                var dots = new TinyList<Fix64>();
-                dots.Add(-bHalfWidth * mtdB.X - bHalfLength * mtdB.Z);
-                dots.Add(-bHalfWidth * mtdB.X + bHalfLength * mtdB.Z);
-                dots.Add(bHalfWidth * mtdB.X - bHalfLength * mtdB.Z);
-                dots.Add(bHalfWidth * mtdB.X + bHalfLength * mtdB.Z);
+                var dots = new TinyList<Fix32>();
+                dots.Add(bHalfWidth.Neg() .Mul (mtdB.X) .Sub (bHalfLength .Mul (mtdB.Z)));
+                dots.Add(bHalfWidth.Neg() .Mul (mtdB.X) .Add (bHalfLength .Mul (mtdB.Z)));
+                dots.Add(bHalfWidth .Mul (mtdB.X) .Sub (bHalfLength .Mul (mtdB.Z)));
+                dots.Add(bHalfWidth .Mul (mtdB.X) .Add (bHalfLength .Mul (mtdB.Z)));
 
                 //Find the first and second highest indices.
                 int highestIndex, secondHighestIndex;
@@ -2483,11 +2483,11 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 //mtd is in the X-Y plane
                 //Perform an implicit dot with the edge location relative to the center.
                 //Find the two edges furthest in the direction of the mtdB.
-                var dots = new TinyList<Fix64>();
-                dots.Add(-bHalfWidth * mtdB.X - bHalfHeight * mtdB.Y);
-                dots.Add(-bHalfWidth * mtdB.X + bHalfHeight * mtdB.Y);
-                dots.Add(bHalfWidth * mtdB.X - bHalfHeight * mtdB.Y);
-                dots.Add(bHalfWidth * mtdB.X + bHalfHeight * mtdB.Y);
+                var dots = new TinyList<Fix32>();
+                dots.Add(bHalfWidth.Neg() .Mul (mtdB.X) .Sub (bHalfHeight .Mul (mtdB.Y)));
+                dots.Add(bHalfWidth.Neg() .Mul (mtdB.X) .Add (bHalfHeight .Mul (mtdB.Y)));
+                dots.Add(bHalfWidth .Mul (mtdB.X) .Sub (bHalfHeight .Mul (mtdB.Y)));
+                dots.Add(bHalfWidth .Mul (mtdB.X) .Add (bHalfHeight .Mul (mtdB.Y)));
 
                 //Find the first and second highest indices.
                 int highestIndex, secondHighestIndex;
@@ -2522,7 +2522,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             Vector3 onA, onB;
             Vector3 offset;
-            Fix64 dot;
+            Fix32 dot;
 #if ALLOWUNSAFE
             var tempContactData = new BoxContactDataCache();
             unsafe
@@ -2538,7 +2538,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
                 Vector3.Subtract(ref onA, ref onB, out offset);
                 Vector3.Dot(ref offset, ref mtd, out dot);
-                if (dot < F64.C0) //Distance must be negative.
+                if (dot < Fix32.Zero) //Distance must be negative.
                 {
                     BoxContactData data;
                     data.Position = onA;
@@ -2557,7 +2557,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
                 Vector3.Subtract(ref onA, ref onB, out offset);
                 Vector3.Dot(ref offset, ref mtd, out dot);
-                if (dot < F64.C0) //Distance must be negative.
+                if (dot < Fix32.Zero) //Distance must be negative.
                 {
                     BoxContactData data;
                     data.Position = onA;
@@ -2576,7 +2576,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
                 Vector3.Subtract(ref onA, ref onB, out offset);
                 Vector3.Dot(ref offset, ref mtd, out dot);
-                if (dot < F64.C0) //Distance must be negative.
+                if (dot < Fix32.Zero) //Distance must be negative.
                 {
                     BoxContactData data;
                     data.Position = onA;
@@ -2595,7 +2595,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
                 Vector3.Subtract(ref onA, ref onB, out offset);
                 Vector3.Dot(ref offset, ref mtd, out dot);
-                if (dot < F64.C0) //Distance must be negative.
+                if (dot < Fix32.Zero) //Distance must be negative.
                 {
                     BoxContactData data;
                     data.Position = onA;
@@ -2617,7 +2617,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
         }
 
-        private static void GetEdgeData(int index, int axis, Fix64 x, Fix64 y, Fix64 z, out Vector3 edgeStart, out Vector3 edgeEnd, out int edgeStartId, out int edgeEndId)
+        private static void GetEdgeData(int index, int axis, Fix32 x, Fix32 y, Fix32 z, out Vector3 edgeStart, out Vector3 edgeEnd, out int edgeStartId, out int edgeEndId)
         {
             //Index defines which edge to use.
             //They follow this pattern:
@@ -2640,43 +2640,43 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
                 case 0:
                     //X--
-                    edgeStart.X = -x;
-                    edgeStart.Y = -y;
-                    edgeStart.Z = -z;
+                    edgeStart.X = x.Neg();
+                    edgeStart.Y = y.Neg();
+                    edgeStart.Z = z.Neg();
                     edgeStartId = 0; //000
 
                     edgeEnd.X = x;
-                    edgeEnd.Y = -y;
-                    edgeEnd.Z = -z;
+                    edgeEnd.Y = y.Neg();
+                    edgeEnd.Z = z.Neg();
                     edgeEndId = 4; //100
                     break;
                 case 1:
                     //X-+
-                    edgeStart.X = -x;
-                    edgeStart.Y = -y;
+                    edgeStart.X = x.Neg();
+                    edgeStart.Y = y.Neg();
                     edgeStart.Z = z;
                     edgeStartId = 1; //001
 
                     edgeEnd.X = x;
-                    edgeEnd.Y = -y;
+                    edgeEnd.Y = y.Neg();
                     edgeEnd.Z = z;
                     edgeEndId = 5; //101
                     break;
                 case 2:
                     //X+-
-                    edgeStart.X = -x;
+                    edgeStart.X = x.Neg();
                     edgeStart.Y = y;
-                    edgeStart.Z = -z;
+                    edgeStart.Z = z.Neg();
                     edgeStartId = 2; //010
 
                     edgeEnd.X = x;
                     edgeEnd.Y = y;
-                    edgeEnd.Z = -z;
+                    edgeEnd.Z = z.Neg();
                     edgeEndId = 6; //110
                     break;
                 case 3:
                     //X++
-                    edgeStart.X = -x;
+                    edgeStart.X = x.Neg();
                     edgeStart.Y = y;
                     edgeStart.Z = z;
                     edgeStartId = 3; //011
@@ -2688,24 +2688,24 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     break;
                 case 4:
                     //-Y-
-                    edgeStart.X = -x;
-                    edgeStart.Y = -y;
-                    edgeStart.Z = -z;
+                    edgeStart.X = x.Neg();
+                    edgeStart.Y = y.Neg();
+                    edgeStart.Z = z.Neg();
                     edgeStartId = 0; //000
 
-                    edgeEnd.X = -x;
+                    edgeEnd.X = x.Neg();
                     edgeEnd.Y = y;
-                    edgeEnd.Z = -z;
+                    edgeEnd.Z = z.Neg();
                     edgeEndId = 2; //010
                     break;
                 case 5:
                     //-Y+
-                    edgeStart.X = -x;
-                    edgeStart.Y = -y;
+                    edgeStart.X = x.Neg();
+                    edgeStart.Y = y.Neg();
                     edgeStart.Z = z;
                     edgeStartId = 1; //001
 
-                    edgeEnd.X = -x;
+                    edgeEnd.X = x.Neg();
                     edgeEnd.Y = y;
                     edgeEnd.Z = z;
                     edgeEndId = 3; //011
@@ -2713,19 +2713,19 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 case 6:
                     //+Y-
                     edgeStart.X = x;
-                    edgeStart.Y = -y;
-                    edgeStart.Z = -z;
+                    edgeStart.Y = y.Neg();
+                    edgeStart.Z = z.Neg();
                     edgeStartId = 4; //100
 
                     edgeEnd.X = x;
                     edgeEnd.Y = y;
-                    edgeEnd.Z = -z;
+                    edgeEnd.Z = z.Neg();
                     edgeEndId = 6; //110
                     break;
                 case 7:
                     //+Y+
                     edgeStart.X = x;
-                    edgeStart.Y = -y;
+                    edgeStart.Y = y.Neg();
                     edgeStart.Z = z;
                     edgeStartId = 5; //101
 
@@ -2736,24 +2736,24 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     break;
                 case 8:
                     //--Z
-                    edgeStart.X = -x;
-                    edgeStart.Y = -y;
-                    edgeStart.Z = -z;
+                    edgeStart.X = x.Neg();
+                    edgeStart.Y = y.Neg();
+                    edgeStart.Z = z.Neg();
                     edgeStartId = 0; //000
 
-                    edgeEnd.X = -x;
-                    edgeEnd.Y = -y;
+                    edgeEnd.X = x.Neg();
+                    edgeEnd.Y = y.Neg();
                     edgeEnd.Z = z;
                     edgeEndId = 1; //001
                     break;
                 case 9:
                     //-+Z
-                    edgeStart.X = -x;
+                    edgeStart.X = x.Neg();
                     edgeStart.Y = y;
-                    edgeStart.Z = -z;
+                    edgeStart.Z = z.Neg();
                     edgeStartId = 2; //010
 
-                    edgeEnd.X = -x;
+                    edgeEnd.X = x.Neg();
                     edgeEnd.Y = y;
                     edgeEnd.Z = z;
                     edgeEndId = 3; //011
@@ -2761,12 +2761,12 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 case 10:
                     //+-Z
                     edgeStart.X = x;
-                    edgeStart.Y = -y;
-                    edgeStart.Z = -z;
+                    edgeStart.Y = y.Neg();
+                    edgeStart.Z = z.Neg();
                     edgeStartId = 4; //100
 
                     edgeEnd.X = x;
-                    edgeEnd.Y = -y;
+                    edgeEnd.Y = y.Neg();
                     edgeEnd.Z = z;
                     edgeEndId = 5; //101
                     break;
@@ -2774,7 +2774,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     //++Z
                     edgeStart.X = x;
                     edgeStart.Y = y;
-                    edgeStart.Z = -z;
+                    edgeStart.Z = z.Neg();
                     edgeStartId = 6; //110
 
                     edgeEnd.X = x;
@@ -2787,13 +2787,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
         }
 
-        static void FindHighestIndices(ref TinyList<Fix64> dots, out int highestIndex, out int secondHighestIndex)
+        static void FindHighestIndices(ref TinyList<Fix32> dots, out int highestIndex, out int secondHighestIndex)
         {
             highestIndex = 0;
-            Fix64 highestValue = dots[0];
+            Fix32 highestValue = dots[0];
             for (int i = 1; i < 4; i++)
             {
-                Fix64 dot = dots[i];
+                Fix32 dot = dots[i];
                 if (dot > highestValue)
                 {
                     highestIndex = i;
@@ -2801,10 +2801,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 }
             }
             secondHighestIndex = 0;
-            Fix64 secondHighestValue = -Fix64.MaxValue;
+            Fix32 secondHighestValue = Fix32.MaxValue.Neg();
             for (int i = 0; i < 4; i++)
             {
-                Fix64 dot = dots[i];
+                Fix32 dot = dots[i];
                 if (i != highestIndex && dot > secondHighestValue)
                 {
                     secondHighestIndex = i;
@@ -2833,12 +2833,12 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 r;
             Vector3.Subtract(ref p1, ref p2, out r);
             //distance
-            Fix64 a = d1.LengthSquared();
-            Fix64 e = d2.LengthSquared();
-            Fix64 f;
+            Fix32 a = d1.LengthSquared();
+            Fix32 e = d2.LengthSquared();
+            Fix32 f;
             Vector3.Dot(ref d2, ref r, out f);
 
-            Fix64 s, t;
+            Fix32 s, t;
 
             if (a <= Toolbox.Epsilon && e <= Toolbox.Epsilon)
             {
@@ -2850,9 +2850,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             if (a <= Toolbox.Epsilon)
             {
                 // First segment is basically a point.
-                s = F64.C0;
-                t = f / e;
-                if (t < F64.C0 || t > F64.C1)
+                s = Fix32.Zero;
+                t = f .Div (e);
+                if (t < Fix32.Zero || t > F64.C1)
                 {
                     c1 = new Vector3();
                     c2 = new Vector3();
@@ -2861,24 +2861,24 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
             else
             {
-                Fix64 c = Vector3.Dot(d1, r);
+                Fix32 c = Vector3.Dot(d1, r);
                 if (e <= Toolbox.Epsilon)
                 {
                     // Second segment is basically a point.
-                    t = F64.C0;
-                    s = MathHelper.Clamp(-c / a, F64.C0, F64.C1);
+                    t = Fix32.Zero;
+                    s = MathHelper.Clamp(c.Neg() .Div (a), Fix32.Zero, F64.C1);
                 }
                 else
                 {
-                    Fix64 b = Vector3.Dot(d1, d2);
-                    Fix64 denom = a * e - b * b;
+                    Fix32 b = Vector3.Dot(d1, d2);
+                    Fix32 denom = a .Mul (e) .Sub (b .Mul (b));
 
                     // If segments not parallel, compute closest point on L1 to L2, and
                     // clamp to segment S1. Else pick some s (here .5f)
-                    if (denom != F64.C0)
+                    if (denom != Fix32.Zero)
                     {
-                        s = (b * f - c * e) / denom;
-                        if (s < F64.C0 || s > F64.C1)
+                        s = (b .Mul (f) .Sub (c .Mul (e))) .Div (denom);
+                        if (s < Fix32.Zero || s > F64.C1)
                         {
                             //Closest point would be outside of the segment.
                             c1 = new Vector3();
@@ -2890,9 +2890,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                         s = F64.C0p5;
 
 
-                    t = (b * s + f) / e;
+                    t = (b .Mul (s) .Add (f)) .Div (e);
 
-                    if (t < F64.C0 || t > F64.C1)
+                    if (t < Fix32.Zero || t > F64.C1)
                     {
                         //Closest point would be outside of the segment.
                         c1 = new Vector3();
@@ -2909,7 +2909,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             return true;
         }
 
-        //        internal static void GetEdgeEdgeContact(BoxShape a, BoxShape b, ref Vector3 positionA, ref Matrix3X3 orientationA, ref Vector3 positionB, ref Matrix3X3 orientationB, Fix64 depth, ref Vector3 mtd, out TinyStructList<BoxContactData> contactData)
+        //        internal static void GetEdgeEdgeContact(BoxShape a, BoxShape b, ref Vector3 positionA, ref Matrix3X3 orientationA, ref Vector3 positionB, ref Matrix3X3 orientationB, Fix32 depth, ref Vector3 mtd, out TinyStructList<BoxContactData> contactData)
         //        {
         //            //Put the minimum translation direction into the local space of each object.
         //            Vector3 mtdA, mtdB;
@@ -2926,13 +2926,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //            Vector3 edgeA1, edgeA2;
         //            Vector3 edgeB1, edgeB2;
         //#endif
-        //            Fix64 aHalfWidth = a.halfWidth;
-        //            Fix64 aHalfHeight = a.halfHeight;
-        //            Fix64 aHalfLength = a.halfLength;
+        //            Fix32 aHalfWidth = a.halfWidth;
+        //            Fix32 aHalfHeight = a.halfHeight;
+        //            Fix32 aHalfLength = a.halfLength;
 
-        //            Fix64 bHalfWidth = b.halfWidth;
-        //            Fix64 bHalfHeight = b.halfHeight;
-        //            Fix64 bHalfLength = b.halfLength;
+        //            Fix32 bHalfWidth = b.halfWidth;
+        //            Fix32 bHalfHeight = b.halfHeight;
+        //            Fix32 bHalfLength = b.halfLength;
 
         //            int edgeA1Id, edgeA2Id;
         //            int edgeB1Id, edgeB2Id;
@@ -2943,7 +2943,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
         //            #region Edge A
 
-        //            if (Fix64.Abs(mtdA.X) < Toolbox.Epsilon)
+        //            if ((mtdA.X).Abs() < Toolbox.Epsilon)
         //            {
         //                //mtd is in the Y-Z plane.
         //                if (mtdA.Y > 0)
@@ -3009,7 +3009,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //                    }
         //                }
         //            }
-        //            else if (Fix64.Abs(mtdA.Y) < Toolbox.Epsilon)
+        //            else if ((mtdA.Y).Abs() < Toolbox.Epsilon)
         //            {
         //                //mtd is in the X-Z plane
         //                if (mtdA.X > 0)
@@ -3146,7 +3146,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
         //            #region Edge B
 
-        //            if (Fix64.Abs(mtdB.X) < Toolbox.Epsilon)
+        //            if ((mtdB.X).Abs() < Toolbox.Epsilon)
         //            {
         //                //mtd is in the Y-Z plane.
         //                if (mtdB.Y > 0)
@@ -3212,7 +3212,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //                    }
         //                }
         //            }
-        //            else if (Fix64.Abs(mtdB.Y) < Toolbox.Epsilon)
+        //            else if ((mtdB.Y).Abs() < Toolbox.Epsilon)
         //            {
         //                //mtd is in the X-Z plane
         //                if (mtdB.X > 0)
@@ -3361,7 +3361,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //            Vector3.Add(ref edgeB1, ref positionB, out edgeB1);
         //            Vector3.Add(ref edgeB2, ref positionB, out edgeB2);
 
-        //            Fix64 s, t;
+        //            Fix32 s, t;
         //            Vector3 onA, onB;
         //            Toolbox.GetClosestPointsBetweenSegments(ref edgeA1, ref edgeA2, ref edgeB1, ref edgeB2, out s, out t, out onA, out onB);
         //            //Vector3.Add(ref onA, ref onB, out point);
@@ -3379,13 +3379,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         internal static void GetFaceContacts(BoxShape a, BoxShape b, ref Vector3 positionA, ref Matrix3x3 orientationA, ref Vector3 positionB, ref Matrix3x3 orientationB, bool aIsFaceOwner, ref Vector3 mtd, out TinyStructList<BoxContactData> contactData)
 #endif
         {
-            Fix64 aHalfWidth = a.halfWidth;
-            Fix64 aHalfHeight = a.halfHeight;
-            Fix64 aHalfLength = a.halfLength;
+            Fix32 aHalfWidth = a.halfWidth;
+            Fix32 aHalfHeight = a.halfHeight;
+            Fix32 aHalfLength = a.halfLength;
 
-            Fix64 bHalfWidth = b.halfWidth;
-            Fix64 bHalfHeight = b.halfHeight;
-            Fix64 bHalfLength = b.halfLength;
+            Fix32 bHalfWidth = b.halfWidth;
+            Fix32 bHalfHeight = b.halfHeight;
+            Fix32 bHalfLength = b.halfLength;
 
             BoxFace aBoxFace, bBoxFace;
 
@@ -3412,7 +3412,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             int count = input.Count;
             //TODO: THE FOLLOWING has a small issue in release mode.
             //Find the deepest point.
-            Fix64 deepestDepth = -1;
+            Fix32 deepestDepth = -1;
             int deepestIndex = 0;
             for (int i = 0; i < count; i++)
             {
@@ -3424,11 +3424,11 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
 
             //Identify the furthest point away from the deepest index.
-            Fix64 furthestDistance = -1;
+            Fix32 furthestDistance = -1;
             int furthestIndex = 0;
             for (int i = 0; i < count; i++)
             {
-                Fix64 distance;
+                Fix32 distance;
                 Vector3.DistanceSquared(ref data[deepestIndex].Position, ref data[i].Position, out distance);
                 if (distance > furthestDistance)
                 {
@@ -3444,8 +3444,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 yAxis;
             Vector3.Cross(ref mtd, ref xAxis, out yAxis);
 
-            Fix64 minY;
-            Fix64 maxY;
+            Fix32 minY;
+            Fix32 maxY;
             int minYindex = 0;
             int maxYindex = 0;
 
@@ -3453,7 +3453,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             maxY = minY;
             for (int i = 1; i < count; i++)
             {
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref yAxis, ref data[i].Position, out dot);
                 if (dot < minY)
                 {
@@ -3480,8 +3480,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Vector3 v;
             //var maximumOffset = new Vector3();
             //int maxIndexA = -1, maxIndexB = -1;
-            //Fix64 temp;
-            //Fix64 maximumDistanceSquared = -Fix64.MaxValue;
+            //Fix32 temp;
+            //Fix32 maximumDistanceSquared = -Fix32.MaxValue;
             //for (int i = 0; i < count; i++)
             //{
             //    for (int j = i + 1; j < count; j++)
@@ -3501,7 +3501,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Vector3 otherDirection;
             //Vector3.Cross(ref mtd, ref maximumOffset, out otherDirection);
             //int minimumIndex = -1, maximumIndex = -1;
-            //Fix64 minimumDistance = Fix64.MaxValue, maximumDistance = -Fix64.MaxValue;
+            //Fix32 minimumDistance = Fix32.MaxValue, maximumDistance = -Fix32.MaxValue;
 
             //for (int i = 0; i < count; i++)
             //{
@@ -3547,12 +3547,12 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Identify the furthest point away from the deepest index.
             BoxContactData furthestData;
             input.Get(0, out furthestData);
-            Fix64 furthestDistance;
+            Fix32 furthestDistance;
             Vector3.DistanceSquared(ref deepestData.Position, ref furthestData.Position, out furthestDistance);
             for (int i = 1; i < count; i++)
             {
                 input.Get(i, out data);
-                Fix64 distance;
+                Fix32 distance;
                 Vector3.DistanceSquared(ref deepestData.Position, ref data.Position, out distance);
                 if (distance > furthestDistance)
                 {
@@ -3568,8 +3568,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 yAxis;
             Vector3.Cross(ref mtd, ref xAxis, out yAxis);
 
-            Fix64 minY;
-            Fix64 maxY;
+            Fix32 minY;
+            Fix32 maxY;
             BoxContactData minData, maxData;
             input.Get(0, out minData);
             maxData = minData;
@@ -3579,7 +3579,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             for (int i = 1; i < count; i++)
             {
                 input.Get(i, out data);
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref yAxis, ref data.Position, out dot);
                 if (dot < minY)
                 {
@@ -3604,8 +3604,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Vector3 v;
             //var maximumOffset = new Vector3();
             //int maxIndexA = -1, maxIndexB = -1;
-            //Fix64 temp;
-            //Fix64 maximumDistanceSquared = -Fix64.MaxValue;
+            //Fix32 temp;
+            //Fix32 maximumDistanceSquared = -Fix32.MaxValue;
             //BoxContactData itemA, itemB;
             //for (int i = 0; i < count; i++)
             //{
@@ -3628,7 +3628,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Vector3 otherDirection;
             //Vector3.Cross(ref mtd, ref maximumOffset, out otherDirection);
             //int minimumIndex = -1, maximumIndex = -1;
-            //Fix64 minimumDistance = Fix64.MaxValue, maximumDistance = -Fix64.MaxValue;
+            //Fix32 minimumDistance = Fix32.MaxValue, maximumDistance = -Fix32.MaxValue;
 
             //for (int i = 0; i < count; i++)
             //{
@@ -3673,74 +3673,74 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 clipX, clipY;
             Vector3.Subtract(ref clipFace.V4, ref clipFace.V3, out clipX);
             Vector3.Subtract(ref clipFace.V2, ref clipFace.V3, out clipY);
-            Fix64 inverseClipWidth = F64.C1 / clipFace.Width;
-            Fix64 inverseClipHeight = F64.C1 / clipFace.Height;
-            Fix64 inverseClipWidthSquared = inverseClipWidth * inverseClipWidth;
-            clipX.X *= inverseClipWidthSquared;
-            clipX.Y *= inverseClipWidthSquared;
-            clipX.Z *= inverseClipWidthSquared;
-            Fix64 inverseClipHeightSquared = inverseClipHeight * inverseClipHeight;
-            clipY.X *= inverseClipHeightSquared;
-            clipY.Y *= inverseClipHeightSquared;
-            clipY.Z *= inverseClipHeightSquared;
+            Fix32 inverseClipWidth = F64.C1 / clipFace.Width;
+            Fix32 inverseClipHeight = F64.C1 / clipFace.Height;
+            Fix32 inverseClipWidthSquared = inverseClipWidth * inverseClipWidth;
+            clipX.X = clipX.X * (inverseClipWidthSquared);
+            clipX.Y = clipX.Y * (inverseClipWidthSquared);
+            clipX.Z = clipX.Z * (inverseClipWidthSquared);
+            Fix32 inverseClipHeightSquared = inverseClipHeight * inverseClipHeight;
+            clipY.X = clipY.X * (inverseClipHeightSquared);
+            clipY.Y = clipY.Y * (inverseClipHeightSquared);
+            clipY.Z = clipY.Z * (inverseClipHeightSquared);
 
             //Local directions on the opposing face.  Their length is equal to the length of an edge.
             Vector3 faceX, faceY;
             Vector3.Subtract(ref face.V4, ref face.V3, out faceX);
             Vector3.Subtract(ref face.V2, ref face.V3, out faceY);
-            Fix64 inverseFaceWidth = F64.C1 / face.Width;
-            Fix64 inverseFaceHeight = F64.C1 / face.Height;
-            Fix64 inverseFaceWidthSquared = inverseFaceWidth * inverseFaceWidth;
-            faceX.X *= inverseFaceWidthSquared;
-            faceX.Y *= inverseFaceWidthSquared;
-            faceX.Z *= inverseFaceWidthSquared;
-            Fix64 inverseFaceHeightSquared = inverseFaceHeight * inverseFaceHeight;
-            faceY.X *= inverseFaceHeightSquared;
-            faceY.Y *= inverseFaceHeightSquared;
-            faceY.Z *= inverseFaceHeightSquared;
+            Fix32 inverseFaceWidth = F64.C1 / face.Width;
+            Fix32 inverseFaceHeight = F64.C1 / face.Height;
+            Fix32 inverseFaceWidthSquared = inverseFaceWidth * inverseFaceWidth;
+            faceX.X = faceX.X * (inverseFaceWidthSquared);
+            faceX.Y = faceX.Y * (inverseFaceWidthSquared);
+            faceX.Z = faceX.Z * (inverseFaceWidthSquared);
+            Fix32 inverseFaceHeightSquared = inverseFaceHeight * inverseFaceHeight;
+            faceY.X = faceY.X * (inverseFaceHeightSquared);
+            faceY.Y = faceY.Y * (inverseFaceHeightSquared);
+            faceY.Z = faceY.Z * (inverseFaceHeightSquared);
 
             Vector3 clipCenter;
             Vector3.Add(ref clipFace.V1, ref clipFace.V3, out clipCenter);
             //Defer division until after dot product (2 multiplies instead of 3)
-            Fix64 clipCenterX, clipCenterY;
+            Fix32 clipCenterX, clipCenterY;
             Vector3.Dot(ref clipCenter, ref clipX, out clipCenterX);
             Vector3.Dot(ref clipCenter, ref clipY, out clipCenterY);
-            clipCenterX *= F64.C0p5;
-            clipCenterY *= F64.C0p5;
+            clipCenterX = clipCenterX * (F64.C0p5);
+            clipCenterY = clipCenterY * (F64.C0p5);
 
             Vector3 faceCenter;
             Vector3.Add(ref face.V1, ref face.V3, out faceCenter);
             //Defer division until after dot product (2 multiplies instead of 3)
-            Fix64 faceCenterX, faceCenterY;
+            Fix32 faceCenterX, faceCenterY;
             Vector3.Dot(ref faceCenter, ref faceX, out faceCenterX);
             Vector3.Dot(ref faceCenter, ref faceY, out faceCenterY);
-            faceCenterX *= F64.C0p5;
-            faceCenterY *= F64.C0p5;
+            faceCenterX = faceCenterX * (F64.C0p5);
+            faceCenterY = faceCenterY * (F64.C0p5);
 
             //To test bounds, recall that clipX is the length of the X edge.
             //Going from the center to the max or min goes half of the length of X edge, or +/- 0.5.
             //Bias could be added here.
-            //const Fix64 extent = .5f; //.5f is the default, extra could be added for robustness or speed.
-            Fix64 extentX = F64.C0p5 + F64.C0p01 * inverseClipWidth;
-            Fix64 extentY = F64.C0p5 + F64.C0p01 * inverseClipHeight;
-            //Fix64 extentX = .5f + .01f * inverseClipXLength;
-            //Fix64 extentY = .5f + .01f * inverseClipYLength;
-            Fix64 clipCenterMaxX = clipCenterX + extentX;
-            Fix64 clipCenterMaxY = clipCenterY + extentY;
-            Fix64 clipCenterMinX = clipCenterX - extentX;
-            Fix64 clipCenterMinY = clipCenterY - extentY;
+            //const Fix32 extent = .5f; //.5f is the default, extra could be added for robustness or speed.
+            Fix32 extentX = F64.C0p5 + F64.C0p01 * inverseClipWidth;
+            Fix32 extentY = F64.C0p5 + F64.C0p01 * inverseClipHeight;
+            //Fix32 extentX = .5f + .01f * inverseClipXLength;
+            //Fix32 extentY = .5f + .01f * inverseClipYLength;
+            Fix32 clipCenterMaxX = clipCenterX + extentX;
+            Fix32 clipCenterMaxY = clipCenterY + extentY;
+            Fix32 clipCenterMinX = clipCenterX - extentX;
+            Fix32 clipCenterMinY = clipCenterY - extentY;
 
             extentX = F64.C0p5 + F64.C0p01 * inverseFaceWidth;
             extentY = F64.C0p5 + F64.C0p01 * inverseFaceHeight;
             //extentX = .5f + .01f * inverseFaceXLength;
             //extentY = .5f + .01f * inverseFaceYLength;
-            Fix64 faceCenterMaxX = faceCenterX + extentX;
-            Fix64 faceCenterMaxY = faceCenterY + extentY;
-            Fix64 faceCenterMinX = faceCenterX - extentX;
-            Fix64 faceCenterMinY = faceCenterY - extentY;
+            Fix32 faceCenterMaxX = faceCenterX + extentX;
+            Fix32 faceCenterMaxY = faceCenterY + extentY;
+            Fix32 faceCenterMinX = faceCenterX - extentX;
+            Fix32 faceCenterMinY = faceCenterY - extentY;
 
             //Find out where the opposing face is.
-            Fix64 dotX, dotY;
+            Fix32 dotX, dotY;
 
             //The four edges can be thought of as minX, maxX, minY and maxY.
 
@@ -3844,14 +3844,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Compute depths.
             tempData = contactData;
             contactData.Count = 0;
-            Fix64 depth;
-            Fix64 clipFaceDot, faceDot;
+            Fix32 depth;
+            Fix32 clipFaceDot, faceDot;
             Vector3.Dot(ref clipFace.V1, ref mtd, out clipFaceDot);
             for (int i = 0; i < tempData.Count; i++)
             {
                 Vector3.Dot(ref temp[i].Position, ref mtd, out faceDot);
                 depth = faceDot - clipFaceDot;
-                if (depth <= F64.C0)
+                if (depth <= Fix32.Zero)
                 {
                     data[contactData.Count].Position = temp[i].Position;
                     data[contactData.Count].Depth = depth;
@@ -3870,7 +3870,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         #region Clip face vertices
 
             Vector3 v;
-            Fix64 a, b;
+            Fix32 a, b;
             Vector3.Dot(ref face.V1, ref face.Normal, out b);
             //CLIP FACE
             if (clipv1MinXInside && clipv1MaxXInside && clipv1MinYInside && clipv1MaxYInside)
@@ -3923,7 +3923,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
                 Vector3.Dot(ref temp[i].Position, ref mtd, out faceDot);
                 depth = faceDot - clipFaceDot;
-                if (depth <= F64.C0)
+                if (depth <= Fix32.Zero)
                 {
                     data[contactData.Count].Position = temp[i].Position;
                     data[contactData.Count].Depth = depth;
@@ -3948,7 +3948,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             //Once we get here there can only be 3 contacts or less.
             //Once 4 possible contacts have been added, switch to using safe increments.
-            //Fix64 dot;
+            //Fix32 dot;
 
         #region CLIP EDGE: v1 v2
 
@@ -4423,7 +4423,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
                 Vector3.Dot(ref temp[i].Position, ref mtd, out faceDot);
                 depth = faceDot - clipFaceDot;
-                if (depth <= F64.C0)
+                if (depth <= Fix32.Zero)
                 {
                     data[contactData.Count].Position = temp[i].Position;
                     data[contactData.Count].Depth = depth;
@@ -4442,74 +4442,74 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 clipX, clipY;
             Vector3.Subtract(ref clipFace.V4, ref clipFace.V3, out clipX);
             Vector3.Subtract(ref clipFace.V2, ref clipFace.V3, out clipY);
-            Fix64 inverseClipWidth = 1 / clipFace.Width;
-            Fix64 inverseClipHeight = 1 / clipFace.Height;
-            Fix64 inverseClipWidthSquared = inverseClipWidth * inverseClipWidth;
-            clipX.X *= inverseClipWidthSquared;
-            clipX.Y *= inverseClipWidthSquared;
-            clipX.Z *= inverseClipWidthSquared;
-            Fix64 inverseClipHeightSquared = inverseClipHeight * inverseClipHeight;
-            clipY.X *= inverseClipHeightSquared;
-            clipY.Y *= inverseClipHeightSquared;
-            clipY.Z *= inverseClipHeightSquared;
+            Fix32 inverseClipWidth = Fix32.One .Div (clipFace.Width);
+            Fix32 inverseClipHeight = Fix32.One .Div (clipFace.Height);
+            Fix32 inverseClipWidthSquared = inverseClipWidth .Mul (inverseClipWidth);
+            clipX.X = clipX.X .Mul (inverseClipWidthSquared);
+            clipX.Y = clipX.Y .Mul (inverseClipWidthSquared);
+            clipX.Z = clipX.Z .Mul (inverseClipWidthSquared);
+            Fix32 inverseClipHeightSquared = inverseClipHeight .Mul (inverseClipHeight);
+            clipY.X = clipY.X .Mul (inverseClipHeightSquared);
+            clipY.Y = clipY.Y .Mul (inverseClipHeightSquared);
+            clipY.Z = clipY.Z .Mul (inverseClipHeightSquared);
 
             //Local directions on the opposing face.  Their length is equal to the length of an edge.
             Vector3 faceX, faceY;
             Vector3.Subtract(ref face.V4, ref face.V3, out faceX);
             Vector3.Subtract(ref face.V2, ref face.V3, out faceY);
-            Fix64 inverseFaceWidth = 1 / face.Width;
-            Fix64 inverseFaceHeight = 1 / face.Height;
-            Fix64 inverseFaceWidthSquared = inverseFaceWidth * inverseFaceWidth;
-            faceX.X *= inverseFaceWidthSquared;
-            faceX.Y *= inverseFaceWidthSquared;
-            faceX.Z *= inverseFaceWidthSquared;
-            Fix64 inverseFaceHeightSquared = inverseFaceHeight * inverseFaceHeight;
-            faceY.X *= inverseFaceHeightSquared;
-            faceY.Y *= inverseFaceHeightSquared;
-            faceY.Z *= inverseFaceHeightSquared;
+            Fix32 inverseFaceWidth = Fix32.One .Div (face.Width);
+            Fix32 inverseFaceHeight = Fix32.One .Div (face.Height);
+            Fix32 inverseFaceWidthSquared = inverseFaceWidth .Mul (inverseFaceWidth);
+            faceX.X = faceX.X .Mul (inverseFaceWidthSquared);
+            faceX.Y = faceX.Y .Mul (inverseFaceWidthSquared);
+            faceX.Z = faceX.Z .Mul (inverseFaceWidthSquared);
+            Fix32 inverseFaceHeightSquared = inverseFaceHeight .Mul (inverseFaceHeight);
+            faceY.X = faceY.X .Mul (inverseFaceHeightSquared);
+            faceY.Y = faceY.Y .Mul (inverseFaceHeightSquared);
+            faceY.Z = faceY.Z .Mul (inverseFaceHeightSquared);
 
             Vector3 clipCenter;
             Vector3.Add(ref clipFace.V1, ref clipFace.V3, out clipCenter);
             //Defer division until after dot product (2 multiplies instead of 3)
-            Fix64 clipCenterX, clipCenterY;
+            Fix32 clipCenterX, clipCenterY;
             Vector3.Dot(ref clipCenter, ref clipX, out clipCenterX);
             Vector3.Dot(ref clipCenter, ref clipY, out clipCenterY);
-            clipCenterX /= 2;
-            clipCenterY /= 2;
+            clipCenterX = clipCenterX .Div (Fix32.Two);
+            clipCenterY = clipCenterY .Div (Fix32.Two);
 
             Vector3 faceCenter;
             Vector3.Add(ref face.V1, ref face.V3, out faceCenter);
             //Defer division until after dot product (2 multiplies instead of 3)
-            Fix64 faceCenterX, faceCenterY;
+            Fix32 faceCenterX, faceCenterY;
             Vector3.Dot(ref faceCenter, ref faceX, out faceCenterX);
             Vector3.Dot(ref faceCenter, ref faceY, out faceCenterY);
-            faceCenterX /= 2;
-            faceCenterY /= 2;
+            faceCenterX = faceCenterX .Div (Fix32.Two);
+            faceCenterY = faceCenterY .Div (Fix32.Two);
 
             //To test bounds, recall that clipX is the length of the X edge.
             //Going from the center to the max or min goes half of the length of X edge, or +/- 0.5.
             //Bias could be added here.
-            //const Fix64 extent = .5f; //.5f is the default, extra could be added for robustness or speed.
-            Fix64 extentX = F64.Half + (inverseClipWidth / 100);
-            Fix64 extentY = F64.Half + (inverseClipHeight / 100);
-            //Fix64 extentX = .5f + .01f * inverseClipXLength;
-            //Fix64 extentY = .5f + .01f * inverseClipYLength;
-            Fix64 clipCenterMaxX = clipCenterX + extentX;
-            Fix64 clipCenterMaxY = clipCenterY + extentY;
-            Fix64 clipCenterMinX = clipCenterX - extentX;
-            Fix64 clipCenterMinY = clipCenterY - extentY;
+            //const Fix32 extent = .5f; //.5f is the default, extra could be added for robustness or speed.
+            Fix32 extentX = F64.Half .Add (inverseClipWidth .Div (F64.C100));
+            Fix32 extentY = F64.Half .Add (inverseClipHeight .Div (F64.C100));
+            //Fix32 extentX = .5f + .01f * inverseClipXLength;
+            //Fix32 extentY = .5f + .01f * inverseClipYLength;
+            Fix32 clipCenterMaxX = clipCenterX .Add (extentX);
+            Fix32 clipCenterMaxY = clipCenterY .Add (extentY);
+            Fix32 clipCenterMinX = clipCenterX .Sub (extentX);
+            Fix32 clipCenterMinY = clipCenterY .Sub (extentY);
 
-            extentX = F64.Half + (inverseFaceWidth / 100);
-            extentY = F64.Half + (inverseFaceHeight / 100);
+            extentX = F64.Half .Add (inverseFaceWidth  .Div (F64.C100));
+            extentY = F64.Half .Add (inverseFaceHeight .Div (F64.C100));
             //extentX = .5f + .01f * inverseFaceXLength;
             //extentY = .5f + .01f * inverseFaceYLength;
-            Fix64 faceCenterMaxX = faceCenterX + extentX;
-            Fix64 faceCenterMaxY = faceCenterY + extentY;
-            Fix64 faceCenterMinX = faceCenterX - extentX;
-            Fix64 faceCenterMinY = faceCenterY - extentY;
+            Fix32 faceCenterMaxX = faceCenterX .Add (extentX);
+            Fix32 faceCenterMaxY = faceCenterY .Add (extentY);
+            Fix32 faceCenterMinX = faceCenterX .Sub (extentX);
+            Fix32 faceCenterMinY = faceCenterY .Sub (extentY);
 
             //Find out where the opposing face is.
-            Fix64 dotX, dotY;
+            Fix32 dotX, dotY;
 
             //The four edges can be thought of as minX, maxX, minY and maxY.
 
@@ -4613,13 +4613,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Compute depths.
             TinyStructList<BoxContactData> tempData = contactData;
             contactData.Clear();
-            Fix64 clipFaceDot, faceDot;
+            Fix32 clipFaceDot, faceDot;
             Vector3.Dot(ref clipFace.V1, ref mtd, out clipFaceDot);
             for (int i = 0; i < tempData.Count; i++)
             {
                 tempData.Get(i, out item);
                 Vector3.Dot(ref item.Position, ref mtd, out faceDot);
-                item.Depth = faceDot - clipFaceDot;
+                item.Depth = faceDot .Sub (clipFaceDot);
                 if (item.Depth <= 0)
                 {
                     contactData.Add(ref item);
@@ -4635,13 +4635,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             #region Clip face vertices
 
             Vector3 v;
-            Fix64 a, b;
+            Fix32 a, b;
             Vector3.Dot(ref face.V1, ref face.Normal, out b);
             //CLIP FACE
             if (clipv1MinXInside && clipv1MaxXInside && clipv1MinYInside && clipv1MaxYInside)
             {
                 Vector3.Dot(ref clipFace.V1, ref face.Normal, out a);
-                Vector3.Multiply(ref face.Normal, a - b, out v);
+                Vector3.Multiply(ref face.Normal, a .Sub (b), out v);
                 Vector3.Subtract(ref clipFace.V1, ref v, out v);
                 item.Position = v;
                 item.Id = clipFace.Id1 + 8;
@@ -4651,7 +4651,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             if (clipv2MinXInside && clipv2MaxXInside && clipv2MinYInside && clipv2MaxYInside)
             {
                 Vector3.Dot(ref clipFace.V2, ref face.Normal, out a);
-                Vector3.Multiply(ref face.Normal, a - b, out v);
+                Vector3.Multiply(ref face.Normal, a .Sub (b), out v);
                 Vector3.Subtract(ref clipFace.V2, ref v, out v);
                 item.Position = v;
                 item.Id = clipFace.Id2 + 8;
@@ -4661,7 +4661,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             if (clipv3MinXInside && clipv3MaxXInside && clipv3MinYInside && clipv3MaxYInside)
             {
                 Vector3.Dot(ref clipFace.V3, ref face.Normal, out a);
-                Vector3.Multiply(ref face.Normal, a - b, out v);
+                Vector3.Multiply(ref face.Normal, a .Sub (b), out v);
                 Vector3.Subtract(ref clipFace.V3, ref v, out v);
                 item.Position = v;
                 item.Id = clipFace.Id3 + 8;
@@ -4671,7 +4671,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             if (clipv4MinXInside && clipv4MaxXInside && clipv4MinYInside && clipv4MaxYInside)
             {
                 Vector3.Dot(ref clipFace.V4, ref face.Normal, out a);
-                Vector3.Multiply(ref face.Normal, a - b, out v);
+                Vector3.Multiply(ref face.Normal, a .Sub (b), out v);
                 Vector3.Subtract(ref clipFace.V4, ref v, out v);
                 item.Position = v;
                 item.Id = clipFace.Id4 + 8;
@@ -4691,7 +4691,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
                 tempData.Get(i, out item);
                 Vector3.Dot(ref item.Position, ref mtd, out faceDot);
-                item.Depth = faceDot - clipFaceDot;
+                item.Depth = faceDot .Sub (clipFaceDot);
                 if (item.Depth <= 0)
                 {
                     contactData.Add(ref item);
@@ -4712,7 +4712,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             //Once we get here there can only be 3 contacts or less.
             //Once 4 possible contacts have been added, switch to using safe increments.
-            //Fix64 dot;
+            //Fix32 dot;
 
             #region CLIP EDGE: v1 v2
 
@@ -5189,7 +5189,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
                 tempData.Get(i, out item);
                 Vector3.Dot(ref item.Position, ref mtd, out faceDot);
-                item.Depth = faceDot - clipFaceDot;
+                item.Depth = faceDot .Sub (clipFaceDot);
                 if (item.Depth <= 0)
                 {
                     contactData.Add(ref item);
@@ -5206,62 +5206,62 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //    Vector3 clipX, clipY;
         //    Vector3.Subtract(ref clipFace.V4, ref clipFace.V3, out clipX);
         //    Vector3.Subtract(ref clipFace.V2, ref clipFace.V3, out clipY);
-        //    Fix64 inverse = 1 / clipX.LengthSquared();
-        //    clipX.X *= inverse;
-        //    clipX.Y *= inverse;
-        //    clipX.Z *= inverse;
+        //    Fix32 inverse = 1 / clipX.LengthSquared();
+        //    clipX.X = clipX.X * (inverse);
+        //    clipX.Y = clipX.Y * (inverse);
+        //    clipX.Z = clipX.Z * (inverse);
         //    inverse = 1 / clipY.LengthSquared();
-        //    clipY.X *= inverse;
-        //    clipY.Y *= inverse;
-        //    clipY.Z *= inverse;
+        //    clipY.X = clipY.X * (inverse);
+        //    clipY.Y = clipY.Y * (inverse);
+        //    clipY.Z = clipY.Z * (inverse);
 
         //    //Local directions on the opposing face.  Their length is equal to the length of an edge.
         //    Vector3 faceX, faceY;
         //    Vector3.Subtract(ref face.V4, ref face.V3, out faceX);
         //    Vector3.Subtract(ref face.V2, ref face.V3, out faceY);
         //    inverse = 1 / faceX.LengthSquared();
-        //    faceX.X *= inverse;
-        //    faceX.Y *= inverse;
-        //    faceX.Z *= inverse;
+        //    faceX.X = faceX.X * (inverse);
+        //    faceX.Y = faceX.Y * (inverse);
+        //    faceX.Z = faceX.Z * (inverse);
         //    inverse = 1 / faceY.LengthSquared();
-        //    faceY.X *= inverse;
-        //    faceY.Y *= inverse;
-        //    faceY.Z *= inverse;
+        //    faceY.X = faceY.X * (inverse);
+        //    faceY.Y = faceY.Y * (inverse);
+        //    faceY.Z = faceY.Z * (inverse);
 
         //    Vector3 clipCenter;
         //    Vector3.Add(ref clipFace.V1, ref clipFace.V3, out clipCenter);
         //    //Defer division until after dot product (2 multiplies instead of 3)
-        //    Fix64 clipCenterX, clipCenterY;
+        //    Fix32 clipCenterX, clipCenterY;
         //    Vector3.Dot(ref clipCenter, ref clipX, out clipCenterX);
         //    Vector3.Dot(ref clipCenter, ref clipY, out clipCenterY);
-        //    clipCenterX *= .5f;
-        //    clipCenterY *= .5f;
+        //    clipCenterX = clipCenterX * (.5f);
+        //    clipCenterY = clipCenterY * (.5f);
 
         //    Vector3 faceCenter;
         //    Vector3.Add(ref face.V1, ref face.V3, out faceCenter);
         //    //Defer division until after dot product (2 multiplies instead of 3)
-        //    Fix64 faceCenterX, faceCenterY;
+        //    Fix32 faceCenterX, faceCenterY;
         //    Vector3.Dot(ref faceCenter, ref faceX, out faceCenterX);
         //    Vector3.Dot(ref faceCenter, ref faceY, out faceCenterY);
-        //    faceCenterX *= .5f;
-        //    faceCenterY *= .5f;
+        //    faceCenterX = faceCenterX * (.5f);
+        //    faceCenterY = faceCenterY * (.5f);
 
         //    //To test bounds, recall that clipX is the length of the X edge.
         //    //Going from the center to the max or min goes half of the length of X edge, or +/- 0.5.
         //    //Bias could be added here.
-        //    Fix64 extent = .5f; //.5f is the default, extra could be added for robustness or speed.
-        //    Fix64 clipCenterMaxX = clipCenterX + extent;
-        //    Fix64 clipCenterMaxY = clipCenterY + extent;
-        //    Fix64 clipCenterMinX = clipCenterX - extent;
-        //    Fix64 clipCenterMinY = clipCenterY - extent;
+        //    Fix32 extent = .5f; //.5f is the default, extra could be added for robustness or speed.
+        //    Fix32 clipCenterMaxX = clipCenterX + extent;
+        //    Fix32 clipCenterMaxY = clipCenterY + extent;
+        //    Fix32 clipCenterMinX = clipCenterX - extent;
+        //    Fix32 clipCenterMinY = clipCenterY - extent;
 
-        //    Fix64 faceCenterMaxX = faceCenterX + extent;
-        //    Fix64 faceCenterMaxY = faceCenterY + extent;
-        //    Fix64 faceCenterMinX = faceCenterX - extent;
-        //    Fix64 faceCenterMinY = faceCenterY - extent;
+        //    Fix32 faceCenterMaxX = faceCenterX + extent;
+        //    Fix32 faceCenterMaxY = faceCenterY + extent;
+        //    Fix32 faceCenterMinX = faceCenterX - extent;
+        //    Fix32 faceCenterMinY = faceCenterY - extent;
 
         //    //Find out where the opposing face is.
-        //    Fix64 dotX, dotY;
+        //    Fix32 dotX, dotY;
 
         //    //The four edges can be thought of as minX, maxX, minY and maxY.
 
@@ -5367,7 +5367,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //    //Compute depths.
         //    TinyStructList<BoxContactData> tempData = contactData;
         //    contactData.Clear();
-        //    Fix64 clipFaceDot, faceDot;
+        //    Fix32 clipFaceDot, faceDot;
         //    Vector3.Dot(ref clipFace.V1, ref mtd, out clipFaceDot);
         //    for (int i = 0; i < tempData.Count; i++)
         //    {
@@ -5396,7 +5396,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //    //faceNormal.Z *= inverse;
         //    faceNormal.Normalize();
         //    Vector3 v;
-        //    Fix64 a, b;
+        //    Fix32 a, b;
         //    Vector3.Dot(ref face.V1, ref faceNormal, out b);
         //    //CLIP FACE
         //    if (clipv1MinXInside && clipv1MaxXInside && clipv1MinYInside && clipv1MaxYInside)
@@ -5474,7 +5474,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
         //    //Once we get here there can only be 3 contacts or less.
         //    //Once 4 possible contacts have been added, switch to using safe increments.
-        //    Fix64 dot;
+        //    Fix32 dot;
 
         //    #region CLIP EDGE: v1 v2
 
@@ -5934,12 +5934,12 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             Vector3 edgeDirection;
             Vector3.Subtract(ref edgeA2, ref edgeA1, out edgeDirection);
-            Fix64 distanceToPlane;
+            Fix32 distanceToPlane;
             Vector3.Dot(ref offset, ref clippingEdge.Perpendicular, out distanceToPlane);
-            Fix64 edgeDirectionLength;
+            Fix32 edgeDirectionLength;
             Vector3.Dot(ref edgeDirection, ref clippingEdge.Perpendicular, out edgeDirectionLength);
-            Fix64 t = distanceToPlane / edgeDirectionLength;
-            if (t < F64.C0 || t > F64.C1)
+            Fix32 t = distanceToPlane .Div (edgeDirectionLength);
+            if (t < Fix32.Zero || t > F64.C1)
             {
                 //It's outside of the incoming edge!
                 intersection = new Vector3();
@@ -5951,7 +5951,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3.Subtract(ref intersection, ref clippingEdge.A, out offset);
             Vector3.Subtract(ref clippingEdge.B, ref clippingEdge.A, out edgeDirection);
             Vector3.Dot(ref edgeDirection, ref offset, out t);
-            if (t < F64.C0 || t > edgeDirection.LengthSquared())
+            if (t < Fix32.Zero || t > edgeDirection.LengthSquared())
             {
                 //It's outside of the clipping edge!
                 return false;
@@ -5959,23 +5959,23 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             return true;
         }
 
-        private static void GetNearestFace(ref Vector3 position, ref Matrix3x3 orientation, ref Vector3 mtd, Fix64 halfWidth, Fix64 halfHeight, Fix64 halfLength, out BoxFace boxFace)
+        private static void GetNearestFace(ref Vector3 position, ref Matrix3x3 orientation, ref Vector3 mtd, Fix32 halfWidth, Fix32 halfHeight, Fix32 halfLength, out BoxFace boxFace)
         {
             boxFace = new BoxFace();
 
-            Fix64 xDot = orientation.M11 * mtd.X +
-                         orientation.M12 * mtd.Y +
-                         orientation.M13 * mtd.Z;
-            Fix64 yDot = orientation.M21 * mtd.X +
-                         orientation.M22 * mtd.Y +
-                         orientation.M23 * mtd.Z;
-            Fix64 zDot = orientation.M31 * mtd.X +
-                         orientation.M32 * mtd.Y +
-                         orientation.M33 * mtd.Z;
+            Fix32 xDot = orientation.M11 .Mul (mtd.X) .Add
+                         (orientation.M12 .Mul (mtd.Y)) .Add
+                         (orientation.M13 .Mul (mtd.Z));
+            Fix32 yDot = orientation.M21 .Mul (mtd.X) .Add
+                         (orientation.M22 .Mul (mtd.Y)) .Add
+                         (orientation.M23 .Mul (mtd.Z));
+            Fix32 zDot = orientation.M31 .Mul (mtd.X) .Add
+                         (orientation.M32 .Mul (mtd.Y)) .Add
+                         (orientation.M33 .Mul (mtd.Z));
 
-            Fix64 absX = Fix64.Abs(xDot);
-            Fix64 absY = Fix64.Abs(yDot);
-            Fix64 absZ = Fix64.Abs(zDot);
+            Fix32 absX = xDot.Abs();
+            Fix32 absY = yDot.Abs();
+            Fix32 absZ = zDot.Abs();
 
             Matrix worldTransform;
             Matrix3x3.ToMatrix4X4(ref orientation, out worldTransform);
@@ -5989,9 +5989,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             if (absX > absY && absX > absZ)
             {
                 //"X" faces are candidates
-                if (xDot < F64.C0)
+                if (xDot < Fix32.Zero)
                 {
-                    halfWidth = -halfWidth;
+                    halfWidth = halfWidth.Neg();
                     bit = 0;
                 }
                 else
@@ -5999,23 +5999,23 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 candidate = new Vector3(halfWidth, halfHeight, halfLength);
                 Matrix.Transform(ref candidate, ref worldTransform, out candidate);
                 boxFace.V1 = candidate;
-                candidate = new Vector3(halfWidth, -halfHeight, halfLength);
+                candidate = new Vector3(halfWidth, halfHeight.Neg(), halfLength);
                 Matrix.Transform(ref candidate, ref worldTransform, out candidate);
                 boxFace.V2 = candidate;
-                candidate = new Vector3(halfWidth, -halfHeight, -halfLength);
+                candidate = new Vector3(halfWidth, halfHeight.Neg(), halfLength.Neg());
                 Matrix.Transform(ref candidate, ref worldTransform, out candidate);
                 boxFace.V3 = candidate;
-                candidate = new Vector3(halfWidth, halfHeight, -halfLength);
+                candidate = new Vector3(halfWidth, halfHeight, halfLength.Neg());
                 Matrix.Transform(ref candidate, ref worldTransform, out candidate);
                 boxFace.V4 = candidate;
 
-                if (xDot < F64.C0)
+                if (xDot < Fix32.Zero)
                     boxFace.Normal = orientation.Left;
                 else
                     boxFace.Normal = orientation.Right;
 
-                boxFace.Width = halfHeight * F64.C2;
-                boxFace.Height = halfLength * F64.C2;
+                boxFace.Width = halfHeight .Mul (F64.C2);
+                boxFace.Height = halfLength .Mul (F64.C2);
 
                 boxFace.Id1 = bit + 2 + 4;
                 boxFace.Id2 = bit + 4;
@@ -6025,9 +6025,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             else if (absY > absX && absY > absZ)
             {
                 //"Y" faces are candidates
-                if (yDot < F64.C0)
+                if (yDot < Fix32.Zero)
                 {
-                    halfHeight = -halfHeight;
+                    halfHeight = halfHeight.Neg();
                     bit = 0;
                 }
                 else
@@ -6035,23 +6035,23 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 candidate = new Vector3(halfWidth, halfHeight, halfLength);
                 Matrix.Transform(ref candidate, ref worldTransform, out candidate);
                 boxFace.V1 = candidate;
-                candidate = new Vector3(-halfWidth, halfHeight, halfLength);
+                candidate = new Vector3(halfWidth.Neg(), halfHeight, halfLength);
                 Matrix.Transform(ref candidate, ref worldTransform, out candidate);
                 boxFace.V2 = candidate;
-                candidate = new Vector3(-halfWidth, halfHeight, -halfLength);
+                candidate = new Vector3(halfWidth.Neg(), halfHeight, halfLength.Neg());
                 Matrix.Transform(ref candidate, ref worldTransform, out candidate);
                 boxFace.V3 = candidate;
-                candidate = new Vector3(halfWidth, halfHeight, -halfLength);
+                candidate = new Vector3(halfWidth, halfHeight, halfLength.Neg());
                 Matrix.Transform(ref candidate, ref worldTransform, out candidate);
                 boxFace.V4 = candidate;
 
-                if (yDot < F64.C0)
+                if (yDot < Fix32.Zero)
                     boxFace.Normal = orientation.Down;
                 else
                     boxFace.Normal = orientation.Up;
 
-                boxFace.Width = halfWidth * F64.C2;
-                boxFace.Height = halfLength * F64.C2;
+                boxFace.Width = halfWidth .Mul (F64.C2);
+                boxFace.Height = halfLength .Mul (F64.C2);
 
                 boxFace.Id1 = 1 + bit + 4;
                 boxFace.Id2 = bit + 4;
@@ -6061,9 +6061,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             else if (absZ > absX && absZ > absY)
             {
                 //"Z" faces are candidates
-                if (zDot < F64.C0)
+                if (zDot < Fix32.Zero)
                 {
-                    halfLength = -halfLength;
+                    halfLength = halfLength.Neg();
                     bit = 0;
                 }
                 else
@@ -6071,23 +6071,23 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 candidate = new Vector3(halfWidth, halfHeight, halfLength);
                 Matrix.Transform(ref candidate, ref worldTransform, out candidate);
                 boxFace.V1 = candidate;
-                candidate = new Vector3(-halfWidth, halfHeight, halfLength);
+                candidate = new Vector3(halfWidth.Neg(), halfHeight, halfLength);
                 Matrix.Transform(ref candidate, ref worldTransform, out candidate);
                 boxFace.V2 = candidate;
-                candidate = new Vector3(-halfWidth, -halfHeight, halfLength);
+                candidate = new Vector3(halfWidth.Neg(), halfHeight.Neg(), halfLength);
                 Matrix.Transform(ref candidate, ref worldTransform, out candidate);
                 boxFace.V3 = candidate;
-                candidate = new Vector3(halfWidth, -halfHeight, halfLength);
+                candidate = new Vector3(halfWidth, halfHeight.Neg(), halfLength);
                 Matrix.Transform(ref candidate, ref worldTransform, out candidate);
                 boxFace.V4 = candidate;
 
-                if (zDot < F64.C0)
+                if (zDot < Fix32.Zero)
                     boxFace.Normal = orientation.Forward;
                 else
                     boxFace.Normal = orientation.Backward;
 
-                boxFace.Width = halfWidth * F64.C2;
-                boxFace.Height = halfHeight * F64.C2;
+                boxFace.Width = halfWidth .Mul (F64.C2);
+                boxFace.Height = halfHeight .Mul (F64.C2);
 
                 boxFace.Id1 = 1 + 2 + bit;
                 boxFace.Id2 = 2 + bit;
@@ -6102,7 +6102,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             public int Id1, Id2, Id3, Id4;
             public Vector3 V1, V2, V3, V4;
             public Vector3 Normal;
-            public Fix64 Width, Height;
+            public Fix32 Width, Height;
 
             public int GetId(int i)
             {
@@ -6178,15 +6178,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 edgeDirection.Normalize();
                 Vector3.Cross(ref edgeDirection, ref Normal, out clippingEdge.Perpendicular);
 
-                Fix64 dot;
+                Fix32 dot;
                 Vector3 offset;
                 Vector3.Subtract(ref insidePoint, ref clippingEdge.A, out offset);
                 Vector3.Dot(ref clippingEdge.Perpendicular, ref offset, out dot);
-                if (dot > F64.C0)
+                if (dot > Fix32.Zero)
                 {
-                    clippingEdge.Perpendicular.X = -clippingEdge.Perpendicular.X;
-                    clippingEdge.Perpendicular.Y = -clippingEdge.Perpendicular.Y;
-                    clippingEdge.Perpendicular.Z = -clippingEdge.Perpendicular.Z;
+                    clippingEdge.Perpendicular.X = clippingEdge.Perpendicular.X.Neg();
+                    clippingEdge.Perpendicular.Y = clippingEdge.Perpendicular.Y.Neg();
+                    clippingEdge.Perpendicular.Z = clippingEdge.Perpendicular.Z.Neg();
                 }
                 Vector3.Dot(ref clippingEdge.A, ref clippingEdge.Perpendicular, out clippingEdge.EdgeDistance);
             }
@@ -6210,7 +6210,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         private struct FaceEdge : IEquatable<FaceEdge>
         {
             public Vector3 A, B;
-            public Fix64 EdgeDistance;
+            public Fix32 EdgeDistance;
             public int Id;
             public Vector3 Perpendicular;
 
@@ -6225,7 +6225,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             public bool IsPointInside(ref Vector3 point)
             {
-                Fix64 distance;
+                Fix32 distance;
                 Vector3.Dot(ref point, ref Perpendicular, out distance);
                 return distance < EdgeDistance; // +1; //TODO: Bias this a little?
             }

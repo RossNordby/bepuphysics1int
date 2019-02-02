@@ -1,7 +1,7 @@
 using System;
 using BEPUphysics.Entities;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Constraints.TwoEntity.Joints
 {
@@ -273,7 +273,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Calculates and applies corrective impulses.
         /// Called automatically by space.
         /// </summary>
-        public override Fix64 SolveIteration()
+        public override Fix32 SolveIteration()
         {
             #region Theory
 
@@ -318,7 +318,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 #else
             Vector2 lambda;
 #endif
-            //Fix64 va1, va2, wa1, wa2, vb1, vb2, wb1, wb2;
+            //Fix32 va1, va2, wa1, wa2, vb1, vb2, wb1, wb2;
             //Vector3.Dot(ref worldAxis1, ref myParentA.myInternalLinearVelocity, out va1);
             //Vector3.Dot(ref worldAxis2, ref myParentA.myInternalLinearVelocity, out va2);
             //wa1 = prAT.M11 * myParentA.myInternalAngularVelocity.X + prAT.M12 * myParentA.myInternalAngularVelocity.Y + prAT.M13 * myParentA.myInternalAngularVelocity.Z;
@@ -342,16 +342,16 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Dot(ref dv, ref worldRestrictedAxis2, out lambda.Y);
 
 
-            lambda.X += biasVelocity.X + softness * accumulatedImpulse.X;
-            lambda.Y += biasVelocity.Y + softness * accumulatedImpulse.Y;
+            lambda.X = lambda.X .Add (biasVelocity.X .Add (softness .Mul (accumulatedImpulse.X)));
+            lambda.Y = lambda.Y .Add (biasVelocity.Y .Add (softness .Mul (accumulatedImpulse.Y)));
 
             //Convert to impulse
             Matrix2x2.Transform(ref lambda, ref negativeEffectiveMassMatrix, out lambda);
 
             Vector2.Add(ref lambda, ref accumulatedImpulse, out accumulatedImpulse);
 
-            Fix64 x = lambda.X;
-            Fix64 y = lambda.Y;
+            Fix32 x = lambda.X;
+            Fix32 y = lambda.Y;
             //Apply impulse
 #if !WINDOWS
             Vector3 impulse = new Vector3();
@@ -360,39 +360,39 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3 impulse;
             Vector3 torque;
 #endif
-            impulse.X = worldRestrictedAxis1.X * x + worldRestrictedAxis2.X * y;
-            impulse.Y = worldRestrictedAxis1.Y * x + worldRestrictedAxis2.Y * y;
-            impulse.Z = worldRestrictedAxis1.Z * x + worldRestrictedAxis2.Z * y;
+            impulse.X = worldRestrictedAxis1.X .Mul (x) .Add (worldRestrictedAxis2.X .Mul (y));
+            impulse.Y = worldRestrictedAxis1.Y .Mul (x) .Add (worldRestrictedAxis2.Y .Mul (y));
+            impulse.Z = worldRestrictedAxis1.Z .Mul (x) .Add (worldRestrictedAxis2.Z .Mul (y));
             if (connectionA.isDynamic)
             {
-                torque.X = x * angularA1.X + y * angularA2.X;
-                torque.Y = x * angularA1.Y + y * angularA2.Y;
-                torque.Z = x * angularA1.Z + y * angularA2.Z;
+                torque.X = x .Mul (angularA1.X) .Add (y .Mul (angularA2.X));
+                torque.Y = x .Mul (angularA1.Y) .Add (y .Mul (angularA2.Y));
+                torque.Z = x .Mul (angularA1.Z) .Add (y .Mul (angularA2.Z));
 
                 connectionA.ApplyLinearImpulse(ref impulse);
                 connectionA.ApplyAngularImpulse(ref torque);
             }
             if (connectionB.isDynamic)
             {
-                impulse.X = -impulse.X;
-                impulse.Y = -impulse.Y;
-                impulse.Z = -impulse.Z;
+                impulse.X = impulse.X.Neg();
+                impulse.Y = impulse.Y.Neg();
+                impulse.Z = impulse.Z.Neg();
 
-                torque.X = x * angularB1.X + y * angularB2.X;
-                torque.Y = x * angularB1.Y + y * angularB2.Y;
-                torque.Z = x * angularB1.Z + y * angularB2.Z;
+                torque.X = x .Mul (angularB1.X) .Add (y .Mul (angularB2.X));
+                torque.Y = x .Mul (angularB1.Y) .Add (y .Mul (angularB2.Y));
+                torque.Z = x .Mul (angularB1.Z) .Add (y .Mul (angularB2.Z));
 
                 connectionB.ApplyLinearImpulse(ref impulse);
                 connectionB.ApplyAngularImpulse(ref torque);
             }
-            return (Fix64.Abs(lambda.X) + Fix64.Abs(lambda.Y));
+            return ((lambda.X).Abs() .Add ((lambda.Y).Abs()));
         }
 
         ///<summary>
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             //Transform local axes into world space
             Matrix3x3.Transform(ref localRestrictedAxis1, ref connectionA.orientationMatrix, out worldRestrictedAxis1);
@@ -408,7 +408,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             //Find the point on the line closest to the world point.
             Vector3 offset;
             Vector3.Subtract(ref worldPoint, ref worldLineAnchor, out offset);
-            Fix64 distanceAlongAxis;
+            Fix32 distanceAlongAxis;
             Vector3.Dot(ref offset, ref worldLineDirection, out distanceAlongAxis);
 
             Vector3 worldNearPoint;
@@ -423,21 +423,21 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Dot(ref error3D, ref worldRestrictedAxis1, out error.X);
             Vector3.Dot(ref error3D, ref worldRestrictedAxis2, out error.Y);
 
-            Fix64 errorReduction;
-            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 / dt, out errorReduction, out softness);
-            Fix64 bias = -errorReduction;
+            Fix32 errorReduction;
+            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 .Div (dt), out errorReduction, out softness);
+            Fix32 bias = errorReduction.Neg();
 
 
-            biasVelocity.X = bias * error.X;
-            biasVelocity.Y = bias * error.Y;
+            biasVelocity.X = bias .Mul (error.X);
+            biasVelocity.Y = bias .Mul (error.Y);
 
             //Ensure that the corrective velocity doesn't exceed the max.
-            Fix64 length = biasVelocity.LengthSquared();
+            Fix32 length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                Fix64 multiplier = maxCorrectiveVelocity / Fix64.Sqrt(length);
-                biasVelocity.X *= multiplier;
-                biasVelocity.Y *= multiplier;
+                Fix32 multiplier = maxCorrectiveVelocity .Div (length.Sqrt());
+                biasVelocity.X = biasVelocity.X .Mul (multiplier);
+                biasVelocity.Y = biasVelocity.Y .Mul (multiplier);
             }
 
             //Set up the jacobians
@@ -446,8 +446,8 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Cross(ref rA, ref worldRestrictedAxis2, out angularA2);
             Vector3.Cross(ref worldRestrictedAxis2, ref rB, out angularB2);
 
-            Fix64 m11 = F64.C0, m22 = F64.C0, m1221 = F64.C0;
-            Fix64 inverseMass;
+            Fix32 m11 = Fix32.Zero, m22 = Fix32.Zero, m1221 = Fix32.Zero;
+            Fix32 inverseMass;
             Vector3 intermediate;
             //Compute the effective mass matrix.
             if (connectionA.isDynamic)
@@ -455,35 +455,35 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 inverseMass = connectionA.inverseMass;
                 Matrix3x3.Transform(ref angularA1, ref connectionA.inertiaTensorInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref angularA1, out m11);
-                m11 += inverseMass;
+                m11 = m11 .Add (inverseMass);
                 Vector3.Dot(ref intermediate, ref angularA2, out m1221);
                 Matrix3x3.Transform(ref angularA2, ref connectionA.inertiaTensorInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref angularA2, out m22);
-                m22 += inverseMass;
+                m22 = m22 .Add (inverseMass);
             }
 
             #region Mass Matrix B
 
             if (connectionB.isDynamic)
             {
-                Fix64 extra;
+                Fix32 extra;
                 inverseMass = connectionB.inverseMass;
                 Matrix3x3.Transform(ref angularB1, ref connectionB.inertiaTensorInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref angularB1, out extra);
-                m11 += inverseMass + extra;
+                m11 = m11 .Add (inverseMass .Add (extra));
                 Vector3.Dot(ref intermediate, ref angularB2, out extra);
-                m1221 += extra;
+                m1221 = m1221 .Add (extra);
                 Matrix3x3.Transform(ref angularB2, ref connectionB.inertiaTensorInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref angularB2, out extra);
-                m22 += inverseMass + extra;
+                m22 = m22 .Add (inverseMass .Add (extra));
             }
 
             #endregion
 
-            negativeEffectiveMassMatrix.M11 = m11 + softness;
+            negativeEffectiveMassMatrix.M11 = m11 .Add (softness);
             negativeEffectiveMassMatrix.M12 = m1221;
             negativeEffectiveMassMatrix.M21 = m1221;
-            negativeEffectiveMassMatrix.M22 = m22 + softness;
+            negativeEffectiveMassMatrix.M22 = m22 .Add (softness);
             Matrix2x2.Invert(ref negativeEffectiveMassMatrix, out negativeEffectiveMassMatrix);
             Matrix2x2.Negate(ref negativeEffectiveMassMatrix, out negativeEffectiveMassMatrix);
 
@@ -505,29 +505,29 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3 impulse;
             Vector3 torque;
 #endif
-            Fix64 x = accumulatedImpulse.X;
-            Fix64 y = accumulatedImpulse.Y;
-            impulse.X = worldRestrictedAxis1.X * x + worldRestrictedAxis2.X * y;
-            impulse.Y = worldRestrictedAxis1.Y * x + worldRestrictedAxis2.Y * y;
-            impulse.Z = worldRestrictedAxis1.Z * x + worldRestrictedAxis2.Z * y;
+            Fix32 x = accumulatedImpulse.X;
+            Fix32 y = accumulatedImpulse.Y;
+            impulse.X = worldRestrictedAxis1.X .Mul (x) .Add (worldRestrictedAxis2.X .Mul (y));
+            impulse.Y = worldRestrictedAxis1.Y .Mul (x) .Add (worldRestrictedAxis2.Y .Mul (y));
+            impulse.Z = worldRestrictedAxis1.Z .Mul (x) .Add (worldRestrictedAxis2.Z .Mul (y));
             if (connectionA.isDynamic)
             {
-                torque.X = x * angularA1.X + y * angularA2.X;
-                torque.Y = x * angularA1.Y + y * angularA2.Y;
-                torque.Z = x * angularA1.Z + y * angularA2.Z;
+                torque.X = x .Mul (angularA1.X) .Add (y .Mul (angularA2.X));
+                torque.Y = x .Mul (angularA1.Y) .Add (y .Mul (angularA2.Y));
+                torque.Z = x .Mul (angularA1.Z) .Add (y .Mul (angularA2.Z));
 
                 connectionA.ApplyLinearImpulse(ref impulse);
                 connectionA.ApplyAngularImpulse(ref torque);
             }
             if (connectionB.isDynamic)
             {
-                impulse.X = -impulse.X;
-                impulse.Y = -impulse.Y;
-                impulse.Z = -impulse.Z;
+                impulse.X = impulse.X.Neg();
+                impulse.Y = impulse.Y.Neg();
+                impulse.Z = impulse.Z.Neg();
 
-                torque.X = x * angularB1.X + y * angularB2.X;
-                torque.Y = x * angularB1.Y + y * angularB2.Y;
-                torque.Z = x * angularB1.Z + y * angularB2.Z;
+                torque.X = x .Mul (angularB1.X) .Add (y .Mul (angularB2.X));
+                torque.Y = x .Mul (angularB1.Y) .Add (y .Mul (angularB2.Y));
+                torque.Z = x .Mul (angularB1.Z) .Add (y .Mul (angularB2.Z));
 
 
                 connectionB.ApplyLinearImpulse(ref impulse);

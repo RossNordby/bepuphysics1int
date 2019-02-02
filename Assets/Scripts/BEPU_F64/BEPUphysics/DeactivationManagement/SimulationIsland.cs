@@ -128,9 +128,9 @@ namespace BEPUphysics.DeactivationManagement
             {
                 member.simulationIsland = this;
                 memberCount++;
-                member.Activated += memberActivatedDelegate;
-                member.BecameDeactivationCandidate += becameDeactivationCandidateDelegate;
-                member.BecameNonDeactivationCandidate += becameNonDeactivationCandidateDelegate;
+                member.Activated += (memberActivatedDelegate);
+                member.BecameDeactivationCandidate += (becameDeactivationCandidateDelegate);
+                member.BecameNonDeactivationCandidate += (becameNonDeactivationCandidateDelegate);
                 if (member.IsDeactivationCandidate)
                 {
                     deactivationCandidateCount++;
@@ -159,9 +159,9 @@ namespace BEPUphysics.DeactivationManagement
             {
                 memberCount--;
                 member.simulationIsland = null;
-                member.Activated -= memberActivatedDelegate;
-                member.BecameDeactivationCandidate -= becameDeactivationCandidateDelegate;
-                member.BecameNonDeactivationCandidate -= becameNonDeactivationCandidateDelegate;
+                member.Activated -= (memberActivatedDelegate);
+                member.BecameDeactivationCandidate -= (becameDeactivationCandidateDelegate);
+                member.BecameNonDeactivationCandidate -= (becameNonDeactivationCandidateDelegate);
                 if (member.IsDeactivationCandidate)
                 {
                     deactivationCandidateCount--;

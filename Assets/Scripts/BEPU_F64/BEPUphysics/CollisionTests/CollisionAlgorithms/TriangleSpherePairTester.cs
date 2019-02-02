@@ -2,7 +2,7 @@
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 {
@@ -33,32 +33,32 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3.Subtract(ref triangle.vC, ref triangle.vA, out ac);
             Vector3 triangleNormal;
             Vector3.Cross(ref ab, ref ac, out triangleNormal);
-            if (triangleNormal.LengthSquared() < Toolbox.Epsilon * F64.C0p01)
+            if (triangleNormal.LengthSquared() < Toolbox.Epsilon .Mul (F64.C0p01))
             {
                 //If the triangle is degenerate, use the offset between its center and the sphere.
                 Vector3.Add(ref triangle.vA, ref triangle.vB, out triangleNormal);
                 Vector3.Add(ref triangleNormal, ref triangle.vC, out triangleNormal);
                 Vector3.Multiply(ref triangleNormal, F64.OneThird, out triangleNormal);
-                if (triangleNormal.LengthSquared() < Toolbox.Epsilon * F64.C0p01)
+                if (triangleNormal.LengthSquared() < Toolbox.Epsilon .Mul (F64.C0p01))
                     triangleNormal = Toolbox.UpVector; //Alrighty then! Pick a random direction.
                     
             }
 
             
-            Fix64 dot;
+            Fix32 dot;
             Vector3.Dot(ref triangleNormal, ref triangle.vA, out dot);
             switch (triangle.sidedness)
             {
                 case TriangleSidedness.DoubleSided:
-                    if (dot < F64.C0)
+                    if (dot < Fix32.Zero)
                         Vector3.Negate(ref triangleNormal, out triangleNormal); //Normal must face outward.
                     break;
                 case TriangleSidedness.Clockwise:
-                    if (dot > F64.C0)
+                    if (dot > Fix32.Zero)
                         return false; //Wrong side, can't have a contact pointing in a reasonable direction.
                     break;
                 case TriangleSidedness.Counterclockwise:
-                    if (dot < F64.C0)
+                    if (dot < Fix32.Zero)
                         return false; //Wrong side, can't have a contact pointing in a reasonable direction.
                     break;
 
@@ -69,10 +69,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Could optimize this process a bit.  The 'point' being compared is always zero.  Additionally, since the triangle normal is available,
             //there is a little extra possible optimization.
             lastRegion = Toolbox.GetClosestPointOnTriangleToPoint(ref triangle.vA, ref triangle.vB, ref triangle.vC, ref Toolbox.ZeroVector, out closestPoint);
-            Fix64 lengthSquared = closestPoint.LengthSquared();
-            Fix64 marginSum = triangle.collisionMargin + sphere.collisionMargin;
+            Fix32 lengthSquared = closestPoint.LengthSquared();
+            Fix32 marginSum = triangle.collisionMargin .Add (sphere.collisionMargin);
 
-            if (lengthSquared <= marginSum * marginSum)
+            if (lengthSquared <= marginSum .Mul (marginSum))
             {
                 var contact = new ContactData();
                 if (lengthSquared < Toolbox.Epsilon)
@@ -86,9 +86,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     return true;
                 }
 
-                lengthSquared = Fix64.Sqrt(lengthSquared);
+                lengthSquared = lengthSquared.Sqrt();
                 Vector3.Divide(ref closestPoint, lengthSquared, out contact.Normal);
-                contact.PenetrationDepth = marginSum - lengthSquared;
+                contact.PenetrationDepth = marginSum .Sub (lengthSquared);
                 contact.Position = closestPoint;
                 contactList.Add(ref contact);
                 return true;

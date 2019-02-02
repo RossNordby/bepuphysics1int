@@ -1,5 +1,4 @@
-﻿using FixMath.NET;
-using System;
+﻿using System;
 
 namespace BEPUutilities
 {
@@ -12,15 +11,15 @@ namespace BEPUutilities
         /// <summary>
         /// X component of the vector.
         /// </summary>
-        public Fix64 X;
+        public Fix32 X;
         /// <summary>
         /// Y component of the vector.
         /// </summary>
-        public Fix64 Y;
+        public Fix32 Y;
         /// <summary>
         /// Z component of the vector.
         /// </summary>
-        public Fix64 Z;
+        public Fix32 Z;
 
         /// <summary>
         /// Constructs a new 3d vector.
@@ -28,7 +27,7 @@ namespace BEPUutilities
         /// <param name="x">X component of the vector.</param>
         /// <param name="y">Y component of the vector.</param>
         /// <param name="z">Z component of the vector.</param>
-        public Vector3(Fix64 x, Fix64 y, Fix64 z)
+        public Vector3(Fix32 x, Fix32 y, Fix32 z)
         {
             this.X = x;
             this.Y = y;
@@ -40,7 +39,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="xy">X and Y components of the vector.</param>
         /// <param name="z">Z component of the vector.</param>
-        public Vector3(Vector2 xy, Fix64 z)
+        public Vector3(Vector2 xy, Fix32 z)
         {
             this.X = xy.X;
             this.Y = xy.Y;
@@ -52,7 +51,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="x">X component of the vector.</param>
         /// <param name="yz">Y and Z components of the vector.</param>
-        public Vector3(Fix64 x, Vector2 yz)
+        public Vector3(Fix32 x, Vector2 yz)
         {
             this.X = x;
             this.Y = yz.X;
@@ -63,18 +62,18 @@ namespace BEPUutilities
         /// Computes the squared length of the vector.
         /// </summary>
         /// <returns>Squared length of the vector.</returns>
-        public Fix64 LengthSquared()
+        public Fix32 LengthSquared()
         {
-            return X * X + Y * Y + Z * Z;
+            return X.Mul(X) .Add( Y.Mul(Y) ).Add( Z.Mul(Z) );
         }
 
         /// <summary>
         /// Computes the length of the vector.
         /// </summary>
         /// <returns>Length of the vector.</returns>
-        public Fix64 Length()
+        public Fix32 Length()
         {
-            return Fix64.Sqrt(X * X + Y * Y + Z * Z);
+            return (X.Mul(X).Add(Y.Mul(Y)).Add(Z.Mul(Z))).Sqrt();
         }
 
         /// <summary>
@@ -82,10 +81,10 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            Fix64 inverse = F64.C1 / Fix64.Sqrt(X * X + Y * Y + Z * Z);
-            X *= inverse;
-            Y *= inverse;
-            Z *= inverse;
+            Fix32 inverse = Fix32.One.Div(Length());
+            X = X.Mul(inverse);
+            Y = Y.Mul(inverse);
+            Z = Z.Mul(inverse);
         }
 
         /// <summary>
@@ -94,7 +93,7 @@ namespace BEPUutilities
         /// <returns>String representing the vector.</returns>
         public override string ToString()
         {
-            return "{" + X + ", " + Y + ", " + Z + "}";
+            return "{" + X.ToStringExt() + ", " + Y.ToStringExt() + ", " + Z.ToStringExt() + "}";
         }
 
         /// <summary>
@@ -103,9 +102,9 @@ namespace BEPUutilities
         /// <param name="a">First vector in the product.</param>
         /// <param name="b">Second vector in the product.</param>
         /// <returns>Resulting dot product.</returns>
-        public static Fix64 Dot(Vector3 a, Vector3 b)
+        public static Fix32 Dot(Vector3 a, Vector3 b)
         {
-            return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+            return a.X.Mul(b.X) .Add( a.Y.Mul(b.Y) ).Add( a.Z.Mul(b.Z) );
         }
 
         /// <summary>
@@ -114,10 +113,10 @@ namespace BEPUutilities
         /// <param name="a">First vector in the product.</param>
         /// <param name="b">Second vector in the product.</param>
         /// <param name="product">Resulting dot product.</param>
-        public static void Dot(ref Vector3 a, ref Vector3 b, out Fix64 product)
+        public static void Dot(ref Vector3 a, ref Vector3 b, out Fix32 product)
         {
-            product = a.X * b.X + a.Y * b.Y + a.Z * b.Z;
-        }
+            product = a.X.Mul(b.X) .Add( a.Y.Mul(b.Y) ).Add( a.Z.Mul(b.Z) );
+		}
         /// <summary>
         /// Adds two vectors together.
         /// </summary>
@@ -126,9 +125,9 @@ namespace BEPUutilities
         /// <param name="sum">Sum of the two vectors.</param>
         public static void Add(ref Vector3 a, ref Vector3 b, out Vector3 sum)
         {
-            sum.X = a.X + b.X;
-            sum.Y = a.Y + b.Y;
-            sum.Z = a.Z + b.Z;
+            sum.X = a.X.Add(b.X);
+            sum.Y = a.Y.Add(b.Y);
+            sum.Z = a.Z.Add(b.Z);
         }
         /// <summary>
         /// Subtracts two vectors.
@@ -138,9 +137,9 @@ namespace BEPUutilities
         /// <param name="difference">Result of the subtraction.</param>
         public static void Subtract(ref Vector3 a, ref Vector3 b, out Vector3 difference)
         {
-            difference.X = a.X - b.X;
-            difference.Y = a.Y - b.Y;
-            difference.Z = a.Z - b.Z;
+            difference.X = a.X.Sub(b.X);
+            difference.Y = a.Y.Sub(b.Y);
+            difference.Z = a.Z.Sub(b.Z);
         }
         /// <summary>
         /// Scales a vector.
@@ -148,11 +147,11 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="scale">Amount to scale.</param>
         /// <param name="result">Scaled vector.</param>
-        public static void Multiply(ref Vector3 v, Fix64 scale, out Vector3 result)
+        public static void Multiply(ref Vector3 v, Fix32 scale, out Vector3 result)
         {
-            result.X = v.X * scale;
-            result.Y = v.Y * scale;
-            result.Z = v.Z * scale;
+            result.X = v.X.Mul(scale);
+            result.Y = v.Y.Mul(scale);
+            result.Z = v.Z.Mul(scale);
         }
 
         /// <summary>
@@ -163,9 +162,9 @@ namespace BEPUutilities
         /// <param name="result">Result of the componentwise multiplication.</param>
         public static void Multiply(ref Vector3 a, ref Vector3 b, out Vector3 result)
         {
-            result.X = a.X * b.X;
-            result.Y = a.Y * b.Y;
-            result.Z = a.Z * b.Z;
+            result.X = a.X.Mul(b.X);
+            result.Y = a.Y.Mul(b.Y);
+            result.Z = a.Z.Mul(b.Z);
         }
 
         /// <summary>
@@ -174,12 +173,12 @@ namespace BEPUutilities
         /// <param name="v">Vector to divide.</param>
         /// <param name="divisor">Value to divide the vector's components.</param>
         /// <param name="result">Result of the division.</param>
-        public static void Divide(ref Vector3 v, Fix64 divisor, out Vector3 result)
+        public static void Divide(ref Vector3 v, Fix32 divisor, out Vector3 result)
         {
-            Fix64 inverse = F64.C1 / divisor;
-            result.X = v.X * inverse;
-            result.Y = v.Y * inverse;
-            result.Z = v.Z * inverse;
+            Fix32 inverse = Fix32.One.Div(divisor);
+            result.X = v.X.Mul(inverse);
+            result.Y = v.Y.Mul(inverse);
+            result.Z = v.Z.Mul(inverse);
         }
         /// <summary>
         /// Scales a vector.
@@ -187,12 +186,12 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="f">Amount to scale.</param>
         /// <returns>Scaled vector.</returns>
-        public static Vector3 operator *(Vector3 v, Fix64 f)
+        public static Vector3 operator *(Vector3 v, Fix32 f)
         {
             Vector3 toReturn;
-            toReturn.X = v.X * f;
-            toReturn.Y = v.Y * f;
-            toReturn.Z = v.Z * f;
+            toReturn.X = v.X.Mul(f);
+            toReturn.Y = v.Y.Mul(f);
+            toReturn.Z = v.Z.Mul(f);
             return toReturn;
         }
 
@@ -202,12 +201,12 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="f">Amount to scale.</param>
         /// <returns>Scaled vector.</returns>
-        public static Vector3 operator *(Fix64 f, Vector3 v)
+        public static Vector3 operator *(Fix32 f, Vector3 v)
         {
             Vector3 toReturn;
-            toReturn.X = v.X * f;
-            toReturn.Y = v.Y * f;
-            toReturn.Z = v.Z * f;
+            toReturn.X = v.X.Mul(f);
+            toReturn.Y = v.Y.Mul(f);
+            toReturn.Z = v.Z.Mul(f);
             return toReturn;
         }
 
@@ -230,13 +229,13 @@ namespace BEPUutilities
         /// <param name="v">Vector to divide.</param>
         /// <param name="f">Value to divide the vector's components.</param>
         /// <returns>Result of the division.</returns>
-        public static Vector3 operator /(Vector3 v, Fix64 f)
+        public static Vector3 operator /(Vector3 v, Fix32 f)
         {
             Vector3 toReturn;
-            f = F64.C1 / f;
-            toReturn.X = v.X * f;
-            toReturn.Y = v.Y * f;
-            toReturn.Z = v.Z * f;
+            f = Fix32.One.Div(f);
+            toReturn.X = v.X.Mul(f);
+            toReturn.Y = v.Y.Mul(f);
+            toReturn.Z = v.Z.Mul(f);
             return toReturn;
         }
         /// <summary>
@@ -248,9 +247,9 @@ namespace BEPUutilities
         public static Vector3 operator -(Vector3 a, Vector3 b)
         {
             Vector3 v;
-            v.X = a.X - b.X;
-            v.Y = a.Y - b.Y;
-            v.Z = a.Z - b.Z;
+            v.X = a.X.Sub(b.X);
+            v.Y = a.Y.Sub(b.Y);
+            v.Z = a.Z.Sub(b.Z);
             return v;
         }
         /// <summary>
@@ -262,9 +261,9 @@ namespace BEPUutilities
         public static Vector3 operator +(Vector3 a, Vector3 b)
         {
             Vector3 v;
-            v.X = a.X + b.X;
-            v.Y = a.Y + b.Y;
-            v.Z = a.Z + b.Z;
+            v.X = a.X.Add(b.X);
+            v.Y = a.Y.Add(b.Y);
+            v.Z = a.Z.Add(b.Z);
             return v;
         }
 
@@ -276,9 +275,9 @@ namespace BEPUutilities
         /// <returns>Negated vector.</returns>
         public static Vector3 operator -(Vector3 v)
         {
-            v.X = -v.X;
-            v.Y = -v.Y;
-            v.Z = -v.Z;
+            v.X = v.X.Neg();
+            v.Y = v.Y.Neg();
+            v.Z = v.Z.Neg();
             return v;
         }
         /// <summary>
@@ -339,7 +338,7 @@ namespace BEPUutilities
         /// <filterpriority>2</filterpriority>
         public override int GetHashCode()
         {
-            return X.GetHashCode() + Y.GetHashCode() + Z.GetHashCode();
+            return (int) X ^ (int) Y ^ (int) Z;
         }
 
         
@@ -349,12 +348,12 @@ namespace BEPUutilities
         /// <param name="a">First vector.</param>
         /// <param name="b">Second vector.</param>
         /// <param name="distanceSquared">Squared distance between the two vectors.</param>
-        public static void DistanceSquared(ref Vector3 a, ref Vector3 b, out Fix64 distanceSquared)
+        public static void DistanceSquared(ref Vector3 a, ref Vector3 b, out Fix32 distanceSquared)
         {
-            Fix64 x = a.X - b.X;
-            Fix64 y = a.Y - b.Y;
-            Fix64 z = a.Z - b.Z;
-            distanceSquared = x * x + y * y + z * z;
+            Fix32 x = a.X.Sub(b.X);
+            Fix32 y = a.Y.Sub(b.Y);
+			Fix32 z = a.Z.Sub(b.Z);
+            distanceSquared = x.Mul(x) .Add( y.Mul(y) ).Add( z.Mul(z) );
         }
 
         /// <summary>
@@ -363,12 +362,12 @@ namespace BEPUutilities
         /// <param name="a">First vector.</param>
         /// <param name="b">Second vector.</param>
         /// <returns>Squared distance between the two vectors.</returns>
-        public static Fix64 DistanceSquared(Vector3 a, Vector3 b)
+        public static Fix32 DistanceSquared(Vector3 a, Vector3 b)
         {
-            Fix64 x = a.X - b.X;
-            Fix64 y = a.Y - b.Y;
-            Fix64 z = a.Z - b.Z;
-            return x * x + y * y + z * z;
+            Fix32 x = a.X.Sub(b.X);
+            Fix32 y = a.Y.Sub(b.Y);
+			Fix32 z = a.Z.Sub(b.Z);
+            return x.Mul(x) .Add( y.Mul(y) ).Add( z.Mul(z) );
         }
 
 
@@ -378,12 +377,12 @@ namespace BEPUutilities
         /// <param name="a">First vector.</param>
         /// <param name="b">Second vector.</param>
         /// <param name="distance">Distance between the two vectors.</param>
-        public static void Distance(ref Vector3 a, ref Vector3 b, out Fix64 distance)
+        public static void Distance(ref Vector3 a, ref Vector3 b, out Fix32 distance)
         {
-            Fix64 x = a.X - b.X;
-            Fix64 y = a.Y - b.Y;
-            Fix64 z = a.Z - b.Z;
-            distance = Fix64.Sqrt(x * x + y * y + z * z);
+            Fix32 x = a.X.Sub(b.X);
+            Fix32 y = a.Y.Sub(b.Y);
+			Fix32 z = a.Z.Sub(b.Z);
+            distance = (x.Mul(x) .Add( y.Mul(y) ).Add( z.Mul(z) )).Sqrt();
         }
         /// <summary>
         /// Computes the distance between two two vectors.
@@ -391,9 +390,9 @@ namespace BEPUutilities
         /// <param name="a">First vector.</param>
         /// <param name="b">Second vector.</param>
         /// <returns>Distance between the two vectors.</returns>
-        public static Fix64 Distance(Vector3 a, Vector3 b)
+        public static Fix32 Distance(Vector3 a, Vector3 b)
         {
-            Fix64 toReturn;
+			Fix32 toReturn;
             Distance(ref a, ref b, out toReturn);
             return toReturn;
         }
@@ -401,133 +400,82 @@ namespace BEPUutilities
         /// <summary>
         /// Gets the zero vector.
         /// </summary>
-        public static Vector3 Zero
-        {
-            get
-            {
-                return new Vector3();
-            }
-        }
+        public static readonly Vector3 Zero = new Vector3();
 
         /// <summary>
         /// Gets the up vector (0,1,0).
         /// </summary>
-        public static Vector3 Up
-        {
-            get
+        public static readonly Vector3 Up = new Vector3()
             {
-                return new Vector3()
-                {
-                    X = F64.C0,
-                    Y = F64.C1,
-                    Z = F64.C0
-				};
-            }
-        }
+                X = Fix32.Zero,
+                Y = Fix32.One,
+                Z = Fix32.Zero
+			};
 
         /// <summary>
         /// Gets the down vector (0,-1,0).
         /// </summary>
-        public static Vector3 Down
-        {
-            get
+        public static readonly Vector3 Down = new Vector3()
             {
-                return new Vector3()
-                {
-                    X = F64.C0,
-                    Y = -1,
-                    Z = F64.C0
-				};
-            }
-        }
+                X = Fix32.Zero,
+                Y = Fix32.MinusOne,
+                Z = Fix32.Zero
+			};
 
         /// <summary>
         /// Gets the right vector (1,0,0).
         /// </summary>
-        public static Vector3 Right
-        {
-            get
+        public static readonly Vector3 Right = new Vector3()
             {
-                return new Vector3()
-                {
-                    X = F64.C1,
-                    Y = F64.C0,
-                    Z = F64.C0
-				};
-            }
-        }
+                X = Fix32.One,
+                Y = Fix32.Zero,
+                Z = Fix32.Zero
+			};
 
         /// <summary>
         /// Gets the left vector (-1,0,0).
         /// </summary>
-        public static Vector3 Left
-        {
-            get
+        public static readonly Vector3 Left =  new Vector3()
             {
-                return new Vector3()
-                {
-                    X = -1,
-                    Y = F64.C0,
-                    Z = F64.C0
-				};
-            }
-        }
+                X = Fix32.MinusOne,
+                Y = Fix32.Zero,
+                Z = Fix32.Zero
+			};
 
         /// <summary>
         /// Gets the forward vector (0,0,-1).
         /// </summary>
-        public static Vector3 Forward
-        {
-            get
+        public static readonly Vector3 Forward = new Vector3()
             {
-                return new Vector3()
-                {
-                    X = F64.C0,
-                    Y = F64.C0,
-                    Z = -1
-                };
-            }
-        }
+                X = Fix32.Zero,
+                Y = Fix32.Zero,
+                Z = Fix32.MinusOne
+			};
 
         /// <summary>
         /// Gets the back vector (0,0,1).
         /// </summary>
-        public static Vector3 Backward
-        {
-            get
+        public static readonly Vector3 Backward = new Vector3()
             {
-                return new Vector3()
-                {
-                    X = F64.C0,
-                    Y = F64.C0,
-                    Z = F64.C1
-				};
-            }
-        }
+                X = Fix32.Zero,
+                Y = Fix32.Zero,
+                Z = Fix32.One
+			};
 
         /// <summary>
         /// Gets a vector pointing along the X axis.
         /// </summary>
-        public static Vector3 UnitX
-        {
-            get { return new Vector3 { X = F64.C1 }; }
-        }
+        public static readonly Vector3 UnitX = new Vector3 { X = Fix32.One };
 
         /// <summary>
         /// Gets a vector pointing along the Y axis.
         /// </summary>
-        public static Vector3 UnitY
-        {
-            get { return new Vector3 { Y = F64.C1 }; }
-        }
+        public static readonly Vector3 UnitY = new Vector3 { Y = Fix32.One };
 
         /// <summary>
         /// Gets a vector pointing along the Z axis.
         /// </summary>
-        public static Vector3 UnitZ
-        {
-            get { return new Vector3 { Z = F64.C1 }; }
-        }
+        public static readonly Vector3 UnitZ = new Vector3 { Z = Fix32.One };
 
         /// <summary>
         /// Computes the cross product between two vectors.
@@ -549,9 +497,9 @@ namespace BEPUutilities
         /// <param name="result">Cross product of the two vectors.</param>
         public static void Cross(ref Vector3 a, ref Vector3 b, out Vector3 result)
         {
-            Fix64 resultX = a.Y * b.Z - a.Z * b.Y;
-            Fix64 resultY = a.Z * b.X - a.X * b.Z;
-            Fix64 resultZ = a.X * b.Y - a.Y * b.X;
+            Fix32 resultX = a.Y.Mul(b.Z) .Sub( a.Z.Mul(b.Y) );
+            Fix32 resultY = a.Z.Mul(b.X) .Sub( a.X.Mul(b.Z) );
+            Fix32 resultZ = a.X.Mul(b.Y) .Sub( a.Y.Mul(b.X) );
             result.X = resultX;
             result.Y = resultY;
             result.Z = resultZ;
@@ -576,10 +524,10 @@ namespace BEPUutilities
         /// <param name="result">Normalized vector.</param>
         public static void Normalize(ref Vector3 v, out Vector3 result)
         {
-            Fix64 inverse = F64.C1 / Fix64.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z);
-            result.X = v.X * inverse;
-            result.Y = v.Y * inverse;
-            result.Z = v.Z * inverse;
+            Fix32 inverse = Fix32.One.Div(v.Length());
+            result.X = v.X.Mul(inverse);
+            result.Y = v.Y.Mul(inverse);
+            result.Z = v.Z.Mul(inverse);
         }
 
         /// <summary>
@@ -589,9 +537,9 @@ namespace BEPUutilities
         /// <param name="negated">Negated vector.</param>
         public static void Negate(ref Vector3 v, out Vector3 negated)
         {
-            negated.X = -v.X;
-            negated.Y = -v.Y;
-            negated.Z = -v.Z;
+            negated.X = v.X.Neg();
+            negated.Y = v.Y.Neg();
+            negated.Z = v.Z.Neg();
         }
 
         /// <summary>
@@ -599,20 +547,10 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="v">Vector to take the absolute value of.</param>
         /// <param name="result">Vector with nonnegative elements.</param>
-        public static void Abs(ref Vector3 v, out Vector3 result)
-        {
-            if (v.X < F64.C0)
-                result.X = -v.X;
-            else
-                result.X = v.X;
-            if (v.Y < F64.C0)
-                result.Y = -v.Y;
-            else
-                result.Y = v.Y;
-            if (v.Z < F64.C0)
-                result.Z = -v.Z;
-            else
-                result.Z = v.Z;
+        public static void Abs(ref Vector3 v, out Vector3 result) {
+			result.X = v.X.Abs();
+			result.Y = v.Y.Abs();
+			result.Z = v.Z.Abs();
         }
 
         /// <summary>
@@ -687,7 +625,7 @@ namespace BEPUutilities
         /// <param name="end">Ending location of the interpolation.</param>
         /// <param name="interpolationAmount">Amount of the end location to use.</param>
         /// <returns>Interpolated intermediate state.</returns>
-        public static Vector3 Lerp(Vector3 start, Vector3 end, Fix64 interpolationAmount)
+        public static Vector3 Lerp(Vector3 start, Vector3 end, Fix32 interpolationAmount)
         {
             Vector3 toReturn;
             Lerp(ref start, ref end, interpolationAmount, out toReturn);
@@ -700,12 +638,12 @@ namespace BEPUutilities
         /// <param name="end">Ending location of the interpolation.</param>
         /// <param name="interpolationAmount">Amount of the end location to use.</param>
         /// <param name="result">Interpolated intermediate state.</param>
-        public static void Lerp(ref Vector3 start, ref Vector3 end, Fix64 interpolationAmount, out Vector3 result)
+        public static void Lerp(ref Vector3 start, ref Vector3 end, Fix32 interpolationAmount, out Vector3 result)
         {
-            Fix64 startAmount = F64.C1 - interpolationAmount;
-            result.X = start.X * startAmount + end.X * interpolationAmount;
-            result.Y = start.Y * startAmount + end.Y * interpolationAmount;
-            result.Z = start.Z * startAmount + end.Z * interpolationAmount;
+            Fix32 startAmount = Fix32.One.Sub(interpolationAmount);
+            result.X = start.X.Mul(startAmount) .Add( end.X.Mul(interpolationAmount) );
+            result.Y = start.Y.Mul(startAmount) .Add( end.Y.Mul(interpolationAmount) );
+            result.Z = start.Z.Mul(startAmount) .Add( end.Z.Mul(interpolationAmount) );
         }
 
         /// <summary>
@@ -717,17 +655,17 @@ namespace BEPUutilities
         /// <param name="tangent2">Tangent associated with the second position.</param>
         /// <param name="interpolationAmount">Amount of the second point to use.</param>
         /// <param name="result">Interpolated intermediate state.</param>
-        public static void Hermite(ref Vector3 value1, ref Vector3 tangent1, ref Vector3 value2, ref Vector3 tangent2, Fix64 interpolationAmount, out Vector3 result)
+        public static void Hermite(ref Vector3 value1, ref Vector3 tangent1, ref Vector3 value2, ref Vector3 tangent2, Fix32 interpolationAmount, out Vector3 result)
         {
-            Fix64 weightSquared = interpolationAmount * interpolationAmount;
-            Fix64 weightCubed = interpolationAmount * weightSquared;
-            Fix64 value1Blend = F64.C2 * weightCubed - F64.C3 * weightSquared + F64.C1;
-            Fix64 tangent1Blend = weightCubed - F64.C2 * weightSquared + interpolationAmount;
-            Fix64 value2Blend = -2 * weightCubed + F64.C3 * weightSquared;
-            Fix64 tangent2Blend = weightCubed - weightSquared;
-            result.X = value1.X * value1Blend + value2.X * value2Blend + tangent1.X * tangent1Blend + tangent2.X * tangent2Blend;
-            result.Y = value1.Y * value1Blend + value2.Y * value2Blend + tangent1.Y * tangent1Blend + tangent2.Y * tangent2Blend;
-            result.Z = value1.Z * value1Blend + value2.Z * value2Blend + tangent1.Z * tangent1Blend + tangent2.Z * tangent2Blend;
+			Fix32 weightSquared = interpolationAmount.Mul(interpolationAmount);
+			Fix32 weightCubed = interpolationAmount.Mul(weightSquared);
+			Fix32 value1Blend = Fix32.Two.Mul(weightCubed).Sub(Fix32.Three.Mul(weightSquared)).Add(Fix32.One);
+			Fix32 tangent1Blend = weightCubed.Sub(Fix32.Two.Mul(weightSquared)).Add(interpolationAmount);
+			Fix32 value2Blend = Fix32.MinusTwo.Mul(weightCubed).Sub(Fix32.Three.Mul(weightSquared));
+			Fix32 tangent2Blend = weightCubed.Sub(weightSquared);
+            result.X = value1.X.Mul(value1Blend).Add(value2.X.Mul(value2Blend)).Add(tangent1.X.Mul(tangent1Blend)).Add(tangent2.X.Mul(tangent2Blend));
+            result.Y = value1.Y.Mul(value1Blend).Add(value2.Y.Mul(value2Blend)).Add(tangent1.Y.Mul(tangent1Blend)).Add(tangent2.Y.Mul(tangent2Blend));
+            result.Z = value1.Z.Mul(value1Blend).Add(value2.Z.Mul(value2Blend)).Add(tangent1.Z.Mul(tangent1Blend)).Add(tangent2.Z.Mul(tangent2Blend));
         }
         /// <summary>
         /// Computes an intermediate location using hermite interpolation.
@@ -738,7 +676,7 @@ namespace BEPUutilities
         /// <param name="tangent2">Tangent associated with the second position.</param>
         /// <param name="interpolationAmount">Amount of the second point to use.</param>
         /// <returns>Interpolated intermediate state.</returns>
-        public static Vector3 Hermite(Vector3 value1, Vector3 tangent1, Vector3 value2, Vector3 tangent2, Fix64 interpolationAmount)
+        public static Vector3 Hermite(Vector3 value1, Vector3 tangent1, Vector3 value2, Vector3 tangent2, Fix32 interpolationAmount)
         {
             Vector3 toReturn;
             Hermite(ref value1, ref tangent1, ref value2, ref tangent2, interpolationAmount, out toReturn);

@@ -1,6 +1,4 @@
-﻿using FixMath.NET;
-
-namespace BEPUphysics.OtherSpaceStages
+﻿namespace BEPUphysics.OtherSpaceStages
 {
     ///<summary>
     /// Defines an object which can be updated using forces by the ForceUpdater.
@@ -11,7 +9,7 @@ namespace BEPUphysics.OtherSpaceStages
         /// Applies forces to the object.
         ///</summary>
         ///<param name="dt">Time step duration.</param>
-        void UpdateForForces(Fix64 dt);
+        void UpdateForForces(Fix32 dt);
 
         ///<summary>
         /// Force updater that owns this object.

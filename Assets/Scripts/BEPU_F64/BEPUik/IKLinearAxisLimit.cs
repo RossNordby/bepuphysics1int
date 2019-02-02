@@ -1,5 +1,4 @@
 ﻿using BEPUutilities;
-using FixMath.NET;
 
 namespace BEPUik
 {
@@ -52,21 +51,21 @@ namespace BEPUik
             set { LocalAnchorB = Quaternion.Transform(value - ConnectionB.Position, Quaternion.Conjugate(ConnectionB.Orientation)); }
         }
 
-        private Fix64 minimumDistance;
+        private Fix32 minimumDistance;
         /// <summary>
         /// Gets or sets the minimum distance that the joint connections should be kept from each other.
         /// </summary>
-        public Fix64 MinimumDistance
+        public Fix32 MinimumDistance
         {
             get { return minimumDistance; }
             set { minimumDistance = value; }
         }
 
-         private Fix64 maximumDistance;
+         private Fix32 maximumDistance;
         /// <summary>
         /// Gets or sets the maximum distance that the joint connections should be kept from each other.
         /// </summary>
-        public Fix64 MaximumDistance
+        public Fix32 MaximumDistance
         {
             get { return maximumDistance; }
             set { maximumDistance = value; }
@@ -82,7 +81,7 @@ namespace BEPUik
         /// <param name="anchorB">Anchor point on the second bone in world space which is measured against the other connection's anchor.</param>
         /// <param name="minimumDistance">Minimum distance that the joint connections should be kept from each other along the axis.</param>
         /// <param name="maximumDistance">Maximum distance that the joint connections should be kept from each other along the axis.</param>
-        public IKLinearAxisLimit(Bone connectionA, Bone connectionB, Vector3 lineAnchor, Vector3 lineDirection, Vector3 anchorB, Fix64 minimumDistance, Fix64 maximumDistance)
+        public IKLinearAxisLimit(Bone connectionA, Bone connectionB, Vector3 lineAnchor, Vector3 lineDirection, Vector3 anchorB, Fix32 minimumDistance, Fix32 maximumDistance)
             : base(connectionA, connectionB)
         {
             LineAnchor = lineAnchor;
@@ -107,31 +106,31 @@ namespace BEPUik
             Vector3 separation;
             Vector3.Subtract(ref anchorB, ref anchorA, out separation);
             //This entire constraint is very similar to the IKDistanceLimit, except the current distance is along an axis.
-            Fix64 currentDistance;
+            Fix32 currentDistance;
             Vector3.Dot(ref separation, ref lineDirection, out currentDistance);
 
             //Compute jacobians
             if (currentDistance > maximumDistance)
             {
                 //We are exceeding the maximum limit.
-                velocityBias = new Vector3(errorCorrectionFactor * (currentDistance - maximumDistance), F64.C0, F64.C0);
+                velocityBias = new Vector3(errorCorrectionFactor.Mul(currentDistance.Sub(maximumDistance)), Fix32.Zero, Fix32.Zero);
             }
             else if (currentDistance < minimumDistance)
             {
                 //We are exceeding the minimum limit.
-                velocityBias = new Vector3(errorCorrectionFactor * (minimumDistance - currentDistance), F64.C0, F64.C0);
+                velocityBias = new Vector3(errorCorrectionFactor.Mul(minimumDistance.Sub(currentDistance)), Fix32.Zero, Fix32.Zero);
                 //The limit can only push in one direction. Flip the jacobian!
                 Vector3.Negate(ref lineDirection, out lineDirection);
             }
-            else if (currentDistance - minimumDistance > (maximumDistance - minimumDistance) * F64.C0p5)
+            else if (currentDistance.Sub(minimumDistance) > maximumDistance.Sub(minimumDistance).Mul(F64.C0p5))
             {
                 //The objects are closer to hitting the maximum limit.
-                velocityBias = new Vector3(currentDistance - maximumDistance, F64.C0, F64.C0);
+                velocityBias = new Vector3(currentDistance.Sub(maximumDistance), Fix32.Zero, Fix32.Zero);
             }
             else
             {
                 //The objects are closer to hitting the minimum limit.
-                velocityBias = new Vector3(minimumDistance - currentDistance, F64.C0, F64.C0);
+                velocityBias = new Vector3(minimumDistance.Sub(currentDistance), Fix32.Zero, Fix32.Zero);
                 //The limit can only push in one direction. Flip the jacobian!
                 Vector3.Negate(ref lineDirection, out lineDirection);
             }
@@ -146,10 +145,9 @@ namespace BEPUik
 
             //Put all the 1x3 jacobians into a 3x3 matrix representation.
             linearJacobianA = new Matrix3x3 { M11 = lineDirection.X, M12 = lineDirection.Y, M13 = lineDirection.Z };
-            linearJacobianB = new Matrix3x3 { M11 = -lineDirection.X, M12 = -lineDirection.Y, M13 = -lineDirection.Z };
+            linearJacobianB = new Matrix3x3 { M11 = lineDirection.X.Neg(), M12 = lineDirection.Y.Neg(), M13 = lineDirection.Z.Neg() };
             angularJacobianA = new Matrix3x3 { M11 = angularA.X, M12 = angularA.Y, M13 = angularA.Z };
             angularJacobianB = new Matrix3x3 { M11 = angularB.X, M12 = angularB.Y, M13 = angularB.Z };
-
         }
     }
 }

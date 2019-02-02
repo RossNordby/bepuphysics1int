@@ -1,12 +1,11 @@
-﻿using FixMath.NET;
-using UnityEngine;
+﻿using UnityEngine;
 using BEPUphysics.Entities.Prefabs;
 
 namespace BEPUUnity
 {
     public class BEPUSphere : ShapeBase
     {
-        [SerializeField] private Fix64 m_radius = Fix64.One;
+        [SerializeField] private Fix32 m_radius = Fix32.One;
 
         private void Awake()
         {

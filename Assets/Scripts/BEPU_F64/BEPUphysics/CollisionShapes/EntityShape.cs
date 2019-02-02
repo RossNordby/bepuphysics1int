@@ -1,7 +1,7 @@
 ﻿using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionShapes
 {
@@ -20,7 +20,7 @@ namespace BEPUphysics.CollisionShapes
         /// <summary>
         /// Gets the volume of the shape.
         /// </summary>
-        public Fix64 Volume { get; internal set; }
+        public Fix32 Volume { get; internal set; }
 
         internal Matrix3x3 volumeDistribution;
         /// <summary>
@@ -58,9 +58,9 @@ namespace BEPUphysics.CollisionShapes
         /// <param name="result">Contains the transformed X coordinate of input X, transformed Y coordinate of input Y, and transformed Z coordinate of input Z.</param>
         protected void TransformLocalExtremePoints(ref Vector3 x, ref Vector3 y, ref Vector3 z, ref Matrix3x3 transform, out Vector3 result)
         {
-            result.X = x.X * transform.M11 + x.Y * transform.M21 + x.Z * transform.M31;
-            result.Y = y.X * transform.M12 + y.Y * transform.M22 + y.Z * transform.M32;
-            result.Z = z.X * transform.M13 + z.Y * transform.M23 + z.Z * transform.M33;
+            result.X = x.X .Mul (transform.M11) .Add (x.Y .Mul (transform.M21)) .Add (x.Z .Mul (transform.M31));
+            result.Y = y.X .Mul (transform.M12) .Add (y.Y .Mul (transform.M22)) .Add (y.Z .Mul (transform.M32));
+            result.Z = z.X .Mul (transform.M13) .Add (z.Y .Mul (transform.M23)) .Add (z.Z .Mul (transform.M33));
         }
     }
 }

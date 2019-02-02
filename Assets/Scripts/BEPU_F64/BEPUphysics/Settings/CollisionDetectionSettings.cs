@@ -1,6 +1,6 @@
 ﻿using BEPUutilities;
-using FixMath.NET;
 using System;
+
 namespace BEPUphysics.Settings
 {
     ///<summary>
@@ -10,7 +10,7 @@ namespace BEPUphysics.Settings
     {
 
 
-        internal static Fix64 ContactInvalidationLengthSquared = (Fix64).01m;
+        internal static Fix32 ContactInvalidationLengthSquared = .01m.ToFix32();
 
         /// <summary>
         /// For persistent manifolds, contacts are represented by an offset in local space of two colliding bodies.
@@ -20,52 +20,52 @@ namespace BEPUphysics.Settings
         /// If the world is smaller or larger than 'normal' for the engine, adjusting this value proportionally can improve contact caching behavior.
         /// The default value of .1f works well for worlds that operate on the order of 1 unit.
         /// </summary>
-        public static Fix64 ContactInvalidationLength
+        public static Fix32 ContactInvalidationLength
         {
             get
             {
-                return Fix64.Sqrt(ContactInvalidationLengthSquared);
+                return ContactInvalidationLengthSquared.Sqrt();
             }
             set
             {
-                ContactInvalidationLengthSquared = value * value;
+                ContactInvalidationLengthSquared = value .Mul (value);
             }
         }
 
 
-        internal static Fix64 ContactMinimumSeparationDistanceSquared = (Fix64).0009m;
+        internal static Fix32 ContactMinimumSeparationDistanceSquared = .0009m.ToFix32();
         /// <summary>
         /// In persistent manifolds, if two contacts are too close together, then 
         /// the system will not use one of them.  This avoids redundant constraints.
         /// Defaults to .03f.
         /// </summary>
-        public static Fix64 ContactMinimumSeparationDistance
+        public static Fix32 ContactMinimumSeparationDistance
         {
             get
             {
-                return Fix64.Sqrt(ContactMinimumSeparationDistanceSquared);
+                return ContactMinimumSeparationDistanceSquared.Sqrt();
             }
             set
             {
-                ContactMinimumSeparationDistanceSquared = value * value;
+                ContactMinimumSeparationDistanceSquared = value .Mul (value);
             }
         }
 
-        internal static Fix64 nonconvexNormalDotMinimum = (Fix64).99m;
+        internal static Fix32 nonconvexNormalDotMinimum = .99m.ToFix32();
         /// <summary>
         /// In regular convex manifolds, two contacts are considered redundant if their positions are too close together.  
         /// In nonconvex manifolds, the normal must also be tested, since a contact in the same location could have a different normal.
         /// This property is the minimum angle in radians between normals below which contacts are considered redundant.
         /// </summary>
-        public static Fix64 NonconvexNormalAngleDifferenceMinimum
+        public static Fix32 NonconvexNormalAngleDifferenceMinimum
         {
             get
             {
-                return Fix64.Acos(nonconvexNormalDotMinimum);
+                return nonconvexNormalDotMinimum.Acos();
             }
             set
             {
-                nonconvexNormalDotMinimum = Fix64.Cos(value);
+                nonconvexNormalDotMinimum = value.Cos();
             }
         }
 
@@ -73,20 +73,20 @@ namespace BEPUphysics.Settings
         /// The default amount of allowed penetration into the margin before position correcting impulses will be applied.
         /// Defaults to .01f.
         /// </summary>
-        public static Fix64 AllowedPenetration = (Fix64).01m;
+        public static Fix32 AllowedPenetration = .01m.ToFix32();
 
         /// <summary>
         /// Default collision margin around objects.  Margins help prevent objects from interpenetrating and improve stability.
         /// Defaults to .04f.
         /// </summary>
-        public static Fix64 DefaultMargin = (Fix64).04m;
+        public static Fix32 DefaultMargin = .04m.ToFix32();
 
-        internal static Fix64 maximumContactDistance = (Fix64).1m;
+        internal static Fix32 maximumContactDistance = .1m.ToFix32();
         /// <summary>
         /// Maximum distance between the surfaces defining a contact point allowed before removing the contact.
         /// Defaults to .1f.
         /// </summary>
-        public static Fix64 MaximumContactDistance
+        public static Fix32 MaximumContactDistance
         {
             get
             {
@@ -94,14 +94,11 @@ namespace BEPUphysics.Settings
             }
             set
             {
-                if (value >= F64.C0)
+                if (value >= Fix32.Zero)
                     maximumContactDistance = value;
                 else
                     throw new ArgumentException("Distance must be nonnegative.");
             }
         }
-
-
-        
     }
 }

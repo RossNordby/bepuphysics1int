@@ -5,7 +5,7 @@ using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUphysics.DataStructures;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionTests.Manifolds
 {
@@ -31,7 +31,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
             }
         }
 
-        protected internal override int FindOverlappingTriangles(Fix64 dt)
+        protected internal override int FindOverlappingTriangles(Fix32 dt)
         {
             mesh.Mesh.Tree.GetOverlaps(convex.boundingBox, overlappedTriangles);
             return overlappedTriangles.Count;
@@ -58,7 +58,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
             localTriangleShape.vC = data.vertices[data.indices[triangleIndex + 2]];
             //TODO: Note the IsQuery hack to avoid missing contacts. Avoid doing this in v2.
             localTriangleShape.sidedness = IsQuery ? TriangleSidedness.DoubleSided : mesh.sidedness;
-            localTriangleShape.collisionMargin = F64.C0;
+            localTriangleShape.collisionMargin = Fix32.Zero;
             indices = new TriangleIndices
                           {
                               A = data.indices[triangleIndex],

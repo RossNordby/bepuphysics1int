@@ -1,7 +1,4 @@
-﻿using FixMath.NET;
-using System;
-
-namespace BEPUutilities
+﻿namespace BEPUutilities
 {
     /// <summary>
     /// Provides XNA-like ray functionality.
@@ -37,27 +34,27 @@ namespace BEPUutilities
         /// <param name="boundingBox">Bounding box to test against.</param>
         /// <param name="t">The length along the ray to the impact, if any impact occurs.</param>
         /// <returns>True if the ray intersects the target, false otherwise.</returns>
-        public bool Intersects(ref BoundingBox boundingBox, out Fix64 t)
+        public bool Intersects(ref BoundingBox boundingBox, out Fix32 t)
         {
-			Fix64 tmin = F64.C0, tmax = Fix64.MaxValue;
-            if (Fix64.Abs(Direction.X) < Toolbox.Epsilon)
+			Fix32 tmin = Fix32.Zero, tmax = Fix32.MaxValue;
+            if (Direction.X.Abs() < Toolbox.Epsilon)
             {
                 if (Position.X < boundingBox.Min.X || Position.X > boundingBox.Max.X)
                 {
                     //If the ray isn't pointing along the axis at all, and is outside of the box's interval, then it
                     //can't be intersecting.
-                    t = F64.C0;
+                    t = Fix32.Zero;
                     return false;
                 }
             }
             else
             {
-                var inverseDirection = F64.C1 / Direction.X;
-                var t1 = (boundingBox.Min.X - Position.X) * inverseDirection;
-                var t2 = (boundingBox.Max.X - Position.X) * inverseDirection;
+                var inverseDirection = Fix32.One.Div(Direction.X);
+                var t1 = (boundingBox.Min.X.Sub(Position.X)).Mul(inverseDirection);
+                var t2 = (boundingBox.Max.X.Sub(Position.X)).Mul(inverseDirection);
                 if (t1 > t2)
                 {
-					Fix64 temp = t1;
+					Fix32 temp = t1;
                     t1 = t2;
                     t2 = temp;
                 }
@@ -65,28 +62,28 @@ namespace BEPUutilities
                 tmax = MathHelper.Min(tmax, t2);
                 if (tmin > tmax)
                 {
-                    t = F64.C0;
+                    t = Fix32.Zero;
                     return false;
                 }
             }
-            if (Fix64.Abs(Direction.Y) < Toolbox.Epsilon)
+            if (Direction.Y.Abs() < Toolbox.Epsilon)
             {
                 if (Position.Y < boundingBox.Min.Y || Position.Y > boundingBox.Max.Y)
                 {
                     //If the ray isn't pointing along the axis at all, and is outside of the box's interval, then it
                     //can't be intersecting.
-                    t = F64.C0;
+                    t = Fix32.Zero;
                     return false;
                 }
             }
             else
             {
-                var inverseDirection = F64.C1 / Direction.Y;
-                var t1 = (boundingBox.Min.Y - Position.Y) * inverseDirection;
-                var t2 = (boundingBox.Max.Y - Position.Y) * inverseDirection;
+                var inverseDirection = Fix32.One.Div(Direction.Y);
+                var t1 = (boundingBox.Min.Y.Sub(Position.Y)).Mul(inverseDirection);
+                var t2 = (boundingBox.Max.Y.Sub(Position.Y)).Mul(inverseDirection);
                 if (t1 > t2)
                 {
-					Fix64 temp = t1;
+					Fix32 temp = t1;
                     t1 = t2;
                     t2 = temp;
                 }
@@ -94,28 +91,28 @@ namespace BEPUutilities
                 tmax = MathHelper.Min(tmax, t2);
                 if (tmin > tmax)
                 {
-                    t = F64.C0;
+                    t = Fix32.Zero;
                     return false;
                 }
             }
-            if (Fix64.Abs(Direction.Z) < Toolbox.Epsilon)
+            if (Direction.Z.Abs() < Toolbox.Epsilon)
             {
                 if (Position.Z < boundingBox.Min.Z || Position.Z > boundingBox.Max.Z)
                 {
                     //If the ray isn't pointing along the axis at all, and is outside of the box's interval, then it
                     //can't be intersecting.
-                    t = F64.C0;
+                    t = Fix32.Zero;
                     return false;
                 }
             }
             else
             {
-                var inverseDirection = F64.C1 / Direction.Z;
-                var t1 = (boundingBox.Min.Z - Position.Z) * inverseDirection;
-                var t2 = (boundingBox.Max.Z - Position.Z) * inverseDirection;
+                var inverseDirection = Fix32.One.Div(Direction.Z);
+                var t1 = (boundingBox.Min.Z.Sub(Position.Z)).Mul(inverseDirection);
+                var t2 = (boundingBox.Max.Z.Sub(Position.Z)).Mul(inverseDirection);
                 if (t1 > t2)
                 {
-					Fix64 temp = t1;
+					Fix32 temp = t1;
                     t1 = t2;
                     t2 = temp;
                 }
@@ -123,7 +120,7 @@ namespace BEPUutilities
                 tmax = MathHelper.Min(tmax, t2);
                 if (tmin > tmax)
                 {
-                    t = F64.C0;
+                    t = Fix32.Zero;
                     return false;
                 }
             }
@@ -137,7 +134,7 @@ namespace BEPUutilities
         /// <param name="boundingBox">Bounding box to test against.</param>
         /// <param name="t">The length along the ray to the impact, if any impact occurs.</param>
         /// <returns>True if the ray intersects the target, false otherwise.</returns>
-        public bool Intersects(BoundingBox boundingBox, out Fix64 t)
+        public bool Intersects(BoundingBox boundingBox, out Fix32 t)
         {
             return Intersects(ref boundingBox, out t);
         }
@@ -148,20 +145,20 @@ namespace BEPUutilities
         /// <param name="plane">Plane to test against.</param>
         /// <param name="t">The length along the ray to the impact, if any impact occurs.</param>
         /// <returns>True if the ray intersects the target, false otherwise.</returns>
-        public bool Intersects(ref Plane plane, out Fix64 t)
+        public bool Intersects(ref Plane plane, out Fix32 t)
         {
-			Fix64 velocity;
+			Fix32 velocity;
             Vector3.Dot(ref Direction, ref plane.Normal, out velocity);
-            if (Fix64.Abs(velocity) < Toolbox.Epsilon)
+            if (velocity.Abs() < Toolbox.Epsilon)
             {
-                t = F64.C0;
+                t = Fix32.Zero;
                 return false;
             }
-			Fix64 distanceAlongNormal;
+			Fix32 distanceAlongNormal;
             Vector3.Dot(ref Position, ref plane.Normal, out distanceAlongNormal);
-            distanceAlongNormal += plane.D;
-            t = -distanceAlongNormal / velocity;
-            return t >= -Toolbox.Epsilon;
+            distanceAlongNormal = distanceAlongNormal.Add(plane.D);
+            t = distanceAlongNormal.Neg().Div(velocity);
+            return t >= Toolbox.MinusEpsilon;
         }
 
         /// <summary>
@@ -170,7 +167,7 @@ namespace BEPUutilities
         /// <param name="plane">Plane to test against.</param>
         /// <param name="t">The length along the ray to the impact, if any impact occurs.</param>
         /// <returns>True if the ray intersects the target, false otherwise.</returns>
-        public bool Intersects(Plane plane, out Fix64 t)
+        public bool Intersects(Plane plane, out Fix32 t)
         {
             return Intersects(ref plane, out t);
         }
@@ -180,7 +177,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="t">Length along the ray from the ray position in terms of the ray's direction.</param>
         /// <param name="v">Point along the ray at the given location.</param>
-        public void GetPointOnRay(Fix64 t, out Vector3 v)
+        public void GetPointOnRay(Fix32 t, out Vector3 v)
         {
             Vector3.Multiply(ref Direction, t, out v);
             Vector3.Add(ref v, ref Position, out v);

@@ -7,7 +7,7 @@ using BEPUphysics.CollisionRuleManagement;
 using BEPUphysics.CollisionTests;
 using BEPUphysics.NarrowPhaseSystems.Pairs;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Character
 {
@@ -16,21 +16,21 @@ namespace BEPUphysics.Character
     /// </summary>
     public class CharacterContactCategorizer
     {
-        private Fix64 tractionThreshold;
-        private Fix64 supportThreshold;
-        private Fix64 headThreshold;
+        private Fix32 tractionThreshold;
+        private Fix32 supportThreshold;
+        private Fix32 headThreshold;
         /// <summary>
         /// Gets or sets the value compared against the result of dot(outward facing contact normal, character down direction) to determine if a character has traction because of a contact.
         /// A value near 1 implies that the character will have traction only when the support normal is almost aligned with the character's vertical axis.
         /// A value near epsilon implies that the character can walk up extremely steep slopes with traction.
         /// </summary>
-        public Fix64 TractionThreshold
+        public Fix32 TractionThreshold
         {
             get { return tractionThreshold; }
             set
             {
                 if (value < Toolbox.BigEpsilon || value > F64.C1)
-                    throw new ArgumentException("Traction threshold values must range from " + Toolbox.BigEpsilon + " to 1, inclusive.");
+                    throw new ArgumentException("Traction threshold values must range from " + Toolbox.BigEpsilon.ToStringExt() + " to 1, inclusive.");
                 tractionThreshold = value;
             }
         }
@@ -41,13 +41,13 @@ namespace BEPUphysics.Character
         /// A value near epsilon implies that the character will consider very steep surfaces as supports.
         /// Should be less than or equal to the TractionThreshold.
         /// </summary>
-        public Fix64 SupportThreshold
+        public Fix32 SupportThreshold
         {
             get { return supportThreshold; }
             set
             {
                 if (value < Toolbox.BigEpsilon || value > F64.C1)
-                    throw new ArgumentException("Support threshold values must range from " + Toolbox.BigEpsilon + " to 1, inclusive.");
+                    throw new ArgumentException("Support threshold values must range from " + Toolbox.BigEpsilon.ToStringExt() + " to 1, inclusive.");
                 supportThreshold = value;
             }
         }
@@ -57,13 +57,13 @@ namespace BEPUphysics.Character
         /// A value near -1 implies that the contact will only be considered a 'head' contact when the support normal is almost aligned with the character's vertical axis.
         /// A value near -epsilon implies that almost all upper contacts will be considered head contacts.
         /// </summary>
-        public Fix64 HeadThreshold
+        public Fix32 HeadThreshold
         {
             get { return headThreshold; }
             set
             {
-                if (value < -1 || value > -Toolbox.BigEpsilon)
-                    throw new ArgumentException("Head threshold values must range from -1 to " + -Toolbox.BigEpsilon + ", inclusive.");
+                if (value < Fix32.MinusOne || value > Toolbox.MinusBigEpsilon)
+                    throw new ArgumentException("Head threshold values must range from -1 to " + Toolbox.MinusBigEpsilon.ToStringExt() + ", inclusive.");
                 headThreshold = value;
             }
         }
@@ -71,18 +71,18 @@ namespace BEPUphysics.Character
         /// <summary>
         /// Gets or sets the maximum slope that a character can have traction on.
         /// </summary>
-        public Fix64 MaximumTractionSlope
+        public Fix32 MaximumTractionSlope
         {
-            get { return Fix64.Acos(TractionThreshold); }
-            set { TractionThreshold = Fix64.Cos(value); }
+            get { return TractionThreshold.Acos(); }
+            set { TractionThreshold = value.Cos(); }
         }
         /// <summary>
         /// Gets or sets the maximum slope that a character can be supported by.
         /// </summary>
-        public Fix64 MaximumSupportSlope
+        public Fix32 MaximumSupportSlope
         {
-            get { return Fix64.Acos(SupportThreshold); }
-            set { SupportThreshold = Fix64.Cos(value); }
+            get { return SupportThreshold.Acos(); }
+            set { SupportThreshold = value.Cos(); }
         }
 
 		/// <summary>
@@ -92,11 +92,11 @@ namespace BEPUphysics.Character
 		/// <param name="maximumSupportSlope">Maximum slope that a character can be supported by.</param>
 		/// A value near -1 implies that the contact will only be considered a 'head' contact when the support normal is almost aligned with the character's vertical axis.
 		/// A value near -epsilon implies that almost all upper contacts will be considered head contacts.</param>
-		public CharacterContactCategorizer(Fix64 maximumTractionSlope, Fix64 maximumSupportSlope)
+		public CharacterContactCategorizer(Fix32 maximumTractionSlope, Fix32 maximumSupportSlope)
 		{
 			MaximumTractionSlope = maximumTractionSlope;
 			MaximumSupportSlope = maximumSupportSlope;
-			HeadThreshold = (Fix64)(-.01m);
+			HeadThreshold = (-.01m).ToFix32();
 			Debug.Assert(SupportThreshold <= TractionThreshold, "The character's support threshold should be no higher than the traction threshold for the traction threshold to be meaningful.");
 		}
 
@@ -108,7 +108,7 @@ namespace BEPUphysics.Character
 		/// <param name="headThreshold">Value compared against the result of dot(outward facing contact normal, character down direction) to determine if a contact is on top of the character.
 		/// A value near -1 implies that the contact will only be considered a 'head' contact when the support normal is almost aligned with the character's vertical axis.
 		/// A value near -epsilon implies that almost all upper contacts will be considered head contacts.</param>
-		public CharacterContactCategorizer(Fix64 maximumTractionSlope, Fix64 maximumSupportSlope, Fix64 headThreshold)
+		public CharacterContactCategorizer(Fix32 maximumTractionSlope, Fix32 maximumSupportSlope, Fix32 headThreshold)
         {
             MaximumTractionSlope = maximumTractionSlope;
             MaximumSupportSlope = maximumSupportSlope;
@@ -145,14 +145,14 @@ namespace BEPUphysics.Character
                 //If we were to use such a speculative contact for support, the character would find supports
                 //in situations where it should not.
                 //This can actually be useful in some situations, but keep it disabled by default.
-                if (contactInfo.Pair.CollisionRule != CollisionRule.Normal || characterContact.Contact.PenetrationDepth < F64.C0)
+                if (contactInfo.Pair.CollisionRule != CollisionRule.Normal || characterContact.Contact.PenetrationDepth < Fix32.Zero)
                     continue;
 
-                Fix64 dot;
+                Fix32 dot;
                 Vector3 offset;
                 Vector3.Subtract(ref characterContact.Contact.Position, ref characterCollidable.worldTransform.Position, out offset);
                 Vector3.Dot(ref characterContact.Contact.Normal, ref offset, out dot);
-                if (dot < F64.C0)
+                if (dot < Fix32.Zero)
                 {
                     //The normal should face outward.
                     Vector3.Negate(ref characterContact.Contact.Normal, out characterContact.Contact.Normal);

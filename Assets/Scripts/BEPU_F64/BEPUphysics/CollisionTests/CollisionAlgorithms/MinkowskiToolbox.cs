@@ -1,7 +1,7 @@
 ﻿using System;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 {
@@ -130,14 +130,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         ///<param name="marginB">Second margin.</param>
         ///<param name="direction">Extreme point direction.</param>
         ///<param name="contribution">Margin contribution to the extreme point.</param>
-        public static void ExpandMinkowskiSum(Fix64 marginA, Fix64 marginB, ref Vector3 direction, out Vector3 contribution)
+        public static void ExpandMinkowskiSum(Fix32 marginA, Fix32 marginB, ref Vector3 direction, out Vector3 contribution)
         {
-            Fix64 lengthSquared = direction.LengthSquared();
+            Fix32 lengthSquared = direction.LengthSquared();
             if (lengthSquared > Toolbox.Epsilon)
             {
                 //The contribution to the minkowski sum by the margin is:
                 //direction * marginA - (-direction) * marginB.
-                Vector3.Multiply(ref direction, (marginA + marginB) / Fix64.Sqrt(lengthSquared), out contribution);
+                Vector3.Multiply(ref direction, (marginA .Add (marginB)) .Div (lengthSquared.Sqrt()), out contribution);
 
             }
             else
@@ -157,18 +157,18 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         ///<param name="direction">Extreme point direction.</param>
         ///<param name="toExpandA">Margin contribution to the shapeA.</param>
         ///<param name="toExpandB">Margin contribution to the shapeB.</param>
-        public static void ExpandMinkowskiSum(Fix64 marginA, Fix64 marginB, Vector3 direction, ref Vector3 toExpandA, ref Vector3 toExpandB)
+        public static void ExpandMinkowskiSum(Fix32 marginA, Fix32 marginB, Vector3 direction, ref Vector3 toExpandA, ref Vector3 toExpandB)
         {
-            Fix64 lengthSquared = direction.LengthSquared();
+            Fix32 lengthSquared = direction.LengthSquared();
             if (lengthSquared > Toolbox.Epsilon)
             {
-                lengthSquared = F64.C1 / Fix64.Sqrt(lengthSquared);   
+                lengthSquared = F64.C1 .Div (lengthSquared.Sqrt());   
                 //The contribution to the minkowski sum by the margin is:
                 //direction * marginA - (-direction) * marginB. 
                 Vector3 contribution;
-                Vector3.Multiply(ref direction, marginA * lengthSquared, out contribution);
+                Vector3.Multiply(ref direction, marginA .Mul (lengthSquared), out contribution);
                 Vector3.Add(ref toExpandA, ref contribution, out toExpandA);
-                Vector3.Multiply(ref direction, marginB * lengthSquared, out contribution);
+                Vector3.Multiply(ref direction, marginB .Mul (lengthSquared), out contribution);
                 Vector3.Subtract(ref toExpandB, ref contribution, out toExpandB);
             }
             //If the direction is too small, then the expansion values are left unchanged.

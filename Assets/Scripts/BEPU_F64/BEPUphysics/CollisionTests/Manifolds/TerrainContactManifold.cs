@@ -4,7 +4,7 @@ using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionTests.Manifolds
 {
@@ -28,7 +28,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
             }
         }
 
-        protected internal override int FindOverlappingTriangles(Fix64 dt)
+        protected internal override int FindOverlappingTriangles(Fix32 dt)
         {
             BoundingBox boundingBox;
             convex.Shape.GetLocalBoundingBox(ref convex.worldTransform, ref terrain.worldTransform, out boundingBox);
@@ -43,20 +43,20 @@ namespace BEPUphysics.CollisionTests.Manifolds
                 Vector3.Multiply(ref transformedVelocity, dt, out transformedVelocity);
 
 
-                if (transformedVelocity.X > F64.C0)
-                    boundingBox.Max.X += transformedVelocity.X;
+                if (transformedVelocity.X > Fix32.Zero)
+                    boundingBox.Max.X = boundingBox.Max.X .Add (transformedVelocity.X);
                 else
-                    boundingBox.Min.X += transformedVelocity.X;
+                    boundingBox.Min.X = boundingBox.Min.X .Add (transformedVelocity.X);
 
-                if (transformedVelocity.Y > F64.C0)
-                    boundingBox.Max.Y += transformedVelocity.Y;
+                if (transformedVelocity.Y > Fix32.Zero)
+                    boundingBox.Max.Y = boundingBox.Max.Y .Add (transformedVelocity.Y);
                 else
-                    boundingBox.Min.Y += transformedVelocity.Y;
+                    boundingBox.Min.Y = boundingBox.Min.Y .Add (transformedVelocity.Y);
 
-                if (transformedVelocity.Z > F64.C0)
-                    boundingBox.Max.Z += transformedVelocity.Z;
+                if (transformedVelocity.Z > Fix32.Zero)
+                    boundingBox.Max.Z = boundingBox.Max.Z .Add (transformedVelocity.Z);
                 else
-                    boundingBox.Min.Z += transformedVelocity.Z;
+                    boundingBox.Min.Z = boundingBox.Min.Z .Add (transformedVelocity.Z);
             }
 
 
@@ -85,7 +85,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
             terrain.Shape.GetLocalPosition(a.ColumnIndex, a.RowIndex, out localTriangleShape.vA);
             terrain.Shape.GetLocalPosition(b.ColumnIndex, b.RowIndex, out localTriangleShape.vB);
             terrain.Shape.GetLocalPosition(c.ColumnIndex, c.RowIndex, out localTriangleShape.vC);
-            localTriangleShape.collisionMargin = F64.C0;
+            localTriangleShape.collisionMargin = Fix32.Zero;
 
             localTriangleShape.sidedness = terrain.sidedness;
  
@@ -103,7 +103,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
         protected override void ProcessCandidates(ref QuickList<ContactData> candidates)
         {
             //If the candidates list is empty, then let's see if the convex is in the 'thickness' of the terrain.
-            if (candidates.Count == 0 & terrain.thickness > F64.C0)
+            if (candidates.Count == 0 & terrain.thickness > Fix32.Zero)
             {
                 RayHit rayHit;
                 Ray ray = new Ray { Position = convex.worldTransform.Position, Direction = terrain.worldTransform.LinearTransform.Up };
@@ -113,7 +113,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                 {
                     //Found a hit!
                     rayHit.Normal.Normalize();
-                    Fix64 dot;
+                    Fix32 dot;
                     Vector3.Dot(ref ray.Direction, ref rayHit.Normal, out dot);
 
                     var newContact = new ContactData
@@ -121,7 +121,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                         Normal = rayHit.Normal,
                         Position = convex.worldTransform.Position,
                         Id = 2,
-                        PenetrationDepth = -rayHit.T * dot + convex.Shape.MinimumRadius
+                        PenetrationDepth = rayHit.T.Neg() .Mul (dot) .Add (convex.Shape.MinimumRadius)
                     };
                     newContact.Validate();
                     bool found = false;

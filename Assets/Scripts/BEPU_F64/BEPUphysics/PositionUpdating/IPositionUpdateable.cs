@@ -1,4 +1,4 @@
-﻿using FixMath.NET;
+﻿
 
 namespace BEPUphysics.PositionUpdating
 {
@@ -22,6 +22,6 @@ namespace BEPUphysics.PositionUpdating
         /// Updates the position state of the object.
         ///</summary>
         ///<param name="dt">Time step duration.</param>
-        void PreUpdatePosition(Fix64 dt);
+        void PreUpdatePosition(Fix32 dt);
     }
 }

@@ -11,7 +11,7 @@ using BEPUphysics.Settings;
 
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.NarrowPhaseSystems.Pairs
 {
@@ -40,23 +40,23 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         {
             info.Contact = ContactManifold.contacts.Elements[index];
             //Find the contact's normal force.
-            Fix64 totalNormalImpulse = F64.C0;
-            info.NormalImpulse = F64.C0;
+            Fix32 totalNormalImpulse = Fix32.Zero;
+            info.NormalImpulse = Fix32.Zero;
             for (int i = 0; i < contactConstraint.penetrationConstraints.Count; i++)
             {
-                totalNormalImpulse += contactConstraint.penetrationConstraints.Elements[i].accumulatedImpulse;
+                totalNormalImpulse = totalNormalImpulse .Add (contactConstraint.penetrationConstraints.Elements[i].accumulatedImpulse);
                 if (contactConstraint.penetrationConstraints.Elements[i].contact == info.Contact)
                 {
                     info.NormalImpulse = contactConstraint.penetrationConstraints.Elements[i].accumulatedImpulse;
                 }
             }
             //Compute friction force.  Since we are using central friction, this is 'faked.'
-            Fix64 radius;
+            Fix32 radius;
             Vector3.Distance(ref contactConstraint.slidingFriction.manifoldCenter, ref info.Contact.Position, out radius);
-            if (totalNormalImpulse > F64.C0)
-                info.FrictionImpulse = (info.NormalImpulse / totalNormalImpulse) * (contactConstraint.slidingFriction.accumulatedImpulse.Length() + contactConstraint.twistFriction.accumulatedImpulse * radius);
+            if (totalNormalImpulse > Fix32.Zero)
+                info.FrictionImpulse = (info.NormalImpulse .Div (totalNormalImpulse)) .Mul (contactConstraint.slidingFriction.accumulatedImpulse.Length() .Add (contactConstraint.twistFriction.accumulatedImpulse .Mul (radius)));
             else
-                info.FrictionImpulse = F64.C0;
+                info.FrictionImpulse = Fix32.Zero;
             //Compute relative velocity
             Vector3 velocity;
             //If the pair is handling some type of query and does not actually have supporting entities, then consider the velocity contribution to be zero.

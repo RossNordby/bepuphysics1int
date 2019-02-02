@@ -1,9 +1,4 @@
-﻿
-
-
-using FixMath.NET;
-
-namespace BEPUutilities
+﻿namespace BEPUutilities
 {
     /// <summary>
     /// 3 row, 2 column matrix.
@@ -13,32 +8,32 @@ namespace BEPUutilities
         /// <summary>
         /// Value at row 1, column 1 of the matrix.
         /// </summary>
-        public Fix64 M11;
+        public Fix32 M11;
 
         /// <summary>
         /// Value at row 1, column 2 of the matrix.
         /// </summary>
-        public Fix64 M12;
+        public Fix32 M12;
 
         /// <summary>
         /// Value at row 2, column 1 of the matrix.
         /// </summary>
-        public Fix64 M21;
+        public Fix32 M21;
 
         /// <summary>
         /// Value at row 2, column 2 of the matrix.
         /// </summary>
-        public Fix64 M22;
+        public Fix32 M22;
 
         /// <summary>
         /// Value at row 3, column 1 of the matrix.
         /// </summary>
-        public Fix64 M31;
+        public Fix32 M31;
 
         /// <summary>
         /// Value at row 3, column 2 of the matrix.
         /// </summary>
-        public Fix64 M32;
+        public Fix32 M32;
 
 
         /// <summary>
@@ -50,7 +45,7 @@ namespace BEPUutilities
         /// <param name="m22">Value at row 2, column 2 of the matrix.</param>
         /// <param name="m31">Value at row 2, column 1 of the matrix.</param>
         /// <param name="m32">Value at row 2, column 2 of the matrix.</param>
-        public Matrix3x2(Fix64 m11, Fix64 m12, Fix64 m21, Fix64 m22, Fix64 m31, Fix64 m32)
+        public Matrix3x2(Fix32 m11, Fix32 m12, Fix32 m21, Fix32 m22, Fix32 m31, Fix32 m32)
         {
             M11 = m11;
             M12 = m12;
@@ -69,14 +64,12 @@ namespace BEPUutilities
         /// <param name="result">Sum of the two matrices.</param>
         public static void Add(ref Matrix3x2 a, ref Matrix3x2 b, out Matrix3x2 result)
         {
-            Fix64 m11 = a.M11 + b.M11;
-            Fix64 m12 = a.M12 + b.M12;
-
-            Fix64 m21 = a.M21 + b.M21;
-            Fix64 m22 = a.M22 + b.M22;
-
-            Fix64 m31 = a.M31 + b.M31;
-            Fix64 m32 = a.M32 + b.M32;
+            Fix32 m11 = a.M11 .Add( b.M11 );
+            Fix32 m12 = a.M12 .Add( b.M12 );
+            Fix32 m21 = a.M21 .Add( b.M21 );
+            Fix32 m22 = a.M22 .Add( b.M22 );
+            Fix32 m31 = a.M31 .Add( b.M31 );
+            Fix32 m32 = a.M32 .Add( b.M32 );
 
             result.M11 = m11;
             result.M12 = m12;
@@ -96,14 +89,12 @@ namespace BEPUutilities
         /// <param name="result">Product of the multiplication.</param>
         public static void Multiply(ref Matrix3x3 a, ref Matrix3x2 b, out Matrix3x2 result)
         {
-            Fix64 resultM11 = a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31;
-            Fix64 resultM12 = a.M11 * b.M12 + a.M12 * b.M22 + a.M13 * b.M32;
-
-            Fix64 resultM21 = a.M21 * b.M11 + a.M22 * b.M21 + a.M23 * b.M31;
-            Fix64 resultM22 = a.M21 * b.M12 + a.M22 * b.M22 + a.M23 * b.M32;
-
-            Fix64 resultM31 = a.M31 * b.M11 + a.M32 * b.M21 + a.M33 * b.M31;
-            Fix64 resultM32 = a.M31 * b.M12 + a.M32 * b.M22 + a.M33 * b.M32;
+            Fix32 resultM11 = a.M11.Mul(b.M11) .Add( a.M12.Mul(b.M21) ).Add( a.M13.Mul(b.M31) );
+            Fix32 resultM12 = a.M11.Mul(b.M12) .Add( a.M12.Mul(b.M22) ).Add( a.M13.Mul(b.M32) );
+            Fix32 resultM21 = a.M21.Mul(b.M11) .Add( a.M22.Mul(b.M21) ).Add( a.M23.Mul(b.M31) );
+            Fix32 resultM22 = a.M21.Mul(b.M12) .Add( a.M22.Mul(b.M22) ).Add( a.M23.Mul(b.M32) );
+            Fix32 resultM31 = a.M31.Mul(b.M11) .Add( a.M32.Mul(b.M21) ).Add( a.M33.Mul(b.M31) );
+            Fix32 resultM32 = a.M31.Mul(b.M12) .Add( a.M32.Mul(b.M22) ).Add( a.M33.Mul(b.M32) );
 
             result.M11 = resultM11;
             result.M12 = resultM12;
@@ -123,14 +114,12 @@ namespace BEPUutilities
         /// <param name="result">Product of the multiplication.</param>
         public static void Multiply(ref Matrix a, ref Matrix3x2 b, out Matrix3x2 result)
         {
-            Fix64 resultM11 = a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31;
-            Fix64 resultM12 = a.M11 * b.M12 + a.M12 * b.M22 + a.M13 * b.M32;
-
-            Fix64 resultM21 = a.M21 * b.M11 + a.M22 * b.M21 + a.M23 * b.M31;
-            Fix64 resultM22 = a.M21 * b.M12 + a.M22 * b.M22 + a.M23 * b.M32;
-
-            Fix64 resultM31 = a.M31 * b.M11 + a.M32 * b.M21 + a.M33 * b.M31;
-            Fix64 resultM32 = a.M31 * b.M12 + a.M32 * b.M22 + a.M33 * b.M32;
+            Fix32 resultM11 = a.M11.Mul(b.M11) .Add( a.M12.Mul(b.M21) ).Add( a.M13.Mul(b.M31) );
+            Fix32 resultM12 = a.M11.Mul(b.M12) .Add( a.M12.Mul(b.M22) ).Add( a.M13.Mul(b.M32) );
+            Fix32 resultM21 = a.M21.Mul(b.M11) .Add( a.M22.Mul(b.M21) ).Add( a.M23.Mul(b.M31) );
+            Fix32 resultM22 = a.M21.Mul(b.M12) .Add( a.M22.Mul(b.M22) ).Add( a.M23.Mul(b.M32) );
+            Fix32 resultM31 = a.M31.Mul(b.M11) .Add( a.M32.Mul(b.M21) ).Add( a.M33.Mul(b.M31) );
+            Fix32 resultM32 = a.M31.Mul(b.M12) .Add( a.M32.Mul(b.M22) ).Add( a.M33.Mul(b.M32) );
 
             result.M11 = resultM11;
             result.M12 = resultM12;
@@ -149,14 +138,12 @@ namespace BEPUutilities
         /// <param name="result">Negated matrix.</param>
         public static void Negate(ref Matrix3x2 matrix, out Matrix3x2 result)
         {
-            Fix64 m11 = -matrix.M11;
-            Fix64 m12 = -matrix.M12;
-
-            Fix64 m21 = -matrix.M21;
-            Fix64 m22 = -matrix.M22;
-
-            Fix64 m31 = -matrix.M31;
-            Fix64 m32 = -matrix.M32;
+            Fix32 m11 = matrix.M11.Neg();
+            Fix32 m12 = matrix.M12.Neg();
+            Fix32 m21 = matrix.M21.Neg();
+            Fix32 m22 = matrix.M22.Neg();
+            Fix32 m31 = matrix.M31.Neg();
+            Fix32 m32 = matrix.M32.Neg();
 
             result.M11 = m11;
             result.M12 = m12;
@@ -176,14 +163,12 @@ namespace BEPUutilities
         /// <param name="result">Difference of the two matrices.</param>
         public static void Subtract(ref Matrix3x2 a, ref Matrix3x2 b, out Matrix3x2 result)
         {
-            Fix64 m11 = a.M11 - b.M11;
-            Fix64 m12 = a.M12 - b.M12;
-
-            Fix64 m21 = a.M21 - b.M21;
-            Fix64 m22 = a.M22 - b.M22;
-
-            Fix64 m31 = a.M31 - b.M31;
-            Fix64 m32 = a.M32 - b.M32;
+            Fix32 m11 = a.M11 .Sub( b.M11 );
+            Fix32 m12 = a.M12 .Sub( b.M12 );
+            Fix32 m21 = a.M21 .Sub( b.M21 );
+            Fix32 m22 = a.M22 .Sub( b.M22 );
+            Fix32 m31 = a.M31 .Sub( b.M31 );
+            Fix32 m32 = a.M32 .Sub( b.M32 );
 
             result.M11 = m11;
             result.M12 = m12;
@@ -206,9 +191,9 @@ namespace BEPUutilities
 #if !WINDOWS
             result = new Vector3();
 #endif
-            result.X = matrix.M11 * v.X + matrix.M12 * v.Y;
-            result.Y = matrix.M21 * v.X + matrix.M22 * v.Y;
-            result.Z = matrix.M31 * v.X + matrix.M32 * v.Y;
+            result.X = matrix.M11.Mul(v.X) .Add( matrix.M12.Mul(v.Y) );
+            result.Y = matrix.M21.Mul(v.X) .Add( matrix.M22.Mul(v.Y) );
+            result.Z = matrix.M31.Mul(v.X) .Add( matrix.M32.Mul(v.Y) );
         }
 
         /// <summary>
@@ -222,8 +207,8 @@ namespace BEPUutilities
 #if !WINDOWS
             result = new Vector2();
 #endif
-            result.X = v.X * matrix.M11 + v.Y * matrix.M21 + v.Z * matrix.M31;
-            result.Y = v.X * matrix.M12 + v.Y * matrix.M22 + v.Z * matrix.M32;
+            result.X = v.X.Mul(matrix.M11) .Add( v.Y.Mul(matrix.M21) ).Add( v.Z.Mul(matrix.M31) );
+            result.Y = v.X.Mul(matrix.M12) .Add( v.Y.Mul(matrix.M22) ).Add( v.Z.Mul(matrix.M32) );
         }
 
 
@@ -250,9 +235,9 @@ namespace BEPUutilities
         /// <returns>A string representation of the matrix.</returns>
         public override string ToString()
         {
-            return "{" + M11 + ", " + M12 + "} " +
-                   "{" + M21 + ", " + M22 + "} " +
-                   "{" + M31 + ", " + M32 + "}";
+            return "{" + M11.ToStringExt() + ", " + M12.ToStringExt() + "} " +
+                   "{" + M21.ToStringExt() + ", " + M22.ToStringExt() + "} " +
+                   "{" + M31.ToStringExt() + ", " + M32.ToStringExt() + "}";
         }
     }
 }

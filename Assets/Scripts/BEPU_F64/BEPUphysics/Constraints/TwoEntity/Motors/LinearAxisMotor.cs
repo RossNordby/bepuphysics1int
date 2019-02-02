@@ -2,7 +2,7 @@
 using BEPUphysics.Entities;
 
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Constraints.TwoEntity.Motors
 {
@@ -13,14 +13,14 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
     {
         private readonly MotorSettings1D settings;
 
-        private Fix64 accumulatedImpulse;
-        private Fix64 biasVelocity;
+        private Fix32 accumulatedImpulse;
+        private Fix32 biasVelocity;
         private Vector3 jAngularA, jAngularB;
         private Vector3 jLinearA, jLinearB;
         private Vector3 localAnchorA;
         private Vector3 localAnchorB;
-        private Fix64 massMatrix;
-        private Fix64 error;
+        private Fix32 massMatrix;
+        private Fix32 error;
         private Vector3 localAxis;
         private Vector3 worldAxis;
         private Vector3 rA; //Jacobian entry for entity A.
@@ -31,7 +31,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// <summary>
         /// Constrains anchors on two entities to move relative to each other on a line.
         /// To finish the initialization, specify the connections (ConnectionA and ConnectionB) 
-        /// as well as the AnchorA, AnchorB and the Axis (or their entity-local versions).
+        /// as well as the AnchorA, AnchorB and the Axis (or their entity- local versions).
         /// This constructor sets the constraint's IsActive property to false by default.
         /// </summary>
         public LinearAxisMotor()
@@ -185,18 +185,18 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// <summary>
         /// Gets the current relative velocity between the connected entities with respect to the constraint.
         /// </summary>
-        public Fix64 RelativeVelocity
+        public Fix32 RelativeVelocity
         {
             get
             {
-                Fix64 lambda, dot;
+                Fix32 lambda, dot;
                 Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out lambda);
                 Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
-                lambda += dot;
+                lambda = lambda .Add (dot);
                 Vector3.Dot(ref jLinearB, ref connectionB.linearVelocity, out dot);
-                lambda += dot;
+                lambda = lambda .Add (dot);
                 Vector3.Dot(ref jAngularB, ref connectionB.angularVelocity, out dot);
-                lambda += dot;
+                lambda = lambda .Add (dot);
                 return lambda;
             }
         }
@@ -204,7 +204,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// <summary>
         /// Gets the total impulse applied by this constraint.
         /// </summary>
-        public Fix64 TotalImpulse
+        public Fix32 TotalImpulse
         {
             get { return accumulatedImpulse; }
         }
@@ -213,7 +213,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Gets the current constraint error.
         /// If the motor is in velocity only mode, the error will be zero.
         /// </summary>
-        public Fix64 Error
+        public Fix32 Error
         {
             get { return error; }
         }
@@ -264,7 +264,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Gets the mass matrix of the constraint.
         /// </summary>
         /// <param name="outputMassMatrix">Constraint's mass matrix.</param>
-        public void GetMassMatrix(out Fix64 outputMassMatrix)
+        public void GetMassMatrix(out Fix32 outputMassMatrix)
         {
             outputMassMatrix = massMatrix;
         }
@@ -275,28 +275,28 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public override Fix64 SolveIteration()
+        public override Fix32 SolveIteration()
         {
             //Compute the current relative velocity.
-            Fix64 lambda, dot;
+            Fix32 lambda, dot;
             Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out lambda);
             Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
-            lambda += dot;
+            lambda = lambda .Add (dot);
             Vector3.Dot(ref jLinearB, ref connectionB.linearVelocity, out dot);
-            lambda += dot;
+            lambda = lambda .Add (dot);
             Vector3.Dot(ref jAngularB, ref connectionB.angularVelocity, out dot);
-            lambda += dot;
+            lambda = lambda .Add (dot);
 
             //Add in the constraint space bias velocity
-            lambda = -lambda + biasVelocity - usedSoftness * accumulatedImpulse;
+            lambda = (lambda).Neg() .Add (biasVelocity) .Sub (usedSoftness .Mul (accumulatedImpulse));
 
             //Transform to an impulse
-            lambda *= massMatrix;
+            lambda = lambda .Mul (massMatrix);
 
             //Clamp accumulated impulse
-            Fix64 previousAccumulatedImpulse = accumulatedImpulse;
-            accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse + lambda, -maxForceDt, maxForceDt);
-            lambda = accumulatedImpulse - previousAccumulatedImpulse;
+            Fix32 previousAccumulatedImpulse = accumulatedImpulse;
+            accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse .Add (lambda), (maxForceDt).Neg(), maxForceDt);
+            lambda = accumulatedImpulse .Sub (previousAccumulatedImpulse);
 
             //Apply the impulse
             Vector3 impulse;
@@ -315,12 +315,12 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return (Fix64.Abs(lambda));
+            return (lambda.Abs());
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
-            //Compute the 'pre'-jacobians
+            //Compute the 'pre'- jacobians
             Matrix3x3.Transform(ref localAnchorA, ref connectionA.orientationMatrix, out worldOffsetA);
             Matrix3x3.Transform(ref localAnchorB, ref connectionB.orientationMatrix, out worldOffsetB);
             Vector3.Add(ref worldOffsetA, ref connectionA.position, out worldAnchorA);
@@ -328,7 +328,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
             Vector3.Subtract(ref worldAnchorB, ref connectionA.position, out rA);
             Matrix3x3.Transform(ref localAxis, ref connectionA.orientationMatrix, out worldAxis);
 
-            Fix64 updateRate = F64.C1 / dt;
+            Fix32 updateRate = F64.C1 .Div (dt);
             if (settings.mode == MotorMode.Servomechanism)
             {
                 //Compute error
@@ -337,58 +337,58 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
 #else
                 Vector3 separation;
 #endif
-                separation.X = worldAnchorB.X - worldAnchorA.X;
-                separation.Y = worldAnchorB.Y - worldAnchorA.Y;
-                separation.Z = worldAnchorB.Z - worldAnchorA.Z;
+                separation.X = worldAnchorB.X .Sub (worldAnchorA.X);
+                separation.Y = worldAnchorB.Y .Sub (worldAnchorA.Y);
+                separation.Z = worldAnchorB.Z .Sub (worldAnchorA.Z);
 
                 Vector3.Dot(ref separation, ref worldAxis, out error);
 
                 //Compute error
-                error = error - settings.servo.goal;
+                error = error .Sub (settings.servo.goal);
 
 
                 //Compute bias
-                Fix64 absErrorOverDt = Fix64.Abs(error * updateRate);
-                Fix64 errorReduction;
+                Fix32 absErrorOverDt = error.Mul(updateRate).Abs();
+                Fix32 errorReduction;
                 settings.servo.springSettings.ComputeErrorReductionAndSoftness(dt, updateRate, out errorReduction, out usedSoftness);
-                biasVelocity = Fix64.Sign(error) * MathHelper.Min(settings.servo.baseCorrectiveSpeed, absErrorOverDt) + error * errorReduction;
-                biasVelocity = MathHelper.Clamp(biasVelocity, -settings.servo.maxCorrectiveVelocity, settings.servo.maxCorrectiveVelocity);
+                biasVelocity = error.Sign() .Mul (MathHelper.Min(settings.servo.baseCorrectiveSpeed, absErrorOverDt)) .Add (error .Mul (errorReduction));
+                biasVelocity = MathHelper.Clamp(biasVelocity, (settings.servo.maxCorrectiveVelocity).Neg(), settings.servo.maxCorrectiveVelocity);
             }
             else
             {
-                biasVelocity = -settings.velocityMotor.goalVelocity;
-                usedSoftness = settings.velocityMotor.softness * updateRate;
-                error = F64.C0;
+                biasVelocity = (settings.velocityMotor.goalVelocity).Neg();
+                usedSoftness = settings.velocityMotor.softness .Mul (updateRate);
+                error = Fix32.Zero;
             }
 
             //Compute jacobians
             jLinearA = worldAxis;
-            jLinearB.X = -jLinearA.X;
-            jLinearB.Y = -jLinearA.Y;
-            jLinearB.Z = -jLinearA.Z;
+            jLinearB.X = (jLinearA.X).Neg();
+            jLinearB.Y = (jLinearA.Y).Neg();
+            jLinearB.Z = (jLinearA.Z).Neg();
             Vector3.Cross(ref rA, ref jLinearA, out jAngularA);
             Vector3.Cross(ref worldOffsetB, ref jLinearB, out jAngularB);
 
             //compute mass matrix
-            Fix64 entryA, entryB;
+            Fix32 entryA, entryB;
             Vector3 intermediate;
             if (connectionA.isDynamic)
             {
                 Matrix3x3.Transform(ref jAngularA, ref connectionA.inertiaTensorInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref jAngularA, out entryA);
-                entryA += connectionA.inverseMass;
+                entryA = entryA .Add (connectionA.inverseMass);
             }
             else
-                entryA = F64.C0;
+                entryA = Fix32.Zero;
             if (connectionB.isDynamic)
             {
                 Matrix3x3.Transform(ref jAngularB, ref connectionB.inertiaTensorInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref jAngularB, out entryB);
-                entryB += connectionB.inverseMass;
+                entryB = entryB .Add (connectionB.inverseMass);
             }
             else
-                entryB = F64.C0;
-            massMatrix = F64.C1 / (entryA + entryB + usedSoftness);
+                entryB = Fix32.Zero;
+            massMatrix = F64.C1 .Div ((entryA .Add (entryB) .Add (usedSoftness)));
 
             //Update the maximum force
             ComputeMaxForces(settings.maximumForce, dt);
@@ -398,7 +398,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         }
 
         /// <summary>
-        /// Performs any pre-solve iteration work that needs exclusive
+        /// Performs any pre- solve iteration work that needs exclusive
         /// access to the members of the solver updateable.
         /// Usually, this is used for applying warmstarting impulses.
         /// </summary>

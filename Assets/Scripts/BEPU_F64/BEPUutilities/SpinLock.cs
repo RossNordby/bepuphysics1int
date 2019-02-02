@@ -62,7 +62,7 @@ namespace BEPUutilities
                 //TODO: Thread.Yield on windows?
                 //Check multithreaded bookmarks performance conscious
                 //and .netspinlock
-                attempt -= SleepInterval;
+                attempt = attempt - (SleepInterval);
             }
             else
             {

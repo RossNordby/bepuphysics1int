@@ -1,49 +1,48 @@
-﻿using FixMath.NET;
-using System;
+﻿using System;
 using System.Threading;
 
 namespace BEPUutilities
 {
 	static class Matrix3x6
 	{
-		[ThreadStatic] private static Fix64[,] Matrix;
+		[ThreadStatic] private static Fix32[,] Matrix;
 
-		public static bool Gauss(Fix64[,] M, int m, int n)
+		public static bool Gauss(Fix32[,] M, int m, int n)
 		{
 			// Perform Gauss-Jordan elimination
 			for (int k = 0; k < m; k++)
 			{
-				Fix64 maxValue = Fix64.Abs(M[k, k]);
+				Fix32 maxValue = M[k, k].Abs();
 				int iMax = k;
 				for (int i = k+1; i < m; i++)
 				{
-					Fix64 value = Fix64.Abs(M[i, k]);
+					Fix32 value = M[i, k].Abs();
 					if (value >= maxValue)
 					{
 						maxValue = value;
 						iMax = i;
 					}
 				}
-				if (maxValue == F64.C0)
+				if (maxValue == Fix32.Zero)
 					return false;
 				// Swap rows k, iMax
 				if (k != iMax)
 				{
 					for (int j = 0; j < n; j++)
 					{
-						Fix64 temp = M[k, j];
+						Fix32 temp = M[k, j];
 						M[k, j] = M[iMax, j];
 						M[iMax, j] = temp;
 					}
 				}
 
 				// Divide row by pivot
-				Fix64 pivotInverse = F64.C1 / M[k, k];
+				Fix32 pivotInverse = F64.C1.Div(M[k, k]);
 
 				M[k, k] = F64.C1;
 				for (int j = k + 1; j < n; j++)
 				{
-					M[k, j] *= pivotInverse;
+					M[k, j] = M[k, j].Mul(pivotInverse);
 				}
 
 				// Subtract row k from other rows
@@ -51,12 +50,12 @@ namespace BEPUutilities
 				{
 					if (i == k)
 						continue;
-					Fix64 f = M[i, k];					
+					Fix32 f = M[i, k];					
 					for (int j = k + 1; j < n; j++)
 					{
-						M[i, j] = M[i, j] - M[k, j] * f;
+						M[i, j] = M[i, j] .Sub( M[k, j].Mul(f) );
 					}
-					M[i, k] = F64.C0;
+					M[i, k] = Fix32.Zero;
 				}
 			}
 			return true;
@@ -65,8 +64,8 @@ namespace BEPUutilities
 		public static bool Invert(ref Matrix3x3 m, out Matrix3x3 r)
 		{
 			if (Matrix == null)
-				 Matrix = new Fix64[3, 6];
-			Fix64[,] M = Matrix;
+				 Matrix = new Fix32[3, 6];
+			Fix32[,] M = Matrix;
 
 			// Initialize temporary matrix
 			M[0, 0] = m.M11;
@@ -79,15 +78,15 @@ namespace BEPUutilities
 			M[2, 1] = m.M32;
 			M[2, 2] = m.M33;
 
-			M[0, 3] = Fix64.One;
-			M[0, 4] = Fix64.Zero;
-			M[0, 5] = Fix64.Zero;
-			M[1, 3] = Fix64.Zero;
-			M[1, 4] = Fix64.One;
-			M[1, 5] = Fix64.Zero;
-			M[2, 3] = Fix64.Zero;
-			M[2, 4] = Fix64.Zero;
-			M[2, 5] = Fix64.One;
+			M[0, 3] = Fix32.One;
+			M[0, 4] = Fix32.Zero;
+			M[0, 5] = Fix32.Zero;
+			M[1, 3] = Fix32.Zero;
+			M[1, 4] = Fix32.One;
+			M[1, 5] = Fix32.Zero;
+			M[2, 3] = Fix32.Zero;
+			M[2, 4] = Fix32.Zero;
+			M[2, 5] = Fix32.One;
 
 			if (!Gauss(M, 3, 6))
 			{

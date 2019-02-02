@@ -1,6 +1,6 @@
 ﻿using System;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Constraints
 {
@@ -127,9 +127,9 @@ namespace BEPUphysics.Constraints
         /// <param name="yAxis">Third axis in the transform.</param>
         public void SetLocalAxes(Vector3 primaryAxis, Vector3 xAxis, Vector3 yAxis)
         {
-            if (Fix64.Abs(Vector3.Dot(primaryAxis, xAxis)) > Toolbox.BigEpsilon ||
-				Fix64.Abs(Vector3.Dot(primaryAxis, yAxis)) > Toolbox.BigEpsilon ||
-				Fix64.Abs(Vector3.Dot(xAxis, yAxis)) > Toolbox.BigEpsilon)
+            if (Vector3.Dot(primaryAxis, xAxis).Abs() > Toolbox.BigEpsilon ||
+				Vector3.Dot(primaryAxis, yAxis).Abs() > Toolbox.BigEpsilon ||
+				Vector3.Dot(xAxis, yAxis).Abs() > Toolbox.BigEpsilon)
                 throw new ArgumentException("The axes provided to the joint transform do not form an orthonormal basis.  Ensure that each axis is perpendicular to the other two.");
 
             localPrimaryAxis = Vector3.Normalize(primaryAxis);
@@ -147,9 +147,9 @@ namespace BEPUphysics.Constraints
         /// The matrix's up vector is used as the y axis.</param>
         public void SetLocalAxes(Matrix3x3 matrix)
         {
-            if (Fix64.Abs(Vector3.Dot(matrix.Backward, matrix.Right)) > Toolbox.BigEpsilon ||
-				Fix64.Abs(Vector3.Dot(matrix.Backward, matrix.Up)) > Toolbox.BigEpsilon ||
-				Fix64.Abs(Vector3.Dot(matrix.Right, matrix.Up)) > Toolbox.BigEpsilon)
+            if (Vector3.Dot(matrix.Backward, matrix.Right).Abs() > Toolbox.BigEpsilon ||
+				Vector3.Dot(matrix.Backward, matrix.Up).Abs() > Toolbox.BigEpsilon ||
+				Vector3.Dot(matrix.Right, matrix.Up).Abs() > Toolbox.BigEpsilon)
                 throw new ArgumentException("The axes provided to the joint transform do not form an orthonormal basis.  Ensure that each axis is perpendicular to the other two.");
 
             localPrimaryAxis = Vector3.Normalize(matrix.Backward);
@@ -180,9 +180,9 @@ namespace BEPUphysics.Constraints
         /// <param name="yAxis">Third axis in the transform.</param>
         public void SetWorldAxes(Vector3 primaryAxis, Vector3 xAxis, Vector3 yAxis)
         {
-            if (Fix64.Abs(Vector3.Dot(primaryAxis, xAxis)) > Toolbox.BigEpsilon ||
-				Fix64.Abs(Vector3.Dot(primaryAxis, yAxis)) > Toolbox.BigEpsilon ||
-				Fix64.Abs(Vector3.Dot(xAxis, yAxis)) > Toolbox.BigEpsilon)
+            if (Vector3.Dot(primaryAxis, xAxis).Abs() > Toolbox.BigEpsilon ||
+				Vector3.Dot(primaryAxis, yAxis).Abs() > Toolbox.BigEpsilon ||
+				Vector3.Dot(xAxis, yAxis).Abs() > Toolbox.BigEpsilon)
                 throw new ArgumentException("The axes provided to the joint transform do not form an orthonormal basis.  Ensure that each axis is perpendicular to the other two.");
 
             this.primaryAxis = Vector3.Normalize(primaryAxis);
@@ -202,9 +202,9 @@ namespace BEPUphysics.Constraints
         /// The matrix's up vector is used as the y axis.</param>
         public void SetWorldAxes(Matrix3x3 matrix)
         {
-            if (Fix64.Abs(Vector3.Dot(matrix.Backward, matrix.Right)) > Toolbox.BigEpsilon ||
-				Fix64.Abs(Vector3.Dot(matrix.Backward, matrix.Up)) > Toolbox.BigEpsilon ||
-				Fix64.Abs(Vector3.Dot(matrix.Right, matrix.Up)) > Toolbox.BigEpsilon)
+            if (Vector3.Dot(matrix.Backward, matrix.Right).Abs() > Toolbox.BigEpsilon ||
+				Vector3.Dot(matrix.Backward, matrix.Up).Abs() > Toolbox.BigEpsilon ||
+				Vector3.Dot(matrix.Right, matrix.Up).Abs() > Toolbox.BigEpsilon)
                 throw new ArgumentException("The axes provided to the joint transform do not form an orthonormal basis.  Ensure that each axis is perpendicular to the other two.");
 
             primaryAxis = Vector3.Normalize(matrix.Backward);
@@ -299,7 +299,7 @@ namespace BEPUphysics.Constraints
         /// <param name="xAxis">Second axis in the transform.</param>
         public void SetLocalAxes(Vector3 primaryAxis, Vector3 xAxis)
         {
-            if (Fix64.Abs(Vector3.Dot(primaryAxis, xAxis)) > Toolbox.BigEpsilon)
+            if (Vector3.Dot(primaryAxis, xAxis).Abs() > Toolbox.BigEpsilon)
                 throw new ArgumentException("The axes provided to the joint transform are not perpendicular.  Ensure that the specified axes form a valid constraint.");
 
             localPrimaryAxis = Vector3.Normalize(primaryAxis);
@@ -315,7 +315,7 @@ namespace BEPUphysics.Constraints
         /// The matrix's right vector is used as the x axis.</param>
         public void SetLocalAxes(Matrix3x3 matrix)
         {
-            if (Fix64.Abs(Vector3.Dot(matrix.Backward, matrix.Right)) > Toolbox.BigEpsilon)
+            if (Vector3.Dot(matrix.Backward, matrix.Right).Abs() > Toolbox.BigEpsilon)
                 throw new ArgumentException("The axes provided to the joint transform are not perpendicular.  Ensure that the specified axes form a valid constraint.");
             localPrimaryAxis = Vector3.Normalize(matrix.Backward);
             localXAxis = Vector3.Normalize(matrix.Right);
@@ -342,7 +342,7 @@ namespace BEPUphysics.Constraints
         /// <param name="xAxis">Second axis in the transform.</param>
         public void SetWorldAxes(Vector3 primaryAxis, Vector3 xAxis)
         {
-            if (Fix64.Abs(Vector3.Dot(primaryAxis, xAxis)) > Toolbox.BigEpsilon)
+            if (Vector3.Dot(primaryAxis, xAxis).Abs() > Toolbox.BigEpsilon)
                 throw new ArgumentException("The axes provided to the joint transform are not perpendicular.  Ensure that the specified axes form a valid constraint.");
             this.primaryAxis = Vector3.Normalize(primaryAxis);
             this.xAxis = Vector3.Normalize(xAxis);
@@ -358,7 +358,7 @@ namespace BEPUphysics.Constraints
         /// The matrix's right vector is used as the x axis.</param>
         public void SetWorldAxes(Matrix3x3 matrix)
         {
-            if (Fix64.Abs(Vector3.Dot(matrix.Backward, matrix.Right)) > Toolbox.BigEpsilon)
+            if (Vector3.Dot(matrix.Backward, matrix.Right).Abs() > Toolbox.BigEpsilon)
                 throw new ArgumentException("The axes provided to the joint transform are not perpendicular.  Ensure that the specified axes form a valid constraint.");
             primaryAxis = Vector3.Normalize(matrix.Backward);
             xAxis = Vector3.Normalize(matrix.Right);

@@ -1,5 +1,4 @@
-﻿using FixMath.NET;
-using System;
+﻿using System;
 
 namespace BEPUutilities
 {
@@ -11,18 +10,18 @@ namespace BEPUutilities
         /// <summary>
         /// X component of the vector.
         /// </summary>
-        public Fix64 X;
+        public Fix32 X;
         /// <summary>
         /// Y component of the vector.
         /// </summary>
-        public Fix64 Y;
+        public Fix32 Y;
 
         /// <summary>
         /// Constructs a new two dimensional vector.
         /// </summary>
         /// <param name="x">X component of the vector.</param>
         /// <param name="y">Y component of the vector.</param>
-        public Vector2(Fix64 x, Fix64 y)
+        public Vector2(Fix32 x, Fix32 y)
         {
             this.X = x;
             this.Y = y;
@@ -32,18 +31,18 @@ namespace BEPUutilities
         /// Computes the squared length of the vector.
         /// </summary>
         /// <returns>Squared length of the vector.</returns>
-        public Fix64 LengthSquared()
+        public Fix32 LengthSquared()
         {
-            return X * X + Y * Y;
+            return X.Mul(X) .Add( Y.Mul(Y) );
         }
 
         /// <summary>
         /// Computes the length of the vector.
         /// </summary>
         /// <returns>Length of the vector.</returns>
-        public Fix64 Length()
+        public Fix32 Length()
         {
-            return Fix64.Sqrt(X * X + Y * Y);
+            return ( X.Mul(X) .Add( Y.Mul(Y) )).Sqrt();
         }
 
         /// <summary>
@@ -52,7 +51,7 @@ namespace BEPUutilities
         /// <returns>String representing the vector.</returns>
         public override string ToString()
         {
-            return "{" + X + ", " + Y + "}";
+            return "{" + X.ToStringExt() + ", " + Y.ToStringExt() + "}";
         }
 
         /// <summary>
@@ -63,8 +62,8 @@ namespace BEPUutilities
         /// <param name="sum">Sum of the two vectors.</param>
         public static void Add(ref Vector2 a, ref Vector2 b, out Vector2 sum)
         {
-            sum.X = a.X + b.X;
-            sum.Y = a.Y + b.Y;
+            sum.X = a.X.Add(b.X);
+            sum.Y = a.Y.Add(b.Y);
         }
 
         /// <summary>
@@ -75,8 +74,8 @@ namespace BEPUutilities
         /// <param name="difference">Result of the subtraction.</param>
         public static void Subtract(ref Vector2 a, ref Vector2 b, out Vector2 difference)
         {
-            difference.X = a.X - b.X;
-            difference.Y = a.Y - b.Y;
+            difference.X = a.X.Sub(b.X);
+            difference.Y = a.Y.Sub(b.Y);
         }
 
         /// <summary>
@@ -85,10 +84,10 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="scale">Amount to scale.</param>
         /// <param name="result">Scaled vector.</param>
-        public static void Multiply(ref Vector2 v, Fix64 scale, out Vector2 result)
+        public static void Multiply(ref Vector2 v, Fix32 scale, out Vector2 result)
         {
-            result.X = v.X * scale;
-            result.Y = v.Y * scale;
+            result.X = v.X.Mul(scale);
+            result.Y = v.Y.Mul(scale);
         }
 
         /// <summary>
@@ -99,8 +98,8 @@ namespace BEPUutilities
         /// <param name="result">Result of the componentwise multiplication.</param>
         public static void Multiply(ref Vector2 a, ref Vector2 b, out Vector2 result)
         {
-            result.X = a.X * b.X;
-            result.Y = a.Y * b.Y;
+            result.X = a.X.Mul(b.X);
+			result.Y = a.Y.Mul(b.Y);
         }
 
         /// <summary>
@@ -109,11 +108,11 @@ namespace BEPUutilities
         /// <param name="v">Vector to divide.</param>
         /// <param name="divisor">Value to divide the vector's components.</param>
         /// <param name="result">Result of the division.</param>
-        public static void Divide(ref Vector2 v, Fix64 divisor, out Vector2 result)
+        public static void Divide(ref Vector2 v, Fix32 divisor, out Vector2 result)
         {
-            Fix64 inverse = F64.C1 / divisor;
-            result.X = v.X * inverse;
-            result.Y = v.Y * inverse;
+            Fix32 inverse = F64.C1.Div(divisor);
+            result.X = v.X.Mul(inverse);
+            result.Y = v.Y.Mul(inverse);
         }
 
         /// <summary>
@@ -122,9 +121,9 @@ namespace BEPUutilities
         /// <param name="a">First vector of the dot product.</param>
         /// <param name="b">Second vector of the dot product.</param>
         /// <param name="dot">Dot product of the two vectors.</param>
-        public static void Dot(ref Vector2 a, ref Vector2 b, out Fix64 dot)
+        public static void Dot(ref Vector2 a, ref Vector2 b, out Fix32 dot)
         {
-            dot = a.X * b.X + a.Y * b.Y;
+            dot = a.X.Mul(b.X) .Add( a.Y.Mul(b.Y) );
         }
 
         /// <summary>
@@ -133,37 +132,25 @@ namespace BEPUutilities
         /// <param name="a">First vector of the dot product.</param>
         /// <param name="b">Second vector of the dot product.</param>
         /// <returns>Dot product of the two vectors.</returns>
-        public static Fix64 Dot(Vector2 a, Vector2 b)
+        public static Fix32 Dot(Vector2 a, Vector2 b)
         {
-            return a.X * b.X + a.Y * b.Y;
+            return a.X.Mul(b.X) .Add( a.Y.Mul(b.Y) );
         }
 
         /// <summary>
         /// Gets the zero vector.
         /// </summary>
-        public static Vector2 Zero
-        {
-            get
-            {
-                return new Vector2();
-            }
-        }
+        public static readonly Vector2 Zero = new Vector2();
 
         /// <summary>
         /// Gets a vector pointing along the X axis.
         /// </summary>
-        public static Vector2 UnitX
-        {
-            get { return new Vector2 { X = F64.C1 }; }
-        }
+        public static readonly Vector2 UnitX = new Vector2 { X = F64.C1 };
 
         /// <summary>
         /// Gets a vector pointing along the Y axis.
         /// </summary>
-        public static Vector2 UnitY
-        {
-            get { return new Vector2 { Y = F64.C1 }; }
-        }
+        public static readonly Vector2 UnitY = new Vector2 { Y = F64.C1 };
 
 
         /// <summary>
@@ -185,9 +172,9 @@ namespace BEPUutilities
         /// <param name="result">Normalized vector.</param>
         public static void Normalize(ref Vector2 v, out Vector2 result)
         {
-            Fix64 inverse = F64.C1 / Fix64.Sqrt(v.X * v.X + v.Y * v.Y);
-            result.X = v.X * inverse;
-            result.Y = v.Y * inverse;
+            Fix32 inverse = F64.C1.Div(v.Length());
+            result.X = v.X.Mul(inverse);
+            result.Y = v.Y.Mul(inverse);
         }
 
         /// <summary>
@@ -197,8 +184,8 @@ namespace BEPUutilities
         /// <param name="negated">Negated version of the vector.</param>
         public static void Negate(ref Vector2 v, out Vector2 negated)
         {
-            negated.X = -v.X;
-            negated.Y = -v.Y;
+            negated.X = v.X.Neg();
+            negated.Y = v.Y.Neg();
         }
 
         /// <summary>
@@ -208,14 +195,8 @@ namespace BEPUutilities
         /// <param name="result">Vector with nonnegative elements.</param>
         public static void Abs(ref Vector2 v, out Vector2 result)
         {
-            if (v.X < F64.C0)
-                result.X = -v.X;
-            else
-                result.X = v.X;
-            if (v.Y < F64.C0)
-                result.Y = -v.Y;
-            else
-                result.Y = v.Y;
+			result.X = v.X.Abs();
+			result.Y = v.Y.Abs();
         }
 
         /// <summary>
@@ -286,9 +267,9 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            Fix64 inverse = F64.C1 / Fix64.Sqrt(X * X + Y * Y);
-            X *= inverse;
-            Y *= inverse;
+            Fix32 inverse = F64.C1.Div(Length());
+            X = X.Mul(inverse);
+            Y = Y.Mul(inverse);
         }
 
         /// <summary>
@@ -297,11 +278,11 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="f">Amount to scale.</param>
         /// <returns>Scaled vector.</returns>
-        public static Vector2 operator *(Vector2 v, Fix64 f)
+        public static Vector2 operator *(Vector2 v, Fix32 f)
         {
             Vector2 toReturn;
-            toReturn.X = v.X * f;
-            toReturn.Y = v.Y * f;
+            toReturn.X = v.X.Mul(f);
+            toReturn.Y = v.Y.Mul(f);
             return toReturn;
         }
         /// <summary>
@@ -310,11 +291,11 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="f">Amount to scale.</param>
         /// <returns>Scaled vector.</returns>
-        public static Vector2 operator *(Fix64 f, Vector2 v)
+        public static Vector2 operator *(Fix32 f, Vector2 v)
         {
             Vector2 toReturn;
-            toReturn.X = v.X * f;
-            toReturn.Y = v.Y * f;
+            toReturn.X = v.X.Mul(f);
+            toReturn.Y = v.Y.Mul(f);
             return toReturn;
         }
 
@@ -337,12 +318,12 @@ namespace BEPUutilities
         /// <param name="v">Vector to divide.</param>
         /// <param name="f">Amount to divide.</param>
         /// <returns>Divided vector.</returns>
-        public static Vector2 operator /(Vector2 v, Fix64 f)
+        public static Vector2 operator /(Vector2 v, Fix32 f)
         {
             Vector2 toReturn;
-            f = F64.C1 / f;
-            toReturn.X = v.X * f;
-            toReturn.Y = v.Y * f;
+            f = F64.C1.Div(f);
+            toReturn.X = v.X.Mul(f);
+            toReturn.Y = v.Y.Mul(f);
             return toReturn;
         }
 
@@ -355,8 +336,8 @@ namespace BEPUutilities
         public static Vector2 operator -(Vector2 a, Vector2 b)
         {
             Vector2 v;
-            v.X = a.X - b.X;
-            v.Y = a.Y - b.Y;
+            v.X = a.X.Sub(b.X);
+            v.Y = a.Y.Sub(b.Y);
             return v;
         }
 
@@ -369,8 +350,8 @@ namespace BEPUutilities
         public static Vector2 operator +(Vector2 a, Vector2 b)
         {
             Vector2 v;
-            v.X = a.X + b.X;
-            v.Y = a.Y + b.Y;
+            v.X = a.X.Add(b.X);
+            v.Y = a.Y.Add(b.Y);
             return v;
         }
 
@@ -381,8 +362,8 @@ namespace BEPUutilities
         /// <returns>Negated vector.</returns>
         public static Vector2 operator -(Vector2 v)
         {
-            v.X = -v.X;
-            v.Y = -v.Y;
+            v.X = v.X.Neg();
+            v.Y = v.Y.Neg();
             return v;
         }
 
@@ -444,9 +425,7 @@ namespace BEPUutilities
         /// <filterpriority>2</filterpriority>
         public override int GetHashCode()
         {
-            return X.GetHashCode() + Y.GetHashCode();
+            return (int) X ^ (int) Y;
         }
-
-
     }
 }

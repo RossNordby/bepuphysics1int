@@ -4,7 +4,7 @@ using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.CollisionTests.CollisionAlgorithms.GJK;
  
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 {
@@ -142,7 +142,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             
             Vector3 displacement;
             Vector3.Subtract(ref closestB, ref closestA, out displacement);
-            Fix64 distanceSquared = displacement.LengthSquared();
+            Fix32 distanceSquared = displacement.LengthSquared();
 
             if (distanceSquared < Toolbox.Epsilon)
             {
@@ -151,25 +151,25 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
 
             localDirection = displacement; //Use this as the direction for future deep contacts.
-            Fix64 margin = collidableA.Shape.collisionMargin + collidableB.Shape.collisionMargin;
+            Fix32 margin = collidableA.Shape.collisionMargin .Add (collidableB.Shape.collisionMargin);
 
 
-            if (distanceSquared < margin * margin)
+            if (distanceSquared < margin .Mul (margin))
             {
                 //Generate a contact.
                 contact = new ContactData();
                 //Displacement is from A to B.  point = A + t * AB, where t = marginA / margin.
                 if (margin > Toolbox.Epsilon) //Avoid a NaN!
-                    Vector3.Multiply(ref displacement, collidableA.Shape.collisionMargin / margin, out contact.Position); //t * AB
+                    Vector3.Multiply(ref displacement, collidableA.Shape.collisionMargin .Div (margin), out contact.Position); //t * AB
                 else
                     contact.Position = new Vector3();
 
                 Vector3.Add(ref closestA, ref contact.Position, out contact.Position); //A + t * AB.
 
                 contact.Normal = displacement;
-                Fix64 distance = Fix64.Sqrt(distanceSquared);
+                Fix32 distance = distanceSquared.Sqrt();
                 Vector3.Divide(ref contact.Normal, distance, out contact.Normal);
-                contact.PenetrationDepth = margin - distance;
+                contact.PenetrationDepth = margin .Sub (distance);
                 return true;
 
             }
@@ -211,7 +211,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
             if (MPRToolbox.GetContact(collidableA.Shape, collidableB.Shape, ref collidableA.worldTransform, ref collidableB.worldTransform, ref localDirection, out contact))
             {
-                if (contact.PenetrationDepth < collidableA.Shape.collisionMargin + collidableB.Shape.collisionMargin)
+                if (contact.PenetrationDepth < collidableA.Shape.collisionMargin .Add (collidableB.Shape.collisionMargin))
                     state = CollisionState.ShallowContact;
                 return true;
             }
@@ -225,25 +225,25 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             //    //First, try to use the heuristically found direction.  This comes from either the GJK shallow contact separating axis or from the relative velocity.
             //    Vector3 rayCastDirection;
-            //    Fix64 lengthSquared = localDirection.LengthSquared();
+            //    Fix32 lengthSquared = localDirection.LengthSquared();
             //    if (lengthSquared > Toolbox.Epsilon)
             //    {
-            //        Vector3.Divide(ref localDirection, Fix64.Sqrt(lengthSquared), out rayCastDirection);// (Vector3.Normalize(localDirection) + Vector3.Normalize(collidableB.worldTransform.Position - collidableA.worldTransform.Position)) / 2;
+            //        Vector3.Divide(ref localDirection, lengthSquared.Sqrt(), out rayCastDirection);// (Vector3.Normalize(localDirection) + Vector3.Normalize(collidableB.worldTransform.Position - collidableA.worldTransform.Position)) / 2;
             //        MPRTesting.LocalSurfaceCast(collidableA.Shape, collidableB.Shape, ref localTransformB, ref rayCastDirection, out contact.PenetrationDepth, out contact.Normal);
             //    }
             //    else
             //    {
-            //        contact.PenetrationDepth = Fix64.MaxValue;
+            //        contact.PenetrationDepth = Fix32.MaxValue;
             //        contact.Normal = Toolbox.UpVector;
             //    }
             //    //Try the offset between the origins as a second option.  Sometimes this is a better choice than the relative velocity.
             //    //TODO: Could use the position-finding MPR iteration to find the A-B direction hit by continuing even after the origin has been found (optimization).
             //    Vector3 normalCandidate;
-            //    Fix64 depthCandidate;
+            //    Fix32 depthCandidate;
             //    lengthSquared = localTransformB.Position.LengthSquared();
             //    if (lengthSquared > Toolbox.Epsilon)
             //    {
-            //        Vector3.Divide(ref localTransformB.Position, Fix64.Sqrt(lengthSquared), out rayCastDirection);
+            //        Vector3.Divide(ref localTransformB.Position, lengthSquared.Sqrt(), out rayCastDirection);
             //        MPRTesting.LocalSurfaceCast(collidableA.Shape, collidableB.Shape, ref localTransformB, ref rayCastDirection, out depthCandidate, out normalCandidate);
             //        if (depthCandidate < contact.PenetrationDepth)
             //        {

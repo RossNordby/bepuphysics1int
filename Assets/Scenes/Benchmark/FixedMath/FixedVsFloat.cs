@@ -1,5 +1,4 @@
-﻿using FixMath.NET;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
@@ -9,7 +8,7 @@ public class FixedVsFloat : MonoBehaviour {
 	public int iterations = 20000;
 	public int repeats = 2;
 
-	Dictionary<Func<int, Fix64>, string> fResults = new Dictionary<Func<int, Fix64>, string>();
+	Dictionary<Func<int, Fix32>, string> fResults = new Dictionary<Func<int, Fix32>, string>();
 	Dictionary<Func<int, float>, string> dResults = new Dictionary<Func<int, float>, string>();
 	
 	private void Update() {
@@ -17,291 +16,291 @@ public class FixedVsFloat : MonoBehaviour {
 		dResults.Clear();
 	}
 
-	#region Fix64
+	#region Fix32
 	/// <summary>
 	/// Get the number of nanoseconds of an iteration of <paramref name="f"/>, that must execute <see cref="iterations"/> iterations.
 	/// </summary>
-	string TestFix64(Func<int, Fix64> f) {
+	string TestFix32(Func<int, Fix32> f) {
 		if (fResults.ContainsKey(f)) return fResults[f];
 		var sw = Stopwatch.StartNew();
-		Fix64 tmp;
+		Fix32 tmp;
 		for (int i = 0; i < repeats; i++)
 			tmp = f(iterations);
-		return fResults[f] = " = " + (sw.Elapsed.TotalMilliseconds / iterations / repeats * 1000000).ToString("0.0000") + " ns";
+		return fResults[f] = " = " + (sw.Elapsed.TotalMilliseconds).ToString("0.0000") + " ms";
 	}
 
-	static Fix64 FAdd(int iterations) {
-		Fix64 sum = 0;
-		for (int i = 0; i < iterations; i++) sum += Fix64.One;
+	static Fix32 FAdd(int iterations) {
+		Fix32 sum = 0;
+		for (int i = 0; i < iterations; i++) sum = sum.Add(Fix32.One);
 		return sum;
 	}
-	static Fix64 FAddFast(int iterations) {
-		Fix64 sum = 0;
-		for (int i = 0; i < iterations; i++) sum = Fix64.FastAdd(sum, Fix64.One);
+	static Fix32 FAddFast(int iterations) {
+		Fix32 sum = 0;
+		for (int i = 0; i < iterations; i++) sum = sum.AddFast(Fix32.One);
 		return sum;
 	}
-	static Fix64 FSub(int iterations) {
-		Fix64 sum = 0;
-		for (int i = 0; i < iterations; i++) sum -= Fix64.One;
+	static Fix32 FSub(int iterations) {
+		Fix32 sum = 0;
+		for (int i = 0; i < iterations; i++) sum = sum.Sub(Fix32.One);
 		return sum;
 	}
-	static Fix64 FSubFast(int iterations) {
-		Fix64 sum = 0;
-		for (int i = 0; i < iterations; i++) sum = Fix64.FastSub(sum, Fix64.One);
+	static Fix32 FSubFast(int iterations) {
+		Fix32 sum = 0;
+		for (int i = 0; i < iterations; i++) sum = sum.SubFast(Fix32.One);
 		return sum;
 	}
-	static Fix64 FInv(int iterations) {
-		Fix64 sum = 0;
-		for (int i = 0; i < iterations; i++) sum = -Fix64.One;
+	static Fix32 FInv(int iterations) {
+		Fix32 sum = 0;
+		for (int i = 0; i < iterations; i++) sum = Fix32.One.Neg();
 		return sum;
 	}
-	static Fix64[] Fcoeffs = new Fix64[] {
-		(Fix64) 0f, (Fix64) 0.0001f, (Fix64) 0.001f, (Fix64) 0.01f,
-		(Fix64) 0.1f, (Fix64) 1f, (Fix64) 10f, (Fix64) 100f,
-		(Fix64) 1000f, (Fix64) 10000f,
+	static Fix32[] Fcoeffs = new Fix32[] {
+		0f.ToFix32(), 0.0001f.ToFix32(), 0.001f.ToFix32(), 0.01f.ToFix32(),
+		0.1f.ToFix32(), 1f.ToFix32(), 10f.ToFix32(), 100f.ToFix32(),
+		1000f.ToFix32(), 10000f.ToFix32(),
 
-		(Fix64) (-0f), (Fix64) (-0.0001f), (Fix64) (-0.001f), (Fix64) (-0.01f),
-		(Fix64) (-0.1f), (Fix64) (-1f), (Fix64) (-10f), (Fix64) (-100f),
-		(Fix64) (-1000f), (Fix64) (-10000f)
+		(-0f).ToFix32(), (-0.0001f).ToFix32(), (-0.001f).ToFix32(), (-0.01f).ToFix32(),
+		(-0.1f).ToFix32(), (-1f).ToFix32(), (-10f).ToFix32(), (-100f).ToFix32(),
+		(-1000f).ToFix32(), (-10000f).ToFix32()
 	};
-	static Fix64 FMul(int iterations) {
-		iterations /= Fcoeffs.Length;
-		iterations /= Fcoeffs.Length;
-		Fix64 sum = 0;
+	static Fix32 FMul(int iterations) {
+		iterations = iterations / (Fcoeffs.Length);
+		iterations = iterations / (Fcoeffs.Length);
+		Fix32 sum = 0;
 		for (int k = 0; k < iterations; k++)
 			for (int i = 0; i < Fcoeffs.Length; i++)
 				for (int j = 0; j < Fcoeffs.Length; j++)
-					sum = Fcoeffs[i] * Fcoeffs[j];
+					sum = Fcoeffs[i].Mul(Fcoeffs[j]);
 		return sum;
 	}
-	static Fix64 FMulFast(int iterations) {
-		iterations /= Fcoeffs.Length;
-		iterations /= Fcoeffs.Length;
-		Fix64 sum = 0;
+	static Fix32 FMulFast(int iterations) {
+		iterations = iterations / (Fcoeffs.Length);
+		iterations = iterations / (Fcoeffs.Length);
+		Fix32 sum = 0;
 		for (int k = 0; k < iterations; k++)
 			for (int i = 0; i < Fcoeffs.Length; i++)
 				for (int j = 0; j < Fcoeffs.Length; j++)
-					sum = Fix64.FastMul(Fcoeffs[i], Fcoeffs[j]);
+					sum = Fcoeffs[i].MulFast(Fcoeffs[j]);
 		return sum;
 	}
-	static Fix64 FDiv(int iterations) {
-		iterations /= Fcoeffs.Length;
-		iterations /= Fcoeffs.Length;
-		Fix64 sum = 0;
+	static Fix32 FDiv(int iterations) {
+		iterations = iterations / (Fcoeffs.Length);
+		iterations = iterations / (Fcoeffs.Length);
+		Fix32 sum = 0;
 		for (int k = 0; k < iterations; k++)
 			for (int i = 0; i < Fcoeffs.Length; i++)
 				for (int j = 0; j < Fcoeffs.Length; j++)
-					sum = Fcoeffs[i] / Fcoeffs[j];
+					sum = Fcoeffs[i].Div(Fcoeffs[j]);
 		return sum;
 	}
 	/*
-	static Fix64 FDivFast(int iterations) {
-		iterations /= coeffs.Length;
-		Fix64 sum = 0;
+	static Fix32 FDivFast(int iterations) {
+		iterations = iterations / (coeffs.Length);
+		Fix32 sum = 0;
 		for (int i = -iterations / 2; i < iterations / 2; i++)
 			for (int j = 0; j < coeffs.Length; j++)
-				sum = Fix64.FastDiv(i, coeffs[j]);
+				sum = Fix32.FastDiv(i, coeffs[j]);
 		return sum;
 	}
 	*/
-	static Fix64 FDiv1(int iterations) {
-		Fix64 sum = 0;
-		Fix64 f1 = 1;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = f1 / Fix64.FromRaw(i);
+	static Fix32 FDiv1(int iterations) {
+		Fix32 sum = 0;
+		Fix32 f1 = Fix32.One;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = f1.Div((Fix32) i);
 		return sum;
 	}
-	static Fix64 FModulo(int iterations) {
-		Fix64 sum = 0;
-		Fix64 fMod = 11 * 5 * 3;
-		for (int i = -iterations / 2; i < 0; i++) sum = fMod % Fix64.FromRaw(i);
-		for (int i = 1; i < iterations / 2; i++) sum = fMod % Fix64.FromRaw(i);
+	static Fix32 FModulo(int iterations) {
+		Fix32 sum = 0;
+		Fix32 fMod = 11.ToFix32().Mul(5.ToFix32()).Mul(3.ToFix32());
+		for (int i = -iterations / 2; i < 0; i++) sum = fMod.Mod((Fix32) i);
+		for (int i = 1; i < iterations / 2; i++) sum = fMod.Mod((Fix32) i);
 		return sum;
 	}
-	static Fix64 FSign(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Sign(Fix64.FromRaw(i));
+	static Fix32 FSign(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).Sign();
 		return sum;
 	}
-	static Fix64 FSignI(int iterations) {
+	static Fix32 FSignI(int iterations) {
 		int sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.SignI(Fix64.FromRaw(i));
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).SignI();
+		return Fix32.Zero;
+	}
+	static Fix32 FAbs(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).Abs();
 		return sum;
 	}
-	static Fix64 FAbs(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Abs(Fix64.FromRaw(i));
+	static Fix32 FFastAbs(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).AbsFast();
 		return sum;
 	}
-	static Fix64 FFastAbs(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.FastAbs(Fix64.FromRaw(i));
+	static Fix32 FFloor(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).Floor();
 		return sum;
 	}
-	static Fix64 FFloor(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Floor(Fix64.FromRaw(i));
+	static Fix32 FLog2(int iterations) {
+		Fix32 sum = 0;
+		for (int i = 1; i <= iterations; i++) sum = ((Fix32) i).Log2();
 		return sum;
 	}
-	static Fix64 FLog2(int iterations) {
-		Fix64 sum = 0;
-		for (int i = 1; i <= iterations; i++) sum = Fix64.Log2(Fix64.FromRaw(i));
+	static Fix32 FLn(int iterations) {
+		Fix32 sum = 0;
+		for (int i = 1; i <= iterations; i++) sum = ((Fix32) i).Ln();
 		return sum;
 	}
-	static Fix64 FLn(int iterations) {
-		Fix64 sum = 0;
-		for (int i = 1; i <= iterations; i++) sum = Fix64.Ln(Fix64.FromRaw(i));
+	static Fix32 FPow2(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).Pow2();
 		return sum;
 	}
-	static Fix64 FPow2(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Pow2(Fix64.FromRaw(i));
+	static Fix32 FPow(int iterations) {
+		Fix32 sum = 0;
+		for (int i = 0; i < iterations; i++) sum = ((Fix32) i).Pow(((Fix32) i));
 		return sum;
 	}
-	static Fix64 FPow(int iterations) {
-		Fix64 sum = 0;
-		for (int i = 0; i < iterations; i++) sum = Fix64.Pow(Fix64.FromRaw(i), Fix64.FromRaw(i));
+	static Fix32 FAcos(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).Acos();
 		return sum;
 	}
-	static Fix64 FAcos(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Acos(Fix64.FromRaw(i));
+	static Fix32 FCeiling(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).Ceiling();
 		return sum;
 	}
-	static Fix64 FCeiling(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Ceiling(Fix64.FromRaw(i));
+	static Fix32 FRound(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).Round();
 		return sum;
 	}
-	static Fix64 FRound(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Round(Fix64.FromRaw(i));
+	static Fix32 FFastRound(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).RoundFast();
 		return sum;
 	}
-	static Fix64 FFastRound(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.FastRound(Fix64.FromRaw(i));
-		return sum;
-	}
-	static Fix64 FEqualEqual(int iterations) {
+	static Fix32 FEqualEqual(int iterations) {
 		bool tmp;
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum == Fix64.FromRaw(i);
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum == ((Fix32) i);
 		return sum;
 	}
-	static Fix64 FNotEqual(int iterations) {
+	static Fix32 FNotEqual(int iterations) {
 		bool tmp;
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum != Fix64.FromRaw(i);
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum != ((Fix32) i);
 		return sum;
 	}
-	static Fix64 FGreater(int iterations) {
+	static Fix32 FGreater(int iterations) {
 		bool tmp;
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum > Fix64.FromRaw(i);
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum > ((Fix32) i);
 		return sum;
 	}
-	static Fix64 FLess(int iterations) {
+	static Fix32 FLess(int iterations) {
 		bool tmp;
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum < Fix64.FromRaw(i);
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum < ((Fix32) i);
 		return sum;
 	}
-	static Fix64 FGreaterOrEqual(int iterations) {
+	static Fix32 FGreaterOrEqual(int iterations) {
 		bool tmp;
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum >= Fix64.FromRaw(i);
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum >= ((Fix32) i);
 		return sum;
 	}
-	static Fix64 FLessOrEqual(int iterations) {
+	static Fix32 FLessOrEqual(int iterations) {
 		bool tmp;
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum <= Fix64.FromRaw(i);
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = sum <= ((Fix32) i);
 		return sum;
 	}
-	static Fix64 FSqrt(int iterations) {
-		Fix64 sum = 0;
-		for (int i = 0; i < iterations; i++) sum = Fix64.Sqrt(Fix64.FromRaw(i));
+	static Fix32 FSqrt(int iterations) {
+		Fix32 sum = 0;
+		for (int i = 0; i < iterations; i++) sum = ((Fix32) i).Sqrt();
 		return sum;
 	}
-	static Fix64 FSin(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Sin(Fix64.FromRaw(i));
+	static Fix32 FSin(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).Sin();
 		return sum;
 	}
-	static Fix64 FFastSin(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.FastSin(Fix64.FromRaw(i));
+	static Fix32 FFastSin(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).SinFast();
 		return sum;
 	}
-	static Fix64 FCos(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Cos(Fix64.FromRaw(i));
+	static Fix32 FCos(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).Cos();
 		return sum;
 	}
-	static Fix64 FFastCos(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.FastCos(Fix64.FromRaw(i));
+	static Fix32 FFastCos(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).CosFast();
 		return sum;
 	}
-	static Fix64 FTan(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Tan(Fix64.FromRaw(i));
+	static Fix32 FTan(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).Tan();
 		return sum;
 	}
-	static Fix64 FAtan(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Atan(Fix64.FromRaw(i));
+	static Fix32 FAtan(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).Atan();
 		return sum;
 	}
-	static Fix64 FAtan2(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.Atan2(Fix64.FromRaw(i), Fix64.FromRaw(i));
+	static Fix32 FAtan2(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).Atan2(((Fix32) i));
 		return sum;
 	}
-	static Fix64 FFastAtan2(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.FastAtan2(Fix64.FromRaw(i), Fix64.FromRaw(i));
+	static Fix32 FFastAtan2(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).Atan2Fast(((Fix32) i));
 		return sum;
 	}
-	static Fix64 FEquals(int iterations) {
+	static Fix32 FEquals(int iterations) {
 		bool tmp;
-		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = Fix64.FromRaw(i).Equals(Fix64.FromRaw(i));
+		for (int i = -iterations / 2; i < iterations / 2; i++) tmp = ((Fix32) i).Equals(((Fix32) i));
 		return 0;
 	}
-	static Fix64 FCompareTo(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = Fix64.FromRaw(i).CompareTo(Fix64.FromRaw(i));
+	static Fix32 FCompareTo(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).CompareTo((Fix32) i).ToFix32();
 		return sum;
 	}
 
-	static Fix64 FToInt(int iterations) {
+	static Fix32 FToInt(int iterations) {
 		int sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = (int) Fix64.FromRaw(i);
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).ToInt();
+		return Fix32.Zero;
+	}
+	static Fix32 FFromInt(int iterations) {
+		Fix32 sum = 0;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = i.ToFix32();
 		return sum;
 	}
-	static Fix64 FFromInt(int iterations) {
-		Fix64 sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = (Fix64) i;
-		return sum;
-	}
-	static Fix64 FToFloat(int iterations) {
+	static Fix32 FToFloat(int iterations) {
 		float sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = (float) Fix64.FromRaw(i);
-		return (Fix64) sum;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).ToFloat();
+		return Fix32.Zero;
 	}
-	static Fix64 FFromFloat(int iterations) {
-		Fix64 sum = 0;
-		for (float i = -iterations / 2; i < iterations / 2; i++) sum = (Fix64) i;
+	static Fix32 FFromFloat(int iterations) {
+		Fix32 sum = 0;
+		for (float i = -iterations / 2; i < iterations / 2; i++) sum = i.ToFix32();
 		return sum;
 	}
-	static Fix64 FToDouble(int iterations) {
+	static Fix32 FToDouble(int iterations) {
 		double sum = 0;
-		for (int i = -iterations / 2; i < iterations / 2; i++) sum = (double) Fix64.FromRaw(i);
-		return (Fix64) sum;
+		for (int i = -iterations / 2; i < iterations / 2; i++) sum = ((Fix32) i).ToDouble();
+		return Fix32.Zero;
 	}
-	static Fix64 FFromDouble(int iterations) {
-		Fix64 sum = 0;
-		for (double i = -iterations / 2; i < iterations / 2; i++) sum = (Fix64) i;
+	static Fix32 FFromDouble(int iterations) {
+		Fix32 sum = 0;
+		for (double i = -iterations / 2; i < iterations / 2; i++) sum = i.ToFix32();
 		return sum;
 	}
 	#endregion
@@ -316,17 +315,17 @@ public class FixedVsFloat : MonoBehaviour {
 		float tmp;
 		for (int i = 0; i < repeats; i++)
 			tmp = f(iterations);
-		return dResults[f] = " = " + (sw.Elapsed.TotalMilliseconds / iterations / repeats * 1000000).ToString("0.0000") + " ns";
+		return dResults[f] = " = " + (sw.Elapsed.TotalMilliseconds).ToString("0.0000") + " ms";
 	}
 
 	static float DAdd(int iterations) {
 		float sum = 0;
-		for (int i = 0; i < iterations; i++) sum += 1f;
+		for (int i = 0; i < iterations; i++) sum = sum + (1f);
 		return sum;
 	}
 	static float DSub(int iterations) {
 		float sum = 0;
-		for (int i = 0; i < iterations; i++) sum -= 1f;
+		for (int i = 0; i < iterations; i++) sum = sum - (1f);
 		return sum;
 	}
 	static float DInv(int iterations) {
@@ -344,8 +343,8 @@ public class FixedVsFloat : MonoBehaviour {
 		(-1000f), (-10000f)
 	};
 	static float DMul(int iterations) {
-		iterations /= Fcoeffs.Length;
-		iterations /= Fcoeffs.Length;
+		iterations = iterations / (Fcoeffs.Length);
+		iterations = iterations / (Fcoeffs.Length);
 		float sum = 0;
 		for (int k = 0; k < iterations; k++)
 			for (int i = 0; i < Fcoeffs.Length; i++)
@@ -354,8 +353,8 @@ public class FixedVsFloat : MonoBehaviour {
 		return sum;
 	}
 	static float DDiv(int iterations) {
-		iterations /= Fcoeffs.Length;
-		iterations /= Fcoeffs.Length;
+		iterations = iterations / (Fcoeffs.Length);
+		iterations = iterations / (Fcoeffs.Length);
 		float sum = 0;
 		for (int k = 0; k < iterations; k++)
 			for (int i = 0; i < Fcoeffs.Length; i++)
@@ -533,52 +532,52 @@ public class FixedVsFloat : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 
 		GUILayout.BeginVertical("box", GUILayout.MinWidth(400));
-		GUILayout.Label("Fix64");
-		GUILayout.Label("+ " + TestFix64(FAdd) + "  +(fast) " + TestFix64(FAddFast));
-		GUILayout.Label("- " + TestFix64(FSub) + "  -(fast) " + TestFix64(FSubFast));
-		GUILayout.Label("-(inv) " + TestFix64(FInv));
-		GUILayout.Label("* " + TestFix64(FMul) + "  *(fast) " + TestFix64(FMulFast));
-		GUILayout.Label("/ " + TestFix64(FDiv));
-		GUILayout.Label("1/x " + TestFix64(FDiv1));
-		GUILayout.Label("% " + TestFix64(FModulo));
-		GUILayout.Label("Sign " + TestFix64(FSign) + "  Sign(I) " + TestFix64(FSignI));
-		GUILayout.Label("Abs " + TestFix64(FAbs) + "  Abs(fast) " + TestFix64(FFastAbs));
-		GUILayout.Label("Floor " + TestFix64(FFloor));
-		GUILayout.Label("Log2 " + TestFix64(FLog2));
-		GUILayout.Label("Ln " + TestFix64(FLn));
-		GUILayout.Label("Pow2 " + TestFix64(FPow2));
-		GUILayout.Label("Pow " + TestFix64(FPow));
-		GUILayout.Label("Acos " + TestFix64(FAcos));
-		GUILayout.Label("Ceiling " + TestFix64(FCeiling));
-		GUILayout.Label("Round " + TestFix64(FRound) + "  Round(fast) " + TestFix64(FFastRound));
-		GUILayout.Label("== " + TestFix64(FEqualEqual));
-		GUILayout.Label("!= " + TestFix64(FNotEqual));
-		GUILayout.Label("> " + TestFix64(FGreater));
-		GUILayout.Label("< " + TestFix64(FLess));
-		GUILayout.Label(">= " + TestFix64(FGreaterOrEqual));
-		GUILayout.Label("<= " + TestFix64(FLessOrEqual));
-		GUILayout.Label("Sqrt " + TestFix64(FSqrt));
-		GUILayout.Label("Sin " + TestFix64(FSin));
-		GUILayout.Label("FastSin " + TestFix64(FFastSin));
-		GUILayout.Label("Cos " + TestFix64(FCos));
-		GUILayout.Label("FastCos " + TestFix64(FFastCos));
-		GUILayout.Label("Tan " + TestFix64(FTan));
-		GUILayout.Label("Atan " + TestFix64(FAtan));
-		GUILayout.Label("Atan2 " + TestFix64(FAtan2));
-		GUILayout.Label("FastAtan2 " + TestFix64(FFastAtan2));
-		GUILayout.Label("Equals " + TestFix64(FEquals));
-		GUILayout.Label("CompareTo " + TestFix64(FCompareTo));
+		GUILayout.Label("Fix32 (" + (iterations * repeats) + " iterations)");
+		GUILayout.Label("+ " + TestFix32(FAdd) + "  +(fast) " + TestFix32(FAddFast));
+		GUILayout.Label("- " + TestFix32(FSub) + "  -(fast) " + TestFix32(FSubFast));
+		GUILayout.Label("-(inv) " + TestFix32(FInv));
+		GUILayout.Label("* " + TestFix32(FMul) + "  *(fast) " + TestFix32(FMulFast));
+		GUILayout.Label("/ " + TestFix32(FDiv));
+		GUILayout.Label("1/x " + TestFix32(FDiv1));
+		GUILayout.Label("% " + TestFix32(FModulo));
+		GUILayout.Label("Sign " + TestFix32(FSign) + "  Sign(I) " + TestFix32(FSignI));
+		GUILayout.Label("Abs " + TestFix32(FAbs) + "  Abs(fast) " + TestFix32(FFastAbs));
+		GUILayout.Label("Floor " + TestFix32(FFloor));
+		GUILayout.Label("Log2 " + TestFix32(FLog2));
+		GUILayout.Label("Ln " + TestFix32(FLn));
+		GUILayout.Label("Pow2 " + TestFix32(FPow2));
+		GUILayout.Label("Pow " + TestFix32(FPow));
+		GUILayout.Label("Acos " + TestFix32(FAcos));
+		GUILayout.Label("Ceiling " + TestFix32(FCeiling));
+		GUILayout.Label("Round " + TestFix32(FRound) + "  Round(fast) " + TestFix32(FFastRound));
+		GUILayout.Label("== " + TestFix32(FEqualEqual));
+		GUILayout.Label("!= " + TestFix32(FNotEqual));
+		GUILayout.Label("> " + TestFix32(FGreater));
+		GUILayout.Label("< " + TestFix32(FLess));
+		GUILayout.Label(">= " + TestFix32(FGreaterOrEqual));
+		GUILayout.Label("<= " + TestFix32(FLessOrEqual));
+		GUILayout.Label("Sqrt " + TestFix32(FSqrt));
+		GUILayout.Label("Sin " + TestFix32(FSin));
+		GUILayout.Label("FastSin " + TestFix32(FFastSin));
+		GUILayout.Label("Cos " + TestFix32(FCos));
+		GUILayout.Label("FastCos " + TestFix32(FFastCos));
+		GUILayout.Label("Tan " + TestFix32(FTan));
+		GUILayout.Label("Atan " + TestFix32(FAtan));
+		GUILayout.Label("Atan2 " + TestFix32(FAtan2));
+		GUILayout.Label("FastAtan2 " + TestFix32(FFastAtan2));
+		GUILayout.Label("Equals " + TestFix32(FEquals));
+		GUILayout.Label("CompareTo " + TestFix32(FCompareTo));
 
-		GUILayout.Label("ToInt " + TestFix64(FToInt));
-		GUILayout.Label("FromInt " + TestFix64(FFromInt));
-		GUILayout.Label("ToFloat " + TestFix64(FToFloat));
-		GUILayout.Label("FromFloat " + TestFix64(FFromFloat));
-		GUILayout.Label("ToDouble " + TestFix64(FToDouble));
-		GUILayout.Label("FromDouble " + TestFix64(FFromDouble));
+		GUILayout.Label("ToInt " + TestFix32(FToInt));
+		GUILayout.Label("FromInt " + TestFix32(FFromInt));
+		GUILayout.Label("ToFloat " + TestFix32(FToFloat));
+		GUILayout.Label("FromFloat " + TestFix32(FFromFloat));
+		GUILayout.Label("ToDouble " + TestFix32(FToDouble));
+		GUILayout.Label("FromDouble " + TestFix32(FFromDouble));
 		GUILayout.EndVertical();
 
 		GUILayout.BeginVertical("box", GUILayout.MinWidth(400));
-		GUILayout.Label("Float");
+		GUILayout.Label("Float (" + (iterations * repeats) + " iterations)");
 		GUILayout.Label("+ " + TestDouble(DAdd));
 		GUILayout.Label("- " + TestDouble(DSub));
 		GUILayout.Label("-(inv) " + TestDouble(DInv));

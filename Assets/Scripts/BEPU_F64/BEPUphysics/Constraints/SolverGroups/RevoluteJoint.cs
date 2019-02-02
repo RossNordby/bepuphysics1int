@@ -60,7 +60,7 @@ namespace BEPUphysics.Constraints.SolverGroups
             Vector3 baseAxis = anchor - connectionA.position;
             if (baseAxis.LengthSquared() < Toolbox.BigEpsilon) //anchor and connection a in same spot, so try the other way.
                 baseAxis = connectionB.position - anchor;
-            baseAxis -= Vector3.Dot(baseAxis, freeAxis) * freeAxis;
+            baseAxis = baseAxis - (Vector3.Dot(baseAxis, freeAxis) * freeAxis);
             if (baseAxis.LengthSquared() < Toolbox.BigEpsilon)
             {
                 //However, if the free axis is totally aligned (like in an axis constraint), pick another reasonable direction.
@@ -74,7 +74,7 @@ namespace BEPUphysics.Constraints.SolverGroups
             Motor.Basis.SetWorldAxes(freeAxis, baseAxis, connectionA.orientationMatrix);
 
             baseAxis = connectionB.position - anchor;
-            baseAxis -= Vector3.Dot(baseAxis, freeAxis) * freeAxis;
+            baseAxis = baseAxis - (Vector3.Dot(baseAxis, freeAxis) * freeAxis);
             if (baseAxis.LengthSquared() < Toolbox.BigEpsilon)
             {
                 //However, if the free axis is totally aligned (like in an axis constraint), pick another reasonable direction.

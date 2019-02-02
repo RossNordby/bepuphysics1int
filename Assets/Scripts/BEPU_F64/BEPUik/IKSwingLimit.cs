@@ -1,6 +1,5 @@
 ﻿using System;
 using BEPUutilities;
-using FixMath.NET;
 
 namespace BEPUik
 {
@@ -36,14 +35,14 @@ namespace BEPUik
             set { LocalAxisB = Quaternion.Transform(value, Quaternion.Conjugate(ConnectionB.Orientation)); }
         }
 
-        private Fix64 maximumAngle;
+        private Fix32 maximumAngle;
         /// <summary>
         /// Gets or sets the maximum angle between the two axes allowed by the constraint.
         /// </summary>
-        public Fix64 MaximumAngle
+        public Fix32 MaximumAngle
         {
             get { return maximumAngle; }
-            set { maximumAngle = MathHelper.Max(F64.C0, value); }
+            set { maximumAngle = MathHelper.Max(Fix32.Zero, value); }
         }
 
 
@@ -55,7 +54,7 @@ namespace BEPUik
         /// <param name="axisA">Axis attached to connectionA in world space.</param>
         /// <param name="axisB">Axis attached to connectionB in world space.</param>
         /// <param name="maximumAngle">Maximum angle allowed between connectionA's axis and connectionB's axis.</param>
-        public IKSwingLimit(Bone connectionA, Bone connectionB, Vector3 axisA, Vector3 axisB, Fix64 maximumAngle)
+        public IKSwingLimit(Bone connectionA, Bone connectionB, Vector3 axisA, Vector3 axisB, Fix32 maximumAngle)
             : base(connectionA, connectionB)
         {
             AxisA = axisA;
@@ -74,34 +73,32 @@ namespace BEPUik
             Quaternion.Transform(ref LocalAxisA, ref ConnectionA.Orientation, out axisA);
             Quaternion.Transform(ref LocalAxisB, ref ConnectionB.Orientation, out axisB);
 
-            Fix64 dot;
+            Fix32 dot;
             Vector3.Dot(ref axisA, ref axisB, out dot);
 
             //Yes, we could avoid this acos here. Performance is not the highest goal of this system; the less tricks used, the easier it is to understand.
 			// TODO investigate performance
-            Fix64 angle = Fix64.Acos(MathHelper.Clamp(dot, -1, F64.C1));
+            Fix32 angle = MathHelper.Clamp(dot, Fix32.MinusOne, F64.C1).Acos();
 
             //One angular DOF is constrained by this limit.
             Vector3 hingeAxis;
             Vector3.Cross(ref axisA, ref axisB, out hingeAxis);
 
             angularJacobianA = new Matrix3x3 { M11 = hingeAxis.X, M12 = hingeAxis.Y, M13 = hingeAxis.Z };
-            angularJacobianB = new Matrix3x3 { M11 = -hingeAxis.X, M12 = -hingeAxis.Y, M13 = -hingeAxis.Z };
+            angularJacobianB = new Matrix3x3 { M11 = hingeAxis.X.Neg(), M12 = hingeAxis.Y.Neg(), M13 = hingeAxis.Z.Neg() };
 
             //Note how we've computed the jacobians despite the limit being potentially inactive.
             //This is to enable 'speculative' limits.
             if (angle >= maximumAngle)
             {
-                velocityBias = new Vector3(errorCorrectionFactor * (angle - maximumAngle), F64.C0, F64.C0);
+                velocityBias = new Vector3(errorCorrectionFactor.Mul(angle.Sub(maximumAngle)), Fix32.Zero, Fix32.Zero);
             }
             else
             {
                 //The constraint is not yet violated. But, it may be- allow only as much motion as could occur without violating the constraint.
                 //Limits can't 'pull,' so this will not result in erroneous sticking.
-                velocityBias = new Vector3(angle - maximumAngle, F64.C0, F64.C0);
+                velocityBias = new Vector3(angle.Sub(maximumAngle), Fix32.Zero, Fix32.Zero);
             }
-
-
         }
     }
 }

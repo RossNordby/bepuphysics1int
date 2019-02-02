@@ -50,10 +50,10 @@ namespace BEPUphysics.PositionUpdating
         {
             if (i >= discreteUpdateables.Count)
             {
-                i -= discreteUpdateables.Count;
+                i = i - (discreteUpdateables.Count);
                 if (i >= passiveUpdateables.Count)
                 {
-                    i -= passiveUpdateables.Count;
+                    i = i - (passiveUpdateables.Count);
                     //It's a continuous updateable.
                     if (continuousUpdateables.Elements[i].IsActive)
                         continuousUpdateables.Elements[i].PreUpdatePosition(timeStepSettings.TimeStepDuration);

@@ -1,6 +1,4 @@
-﻿using FixMath.NET;
-
-namespace BEPUphysics.UpdateableSystems
+﻿namespace BEPUphysics.UpdateableSystems
 {
     ///<summary>
     /// Defines an object which is updated by the space at the end of a time step.
@@ -12,7 +10,7 @@ namespace BEPUphysics.UpdateableSystems
         /// Updates the object at the end of a time step.
         ///</summary>
         ///<param name="dt">Time step duration.</param>
-        void Update(Fix64 dt);
+        void Update(Fix32 dt);
 
     }
 }

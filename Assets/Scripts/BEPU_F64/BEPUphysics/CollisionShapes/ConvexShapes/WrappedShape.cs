@@ -5,7 +5,7 @@ using BEPUutilities;
  
 using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionShapes.ConvexShapes
 {
@@ -101,7 +101,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             Vector3 center;
             UpdateConvexShapeInfo(out center);
 
-            shapes.Changed += ShapesChanged;
+            shapes.Changed += (ShapesChanged);
         }
 
         ///<summary>
@@ -119,7 +119,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 
             UpdateConvexShapeInfo(out center);
 
-            shapes.Changed += ShapesChanged;
+            shapes.Changed += (ShapesChanged);
         }
 
         ///<summary>
@@ -139,7 +139,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 
             Vector3 center;
             UpdateConvexShapeInfo(out center);
-            shapes.Changed += ShapesChanged;
+            shapes.Changed += (ShapesChanged);
         }
 
         ///<summary>
@@ -159,7 +159,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             }
 
             UpdateConvexShapeInfo(out center);
-            shapes.Changed += ShapesChanged;
+            shapes.Changed += (ShapesChanged);
         }
 
         ///<summary>
@@ -178,7 +178,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             }
 
             UpdateConvexShapeInfo(description);
-            shapes.Changed += ShapesChanged;
+            shapes.Changed += (ShapesChanged);
         }
 
 
@@ -214,7 +214,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             var triangles = CommonResources.GetIntList();
             ConvexHullHelper.GetConvexHull(samples, triangles);
 
-            Fix64 volume;
+            Fix32 volume;
             InertiaHelper.ComputeShapeDistribution(samples, triangles, out center, out volume, out volumeDistribution);
             Volume = volume;
 
@@ -251,13 +251,13 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 BoundingBox.CreateMerged(ref boundingBox, ref toMerge, out boundingBox);
             }
 
-            boundingBox.Min.X -= collisionMargin;
-            boundingBox.Min.Y -= collisionMargin;
-            boundingBox.Min.Z -= collisionMargin;
+            boundingBox.Min.X = boundingBox.Min.X .Sub (collisionMargin);
+            boundingBox.Min.Y = boundingBox.Min.Y .Sub (collisionMargin);
+            boundingBox.Min.Z = boundingBox.Min.Z .Sub (collisionMargin);
 
-            boundingBox.Max.X += collisionMargin;
-            boundingBox.Max.Y += collisionMargin;
-            boundingBox.Max.Z += collisionMargin;
+            boundingBox.Max.X = boundingBox.Max.X .Add (collisionMargin);
+            boundingBox.Max.Y = boundingBox.Max.Y .Add (collisionMargin);
+            boundingBox.Max.Z = boundingBox.Max.Z .Add (collisionMargin);
         }
 
 
@@ -269,11 +269,11 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         public override void GetLocalExtremePointWithoutMargin(ref Vector3 direction, out Vector3 extremePoint)
         {
             shapes.WrappedList.Elements[0].CollisionShape.GetExtremePoint(direction, ref shapes.WrappedList.Elements[0].Transform, out extremePoint);
-            Fix64 maxDot;
+            Fix32 maxDot;
             Vector3.Dot(ref extremePoint, ref direction, out maxDot);
             for (int i = 1; i < shapes.WrappedList.Count; i++)
             {
-                Fix64 dot;
+                Fix32 dot;
                 Vector3 temp;
 
                 shapes.WrappedList.Elements[i].CollisionShape.GetExtremePoint(direction, ref shapes.WrappedList.Elements[i].Transform, out temp);
@@ -293,18 +293,18 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// it is simply an approximation that avoids underestimating.
         /// </summary>
         /// <returns>Maximum radius of the shape.</returns>
-        public Fix64 ComputeMaximumRadius()
+        public Fix32 ComputeMaximumRadius()
         {
             //This can overestimate the actual maximum radius, but such is the defined behavior of the ComputeMaximumRadius function.  It's not exact; it's an upper bound on the actual maximum.
-            Fix64 maxRadius = F64.C0;
+            Fix32 maxRadius = Fix32.Zero;
             for (int i = 0; i < shapes.Count; i++)
             {
-                Fix64 radius = shapes.WrappedList.Elements[i].CollisionShape.MaximumRadius +
-                               shapes.WrappedList.Elements[i].Transform.Position.Length();
+                Fix32 radius = shapes.WrappedList.Elements[i].CollisionShape.MaximumRadius .Add
+                               (shapes.WrappedList.Elements[i].Transform.Position.Length());
                 if (radius > maxRadius)
                     maxRadius = radius;
             }
-            return maxRadius + collisionMargin;
+            return maxRadius .Add (collisionMargin);
         }
         /// <summary>
         /// Computes the minimum radius of the shape.
@@ -312,17 +312,17 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// it is simply an approximation that avoids overestimating.
         /// </summary>
         /// <returns>Minimum radius of the shape.</returns>
-        public Fix64 ComputeMinimumRadius()
+        public Fix32 ComputeMinimumRadius()
         {
             //Could also use the tetrahedron approximation approach.
-            Fix64 minRadius = F64.C0;
+            Fix32 minRadius = Fix32.Zero;
             for (int i = 0; i < shapes.Count; i++)
             {
-                Fix64 radius = shapes.WrappedList.Elements[i].CollisionShape.MinimumRadius;
+                Fix32 radius = shapes.WrappedList.Elements[i].CollisionShape.MinimumRadius;
                 if (radius < minRadius)
                     minRadius = radius;
             }
-            return minRadius + collisionMargin;
+            return minRadius .Add (collisionMargin);
         }
 
         /// <summary>

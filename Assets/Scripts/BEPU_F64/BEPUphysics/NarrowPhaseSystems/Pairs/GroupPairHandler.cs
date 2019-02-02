@@ -8,7 +8,7 @@ using BEPUphysics.CollisionTests;
 using BEPUphysics.Materials;
 using BEPUphysics.Settings;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 using BEPUutilities;
 
 namespace BEPUphysics.NarrowPhaseSystems.Pairs
@@ -157,7 +157,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         /// Updates the pair handler's contacts.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        protected virtual void UpdateContacts(Fix64 dt)
+        protected virtual void UpdateContacts(Fix32 dt)
         {
 
             UpdateContainedPairs();
@@ -192,7 +192,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         /// Updates the pair handler.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void UpdateCollision(Fix64 dt)
+        public override void UpdateCollision(Fix32 dt)
         {
 
             if (!suppressEvents)
@@ -238,7 +238,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         ///</summary>
         ///<param name="requester">Collidable requesting the update.</param>
         ///<param name="dt">Timestep duration.</param>
-        public override void UpdateTimeOfImpact(Collidable requester, Fix64 dt)
+        public override void UpdateTimeOfImpact(Collidable requester, Fix32 dt)
         {
             timeOfImpact = F64.C1;
             foreach (CollidablePairHandler pair in subPairs.Values)
@@ -268,7 +268,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                     pair.GetContactInformation(index, out info);
                     return;
                 }
-                index -= count;
+                index = index - (count);
             }
             throw new IndexOutOfRangeException("Contact index is not present in the pair.");
 

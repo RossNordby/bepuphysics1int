@@ -3,7 +3,7 @@ using BEPUphysics.Entities;
 using BEPUutilities;
  
 using System.Diagnostics;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Constraints.TwoEntity.Joints
 {
@@ -205,17 +205,17 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 
         /// <summary>
         /// Calculates necessary information for velocity solving.
-        /// Called by preStep(Fix64 dt)
+        /// Called by preStep(Fix32 dt)
         /// </summary>
         /// <param name="dt">Time in seconds since the last update.</param>
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             Matrix3x3.Transform(ref localAnchorA, ref connectionA.orientationMatrix, out worldOffsetA);
             Matrix3x3.Transform(ref localAnchorB, ref connectionB.orientationMatrix, out worldOffsetB);
 
 
-            Fix64 errorReductionParameter;
-            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 / dt, out errorReductionParameter, out softness);
+            Fix32 errorReductionParameter;
+            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 .Div (dt), out errorReductionParameter, out softness);
 
             //Mass Matrix
             Matrix3x3 k;
@@ -224,7 +224,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Matrix3x3.CreateCrossProduct(ref worldOffsetB, out rBCrossProduct);
             if (connectionA.isDynamic && connectionB.isDynamic)
             {
-                Matrix3x3.CreateScale(connectionA.inverseMass + connectionB.inverseMass, out linearComponent);
+                Matrix3x3.CreateScale(connectionA.inverseMass .Add (connectionB.inverseMass), out linearComponent);
                 Matrix3x3 angularComponentA, angularComponentB;
                 Matrix3x3.Multiply(ref rACrossProduct, ref connectionA.inertiaTensorInverse, out angularComponentA);
                 Matrix3x3.Multiply(ref rBCrossProduct, ref connectionB.inertiaTensorInverse, out angularComponentB);
@@ -253,9 +253,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             {
                 throw new InvalidOperationException("Cannot constrain two kinematic bodies.");
             }
-            k.M11 += softness;
-            k.M22 += softness;
-            k.M33 += softness;
+            k.M11 = k.M11 .Add (softness);
+            k.M22 = k.M22 .Add (softness);
+            k.M33 = k.M33 .Add (softness);
             Matrix3x3.Invert(ref k, out massMatrix);
 
             Vector3.Add(ref connectionB.position, ref worldOffsetB, out error);
@@ -263,16 +263,16 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Subtract(ref error, ref worldOffsetA, out error);
 
 
-            Vector3.Multiply(ref error, -errorReductionParameter, out biasVelocity);
+            Vector3.Multiply(ref error, errorReductionParameter.Neg(), out biasVelocity);
 
             //Ensure that the corrective velocity doesn't exceed the max.
-            Fix64 length = biasVelocity.LengthSquared();
+            Fix32 length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                Fix64 multiplier = maxCorrectiveVelocity / Fix64.Sqrt(length);
-                biasVelocity.X *= multiplier;
-                biasVelocity.Y *= multiplier;
-                biasVelocity.Z *= multiplier;
+                Fix32 multiplier = maxCorrectiveVelocity .Div (length.Sqrt());
+                biasVelocity.X = biasVelocity.X .Mul (multiplier);
+                biasVelocity.Y = biasVelocity.Y .Mul (multiplier);
+                biasVelocity.Z = biasVelocity.Z .Mul (multiplier);
             }
 
    
@@ -294,9 +294,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 #endif
             if (connectionA.isDynamic)
             {
-                linear.X = -accumulatedImpulse.X;
-                linear.Y = -accumulatedImpulse.Y;
-                linear.Z = -accumulatedImpulse.Z;
+                linear.X = accumulatedImpulse.X.Neg();
+                linear.Y = accumulatedImpulse.Y.Neg();
+                linear.Z = accumulatedImpulse.Z.Neg();
                 connectionA.ApplyLinearImpulse(ref linear);
                 Vector3 taImpulse;
                 Vector3.Cross(ref worldOffsetA, ref linear, out taImpulse);
@@ -316,7 +316,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Calculates and applies corrective impulses.
         /// Called automatically by space.
         /// </summary>
-        public override Fix64 SolveIteration()
+        public override Fix32 SolveIteration()
         {
 #if !WINDOWS
             Vector3 lambda = new Vector3();
@@ -332,9 +332,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Cross(ref connectionB.angularVelocity, ref worldOffsetB, out cross);
             Vector3.Add(ref connectionB.linearVelocity, ref cross, out bVel);
 
-            lambda.X = aVel.X - bVel.X + biasVelocity.X - softness * accumulatedImpulse.X;
-            lambda.Y = aVel.Y - bVel.Y + biasVelocity.Y - softness * accumulatedImpulse.Y;
-            lambda.Z = aVel.Z - bVel.Z + biasVelocity.Z - softness * accumulatedImpulse.Z;
+            lambda.X = aVel.X .Sub (bVel.X) .Add (biasVelocity.X) .Sub (softness .Mul (accumulatedImpulse.X));
+            lambda.Y = aVel.Y .Sub (bVel.Y) .Add (biasVelocity.Y) .Sub (softness .Mul (accumulatedImpulse.Y));
+            lambda.Z = aVel.Z .Sub (bVel.Z) .Add (biasVelocity.Z) .Sub (softness .Mul (accumulatedImpulse.Z));
 
             //Turn the velocity into an impulse.
             Matrix3x3.Transform(ref lambda, ref massMatrix, out lambda);
@@ -351,9 +351,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 #endif
             if (connectionA.isDynamic)
             {
-                linear.X = -lambda.X;
-                linear.Y = -lambda.Y;
-                linear.Z = -lambda.Z;
+                linear.X = lambda.X.Neg();
+                linear.Y = lambda.Y.Neg();
+                linear.Z = lambda.Z.Neg();
                 connectionA.ApplyLinearImpulse(ref linear);
                 Vector3 taImpulse;
                 Vector3.Cross(ref worldOffsetA, ref linear, out taImpulse);
@@ -367,9 +367,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 connectionB.ApplyAngularImpulse(ref tbImpulse);
             }
 
-            return (Fix64.Abs(lambda.X) +
-					Fix64.Abs(lambda.Y) +
-					Fix64.Abs(lambda.Z));
+            return ((lambda.X).Abs() .Add
+					((lambda.Y).Abs()) .Add
+					((lambda.Z).Abs()));
         }
     }
 }

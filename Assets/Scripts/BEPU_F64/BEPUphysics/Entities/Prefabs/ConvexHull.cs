@@ -4,7 +4,7 @@ using BEPUphysics.EntityStateManagement;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Entities.Prefabs
 {
@@ -43,7 +43,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// </summary>
         /// <param name="points">List of points in the object.</param>
         /// <param name="mass">Mass of the object.</param>
-        public ConvexHull(IList<Vector3> points, Fix64 mass)
+        public ConvexHull(IList<Vector3> points, Fix32 mass)
         {
             Vector3 center;
             var shape = new ConvexHullShape(points, out center);
@@ -57,7 +57,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="position">Position to place the convex hull.</param>
         /// <param name="points">List of points in the object.</param>
         /// <param name="mass">Mass of the object.</param>
-        public ConvexHull(Vector3 position, IList<Vector3> points, Fix64 mass)
+        public ConvexHull(Vector3 position, IList<Vector3> points, Fix32 mass)
             : this(points, mass)
         {
             Position = position;
@@ -81,7 +81,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="motionState">Motion state specifying the entity's initial state.</param>
         /// <param name="points">List of points in the object.</param>
         /// <param name="mass">Mass of the object.</param>
-        public ConvexHull(MotionState motionState, IList<Vector3> points, Fix64 mass)
+        public ConvexHull(MotionState motionState, IList<Vector3> points, Fix32 mass)
             : this(points, mass)
         {
             MotionState = motionState;

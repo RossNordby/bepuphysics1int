@@ -8,7 +8,7 @@ using BEPUphysics.Settings;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionTests.Manifolds
 {
@@ -84,7 +84,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
 
 
         protected abstract bool UseImprovedBoundaryHandling { get; }
-        protected internal abstract int FindOverlappingTriangles(Fix64 dt);
+        protected internal abstract int FindOverlappingTriangles(Fix32 dt);
 
         /// <summary>
         /// Precomputes the transform to bring triangles from their native local space to the local space of the convex.
@@ -99,7 +99,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
         /// Updates the manifold.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             //First, refresh all existing contacts.  This is an incremental manifold.
             var transform = MeshTransform;
@@ -250,9 +250,9 @@ namespace BEPUphysics.CollisionTests.Manifolds
 
                     var firstNormal = boundarySets.EdgeContacts.Elements[0].ContactData.Normal;
                     boundarySets.EdgeContacts.Elements[0].CorrectedNormal.Normalize();
-                    Fix64 dot;
+                    Fix32 dot;
                     Vector3.Dot(ref firstNormal, ref boundarySets.EdgeContacts.Elements[0].CorrectedNormal, out dot);
-                    if (Fix64.Abs(dot) > F64.C0p01)
+                    if (dot.Abs() > F64.C0p01)
                     {
                         //Go ahead and test the first contact separately, since we're using its contact normal to determine coplanarity.
                         allNormalsInSamePlane = false;
@@ -265,14 +265,14 @@ namespace BEPUphysics.CollisionTests.Manifolds
                         for (int i = 1; i < boundarySets.EdgeContacts.Count; i++)
                         {
                             Vector3.Dot(ref boundarySets.EdgeContacts.Elements[i].ContactData.Normal, ref firstNormal, out dot);
-                            if (dot < F64.C0)
+                            if (dot < Fix32.Zero)
                             {
                                 atLeastOneNormalAgainst = true;
                             }
                             //Check to see if the normal is outside the plane.
                             Vector3.Dot(ref boundarySets.EdgeContacts.Elements[i].ContactData.Normal, ref boundarySets.EdgeContacts.Elements[0].CorrectedNormal, out dot);
 
-                            if (Fix64.Abs(dot) > F64.C0p01)
+                            if (dot.Abs() > F64.C0p01)
                             {
 
                                 //We are not stuck!
@@ -336,11 +336,12 @@ namespace BEPUphysics.CollisionTests.Manifolds
                     {
                         //If it is blocked, we can still make use of the contact.  But first, we need to change the contact normal to ensure that
                         //it will not interfere (and cause a bump or something).
-                        Fix64 dot;
+                        Fix32 dot;
                         boundarySets.EdgeContacts.Elements[i].CorrectedNormal.Normalize();
                         Vector3.Dot(ref boundarySets.EdgeContacts.Elements[i].CorrectedNormal, ref boundarySets.EdgeContacts.Elements[i].ContactData.Normal, out dot);
                         boundarySets.EdgeContacts.Elements[i].ContactData.Normal = boundarySets.EdgeContacts.Elements[i].CorrectedNormal;
-                        boundarySets.EdgeContacts.Elements[i].ContactData.PenetrationDepth *= MathHelper.Max(F64.C0, dot); //Never cause a negative penetration depth.
+						ref Fix32 tmp = ref boundarySets.EdgeContacts.Elements[i].ContactData.PenetrationDepth;
+						tmp = tmp.Mul( MathHelper.Max(Fix32.Zero, dot) ); //Never cause a negative penetration depth.
                         AddLocalContact(ref boundarySets.EdgeContacts.Elements[i].ContactData, ref orientation, ref candidatesToAdd);
                     }
                     //If it's blocked AND it doesn't allow correction, ignore its existence.
@@ -364,11 +365,12 @@ namespace BEPUphysics.CollisionTests.Manifolds
                     {
                         //If it is blocked, we can still make use of the contact.  But first, we need to change the contact normal to ensure that
                         //it will not interfere (and cause a bump or something).
-                        Fix64 dot;
+                        Fix32 dot;
                         boundarySets.VertexContacts.Elements[i].CorrectedNormal.Normalize();
                         Vector3.Dot(ref boundarySets.VertexContacts.Elements[i].CorrectedNormal, ref boundarySets.VertexContacts.Elements[i].ContactData.Normal, out dot);
                         boundarySets.VertexContacts.Elements[i].ContactData.Normal = boundarySets.VertexContacts.Elements[i].CorrectedNormal;
-                        boundarySets.VertexContacts.Elements[i].ContactData.PenetrationDepth *= MathHelper.Max(F64.C0, dot); //Never cause a negative penetration depth.
+						ref Fix32 tmp = ref boundarySets.VertexContacts.Elements[i].ContactData.PenetrationDepth;
+						tmp = tmp .Mul (MathHelper.Max(Fix32.Zero, dot)); //Never cause a negative penetration depth.
                         AddLocalContact(ref boundarySets.VertexContacts.Elements[i].ContactData, ref orientation, ref candidatesToAdd);
                     }
                     //If it's blocked AND it doesn't allow correction, ignore its existence.
@@ -461,10 +463,10 @@ namespace BEPUphysics.CollisionTests.Manifolds
                 case TriangleSidedness.DoubleSided:
                     //If it's double sided, then pick the triangle normal which points in the same direction
                     //as the contact normal that's going to be corrected.
-                    Fix64 dot;
+                    Fix32 dot;
                     Vector3.Cross(ref AB, ref AC, out normal);
                     Vector3.Dot(ref normal, ref uncorrectedNormal, out dot);
-                    if (dot < F64.C0)
+                    if (dot < Fix32.Zero)
                         Vector3.Negate(ref normal, out normal);
                     break;
                 case TriangleSidedness.Clockwise:
@@ -618,7 +620,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
         private bool IsContactUnique(ref ContactData contactCandidate, ref QuickList<ContactData> candidatesToAdd)
         {
             contactCandidate.Validate();
-            Fix64 distanceSquared;
+            Fix32 distanceSquared;
             RigidTransform meshTransform = MeshTransform;
             for (int i = 0; i < contacts.Count; i++)
             {
@@ -628,7 +630,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                     //This is a nonconvex manifold.  There will be times where a an object will be shoved into a corner such that
                     //a single position will have two reasonable normals.  If the normals aren't mostly aligned, they should NOT be considered equivalent.
                     Vector3.Dot(ref contacts.Elements[i].Normal, ref contactCandidate.Normal, out distanceSquared);
-                    if (Fix64.Abs(distanceSquared) >= CollisionDetectionSettings.nonconvexNormalDotMinimum)
+                    if (distanceSquared.Abs() >= CollisionDetectionSettings.nonconvexNormalDotMinimum)
                     {
                         //Update the existing 'redundant' contact with the new information.
                         //This works out because the new contact is the deepest contact according to the previous collision detection iteration.
@@ -650,7 +652,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                     //This is a nonconvex manifold.  There will be times where a an object will be shoved into a corner such that
                     //a single position will have two reasonable normals.  If the normals aren't mostly aligned, they should NOT be considered equivalent.
                     Vector3.Dot(ref candidatesToAdd.Elements[i].Normal, ref contactCandidate.Normal, out distanceSquared);
-                    if (Fix64.Abs(distanceSquared) >= CollisionDetectionSettings.nonconvexNormalDotMinimum)
+                    if (distanceSquared.Abs() >= CollisionDetectionSettings.nonconvexNormalDotMinimum)
                         return false;
                 }
             }

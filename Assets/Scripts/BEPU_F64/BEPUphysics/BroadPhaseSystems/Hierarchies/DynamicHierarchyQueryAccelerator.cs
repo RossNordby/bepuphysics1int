@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUutilities;
-using FixMath.NET;
 
 namespace BEPUphysics.BroadPhaseSystems.Hierarchies
 {
@@ -70,7 +69,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
         /// <param name="ray">Ray to test against the structure.</param>
         /// <param name="maximumLength">Maximum length of the ray in units of the ray's direction's length.</param>
         /// <param name="entries">Entries which have bounding boxes that overlap the ray.</param>
-        public bool RayCast(Ray ray, Fix64 maximumLength, IList<BroadPhaseEntry> entries)
+        public bool RayCast(Ray ray, Fix32 maximumLength, IList<BroadPhaseEntry> entries)
         {
             if (hierarchy.root != null)
             {
@@ -91,7 +90,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
         {
             if (hierarchy.root != null)
             {
-                hierarchy.root.GetOverlaps(ref ray, Fix64.MaxValue, entries);
+                hierarchy.root.GetOverlaps(ref ray, Fix32.MaxValue, entries);
 
                 return entries.Count > 0;
             }

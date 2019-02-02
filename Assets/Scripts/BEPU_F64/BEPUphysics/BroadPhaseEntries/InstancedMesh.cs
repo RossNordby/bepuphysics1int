@@ -6,7 +6,6 @@ using BEPUutilities.ResourceManagement;
 using BEPUphysics.CollisionTests.CollisionAlgorithms;
 using BEPUphysics.OtherSpaceStages;
 using RigidTransform = BEPUutilities.RigidTransform;
-using FixMath.NET;
 
 namespace BEPUphysics.BroadPhaseEntries
 {
@@ -157,7 +156,7 @@ namespace BEPUphysics.BroadPhaseEntries
         /// <param name="maximumLength">Maximum length, in units of the ray's direction's length, to test.</param>
         /// <param name="rayHit">Hit location of the ray on the entry, if any.</param>
         /// <returns>Whether or not the ray hit the entry.</returns>
-        public override bool RayCast(Ray ray, Fix64 maximumLength, out RayHit rayHit)
+        public override bool RayCast(Ray ray, Fix32 maximumLength, out RayHit rayHit)
         {
             return RayCast(ray, maximumLength, sidedness, out rayHit);
         }
@@ -170,7 +169,7 @@ namespace BEPUphysics.BroadPhaseEntries
         ///<param name="sidedness">Sidedness to use during the ray cast.  This does not have to be the same as the mesh's sidedness.</param>
         ///<param name="rayHit">The hit location of the ray on the mesh, if any.</param>
         ///<returns>Whether or not the ray hit the mesh.</returns>
-        public bool RayCast(Ray ray, Fix64 maximumLength, TriangleSidedness sidedness, out RayHit rayHit)
+        public bool RayCast(Ray ray, Fix32 maximumLength, TriangleSidedness sidedness, out RayHit rayHit)
         {
             //Put the ray into local space.
             Ray localRay;
@@ -208,7 +207,7 @@ namespace BEPUphysics.BroadPhaseEntries
             var hitElements = CommonResources.GetIntList();
             if (this.Shape.TriangleMesh.Tree.GetOverlaps(boundingBox, hitElements))
             {
-                hit.T = Fix64.MaxValue;
+                hit.T = Fix32.MaxValue;
                 for (int i = 0; i < hitElements.Count; i++)
                 {
                     Shape.TriangleMesh.Data.GetTriangle(hitElements[i], out tri.vA, out tri.vB, out tri.vC);
@@ -223,14 +222,14 @@ namespace BEPUphysics.BroadPhaseEntries
                     Vector3.Subtract(ref tri.vB, ref center, out tri.vB);
                     Vector3.Subtract(ref tri.vC, ref center, out tri.vC);
                     tri.MaximumRadius = tri.vA.LengthSquared();
-					Fix64 radius = tri.vB.LengthSquared();
+					Fix32 radius = tri.vB.LengthSquared();
                     if (tri.MaximumRadius < radius)
                         tri.MaximumRadius = radius;
                     radius = tri.vC.LengthSquared();
                     if (tri.MaximumRadius < radius)
                         tri.MaximumRadius = radius;
-                    tri.MaximumRadius = Fix64.Sqrt(tri.MaximumRadius);
-                    tri.collisionMargin = F64.C0;
+                    tri.MaximumRadius = tri.MaximumRadius.Sqrt();
+                    tri.collisionMargin = Fix32.Zero;
                     var triangleTransform = new RigidTransform { Orientation = Quaternion.Identity, Position = center };
                     RayHit tempHit;
                     if (MPRToolbox.Sweep(castShape, tri, ref sweep, ref Toolbox.ZeroVector, ref startingTransform, ref triangleTransform, out tempHit) && tempHit.T < hit.T)
@@ -238,16 +237,14 @@ namespace BEPUphysics.BroadPhaseEntries
                         hit = tempHit;
                     }
                 }
-                tri.MaximumRadius = F64.C0;
+                tri.MaximumRadius = Fix32.Zero;
                 PhysicsThreadResources.GiveBack(tri);
                 CommonResources.GiveBack(hitElements);
-                return hit.T != Fix64.MaxValue;
+                return hit.T != Fix32.MaxValue;
             }
             PhysicsThreadResources.GiveBack(tri);
             CommonResources.GiveBack(hitElements);
             return false;
         }
-
-
     }
 }

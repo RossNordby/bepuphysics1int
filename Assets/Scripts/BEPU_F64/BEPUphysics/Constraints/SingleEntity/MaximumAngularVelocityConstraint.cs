@@ -1,7 +1,7 @@
 ﻿using System;
 using BEPUphysics.Entities;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Constraints.SingleEntity
 {
@@ -11,15 +11,15 @@ namespace BEPUphysics.Constraints.SingleEntity
     public class MaximumAngularSpeedConstraint : SingleEntityConstraint, I3DImpulseConstraint
     {
         private Matrix3x3 effectiveMassMatrix;
-        private Fix64 maxForceDt = Fix64.MaxValue;
-        private Fix64 maxForceDtSquared = Fix64.MaxValue;
+        private Fix32 maxForceDt = Fix32.MaxValue;
+        private Fix32 maxForceDtSquared = Fix32.MaxValue;
         private Vector3 accumulatedImpulse;
-        private Fix64 maximumForce = Fix64.MaxValue;
-        private Fix64 maximumSpeed;
-        private Fix64 maximumSpeedSquared;
+        private Fix32 maximumForce = Fix32.MaxValue;
+        private Fix32 maximumSpeed;
+        private Fix32 maximumSpeedSquared;
 
-        private Fix64 softness = (Fix64).00001m;
-        private Fix64 usedSoftness;
+        private Fix32 softness = .00001m.ToFix32();
+        private Fix32 usedSoftness;
 
         /// <summary>
         /// Constructs a maximum speed constraint.
@@ -36,7 +36,7 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// </summary>
         /// <param name="e">Affected entity.</param>
         /// <param name="maxSpeed">Maximum angular speed allowed.</param>
-        public MaximumAngularSpeedConstraint(Entity e, Fix64 maxSpeed)
+        public MaximumAngularSpeedConstraint(Entity e, Fix32 maxSpeed)
         {
             Entity = e;
             MaximumSpeed = maxSpeed;
@@ -46,29 +46,29 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// Gets and sets the maximum impulse that the constraint will attempt to apply when satisfying its requirements.
         /// This field can be used to simulate friction in a constraint.
         /// </summary>
-        public Fix64 MaximumForce
+        public Fix32 MaximumForce
         {
             get
             {
-                if (maximumForce > F64.C0)
+                if (maximumForce > Fix32.Zero)
                 {
                     return maximumForce;
                 }
-                return F64.C0;
+                return Fix32.Zero;
             }
-            set { maximumForce = value >= F64.C0 ? value : F64.C0; }
+            set { maximumForce = value >= Fix32.Zero ? value : Fix32.Zero; }
         }
 
         /// <summary>
         /// Gets or sets the maximum angular speed that this constraint allows.
         /// </summary>
-        public Fix64 MaximumSpeed
+        public Fix32 MaximumSpeed
         {
             get { return maximumSpeed; }
             set
             {
-                maximumSpeed = MathHelper.Max(F64.C0, value);
-                maximumSpeedSquared = maximumSpeed * maximumSpeed;
+                maximumSpeed = MathHelper.Max(Fix32.Zero, value);
+                maximumSpeedSquared = maximumSpeed .Mul (maximumSpeed);
             }
         }
 
@@ -80,10 +80,10 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// Sometimes, if a joint system is unstable, increasing the softness of the involved constraints will make it settle down.
         /// For motors, softness can be used to implement damping.  For a damping constant k, the appropriate softness is 1/k.
         /// </summary>
-        public Fix64 Softness
+        public Fix32 Softness
         {
             get { return softness; }
-            set { softness = MathHelper.Max(F64.C0, value); }
+            set { softness = MathHelper.Max(Fix32.Zero, value); }
         }
 
         #region I3DImpulseConstraint Members
@@ -110,16 +110,16 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// Calculates and applies corrective impulses.
         /// Called automatically by space.
         /// </summary>
-        public override Fix64 SolveIteration()
+        public override Fix32 SolveIteration()
         {
-            Fix64 angularSpeed = entity.angularVelocity.LengthSquared();
+            Fix32 angularSpeed = entity.angularVelocity.LengthSquared();
             if (angularSpeed > maximumSpeedSquared)
             {
-                angularSpeed = Fix64.Sqrt(angularSpeed);
+                angularSpeed = angularSpeed.Sqrt();
                 Vector3 impulse;
                 //divide by angularSpeed to normalize the velocity.
                 //Multiply by angularSpeed - maximumSpeed to get the 'velocity change vector.'
-                Vector3.Multiply(ref entity.angularVelocity, -(angularSpeed - maximumSpeed) / angularSpeed, out impulse);
+                Vector3.Multiply(ref entity.angularVelocity, (maximumSpeed .Sub (angularSpeed)) .Div (angularSpeed), out impulse);
 
                 //incorporate softness
                 Vector3 softnessImpulse;
@@ -133,28 +133,28 @@ namespace BEPUphysics.Constraints.SingleEntity
                 //Accumulate
                 Vector3 previousAccumulatedImpulse = accumulatedImpulse;
                 Vector3.Add(ref accumulatedImpulse, ref impulse, out accumulatedImpulse);
-                Fix64 forceMagnitude = accumulatedImpulse.LengthSquared();
+                Fix32 forceMagnitude = accumulatedImpulse.LengthSquared();
                 if (forceMagnitude > maxForceDtSquared)
                 {
                     //max / impulse gives some value 0 < x < 1.  Basically, normalize the vector (divide by the length) and scale by the maximum.
-                    Fix64 multiplier = maxForceDt / Fix64.Sqrt(forceMagnitude);
-                    accumulatedImpulse.X *= multiplier;
-                    accumulatedImpulse.Y *= multiplier;
-                    accumulatedImpulse.Z *= multiplier;
+                    Fix32 multiplier = maxForceDt .Div (forceMagnitude.Sqrt());
+                    accumulatedImpulse.X = accumulatedImpulse.X .Mul (multiplier);
+                    accumulatedImpulse.Y = accumulatedImpulse.Y .Mul (multiplier);
+					accumulatedImpulse.Z = accumulatedImpulse.Z .Mul (multiplier);
 
                     //Since the limit was exceeded by this corrective impulse, limit it so that the accumulated impulse remains constrained.
-                    impulse.X = accumulatedImpulse.X - previousAccumulatedImpulse.X;
-                    impulse.Y = accumulatedImpulse.Y - previousAccumulatedImpulse.Y;
-                    impulse.Z = accumulatedImpulse.Z - previousAccumulatedImpulse.Z;
+                    impulse.X = accumulatedImpulse.X .Sub (previousAccumulatedImpulse.X);
+                    impulse.Y = accumulatedImpulse.Y .Sub (previousAccumulatedImpulse.Y);
+                    impulse.Z = accumulatedImpulse.Z .Sub (previousAccumulatedImpulse.Z);
                 }
 
                 entity.ApplyAngularImpulse(ref impulse);
 
 
-                return (Fix64.Abs(impulse.X) + Fix64.Abs(impulse.Y) + Fix64.Abs(impulse.Z));
+                return ((impulse.X).Abs() .Add (impulse.Y).Abs().Add (impulse.Z).Abs());
             }
 
-            return F64.C0;
+            return Fix32.Zero;
         }
 
         /// <summary>
@@ -162,28 +162,28 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// Called automatically by space.
         /// </summary>
         /// <param name="dt">Time in seconds since the last update.</param>
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
-            usedSoftness = softness / dt;
+            usedSoftness = softness .Div (dt);
 
             effectiveMassMatrix = entity.inertiaTensorInverse;
 
-            effectiveMassMatrix.M11 += usedSoftness;
-            effectiveMassMatrix.M22 += usedSoftness;
-            effectiveMassMatrix.M33 += usedSoftness;
+            effectiveMassMatrix.M11 = effectiveMassMatrix.M11 .Add (usedSoftness);
+            effectiveMassMatrix.M22 = effectiveMassMatrix.M22 .Add (usedSoftness);
+            effectiveMassMatrix.M33 = effectiveMassMatrix.M33 .Add (usedSoftness);
 
             Matrix3x3.Invert(ref effectiveMassMatrix, out effectiveMassMatrix);
 
             //Determine maximum force
-            if (maximumForce < Fix64.MaxValue)
+            if (maximumForce < Fix32.MaxValue)
             {
-                maxForceDt = maximumForce * dt;
-                maxForceDtSquared = maxForceDt * maxForceDt;
+                maxForceDt = maximumForce .Mul (dt);
+                maxForceDtSquared = maxForceDt .Mul (maxForceDt);
             }
             else
             {
-                maxForceDt = Fix64.MaxValue;
-                maxForceDtSquared = Fix64.MaxValue;
+                maxForceDt = Fix32.MaxValue;
+                maxForceDtSquared = Fix32.MaxValue;
             }
 
         }

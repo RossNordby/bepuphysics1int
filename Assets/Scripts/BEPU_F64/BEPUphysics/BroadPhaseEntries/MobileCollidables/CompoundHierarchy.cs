@@ -47,7 +47,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             for (int i = 0; i < children.Length; i++)
             {
                 children[i].CollisionInformation.worldTransform = owner.Shape.shapes.Elements[i].LocalTransform;
-                children[i].CollisionInformation.UpdateBoundingBoxInternal(F64.C0);
+                children[i].CollisionInformation.UpdateBoundingBoxInternal(Fix32.Zero);
             }
             tree = new BoundingBoxTree<CompoundChild>(children);
         }

@@ -1,6 +1,4 @@
-﻿
-
-namespace BEPUutilities
+﻿namespace BEPUutilities
 {
     ///<summary>
     /// A transformation composed of a linear transformation and a translation.

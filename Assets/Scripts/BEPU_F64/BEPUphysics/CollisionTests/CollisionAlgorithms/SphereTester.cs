@@ -3,7 +3,7 @@ using BEPUphysics.CollisionShapes.ConvexShapes;
  
 using BEPUphysics.Settings;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 {
@@ -25,21 +25,21 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         {
             contact = new ContactData();
 
-            Fix64 radiusSum = a.collisionMargin + b.collisionMargin;
+            Fix32 radiusSum = a.collisionMargin .Add (b.collisionMargin);
             Vector3 centerDifference;
             Vector3.Subtract(ref positionB, ref positionA, out centerDifference);
-            Fix64 centerDistance = centerDifference.LengthSquared();
+            Fix32 centerDistance = centerDifference.LengthSquared();
 
-            if (centerDistance < (radiusSum + CollisionDetectionSettings.maximumContactDistance) * (radiusSum + CollisionDetectionSettings.maximumContactDistance))
+            if (centerDistance < (radiusSum .Add (CollisionDetectionSettings.maximumContactDistance)) .Mul (radiusSum .Add (CollisionDetectionSettings.maximumContactDistance)))
             {
                 //In collision!
 
                 if (radiusSum > Toolbox.Epsilon) //This would be weird, but it is still possible to cause a NaN.
-                    Vector3.Multiply(ref centerDifference, a.collisionMargin / (radiusSum), out  contact.Position);
+                    Vector3.Multiply(ref centerDifference, a.collisionMargin .Div (radiusSum), out  contact.Position);
                 else contact.Position = new Vector3();
                 Vector3.Add(ref contact.Position, ref positionA, out contact.Position);
 
-                centerDistance = Fix64.Sqrt(centerDistance);
+                centerDistance = centerDistance.Sqrt();
                 if (centerDistance > Toolbox.BigEpsilon)
                 {
                     Vector3.Divide(ref centerDifference, centerDistance, out contact.Normal);
@@ -48,7 +48,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 {
                     contact.Normal = Toolbox.UpVector;
                 }
-                contact.PenetrationDepth = radiusSum - centerDistance;
+                contact.PenetrationDepth = radiusSum .Sub (centerDistance);
 
                 return true;
 

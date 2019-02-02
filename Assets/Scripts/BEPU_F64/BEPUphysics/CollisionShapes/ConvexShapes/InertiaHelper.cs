@@ -4,7 +4,7 @@ using BEPUphysics.CollisionTests.Manifolds;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionShapes.ConvexShapes
 {
@@ -18,7 +18,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// Larger tensors (above 1) improve stiffness of constraints and contacts, while smaller values (towards 1) are closer to 'realistic' behavior.
         /// Defaults to 2.5.
         /// </summary>
-        public static Fix64 InertiaTensorScale = (Fix64)2.5m;
+        public static Fix32 InertiaTensorScale = 2.5m.ToFix32();
 
         ///<summary>
         /// Number of samples the system takes along a side of an object's AABB when voxelizing it.
@@ -34,18 +34,18 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<param name="center">Location to use as the center for the purposes of computing the contribution.</param>
         ///<param name="point">Point to compute the contribution of.</param>
         ///<param name="contribution">Contribution of the point.</param>
-        public static void GetPointContribution(Fix64 pointWeight, ref Vector3 center, ref Vector3 point, out Matrix3x3 contribution)
+        public static void GetPointContribution(Fix32 pointWeight, ref Vector3 center, ref Vector3 point, out Matrix3x3 contribution)
         {
             Vector3.Subtract(ref point, ref center, out point);
-			Fix64 xx = pointWeight * point.X * point.X;
-			Fix64 yy = pointWeight * point.Y * point.Y;
-			Fix64 zz = pointWeight * point.Z * point.Z;
-            contribution.M11 = yy + zz;
-            contribution.M22 = xx + zz;
-            contribution.M33 = xx + yy;
-            contribution.M12 = -pointWeight * point.X * point.Y;
-            contribution.M13 = -pointWeight * point.X * point.Z;
-            contribution.M23 = -pointWeight * point.Y * point.Z;
+			Fix32 xx = pointWeight .Mul (point.X) .Mul (point.X);
+			Fix32 yy = pointWeight .Mul (point.Y) .Mul (point.Y);
+			Fix32 zz = pointWeight .Mul (point.Z) .Mul (point.Z);
+            contribution.M11 = yy .Add (zz);
+            contribution.M22 = xx .Add (zz);
+            contribution.M33 = xx .Add (yy);
+            contribution.M12 = pointWeight.Neg() .Mul (point.X) .Mul (point.Y);
+            contribution.M13 = pointWeight.Neg() .Mul (point.X) .Mul (point.Z);
+            contribution.M23 = pointWeight.Neg() .Mul (point.Y) .Mul (point.Z);
             contribution.M21 = contribution.M12;
             contribution.M31 = contribution.M13;
             contribution.M32 = contribution.M23;
@@ -111,9 +111,9 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             vertices = new Vector3[GetExpectedVertexCount(subdivisionCount)];
 
 			////Create the regular tetrahedron vertices.
-			//Fix64 x = (Fix64)(1 / Math.Sqrt(3));
-			//Fix64 z = (Fix64)(-1 / (2 * Math.Sqrt(6)));
-			//vertices[0] = Vector3.Normalize(new Vector3(0, 0, (Fix64)(Math.Sqrt(2.0 / 3.0) + z)));
+			//Fix32 x = (Fix32)(1 / Math.Sqrt(3));
+			//Fix32 z = (Fix32)(-1 / (2 * Math.Sqrt(6)));
+			//vertices[0] = Vector3.Normalize(new Vector3(0, 0, (Fix32)(Math.Sqrt(2.0 / 3.0) + z)));
 			//vertices[1] = Vector3.Normalize(new Vector3(-0.5f * x, -0.5f, z));
 			//vertices[2] = Vector3.Normalize(new Vector3(-0.5f * x, 0.5f, z));
 			//vertices[3] = Vector3.Normalize(new Vector3(x, 0, z));
@@ -144,23 +144,23 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 			//Create the regular icosahedron vertices.
 			//Vector3[] vertices = new Vector3[12];
 			var goldenRatio = F64.GoldenRatio;
-			Fix64 length = Fix64.Sqrt(F64.C1 + goldenRatio * goldenRatio);
-			Fix64 x = F64.C1 / length;
-			Fix64 y = goldenRatio / length;
-            vertices[0] = new Vector3(F64.C0, x, y);
-            vertices[1] = new Vector3(F64.C0, -x, y);
-            vertices[2] = new Vector3(F64.C0, x, -y);
-            vertices[3] = new Vector3(F64.C0, -x, -y);
+			Fix32 length = (F64.C1.Add(goldenRatio.Mul(goldenRatio))).Sqrt();
+			Fix32 x = F64.C1 .Div (length);
+			Fix32 y = goldenRatio .Div (length);
+            vertices[0] = new Vector3(Fix32.Zero, x, y);
+            vertices[1] = new Vector3(Fix32.Zero, x.Neg(), y);
+            vertices[2] = new Vector3(Fix32.Zero, x, y.Neg());
+            vertices[3] = new Vector3(Fix32.Zero, x.Neg(), y.Neg());
 
-            vertices[4] = new Vector3(x, y, F64.C0);
-            vertices[5] = new Vector3(-x, y, F64.C0);
-            vertices[6] = new Vector3(x, -y, F64.C0);
-            vertices[7] = new Vector3(-x, -y, F64.C0);
+            vertices[4] = new Vector3(x, y, Fix32.Zero);
+            vertices[5] = new Vector3(x.Neg(), y, Fix32.Zero);
+            vertices[6] = new Vector3(x, y.Neg(), Fix32.Zero);
+            vertices[7] = new Vector3(x.Neg(), y.Neg(), Fix32.Zero);
 
-            vertices[8] = new Vector3(y, F64.C0, x);
-            vertices[9] = new Vector3(-y, F64.C0, x);
-            vertices[10] = new Vector3(y, F64.C0, -x);
-            vertices[11] = new Vector3(-y, F64.C0, -x);
+            vertices[8] = new Vector3(y, Fix32.Zero, x);
+            vertices[9] = new Vector3(y.Neg(), Fix32.Zero, x);
+            vertices[10] = new Vector3(y, Fix32.Zero, x.Neg());
+            vertices[11] = new Vector3(y.Neg(), Fix32.Zero, x.Neg());
 
             //Just treat this array as a list.
             int vertexCount = 12;
@@ -344,7 +344,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <param name="triangleIndices">Groups of 3 indices into the vertices array which represent the triangles of the mesh.</param>
         /// <param name="volume">Volume of the shape.</param>
         /// <param name="volumeDistribution">Distribution of the volume as measured from the computed center.</param>
-        public static void ComputeShapeDistribution(IList<Vector3> vertices, IList<int> triangleIndices, out Fix64 volume, out Matrix3x3 volumeDistribution)
+        public static void ComputeShapeDistribution(IList<Vector3> vertices, IList<int> triangleIndices, out Fix32 volume, out Matrix3x3 volumeDistribution)
         {
             //TODO: Whole bunch of repeat code here. If you ever need to change this, refactor the two methods to share.
             //Explanation for the tetrahedral integration bits: Explicit Exact Formulas for the 3-D Tetrahedron Inertia Tensor in Terms of its Vertex Coordinates
@@ -354,9 +354,9 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             // [  a  -b' -c' ]
             // [ -b'  b  -a' ]
             // [ -c' -a'  c  ]
-            Fix64 a = F64.C0, b = F64.C0, c = F64.C0, ao = F64.C0, bo = F64.C0, co = F64.C0;
+            Fix32 a = Fix32.Zero, b = Fix32.Zero, c = Fix32.Zero, ao = Fix32.Zero, bo = Fix32.Zero, co = Fix32.Zero;
 
-            Fix64 scaledVolume = F64.C0;
+            Fix32 scaledVolume = Fix32.Zero;
             for (int i = 0; i < triangleIndices.Count; i += 3)
             {
                 Vector3 v2 = vertices[triangleIndices[i]];
@@ -364,32 +364,32 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 Vector3 v4 = vertices[triangleIndices[i + 2]];
 
                 //Determinant is 6 * volume.  It's signed, though; the mesh isn't necessarily convex and the origin isn't necessarily in the mesh even if it is convex.
-                Fix64 scaledTetrahedronVolume = v2.X * (v3.Z * v4.Y - v3.Y * v4.Z) -
-                                                v3.X * (v2.Z * v4.Y - v2.Y * v4.Z) +
-                                                v4.X * (v2.Z * v3.Y - v2.Y * v3.Z);
+                Fix32 scaledTetrahedronVolume = (v2.X .Mul (v3.Z .Mul (v4.Y) .Sub (v3.Y .Mul (v4.Z)))) .Sub
+                                                (v3.X .Mul (v2.Z .Mul (v4.Y) .Sub (v2.Y .Mul (v4.Z)))) .Add
+                                                (v4.X .Mul (v2.Z .Mul (v3.Y) .Sub (v2.Y .Mul (v3.Z))));
 
-                scaledVolume += scaledTetrahedronVolume;
+                scaledVolume = scaledVolume.Add(scaledTetrahedronVolume);
 
-                a += scaledTetrahedronVolume * (v2.Y * v2.Y + v2.Y * v3.Y + v3.Y * v3.Y + v2.Y * v4.Y + v3.Y * v4.Y + v4.Y * v4.Y +
-                                                v2.Z * v2.Z + v2.Z * v3.Z + v3.Z * v3.Z + v2.Z * v4.Z + v3.Z * v4.Z + v4.Z * v4.Z);
-                b += scaledTetrahedronVolume * (v2.X * v2.X + v2.X * v3.X + v3.X * v3.X + v2.X * v4.X + v3.X * v4.X + v4.X * v4.X +
-                                                v2.Z * v2.Z + v2.Z * v3.Z + v3.Z * v3.Z + v2.Z * v4.Z + v3.Z * v4.Z + v4.Z * v4.Z);
-                c += scaledTetrahedronVolume * (v2.X * v2.X + v2.X * v3.X + v3.X * v3.X + v2.X * v4.X + v3.X * v4.X + v4.X * v4.X +
-                                                v2.Y * v2.Y + v2.Y * v3.Y + v3.Y * v3.Y + v2.Y * v4.Y + v3.Y * v4.Y + v4.Y * v4.Y);
-                ao += scaledTetrahedronVolume * (F64.C2 * v2.Y * v2.Z + v3.Y * v2.Z + v4.Y * v2.Z + v2.Y * v3.Z + F64.C2 * v3.Y * v3.Z + v4.Y * v3.Z + v2.Y * v4.Z + v3.Y * v4.Z + F64.C2 * v4.Y * v4.Z);
-                bo += scaledTetrahedronVolume * (F64.C2 * v2.X * v2.Z + v3.X * v2.Z + v4.X * v2.Z + v2.X * v3.Z + F64.C2 * v3.X * v3.Z + v4.X * v3.Z + v2.X * v4.Z + v3.X * v4.Z + F64.C2 * v4.X * v4.Z);
-                co += scaledTetrahedronVolume * (F64.C2 * v2.X * v2.Y + v3.X * v2.Y + v4.X * v2.Y + v2.X * v3.Y + F64.C2 * v3.X * v3.Y + v4.X * v3.Y + v2.X * v4.Y + v3.X * v4.Y + F64.C2 * v4.X * v4.Y);
+                a = a .Add (scaledTetrahedronVolume .Mul ((v2.Y .Mul (v2.Y)) .Add (v2.Y .Mul (v3.Y)) .Add (v3.Y .Mul (v3.Y)) .Add (v2.Y .Mul (v4.Y)) .Add (v3.Y .Mul (v4.Y)) .Add (v4.Y .Mul (v4.Y)) .Add
+                                                   (v2.Z .Mul (v2.Z)) .Add (v2.Z .Mul (v3.Z)) .Add (v3.Z .Mul (v3.Z)) .Add (v2.Z .Mul (v4.Z)) .Add (v3.Z .Mul (v4.Z)) .Add (v4.Z .Mul (v4.Z))));
+                b = b .Add (scaledTetrahedronVolume .Mul ((v2.X .Mul (v2.X)) .Add (v2.X .Mul (v3.X)) .Add (v3.X .Mul (v3.X)) .Add (v2.X .Mul (v4.X)) .Add (v3.X .Mul (v4.X)) .Add (v4.X .Mul (v4.X)) .Add
+												   (v2.Z .Mul (v2.Z)) .Add (v2.Z .Mul (v3.Z)) .Add (v3.Z .Mul (v3.Z)) .Add (v2.Z .Mul (v4.Z)) .Add (v3.Z .Mul (v4.Z)) .Add (v4.Z .Mul (v4.Z))));
+                c = c .Add (scaledTetrahedronVolume .Mul ((v2.X .Mul (v2.X)) .Add (v2.X .Mul (v3.X)) .Add (v3.X .Mul (v3.X)) .Add (v2.X .Mul (v4.X)) .Add (v3.X .Mul (v4.X)) .Add (v4.X .Mul (v4.X)) .Add
+                                                   (v2.Y .Mul (v2.Y)) .Add (v2.Y .Mul (v3.Y)) .Add (v3.Y .Mul (v3.Y)) .Add (v2.Y .Mul (v4.Y)) .Add (v3.Y .Mul (v4.Y)) .Add (v4.Y .Mul (v4.Y))));
+                ao = ao .Add (scaledTetrahedronVolume .Mul (F64.C2 .Mul (v2.Y) .Mul (v2.Z) .Add (v3.Y .Mul (v2.Z)) .Add (v4.Y .Mul (v2.Z)) .Add (v2.Y .Mul (v3.Z)) .Add (F64.C2 .Mul (v3.Y) .Mul (v3.Z)) .Add (v4.Y .Mul (v3.Z)) .Add (v2.Y .Mul (v4.Z)) .Add (v3.Y .Mul (v4.Z)) .Add (F64.C2 .Mul (v4.Y) .Mul (v4.Z))));
+                bo = bo .Add (scaledTetrahedronVolume .Mul (F64.C2 .Mul (v2.X) .Mul (v2.Z) .Add (v3.X .Mul (v2.Z)) .Add (v4.X .Mul (v2.Z)) .Add (v2.X .Mul (v3.Z)) .Add (F64.C2 .Mul (v3.X) .Mul (v3.Z)) .Add (v4.X .Mul (v3.Z)) .Add (v2.X .Mul (v4.Z)) .Add (v3.X .Mul (v4.Z)) .Add (F64.C2 .Mul (v4.X) .Mul (v4.Z))));
+                co = co .Add (scaledTetrahedronVolume .Mul (F64.C2 .Mul (v2.X) .Mul (v2.Y) .Add (v3.X .Mul (v2.Y)) .Add (v4.X .Mul (v2.Y)) .Add (v2.X .Mul (v3.Y)) .Add (F64.C2 .Mul (v3.X) .Mul (v3.Y)) .Add (v4.X .Mul (v3.Y)) .Add (v2.X .Mul (v4.Y)) .Add (v3.X .Mul (v4.Y)) .Add (F64.C2 .Mul (v4.X) .Mul (v4.Y))));
             }
-            volume = scaledVolume / F64.C6;
-            Fix64 scaledDensity = F64.C1 / volume;
-            Fix64 diagonalFactor = scaledDensity / F64.C60;
-            Fix64 offFactor = -scaledDensity / F64.C120;
-            a *= diagonalFactor;
-            b *= diagonalFactor;
-            c *= diagonalFactor;
-            ao *= offFactor;
-            bo *= offFactor;
-            co *= offFactor;
+            volume = scaledVolume .Mul (F64.C6);
+            Fix32 scaledDensity = F64.C1 .Mul (volume);
+            Fix32 diagonalFactor = scaledDensity .Div (F64.C60);
+            Fix32 offFactor = scaledDensity.Neg() .Div (F64.C120);
+            a = a .Mul (diagonalFactor);
+            b = b .Mul (diagonalFactor);
+            c = c .Mul (diagonalFactor);
+            ao = ao .Mul (offFactor);
+            bo = bo .Mul (offFactor);
+            co = co .Mul (offFactor);
             volumeDistribution = new Matrix3x3(a, bo, co,
                                                bo, b, ao,
                                                co, ao, c);
@@ -405,7 +405,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <param name="center">Computed center of the shape's volume.</param>
         /// <param name="volume">Volume of the shape.</param>
         /// <param name="volumeDistribution">Distribution of the volume as measured from the computed center.</param>
-        public static void ComputeShapeDistribution(IList<Vector3> vertices, IList<int> triangleIndices, out Vector3 center, out Fix64 volume, out Matrix3x3 volumeDistribution)
+        public static void ComputeShapeDistribution(IList<Vector3> vertices, IList<int> triangleIndices, out Vector3 center, out Fix32 volume, out Matrix3x3 volumeDistribution)
         {
             //Explanation for the tetrahedral integration bits: Explicit Exact Formulas for the 3-D Tetrahedron Inertia Tensor in Terms of its Vertex Coordinates
             //http://www.scipub.org/fulltext/jms2/jms2118-11.pdf
@@ -414,10 +414,10 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             // [  a  -b' -c' ]
             // [ -b'  b  -a' ]
             // [ -c' -a'  c  ]
-            Fix64 a = F64.C0, b = F64.C0, c = F64.C0, ao = F64.C0, bo = F64.C0, co = F64.C0;
+            Fix32 a = Fix32.Zero, b = Fix32.Zero, c = Fix32.Zero, ao = Fix32.Zero, bo = Fix32.Zero, co = Fix32.Zero;
 
             Vector3 summedCenter = new Vector3();
-            Fix64 scaledVolume = F64.C0;
+            Fix32 scaledVolume = Fix32.Zero;
             for (int i = 0; i < triangleIndices.Count; i += 3)
             {
                 Vector3 v2 = vertices[triangleIndices[i]];
@@ -425,11 +425,11 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 Vector3 v4 = vertices[triangleIndices[i + 2]];
 
                 //Determinant is 6 * volume.  It's signed, though; the mesh isn't necessarily convex and the origin isn't necessarily in the mesh even if it is convex.
-                Fix64 scaledTetrahedronVolume = v2.X * (v3.Z * v4.Y - v3.Y * v4.Z) -
-                                                v3.X * (v2.Z * v4.Y - v2.Y * v4.Z) +
-                                                v4.X * (v2.Z * v3.Y - v2.Y * v3.Z);
+                Fix32 scaledTetrahedronVolume = (v2.X .Mul (v3.Z .Mul (v4.Y) .Sub (v3.Y .Mul (v4.Z)))) .Sub
+                                                (v3.X .Mul (v2.Z .Mul (v4.Y) .Sub (v2.Y .Mul (v4.Z)))) .Add
+                                                (v4.X .Mul (v2.Z .Mul (v3.Y) .Sub (v2.Y .Mul (v3.Z))));
 
-                scaledVolume += scaledTetrahedronVolume;
+                scaledVolume = scaledVolume .Add (scaledTetrahedronVolume);
 
                 Vector3 tetrahedronCentroid;
                 Vector3.Add(ref v2, ref v3, out tetrahedronCentroid);
@@ -437,15 +437,15 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 Vector3.Multiply(ref tetrahedronCentroid, scaledTetrahedronVolume, out tetrahedronCentroid);
                 Vector3.Add(ref tetrahedronCentroid, ref summedCenter, out summedCenter);
 
-                a += scaledTetrahedronVolume * (v2.Y * v2.Y + v2.Y * v3.Y + v3.Y * v3.Y + v2.Y * v4.Y + v3.Y * v4.Y + v4.Y * v4.Y +
-                                                v2.Z * v2.Z + v2.Z * v3.Z + v3.Z * v3.Z + v2.Z * v4.Z + v3.Z * v4.Z + v4.Z * v4.Z);
-                b += scaledTetrahedronVolume * (v2.X * v2.X + v2.X * v3.X + v3.X * v3.X + v2.X * v4.X + v3.X * v4.X + v4.X * v4.X +
-                                                v2.Z * v2.Z + v2.Z * v3.Z + v3.Z * v3.Z + v2.Z * v4.Z + v3.Z * v4.Z + v4.Z * v4.Z);
-                c += scaledTetrahedronVolume * (v2.X * v2.X + v2.X * v3.X + v3.X * v3.X + v2.X * v4.X + v3.X * v4.X + v4.X * v4.X +
-                                                v2.Y * v2.Y + v2.Y * v3.Y + v3.Y * v3.Y + v2.Y * v4.Y + v3.Y * v4.Y + v4.Y * v4.Y);
-                ao += scaledTetrahedronVolume * (F64.C2 * v2.Y * v2.Z + v3.Y * v2.Z + v4.Y * v2.Z + v2.Y * v3.Z + F64.C2 * v3.Y * v3.Z + v4.Y * v3.Z + v2.Y * v4.Z + v3.Y * v4.Z + F64.C2 * v4.Y * v4.Z);
-                bo += scaledTetrahedronVolume * (F64.C2 * v2.X * v2.Z + v3.X * v2.Z + v4.X * v2.Z + v2.X * v3.Z + F64.C2 * v3.X * v3.Z + v4.X * v3.Z + v2.X * v4.Z + v3.X * v4.Z + F64.C2 * v4.X * v4.Z);
-                co += scaledTetrahedronVolume * (F64.C2 * v2.X * v2.Y + v3.X * v2.Y + v4.X * v2.Y + v2.X * v3.Y + F64.C2 * v3.X * v3.Y + v4.X * v3.Y + v2.X * v4.Y + v3.X * v4.Y + F64.C2 * v4.X * v4.Y);
+                a = a .Add (scaledTetrahedronVolume .Mul ((v2.Y .Mul (v2.Y)) .Add (v2.Y .Mul (v3.Y)) .Add (v3.Y .Mul (v3.Y)) .Add (v2.Y .Mul (v4.Y)) .Add (v3.Y .Mul (v4.Y)) .Add (v4.Y .Mul (v4.Y)) .Add
+                                                          (v2.Z .Mul (v2.Z)) .Add (v2.Z .Mul (v3.Z)) .Add (v3.Z .Mul (v3.Z)) .Add (v2.Z .Mul (v4.Z)) .Add (v3.Z .Mul (v4.Z)) .Add (v4.Z .Mul (v4.Z))));
+                b = b .Add (scaledTetrahedronVolume .Mul ((v2.X .Mul (v2.X)) .Add (v2.X .Mul (v3.X)) .Add (v3.X .Mul (v3.X)) .Add (v2.X .Mul (v4.X)) .Add (v3.X .Mul (v4.X)) .Add (v4.X .Mul (v4.X)) .Add
+                                                          (v2.Z .Mul (v2.Z)) .Add (v2.Z .Mul (v3.Z)) .Add (v3.Z .Mul (v3.Z)) .Add (v2.Z .Mul (v4.Z)) .Add (v3.Z .Mul (v4.Z)) .Add (v4.Z .Mul (v4.Z))));
+                c = c .Add (scaledTetrahedronVolume .Mul ((v2.X .Mul (v2.X)) .Add (v2.X .Mul (v3.X)) .Add (v3.X .Mul (v3.X)) .Add (v2.X .Mul (v4.X)) .Add (v3.X .Mul (v4.X)) .Add (v4.X .Mul (v4.X)) .Add
+                                                          (v2.Y .Mul (v2.Y)) .Add (v2.Y .Mul (v3.Y)) .Add (v3.Y .Mul (v3.Y)) .Add (v2.Y .Mul (v4.Y)) .Add (v3.Y .Mul (v4.Y)) .Add (v4.Y .Mul (v4.Y))));
+                ao = ao .Add (scaledTetrahedronVolume .Mul (F64.C2 .Mul (v2.Y) .Mul (v2.Z) .Add (v3.Y .Mul (v2.Z)) .Add (v4.Y .Mul (v2.Z)) .Add (v2.Y .Mul (v3.Z)) .Add (F64.C2 .Mul (v3.Y) .Mul (v3.Z)) .Add (v4.Y .Mul (v3.Z)) .Add (v2.Y .Mul (v4.Z)) .Add (v3.Y .Mul (v4.Z)) .Add (F64.C2 .Mul (v4.Y) .Mul (v4.Z))));
+                bo = bo .Add (scaledTetrahedronVolume .Mul (F64.C2 .Mul (v2.X) .Mul (v2.Z) .Add (v3.X .Mul (v2.Z)) .Add (v4.X .Mul (v2.Z)) .Add (v2.X .Mul (v3.Z)) .Add (F64.C2 .Mul (v3.X) .Mul (v3.Z)) .Add (v4.X .Mul (v3.Z)) .Add (v2.X .Mul (v4.Z)) .Add (v3.X .Mul (v4.Z)) .Add (F64.C2 .Mul (v4.X) .Mul (v4.Z))));
+                co = co .Add (scaledTetrahedronVolume .Mul (F64.C2 .Mul (v2.X) .Mul (v2.Y) .Add (v3.X .Mul (v2.Y)) .Add (v4.X .Mul (v2.Y)) .Add (v2.X .Mul (v3.Y)) .Add (F64.C2 .Mul (v3.X) .Mul (v3.Y)) .Add (v4.X .Mul (v3.Y)) .Add (v2.X .Mul (v4.Y)) .Add (v3.X .Mul (v4.Y)) .Add (F64.C2 .Mul (v4.X) .Mul (v4.Y))));
             }
             if (scaledVolume < Toolbox.Epsilon)
             {
@@ -455,22 +455,22 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 //In other words, this function shouldn't be used with things with no volume.
                 //A special case should be used instead.
                 volumeDistribution = new Matrix3x3();
-                volume = F64.C0;
+                volume = Fix32.Zero;
                 center = new Vector3();
             }
             else
             {
-                Vector3.Multiply(ref summedCenter, F64.C0p25 / scaledVolume, out center);
-                volume = scaledVolume / F64.C6;
-                Fix64 scaledDensity = F64.C1 / volume;
-                Fix64 diagonalFactor = scaledDensity / F64.C60;
-                Fix64 offFactor = -scaledDensity / F64.C120;
-                a *= diagonalFactor;
-                b *= diagonalFactor;
-                c *= diagonalFactor;
-                ao *= offFactor;
-                bo *= offFactor;
-                co *= offFactor;
+                Vector3.Multiply(ref summedCenter, F64.C0p25 .Div (scaledVolume), out center);
+                volume = scaledVolume .Div (F64.C6);
+                Fix32 scaledDensity = F64.C1 .Div (volume);
+                Fix32 diagonalFactor = scaledDensity .Div (F64.C60);
+                Fix32 offFactor = scaledDensity.Neg() .Div (F64.C120);
+                a = a .Mul (diagonalFactor);
+                b = b .Mul (diagonalFactor);
+                c = c .Mul (diagonalFactor);
+                ao = ao .Mul (offFactor);
+                bo = bo .Mul (offFactor);
+                co = co .Mul (offFactor);
                 //volumeDistribution = new Matrix3x3(a, bo, co,
                 //                                   bo, b, ao,
                 //                                   co, ao, c);
@@ -503,7 +503,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 
         }
 
-        //public static void GetInertiaOffset(Vector3 offset, Fix64 mass, out Matrix3x3 additionalInertia)
+        //public static void GetInertiaOffset(Vector3 offset, Fix32 mass, out Matrix3x3 additionalInertia)
         //{
         //    additionalInertia.M11 = mass * (offset.Y * offset.Y + offset.Z * offset.Z);
         //    additionalInertia.M12 = -mass * offset.X * offset.Y;
@@ -527,7 +527,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <param name="vertices">Vertices of the convex mesh.</param>
         /// <param name="triangleIndices">Groups of 3 indices into the vertices array which represent the triangles of the convex mesh.</param>
         /// <param name="center">Center of the convex shape.</param>
-        public static Fix64 ComputeMinimumRadius(IList<Vector3> vertices, IList<int> triangleIndices, ref Vector3 center)
+        public static Fix32 ComputeMinimumRadius(IList<Vector3> vertices, IList<int> triangleIndices, ref Vector3 center)
         {
             //Walk through all of the triangles. Treat them as a bunch of planes which bound the shape.
             //The closest distance on any of those planes to the center is the radius of the largest sphere,
@@ -535,7 +535,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 
             //While this shares a lot of math with the volume distribution computation (volume of a parallelepiped),
             //it requires that a center be available. So, it's a separate calculation.
-            Fix64 minimumDistance = Fix64.MaxValue;
+            Fix32 minimumDistance = Fix32.MaxValue;
             for (int i = 0; i < triangleIndices.Count; i += 3)
             {
                 Vector3 v2 = vertices[triangleIndices[i]];
@@ -552,18 +552,18 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 Vector3.Cross(ref v2v4, ref v2v3, out normal);
 
                 //Watch out: this could very easily be a degenerate triangle; the sampling approach tends to create them.
-                Fix64 lengthSquared = normal.LengthSquared();
+                Fix32 lengthSquared = normal.LengthSquared();
                 if (lengthSquared > F64.C1em10)
-                    Vector3.Divide(ref normal, Fix64.Sqrt(lengthSquared), out normal);
+                    Vector3.Divide(ref normal, lengthSquared.Sqrt(), out normal);
                 else
                     continue;
 
                 Vector3 fromCenterToPlane;
                 Vector3.Subtract(ref v2, ref center, out fromCenterToPlane);
 
-                Fix64 distance;
+                Fix32 distance;
                 Vector3.Dot(ref normal, ref fromCenterToPlane, out distance);
-                if (distance < F64.C0)
+                if (distance < Fix32.Zero)
                     throw new ArgumentException("Invalid distance. Ensure the mesh is convex, has consistent winding, and contains the passed-in center.");
 
                 if (distance < minimumDistance)

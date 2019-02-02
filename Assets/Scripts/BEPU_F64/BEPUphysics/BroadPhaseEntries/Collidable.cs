@@ -33,10 +33,10 @@ namespace BEPUphysics.BroadPhaseEntries
             protected set
             {
                 if (shape != null && shapeChangedHooked)
-                    shape.ShapeChanged -= shapeChangedDelegate;
+                    shape.ShapeChanged -= (shapeChangedDelegate);
                 shape = value;
                 if (shape != null && shapeChangedHooked)
-                    shape.ShapeChanged += shapeChangedDelegate;
+                    shape.ShapeChanged += (shapeChangedDelegate);
                 OnShapeChanged(shape);
             }
         }
@@ -59,11 +59,11 @@ namespace BEPUphysics.BroadPhaseEntries
                 {
                     if (shapeChangedHooked && !value)
                     {
-                        shape.ShapeChanged -= shapeChangedDelegate;
+                        shape.ShapeChanged -= (shapeChangedDelegate);
                     }
                     else if (!shapeChangedHooked && value)
                     {
-                        shape.ShapeChanged += shapeChangedDelegate;
+                        shape.ShapeChanged += (shapeChangedDelegate);
                     }
                 }
                 shapeChangedHooked = value;
@@ -143,9 +143,5 @@ namespace BEPUphysics.BroadPhaseEntries
             }
             index = -1;
         }
-
-
     }
-
-
 }

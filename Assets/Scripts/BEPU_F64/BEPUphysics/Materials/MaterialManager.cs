@@ -1,4 +1,4 @@
-﻿using FixMath.NET;
+﻿
 using System;
 using System.Collections.Generic;
 
@@ -27,17 +27,17 @@ namespace BEPUphysics.Materials
         /// Default coefficient of kinetic friction. 
         /// Defaults to 0.8.
         ///</summary>
-        public static Fix64 DefaultKineticFriction = (Fix64).8m;
+        public static Fix32 DefaultKineticFriction = .8m.ToFix32();
         ///<summary>
         /// Default coefficient of static friction.
         /// Defaults to 1.
         ///</summary>
-        public static Fix64 DefaultStaticFriction = Fix64.One;
+        public static Fix32 DefaultStaticFriction = Fix32.One;
         ///<summary>
         /// Default coefficient of restitution.
         /// Defaults to 0.
         ///</summary>
-        public static Fix64 DefaultBounciness;
+        public static Fix32 DefaultBounciness;
 
         static MaterialManager()
         {
@@ -79,9 +79,9 @@ namespace BEPUphysics.Materials
         {
             properties = new InteractionProperties
             {
-                Bounciness = a.bounciness * b.bounciness,
-                KineticFriction = a.kineticFriction * b.kineticFriction,
-                StaticFriction = a.staticFriction * b.staticFriction
+                Bounciness = a.bounciness .Mul (b.bounciness),
+                KineticFriction = a.kineticFriction .Mul (b.kineticFriction),
+                StaticFriction = a.staticFriction .Mul (b.staticFriction)
             };
         }
 

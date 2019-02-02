@@ -1,6 +1,5 @@
 ﻿using System;
 using BEPUutilities;
-using FixMath.NET;
 
 namespace BEPUik
 {
@@ -117,12 +116,12 @@ namespace BEPUik
 
             //Incorporate the constraint softness into the effective mass denominator. This pushes the matrix away from singularity.
             //Softness will also be incorporated into the velocity solve iterations to complete the implementation.
-            if (effectiveMass.M11 != F64.C0)
-                effectiveMass.M11 += softness;
-            if (effectiveMass.M22 != F64.C0)
-                effectiveMass.M22 += softness;
-            if (effectiveMass.M33 != F64.C0)
-                effectiveMass.M33 += softness;
+            if (effectiveMass.M11 != Fix32.Zero)
+                effectiveMass.M11 = effectiveMass.M11.Add(softness);
+            if (effectiveMass.M22 != Fix32.Zero)
+                effectiveMass.M22 = effectiveMass.M22.Add(softness);
+            if (effectiveMass.M33 != Fix32.Zero)
+                effectiveMass.M33 = effectiveMass.M33.Add(softness);
 
             //Invert! Takes us from J * M^-1 * JT to 1 / (J * M^-1 * JT).
             Matrix3x3.AdaptiveInvert(ref effectiveMass, out effectiveMass);
@@ -182,7 +181,7 @@ namespace BEPUik
             Vector3.Subtract(ref constraintVelocityError, ref velocityBias, out constraintVelocityError);
             //And second, the bias from softness:
             Vector3 softnessBias;
-            Vector3.Multiply(ref accumulatedImpulse, -softness, out softnessBias);
+            Vector3.Multiply(ref accumulatedImpulse, softness.Neg(), out softnessBias);
             Vector3.Subtract(ref constraintVelocityError, ref softnessBias, out constraintVelocityError);
 
             //By now, the constraint velocity error contains all the velocity we want to get rid of.
@@ -196,11 +195,11 @@ namespace BEPUik
             Vector3 preadd = accumulatedImpulse;
             Vector3.Add(ref constraintSpaceImpulse, ref accumulatedImpulse, out accumulatedImpulse);
             //But wait! The accumulated impulse may exceed this constraint's capacity! Check to make sure!
-            Fix64 impulseSquared = accumulatedImpulse.LengthSquared();
+            Fix32 impulseSquared = accumulatedImpulse.LengthSquared();
             if (impulseSquared > maximumImpulseSquared)
             {
                 //Oops! Clamp that down.
-                Vector3.Multiply(ref accumulatedImpulse, maximumImpulse / Fix64.Sqrt(impulseSquared), out accumulatedImpulse);
+                Vector3.Multiply(ref accumulatedImpulse, maximumImpulse.Div(impulseSquared.Sqrt()), out accumulatedImpulse);
                 //Update the impulse based upon the clamped accumulated impulse and the original, pre-add accumulated impulse.
                 Vector3.Subtract(ref accumulatedImpulse, ref preadd, out constraintSpaceImpulse);
             }

@@ -97,9 +97,9 @@ namespace BEPUphysics.CollisionRuleManagement
                 if (value != specific)
                 {
                     if (specific != null)
-                        specific.Changed -= OnChangedDelegate;
+                        specific.Changed -= (OnChangedDelegate);
                     if (value != null)
-                        value.Changed += OnChangedDelegate;
+                        value.Changed += (OnChangedDelegate);
 
                     specific = value;
                     OnChanged();

@@ -307,4 +307,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skin: {fileID: 11400000, guid: 3733a3cba4724ce45b423041575ae13c, type: 2}
-  iterations: 20000
+  iterations: 25000
+  repeats: 2

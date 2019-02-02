@@ -26,7 +26,7 @@ namespace BEPUphysics.BroadPhaseEntries
 
             material = new Material();
             materialChangedDelegate = OnMaterialChanged;
-            material.MaterialChanged += materialChangedDelegate;
+            material.MaterialChanged += (materialChangedDelegate);
         }
 
         protected override void OnShapeChanged(CollisionShape collisionShape)
@@ -49,10 +49,10 @@ namespace BEPUphysics.BroadPhaseEntries
             set
             {
                 if (material != null)
-                    material.MaterialChanged -= materialChangedDelegate;
+                    material.MaterialChanged -= (materialChangedDelegate);
                 material = value;
                 if (material != null)
-                    material.MaterialChanged += materialChangedDelegate;
+                    material.MaterialChanged += (materialChangedDelegate);
                 OnMaterialChanged(material);
             }
         }

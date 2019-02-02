@@ -1,7 +1,4 @@
-﻿using FixMath.NET;
-using System;
-
-namespace BEPUutilities
+﻿namespace BEPUutilities
 {
     /// <summary>
     /// Provides XNA-like 4x4 matrix math.
@@ -11,82 +8,82 @@ namespace BEPUutilities
         /// <summary>
         /// Value at row 1, column 1 of the matrix.
         /// </summary>
-        public Fix64 M11;
+        public Fix32 M11;
 
         /// <summary>
         /// Value at row 1, column 2 of the matrix.
         /// </summary>
-        public Fix64 M12;
+        public Fix32 M12;
 
         /// <summary>
         /// Value at row 1, column 3 of the matrix.
         /// </summary>
-        public Fix64 M13;
+        public Fix32 M13;
 
         /// <summary>
         /// Value at row 1, column 4 of the matrix.
         /// </summary>
-        public Fix64 M14;
+        public Fix32 M14;
 
         /// <summary>
         /// Value at row 2, column 1 of the matrix.
         /// </summary>
-        public Fix64 M21;
+        public Fix32 M21;
 
         /// <summary>
         /// Value at row 2, column 2 of the matrix.
         /// </summary>
-        public Fix64 M22;
+        public Fix32 M22;
 
         /// <summary>
         /// Value at row 2, column 3 of the matrix.
         /// </summary>
-        public Fix64 M23;
+        public Fix32 M23;
 
         /// <summary>
         /// Value at row 2, column 4 of the matrix.
         /// </summary>
-        public Fix64 M24;
+        public Fix32 M24;
 
         /// <summary>
         /// Value at row 3, column 1 of the matrix.
         /// </summary>
-        public Fix64 M31;
+        public Fix32 M31;
 
         /// <summary>
         /// Value at row 3, column 2 of the matrix.
         /// </summary>
-        public Fix64 M32;
+        public Fix32 M32;
 
         /// <summary>
         /// Value at row 3, column 3 of the matrix.
         /// </summary>
-        public Fix64 M33;
+        public Fix32 M33;
 
         /// <summary>
         /// Value at row 3, column 4 of the matrix.
         /// </summary>
-        public Fix64 M34;
+        public Fix32 M34;
 
         /// <summary>
         /// Value at row 4, column 1 of the matrix.
         /// </summary>
-        public Fix64 M41;
+        public Fix32 M41;
 
         /// <summary>
         /// Value at row 4, column 2 of the matrix.
         /// </summary>
-        public Fix64 M42;
+        public Fix32 M42;
 
         /// <summary>
         /// Value at row 4, column 3 of the matrix.
         /// </summary>
-        public Fix64 M43;
+        public Fix32 M43;
 
         /// <summary>
         /// Value at row 4, column 4 of the matrix.
         /// </summary>
-        public Fix64 M44;
+        public Fix32 M44;
 
         /// <summary>
         /// Constructs a new 4 row, 4 column matrix.
@@ -107,10 +104,10 @@ namespace BEPUutilities
         /// <param name="m42">Value at row 4, column 2 of the matrix.</param>
         /// <param name="m43">Value at row 4, column 3 of the matrix.</param>
         /// <param name="m44">Value at row 4, column 4 of the matrix.</param>
-        public Matrix(Fix64 m11, Fix64 m12, Fix64 m13, Fix64 m14,
-                      Fix64 m21, Fix64 m22, Fix64 m23, Fix64 m24,
-                      Fix64 m31, Fix64 m32, Fix64 m33, Fix64 m34,
-                      Fix64 m41, Fix64 m42, Fix64 m43, Fix64 m44)
+        public Matrix(Fix32 m11, Fix32 m12, Fix32 m13, Fix32 m14,
+                      Fix32 m21, Fix32 m22, Fix32 m23, Fix32 m24,
+                      Fix32 m31, Fix32 m32, Fix32 m33, Fix32 m34,
+                      Fix32 m41, Fix32 m42, Fix32 m43, Fix32 m44)
         {
             this.M11 = m11;
             this.M12 = m12;
@@ -192,16 +189,16 @@ namespace BEPUutilities
 #else
                 Vector3 vector;
 #endif
-                vector.X = -M21;
-                vector.Y = -M22;
-                vector.Z = -M23;
+                vector.X = M21.Neg();
+                vector.Y = M22.Neg();
+                vector.Z = M23.Neg();
                 return vector;
             }
             set
             {
-                M21 = -value.X;
-                M22 = -value.Y;
-                M23 = -value.Z;
+                M21 = value.X.Neg();
+                M22 = value.Y.Neg();
+                M23 = value.Z.Neg();
             }
         }
 
@@ -217,16 +214,16 @@ namespace BEPUutilities
 #else
                 Vector3 vector;
 #endif
-                vector.X = -M31;
-                vector.Y = -M32;
-                vector.Z = -M33;
+                vector.X = M31.Neg();
+                vector.Y = M32.Neg();
+                vector.Z = M33.Neg();
                 return vector;
             }
             set
             {
-                M31 = -value.X;
-                M32 = -value.Y;
-                M33 = -value.Z;
+                M31 = value.X.Neg();
+                M32 = value.Y.Neg();
+                M33 = value.Z.Neg();
             }
         }
 
@@ -242,16 +239,16 @@ namespace BEPUutilities
 #else
                 Vector3 vector;
 #endif
-                vector.X = -M11;
-                vector.Y = -M12;
-                vector.Z = -M13;
+                vector.X = M11.Neg();
+                vector.Y = M12.Neg();
+                vector.Z = M13.Neg();
                 return vector;
             }
             set
             {
-                M11 = -value.X;
-                M12 = -value.Y;
-                M13 = -value.Z;
+                M11 = value.X.Neg();
+                M12 = value.Y.Neg();
+                M13 = value.Z.Neg();
             }
         }
 
@@ -310,20 +307,20 @@ namespace BEPUutilities
         /// Computes the determinant of the matrix.
         /// </summary>
         /// <returns></returns>
-        public Fix64 Determinant()
+        public Fix32 Determinant()
         {
             //Compute the re-used 2x2 determinants.
-            Fix64 det1 = M33 * M44 - M34 * M43;
-            Fix64 det2 = M32 * M44 - M34 * M42;
-            Fix64 det3 = M32 * M43 - M33 * M42;
-            Fix64 det4 = M31 * M44 - M34 * M41;
-            Fix64 det5 = M31 * M43 - M33 * M41;
-            Fix64 det6 = M31 * M42 - M32 * M41;
+            Fix32 det1 = M33.Mul(M44).Sub(M34.Mul(M43));
+            Fix32 det2 = M32.Mul(M44).Sub(M34.Mul(M42));
+            Fix32 det3 = M32.Mul(M43).Sub(M33.Mul(M42));
+            Fix32 det4 = M31.Mul(M44).Sub(M34.Mul(M41));
+            Fix32 det5 = M31.Mul(M43).Sub(M33.Mul(M41));
+            Fix32 det6 = M31.Mul(M42).Sub(M32.Mul(M41));
             return
-                (M11 * ((M22 * det1 - M23 * det2) + M24 * det3)) -
-                (M12 * ((M21 * det1 - M23 * det4) + M24 * det5)) +
-                (M13 * ((M21 * det2 - M22 * det4) + M24 * det6)) -
-                (M14 * ((M21 * det3 - M22 * det5) + M23 * det6));
+                M11.Mul( M22.Mul(det1).Sub( M23.Mul(det2) ).Add( M24.Mul(det3) )).Sub(
+                M12.Mul( M21.Mul(det1).Sub( M23.Mul(det4) ).Add( M24.Mul(det5) ))).Add(
+                M13.Mul( M21.Mul(det2).Sub( M22.Mul(det4) ).Add( M24.Mul(det6) ))).Sub(
+				M14.Mul( M21.Mul(det3).Sub( M22.Mul(det5) ).Add( M23.Mul(det6) )));
         }
 
         /// <summary>
@@ -331,7 +328,7 @@ namespace BEPUutilities
         /// </summary>
         public void Transpose()
         {
-            Fix64 intermediate = M12;
+            Fix32 intermediate = M12;
             M12 = M21;
             M21 = intermediate;
 
@@ -362,7 +359,7 @@ namespace BEPUutilities
         /// <param name="axis">Axis around which to rotate.</param>
         /// <param name="angle">Angle to rotate around the axis.</param>
         /// <returns>Matrix created from the axis and angle.</returns>
-        public static Matrix CreateFromAxisAngle(Vector3 axis, Fix64 angle)
+        public static Matrix CreateFromAxisAngle(Vector3 axis, Fix32 angle)
         {
             Matrix toReturn;
             CreateFromAxisAngle(ref axis, angle, out toReturn);
@@ -375,36 +372,36 @@ namespace BEPUutilities
         /// <param name="axis">Axis around which to rotate.</param>
         /// <param name="angle">Angle to rotate around the axis.</param>
         /// <param name="result">Matrix created from the axis and angle.</param>
-        public static void CreateFromAxisAngle(ref Vector3 axis, Fix64 angle, out Matrix result)
+        public static void CreateFromAxisAngle(ref Vector3 axis, Fix32 angle, out Matrix result)
         {
-            Fix64 xx = axis.X * axis.X;
-            Fix64 yy = axis.Y * axis.Y;
-            Fix64 zz = axis.Z * axis.Z;
-            Fix64 xy = axis.X * axis.Y;
-            Fix64 xz = axis.X * axis.Z;
-            Fix64 yz = axis.Y * axis.Z;
+            Fix32 xx = axis.X.Mul(axis.X);
+            Fix32 yy = axis.Y.Mul(axis.Y);
+            Fix32 zz = axis.Z.Mul(axis.Z);
+            Fix32 xy = axis.X.Mul(axis.Y);
+            Fix32 xz = axis.X.Mul(axis.Z);
+            Fix32 yz = axis.Y.Mul(axis.Z);
 
-            Fix64 sinAngle = Fix64.Sin(angle);
-            Fix64 oneMinusCosAngle = F64.C1 - Fix64.Cos(angle);
+            Fix32 sinAngle = angle.Sin();
+            Fix32 oneMinusCosAngle = Fix32.One.Sub(angle.Cos());
 
-            result.M11 = F64.C1 + oneMinusCosAngle * (xx - F64.C1);
-            result.M21 = -axis.Z * sinAngle + oneMinusCosAngle * xy;
-            result.M31 = axis.Y * sinAngle + oneMinusCosAngle * xz;
-            result.M41 = F64.C0;
+            result.M11 = F64.C1.Add(oneMinusCosAngle.Mul(xx.Sub(F64.C1)));
+            result.M21 = axis.Z.Neg().Mul(sinAngle).Add(oneMinusCosAngle.Mul(xy));
+            result.M31 = axis.Y.Mul(sinAngle).Add(oneMinusCosAngle.Mul(xz));
+            result.M41 = Fix32.Zero;
 
-            result.M12 = axis.Z * sinAngle + oneMinusCosAngle * xy;
-            result.M22 = F64.C1 + oneMinusCosAngle * (yy - F64.C1);
-            result.M32 = -axis.X * sinAngle + oneMinusCosAngle * yz;
-            result.M42 = F64.C0;
+            result.M12 = axis.Z.Mul(sinAngle).Add(oneMinusCosAngle.Mul(xy));
+            result.M22 = F64.C1.Add(oneMinusCosAngle.Mul(yy.Sub(F64.C1)));
+            result.M32 = axis.X.Neg().Mul(sinAngle).Add(oneMinusCosAngle.Mul(yz));
+            result.M42 = Fix32.Zero;
 
-            result.M13 = -axis.Y * sinAngle + oneMinusCosAngle * xz;
-            result.M23 = axis.X * sinAngle + oneMinusCosAngle * yz;
-            result.M33 = F64.C1 + oneMinusCosAngle * (zz - F64.C1);
-            result.M43 = F64.C0;
+            result.M13 = axis.Y.Neg().Mul(sinAngle).Add(oneMinusCosAngle.Mul(xz));
+            result.M23 = axis.X.Mul(sinAngle).Add(oneMinusCosAngle.Mul(yz));
+            result.M33 = F64.C1.Add(oneMinusCosAngle.Mul(zz.Sub(F64.C1)));
+            result.M43 = Fix32.Zero;
 
-            result.M14 = F64.C0;
-            result.M24 = F64.C0;
-            result.M34 = F64.C0;
+            result.M14 = Fix32.Zero;
+            result.M24 = Fix32.Zero;
+            result.M34 = Fix32.Zero;
             result.M44 = F64.C1;
         }
 
@@ -415,37 +412,37 @@ namespace BEPUutilities
         /// <param name="result">Rotation matrix created from the quaternion.</param>
         public static void CreateFromQuaternion(ref Quaternion quaternion, out Matrix result)
         {
-            Fix64 qX2 = quaternion.X + quaternion.X;
-            Fix64 qY2 = quaternion.Y + quaternion.Y;
-            Fix64 qZ2 = quaternion.Z + quaternion.Z;
-            Fix64 XX = qX2 * quaternion.X;
-            Fix64 YY = qY2 * quaternion.Y;
-            Fix64 ZZ = qZ2 * quaternion.Z;
-            Fix64 XY = qX2 * quaternion.Y;
-            Fix64 XZ = qX2 * quaternion.Z;
-            Fix64 XW = qX2 * quaternion.W;
-            Fix64 YZ = qY2 * quaternion.Z;
-            Fix64 YW = qY2 * quaternion.W;
-            Fix64 ZW = qZ2 * quaternion.W;
+            Fix32 qX2 = quaternion.X.Add(quaternion.X);
+            Fix32 qY2 = quaternion.Y.Add(quaternion.Y);
+            Fix32 qZ2 = quaternion.Z.Add(quaternion.Z);
+            Fix32 XX = qX2.Mul(quaternion.X);
+            Fix32 YY = qY2.Mul(quaternion.Y);
+            Fix32 ZZ = qZ2.Mul(quaternion.Z);
+            Fix32 XY = qX2.Mul(quaternion.Y);
+            Fix32 XZ = qX2.Mul(quaternion.Z);
+            Fix32 XW = qX2.Mul(quaternion.W);
+            Fix32 YZ = qY2.Mul(quaternion.Z);
+            Fix32 YW = qY2.Mul(quaternion.W);
+            Fix32 ZW = qZ2.Mul(quaternion.W);
 
-            result.M11 = F64.C1 - YY - ZZ;
-            result.M21 = XY - ZW;
-            result.M31 = XZ + YW;
-            result.M41 = F64.C0;
+            result.M11 = F64.C1.Sub(YY).Sub(ZZ);
+            result.M21 = XY.Sub(ZW);
+            result.M31 = XZ.Add(YW);
+            result.M41 = Fix32.Zero;
 
-            result.M12 = XY + ZW;
-            result.M22 = F64.C1 - XX - ZZ;
-            result.M32 = YZ - XW;
-            result.M42 = F64.C0;
+            result.M12 = XY.Add(ZW);
+            result.M22 = F64.C1.Sub(XX).Sub(ZZ);
+            result.M32 = YZ.Sub(XW);
+            result.M42 = Fix32.Zero;
 
-            result.M13 = XZ - YW;
-            result.M23 = YZ + XW;
-            result.M33 = F64.C1 - XX - YY;
-            result.M43 = F64.C0;
+            result.M13 = XZ.Sub(YW);
+            result.M23 = YZ.Add(XW);
+            result.M33 = F64.C1.Sub(XX).Sub(YY);
+            result.M43 = Fix32.Zero;
 
-            result.M14 = F64.C0;
-            result.M24 = F64.C0;
-            result.M34 = F64.C0;
+            result.M14 = Fix32.Zero;
+            result.M24 = Fix32.Zero;
+            result.M34 = Fix32.Zero;
             result.M44 = F64.C1;
         }
 
@@ -469,25 +466,25 @@ namespace BEPUutilities
         /// <param name="result">Combined transformation.</param>
         public static void Multiply(ref Matrix a, ref Matrix b, out Matrix result)
         {
-            Fix64 resultM11 = a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31 + a.M14 * b.M41;
-            Fix64 resultM12 = a.M11 * b.M12 + a.M12 * b.M22 + a.M13 * b.M32 + a.M14 * b.M42;
-            Fix64 resultM13 = a.M11 * b.M13 + a.M12 * b.M23 + a.M13 * b.M33 + a.M14 * b.M43;
-            Fix64 resultM14 = a.M11 * b.M14 + a.M12 * b.M24 + a.M13 * b.M34 + a.M14 * b.M44;
+            Fix32 resultM11 = a.M11.Mul(b.M11) .Add( a.M12.Mul(b.M21) ).Add( a.M13.Mul(b.M31) ).Add( a.M14.Mul(b.M41));
+            Fix32 resultM12 = a.M11.Mul(b.M12) .Add( a.M12.Mul(b.M22) ).Add( a.M13.Mul(b.M32) ).Add( a.M14.Mul(b.M42));
+            Fix32 resultM13 = a.M11.Mul(b.M13) .Add( a.M12.Mul(b.M23) ).Add( a.M13.Mul(b.M33) ).Add( a.M14.Mul(b.M43));
+            Fix32 resultM14 = a.M11.Mul(b.M14) .Add( a.M12.Mul(b.M24) ).Add( a.M13.Mul(b.M34) ).Add( a.M14.Mul(b.M44));
 
-            Fix64 resultM21 = a.M21 * b.M11 + a.M22 * b.M21 + a.M23 * b.M31 + a.M24 * b.M41;
-            Fix64 resultM22 = a.M21 * b.M12 + a.M22 * b.M22 + a.M23 * b.M32 + a.M24 * b.M42;
-            Fix64 resultM23 = a.M21 * b.M13 + a.M22 * b.M23 + a.M23 * b.M33 + a.M24 * b.M43;
-            Fix64 resultM24 = a.M21 * b.M14 + a.M22 * b.M24 + a.M23 * b.M34 + a.M24 * b.M44;
+            Fix32 resultM21 = a.M21.Mul(b.M11) .Add( a.M22.Mul(b.M21) ).Add( a.M23.Mul(b.M31) ).Add( a.M24.Mul(b.M41));
+            Fix32 resultM22 = a.M21.Mul(b.M12) .Add( a.M22.Mul(b.M22) ).Add( a.M23.Mul(b.M32) ).Add( a.M24.Mul(b.M42));
+            Fix32 resultM23 = a.M21.Mul(b.M13) .Add( a.M22.Mul(b.M23) ).Add( a.M23.Mul(b.M33) ).Add( a.M24.Mul(b.M43));
+            Fix32 resultM24 = a.M21.Mul(b.M14) .Add( a.M22.Mul(b.M24) ).Add( a.M23.Mul(b.M34) ).Add( a.M24.Mul(b.M44));
 
-            Fix64 resultM31 = a.M31 * b.M11 + a.M32 * b.M21 + a.M33 * b.M31 + a.M34 * b.M41;
-            Fix64 resultM32 = a.M31 * b.M12 + a.M32 * b.M22 + a.M33 * b.M32 + a.M34 * b.M42;
-            Fix64 resultM33 = a.M31 * b.M13 + a.M32 * b.M23 + a.M33 * b.M33 + a.M34 * b.M43;
-            Fix64 resultM34 = a.M31 * b.M14 + a.M32 * b.M24 + a.M33 * b.M34 + a.M34 * b.M44;
+            Fix32 resultM31 = a.M31.Mul(b.M11) .Add( a.M32.Mul(b.M21) ).Add( a.M33.Mul(b.M31) ).Add( a.M34.Mul(b.M41));
+            Fix32 resultM32 = a.M31.Mul(b.M12) .Add( a.M32.Mul(b.M22) ).Add( a.M33.Mul(b.M32) ).Add( a.M34.Mul(b.M42));
+            Fix32 resultM33 = a.M31.Mul(b.M13) .Add( a.M32.Mul(b.M23) ).Add( a.M33.Mul(b.M33) ).Add( a.M34.Mul(b.M43));
+            Fix32 resultM34 = a.M31.Mul(b.M14) .Add( a.M32.Mul(b.M24) ).Add( a.M33.Mul(b.M34) ).Add( a.M34.Mul(b.M44));
 
-            Fix64 resultM41 = a.M41 * b.M11 + a.M42 * b.M21 + a.M43 * b.M31 + a.M44 * b.M41;
-            Fix64 resultM42 = a.M41 * b.M12 + a.M42 * b.M22 + a.M43 * b.M32 + a.M44 * b.M42;
-            Fix64 resultM43 = a.M41 * b.M13 + a.M42 * b.M23 + a.M43 * b.M33 + a.M44 * b.M43;
-            Fix64 resultM44 = a.M41 * b.M14 + a.M42 * b.M24 + a.M43 * b.M34 + a.M44 * b.M44;
+            Fix32 resultM41 = a.M41.Mul(b.M11) .Add( a.M42.Mul(b.M21) ).Add( a.M43.Mul(b.M31) ).Add( a.M44.Mul(b.M41));
+            Fix32 resultM42 = a.M41.Mul(b.M12) .Add( a.M42.Mul(b.M22) ).Add( a.M43.Mul(b.M32) ).Add( a.M44.Mul(b.M42));
+            Fix32 resultM43 = a.M41.Mul(b.M13) .Add( a.M42.Mul(b.M23) ).Add( a.M43.Mul(b.M33) ).Add( a.M44.Mul(b.M43));
+            Fix32 resultM44 = a.M41.Mul(b.M14) .Add( a.M42.Mul(b.M24) ).Add( a.M43.Mul(b.M34) ).Add( a.M44.Mul(b.M44));
 
             result.M11 = resultM11;
             result.M12 = resultM12;
@@ -531,27 +528,24 @@ namespace BEPUutilities
         /// <param name="matrix">Matrix to scale.</param>
         /// <param name="scale">Amount to scale.</param>
         /// <param name="result">Scaled matrix.</param>
-        public static void Multiply(ref Matrix matrix, Fix64 scale, out Matrix result)
+        public static void Multiply(ref Matrix matrix, Fix32 scale, out Matrix result)
         {
-            result.M11 = matrix.M11 * scale;
-            result.M12 = matrix.M12 * scale;
-            result.M13 = matrix.M13 * scale;
-            result.M14 = matrix.M14 * scale;
-
-            result.M21 = matrix.M21 * scale;
-            result.M22 = matrix.M22 * scale;
-            result.M23 = matrix.M23 * scale;
-            result.M24 = matrix.M24 * scale;
-
-            result.M31 = matrix.M31 * scale;
-            result.M32 = matrix.M32 * scale;
-            result.M33 = matrix.M33 * scale;
-            result.M34 = matrix.M34 * scale;
-
-            result.M41 = matrix.M41 * scale;
-            result.M42 = matrix.M42 * scale;
-            result.M43 = matrix.M43 * scale;
-            result.M44 = matrix.M44 * scale;
+            result.M11 = matrix.M11.Mul(scale);
+            result.M12 = matrix.M12.Mul(scale);
+            result.M13 = matrix.M13.Mul(scale);
+            result.M14 = matrix.M14.Mul(scale);
+            result.M21 = matrix.M21.Mul(scale);
+            result.M22 = matrix.M22.Mul(scale);
+            result.M23 = matrix.M23.Mul(scale);
+            result.M24 = matrix.M24.Mul(scale);
+            result.M31 = matrix.M31.Mul(scale);
+            result.M32 = matrix.M32.Mul(scale);
+            result.M33 = matrix.M33.Mul(scale);
+            result.M34 = matrix.M34.Mul(scale);
+            result.M41 = matrix.M41.Mul(scale);
+            result.M42 = matrix.M42.Mul(scale);
+            result.M43 = matrix.M43.Mul(scale);
+            result.M44 = matrix.M44.Mul(scale);
         }
 
         /// <summary>
@@ -573,7 +567,7 @@ namespace BEPUutilities
         /// <param name="m">First matrix to multiply.</param>
         /// <param name="f">Scaling value to apply to all components of the matrix.</param>
         /// <returns>Product of the multiplication.</returns>
-        public static Matrix operator *(Matrix m, Fix64 f)
+        public static Matrix operator *(Matrix m, Fix32 f)
         {
             Matrix result;
             Multiply(ref m, f, out result);
@@ -586,7 +580,7 @@ namespace BEPUutilities
         /// <param name="m">First matrix to multiply.</param>
         /// <param name="f">Scaling value to apply to all components of the matrix.</param>
         /// <returns>Product of the multiplication.</returns>
-        public static Matrix operator *(Fix64 f, Matrix m)
+        public static Matrix operator *(Fix32 f, Matrix m)
         {
             Matrix result;
             Multiply(ref m, f, out result);
@@ -601,14 +595,14 @@ namespace BEPUutilities
         /// <param name="result">Transformed vector.</param>
         public static void Transform(ref Vector4 v, ref Matrix matrix, out Vector4 result)
         {
-            Fix64 vX = v.X;
-            Fix64 vY = v.Y;
-            Fix64 vZ = v.Z;
-            Fix64 vW = v.W;
-            result.X = vX * matrix.M11 + vY * matrix.M21 + vZ * matrix.M31 + vW * matrix.M41;
-            result.Y = vX * matrix.M12 + vY * matrix.M22 + vZ * matrix.M32 + vW * matrix.M42;
-            result.Z = vX * matrix.M13 + vY * matrix.M23 + vZ * matrix.M33 + vW * matrix.M43;
-            result.W = vX * matrix.M14 + vY * matrix.M24 + vZ * matrix.M34 + vW * matrix.M44;
+            Fix32 vX = v.X;
+            Fix32 vY = v.Y;
+            Fix32 vZ = v.Z;
+            Fix32 vW = v.W;
+            result.X = vX.Mul(matrix.M11) .Add( vY.Mul(matrix.M21) ).Add( vZ.Mul(matrix.M31) ).Add( vW.Mul(matrix.M41) );
+			result.Y = vX.Mul(matrix.M12) .Add( vY.Mul(matrix.M22) ).Add( vZ.Mul(matrix.M32) ).Add( vW.Mul(matrix.M42) );
+            result.Z = vX.Mul(matrix.M13) .Add( vY.Mul(matrix.M23) ).Add( vZ.Mul(matrix.M33) ).Add( vW.Mul(matrix.M43) );
+            result.W = vX.Mul(matrix.M14) .Add( vY.Mul(matrix.M24) ).Add( vZ.Mul(matrix.M34) ).Add( vW.Mul(matrix.M44) );
         }
 
         /// <summary>
@@ -632,14 +626,14 @@ namespace BEPUutilities
         /// <param name="result">Transformed vector.</param>
         public static void TransformTranspose(ref Vector4 v, ref Matrix matrix, out Vector4 result)
         {
-            Fix64 vX = v.X;
-            Fix64 vY = v.Y;
-            Fix64 vZ = v.Z;
-            Fix64 vW = v.W;
-            result.X = vX * matrix.M11 + vY * matrix.M12 + vZ * matrix.M13 + vW * matrix.M14;
-            result.Y = vX * matrix.M21 + vY * matrix.M22 + vZ * matrix.M23 + vW * matrix.M24;
-            result.Z = vX * matrix.M31 + vY * matrix.M32 + vZ * matrix.M33 + vW * matrix.M34;
-            result.W = vX * matrix.M41 + vY * matrix.M42 + vZ * matrix.M43 + vW * matrix.M44;
+            Fix32 vX = v.X;
+            Fix32 vY = v.Y;
+            Fix32 vZ = v.Z;
+            Fix32 vW = v.W;
+            result.X = vX.Mul(matrix.M11) .Add( vY.Mul(matrix.M12) ).Add( vZ.Mul(matrix.M13) ).Add( vW.Mul(matrix.M14) );
+            result.Y = vX.Mul(matrix.M21) .Add( vY.Mul(matrix.M22) ).Add( vZ.Mul(matrix.M23) ).Add( vW.Mul(matrix.M24) );
+            result.Z = vX.Mul(matrix.M31) .Add( vY.Mul(matrix.M32) ).Add( vZ.Mul(matrix.M33) ).Add( vW.Mul(matrix.M34) );
+            result.W = vX.Mul(matrix.M41) .Add( vY.Mul(matrix.M42) ).Add( vZ.Mul(matrix.M43) ).Add( vW.Mul(matrix.M44) );
         }
 
         /// <summary>
@@ -663,10 +657,10 @@ namespace BEPUutilities
         /// <param name="result">Transformed vector.</param>
         public static void Transform(ref Vector3 v, ref Matrix matrix, out Vector4 result)
         {
-            result.X = v.X * matrix.M11 + v.Y * matrix.M21 + v.Z * matrix.M31 + matrix.M41;
-            result.Y = v.X * matrix.M12 + v.Y * matrix.M22 + v.Z * matrix.M32 + matrix.M42;
-            result.Z = v.X * matrix.M13 + v.Y * matrix.M23 + v.Z * matrix.M33 + matrix.M43;
-            result.W = v.X * matrix.M14 + v.Y * matrix.M24 + v.Z * matrix.M34 + matrix.M44;
+            result.X = v.X.Mul(matrix.M11) .Add( v.Y.Mul(matrix.M21) ).Add( v.Z.Mul(matrix.M31 ).Add( matrix.M41) );
+            result.Y = v.X.Mul(matrix.M12) .Add( v.Y.Mul(matrix.M22) ).Add( v.Z.Mul(matrix.M32 ).Add( matrix.M42) );
+            result.Z = v.X.Mul(matrix.M13) .Add( v.Y.Mul(matrix.M23) ).Add( v.Z.Mul(matrix.M33 ).Add( matrix.M43) );
+            result.W = v.X.Mul(matrix.M14) .Add( v.Y.Mul(matrix.M24) ).Add( v.Z.Mul(matrix.M34 ).Add( matrix.M44) );
         }
 
         /// <summary>
@@ -690,10 +684,10 @@ namespace BEPUutilities
         /// <param name="result">Transformed vector.</param>
         public static void TransformTranspose(ref Vector3 v, ref Matrix matrix, out Vector4 result)
         {
-            result.X = v.X * matrix.M11 + v.Y * matrix.M12 + v.Z * matrix.M13 + matrix.M14;
-            result.Y = v.X * matrix.M21 + v.Y * matrix.M22 + v.Z * matrix.M23 + matrix.M24;
-            result.Z = v.X * matrix.M31 + v.Y * matrix.M32 + v.Z * matrix.M33 + matrix.M34;
-            result.W = v.X * matrix.M41 + v.Y * matrix.M42 + v.Z * matrix.M43 + matrix.M44;
+            result.X = v.X.Mul(matrix.M11) .Add( v.Y.Mul(matrix.M12) ).Add( v.Z.Mul(matrix.M13 ).Add( matrix.M14) );
+            result.Y = v.X.Mul(matrix.M21) .Add( v.Y.Mul(matrix.M22) ).Add( v.Z.Mul(matrix.M23 ).Add( matrix.M24) );
+            result.Z = v.X.Mul(matrix.M31) .Add( v.Y.Mul(matrix.M32) ).Add( v.Z.Mul(matrix.M33 ).Add( matrix.M34) );
+            result.W = v.X.Mul(matrix.M41) .Add( v.Y.Mul(matrix.M42) ).Add( v.Z.Mul(matrix.M43 ).Add( matrix.M44) );
         }
 
         /// <summary>
@@ -717,12 +711,12 @@ namespace BEPUutilities
         /// <param name="result">Transformed vector.</param>
         public static void Transform(ref Vector3 v, ref Matrix matrix, out Vector3 result)
         {
-            Fix64 vX = v.X;
-            Fix64 vY = v.Y;
-            Fix64 vZ = v.Z;
-            result.X = vX * matrix.M11 + vY * matrix.M21 + vZ * matrix.M31 + matrix.M41;
-            result.Y = vX * matrix.M12 + vY * matrix.M22 + vZ * matrix.M32 + matrix.M42;
-            result.Z = vX * matrix.M13 + vY * matrix.M23 + vZ * matrix.M33 + matrix.M43;
+            Fix32 vX = v.X;
+            Fix32 vY = v.Y;
+            Fix32 vZ = v.Z;
+            result.X = vX.Mul(matrix.M11) .Add( vY.Mul(matrix.M21) ).Add( vZ.Mul(matrix.M31) ).Add( matrix.M41 );
+            result.Y = vX.Mul(matrix.M12) .Add( vY.Mul(matrix.M22) ).Add( vZ.Mul(matrix.M32) ).Add( matrix.M42 );
+            result.Z = vX.Mul(matrix.M13) .Add( vY.Mul(matrix.M23) ).Add( vZ.Mul(matrix.M33) ).Add( matrix.M43 );
         }
 
         /// <summary>
@@ -733,12 +727,12 @@ namespace BEPUutilities
         /// <param name="result">Transformed vector.</param>
         public static void TransformTranspose(ref Vector3 v, ref Matrix matrix, out Vector3 result)
         {
-            Fix64 vX = v.X;
-            Fix64 vY = v.Y;
-            Fix64 vZ = v.Z;
-            result.X = vX * matrix.M11 + vY * matrix.M12 + vZ * matrix.M13 + matrix.M14;
-            result.Y = vX * matrix.M21 + vY * matrix.M22 + vZ * matrix.M23 + matrix.M24;
-            result.Z = vX * matrix.M31 + vY * matrix.M32 + vZ * matrix.M33 + matrix.M34;
+            Fix32 vX = v.X;
+            Fix32 vY = v.Y;
+            Fix32 vZ = v.Z;
+            result.X = vX.Mul(matrix.M11) .Add( vY.Mul(matrix.M12) ).Add( vZ.Mul(matrix.M13) ).Add( matrix.M14 );
+            result.Y = vX.Mul(matrix.M21) .Add( vY.Mul(matrix.M22) ).Add( vZ.Mul(matrix.M23) ).Add( matrix.M24 );
+            result.Z = vX.Mul(matrix.M31) .Add( vY.Mul(matrix.M32) ).Add( vZ.Mul(matrix.M33) ).Add( matrix.M34 );
         }
 
         /// <summary>
@@ -749,12 +743,12 @@ namespace BEPUutilities
         /// <param name="result">Transformed vector.</param>
         public static void TransformNormal(ref Vector3 v, ref Matrix matrix, out Vector3 result)
         {
-            Fix64 vX = v.X;
-            Fix64 vY = v.Y;
-            Fix64 vZ = v.Z;
-            result.X = vX * matrix.M11 + vY * matrix.M21 + vZ * matrix.M31;
-            result.Y = vX * matrix.M12 + vY * matrix.M22 + vZ * matrix.M32;
-            result.Z = vX * matrix.M13 + vY * matrix.M23 + vZ * matrix.M33;
+            Fix32 vX = v.X;
+            Fix32 vY = v.Y;
+            Fix32 vZ = v.Z;
+            result.X = vX.Mul(matrix.M11) .Add( vY.Mul(matrix.M21) ).Add( vZ.Mul(matrix.M31) );
+            result.Y = vX.Mul(matrix.M12) .Add( vY.Mul(matrix.M22) ).Add( vZ.Mul(matrix.M32) );
+            result.Z = vX.Mul(matrix.M13) .Add( vY.Mul(matrix.M23) ).Add( vZ.Mul(matrix.M33) );
         }
 
         /// <summary>
@@ -778,12 +772,12 @@ namespace BEPUutilities
         /// <param name="result">Transformed vector.</param>
         public static void TransformNormalTranspose(ref Vector3 v, ref Matrix matrix, out Vector3 result)
         {
-            Fix64 vX = v.X;
-            Fix64 vY = v.Y;
-            Fix64 vZ = v.Z;
-            result.X = vX * matrix.M11 + vY * matrix.M12 + vZ * matrix.M13;
-            result.Y = vX * matrix.M21 + vY * matrix.M22 + vZ * matrix.M23;
-            result.Z = vX * matrix.M31 + vY * matrix.M32 + vZ * matrix.M33;
+            Fix32 vX = v.X;
+            Fix32 vY = v.Y;
+            Fix32 vZ = v.Z;
+            result.X = vX.Mul(matrix.M11) .Add( vY.Mul(matrix.M12) ).Add( vZ.Mul(matrix.M13) );
+            result.Y = vX.Mul(matrix.M21) .Add( vY.Mul(matrix.M22) ).Add( vZ.Mul(matrix.M23) );
+            result.Z = vX.Mul(matrix.M31) .Add( vY.Mul(matrix.M32) ).Add( vZ.Mul(matrix.M33) );
         }
 
         /// <summary>
@@ -807,7 +801,7 @@ namespace BEPUutilities
         /// <param name="transposed">Matrix to transpose.</param>
         public static void Transpose(ref Matrix m, out Matrix transposed)
         {
-            Fix64 intermediate = m.M12;
+            Fix32 intermediate = m.M12;
             transposed.M12 = m.M21;
             transposed.M21 = intermediate;
 
@@ -867,7 +861,7 @@ namespace BEPUutilities
         public static void InvertRigid(ref Matrix m, out Matrix inverted)
         {
             //Invert (transpose) the upper left 3x3 rotation.
-            Fix64 intermediate = m.M12;
+            Fix32 intermediate = m.M12;
             inverted.M12 = m.M21;
             inverted.M21 = intermediate;
 
@@ -887,14 +881,14 @@ namespace BEPUutilities
             var vX = m.M41;
             var vY = m.M42;
             var vZ = m.M43;
-            inverted.M41 = -(vX * inverted.M11 + vY * inverted.M21 + vZ * inverted.M31);
-            inverted.M42 = -(vX * inverted.M12 + vY * inverted.M22 + vZ * inverted.M32);
-            inverted.M43 = -(vX * inverted.M13 + vY * inverted.M23 + vZ * inverted.M33);
+            inverted.M41 = (vX.Mul(inverted.M11) .Add( vY.Mul(inverted.M21) ).Add( vZ.Mul(inverted.M31) )).Neg();
+            inverted.M42 = (vX.Mul(inverted.M12) .Add( vY.Mul(inverted.M22) ).Add( vZ.Mul(inverted.M32) )).Neg();
+            inverted.M43 = (vX.Mul(inverted.M13) .Add( vY.Mul(inverted.M23) ).Add( vZ.Mul(inverted.M33) )).Neg();
 
             //Last chunk.
-            inverted.M14 = F64.C0;
-            inverted.M24 = F64.C0;
-            inverted.M34 = F64.C0;
+            inverted.M14 = Fix32.Zero;
+            inverted.M24 = Fix32.Zero;
+            inverted.M34 = Fix32.Zero;
             inverted.M44 = F64.C1;
         }
 
@@ -919,23 +913,23 @@ namespace BEPUutilities
             {
                 Matrix toReturn;
                 toReturn.M11 = F64.C1;
-                toReturn.M12 = F64.C0;
-                toReturn.M13 = F64.C0;
-                toReturn.M14 = F64.C0;
+                toReturn.M12 = Fix32.Zero;
+                toReturn.M13 = Fix32.Zero;
+                toReturn.M14 = Fix32.Zero;
 
-                toReturn.M21 = F64.C0;
+                toReturn.M21 = Fix32.Zero;
                 toReturn.M22 = F64.C1;
-                toReturn.M23 = F64.C0;
-                toReturn.M24 = F64.C0;
+                toReturn.M23 = Fix32.Zero;
+                toReturn.M24 = Fix32.Zero;
 
-                toReturn.M31 = F64.C0;
-                toReturn.M32 = F64.C0;
+                toReturn.M31 = Fix32.Zero;
+                toReturn.M32 = Fix32.Zero;
                 toReturn.M33 = F64.C1;
-                toReturn.M34 = F64.C0;
+                toReturn.M34 = Fix32.Zero;
 
-                toReturn.M41 = F64.C0;
-                toReturn.M42 = F64.C0;
-                toReturn.M43 = F64.C0;
+                toReturn.M41 = Fix32.Zero;
+                toReturn.M42 = Fix32.Zero;
+                toReturn.M43 = Fix32.Zero;
                 toReturn.M44 = F64.C1;
                 return toReturn;
             }
@@ -951,29 +945,29 @@ namespace BEPUutilities
         /// <param name="zNear">Near plane of the projection.</param>
         /// <param name="zFar">Far plane of the projection.</param>
         /// <param name="projection">The resulting orthographic projection matrix.</param>
-        public static void CreateOrthographicRH(Fix64 left, Fix64 right, Fix64 bottom, Fix64 top, Fix64 zNear, Fix64 zFar, out Matrix projection)
+        public static void CreateOrthographicRH(Fix32 left, Fix32 right, Fix32 bottom, Fix32 top, Fix32 zNear, Fix32 zFar, out Matrix projection)
         {
-            Fix64 width = right - left;
-            Fix64 height = top - bottom;
-            Fix64 depth = zFar - zNear;
-            projection.M11 = F64.C2 / width;
-            projection.M12 = F64.C0;
-            projection.M13 = F64.C0;
-            projection.M14 = F64.C0;
+            Fix32 width = right.Sub(left);
+            Fix32 height = top.Sub(bottom);
+            Fix32 depth = zFar.Sub(zNear);
+            projection.M11 = F64.C2.Div(width);
+            projection.M12 = Fix32.Zero;
+            projection.M13 = Fix32.Zero;
+            projection.M14 = Fix32.Zero;
 
-            projection.M21 = F64.C0;
-            projection.M22 = F64.C2 / height;
-            projection.M23 = F64.C0;
-            projection.M24 = F64.C0;
+            projection.M21 = Fix32.Zero;
+            projection.M22 = F64.C2.Div(height);
+            projection.M23 = Fix32.Zero;
+            projection.M24 = Fix32.Zero;
 
-            projection.M31 = F64.C0;
-            projection.M32 = F64.C0;
-            projection.M33 = -1 / depth;
-            projection.M34 = F64.C0;
+            projection.M31 = Fix32.Zero;
+            projection.M32 = Fix32.Zero;
+            projection.M33 = Fix32.MinusOne.Div(depth);
+            projection.M34 = Fix32.Zero;
 
-            projection.M41 = (left + right) / -width;
-            projection.M42 = (top + bottom) / -height;
-            projection.M43 = zNear / -depth;
+            projection.M41 = (left.Add(right)).Div(width.Neg());
+            projection.M42 = (top.Add(bottom)).Div(height.Neg());
+            projection.M43 = zNear.Div(depth.Neg());
             projection.M44 = F64.C1;
 
         }
@@ -986,29 +980,29 @@ namespace BEPUutilities
         /// <param name="nearClip">Near clip plane of the perspective.</param>
         /// <param name="farClip">Far clip plane of the perspective.</param>
         /// <param name="perspective">Resulting perspective matrix.</param>
-        public static void CreatePerspectiveFieldOfViewRH(Fix64 fieldOfView, Fix64 aspectRatio, Fix64 nearClip, Fix64 farClip, out Matrix perspective)
+        public static void CreatePerspectiveFieldOfViewRH(Fix32 fieldOfView, Fix32 aspectRatio, Fix32 nearClip, Fix32 farClip, out Matrix perspective)
         {
-            Fix64 h = F64.C1 / Fix64.Tan(fieldOfView / F64.C2);
-            Fix64 w = h / aspectRatio;
+            Fix32 h = F64.C1.Div(fieldOfView.Div(F64.C2).Tan());
+            Fix32 w = h.Div(aspectRatio);
             perspective.M11 = w;
-            perspective.M12 = F64.C0;
-            perspective.M13 = F64.C0;
-            perspective.M14 = F64.C0;
+            perspective.M12 = Fix32.Zero;
+            perspective.M13 = Fix32.Zero;
+            perspective.M14 = Fix32.Zero;
 
-            perspective.M21 = F64.C0;
+            perspective.M21 = Fix32.Zero;
             perspective.M22 = h;
-            perspective.M23 = F64.C0;
-            perspective.M24 = F64.C0;
+            perspective.M23 = Fix32.Zero;
+            perspective.M24 = Fix32.Zero;
 
-            perspective.M31 = F64.C0;
-            perspective.M32 = F64.C0;
-            perspective.M33 = farClip / (nearClip - farClip);
-            perspective.M34 = -1;
+            perspective.M31 = Fix32.Zero;
+            perspective.M32 = Fix32.Zero;
+            perspective.M33 = farClip.Div(nearClip.Sub(farClip));
+            perspective.M34 = Fix32.MinusOne;
 
-            perspective.M41 = F64.C0;
-            perspective.M42 = F64.C0;
-            perspective.M44 = F64.C0;
-            perspective.M43 = nearClip * perspective.M33;
+            perspective.M41 = Fix32.Zero;
+            perspective.M42 = Fix32.Zero;
+            perspective.M44 = Fix32.Zero;
+            perspective.M43 = nearClip.Mul(perspective.M33);
 
         }
 
@@ -1020,7 +1014,7 @@ namespace BEPUutilities
         /// <param name="nearClip">Near clip plane of the perspective.</param>
         /// <param name="farClip">Far clip plane of the perspective.</param>
         /// <returns>Resulting perspective matrix.</returns>
-        public static Matrix CreatePerspectiveFieldOfViewRH(Fix64 fieldOfView, Fix64 aspectRatio, Fix64 nearClip, Fix64 farClip)
+        public static Matrix CreatePerspectiveFieldOfViewRH(Fix32 fieldOfView, Fix32 aspectRatio, Fix32 nearClip, Fix32 farClip)
         {
             Matrix perspective;
             CreatePerspectiveFieldOfViewRH(fieldOfView, aspectRatio, nearClip, farClip, out perspective);
@@ -1068,8 +1062,8 @@ namespace BEPUutilities
         public static void CreateViewRH(ref Vector3 position, ref Vector3 forward, ref Vector3 upVector, out Matrix viewMatrix)
         {
             Vector3 z;
-            Fix64 length = forward.Length();
-            Vector3.Divide(ref forward, -length, out z);
+            Fix32 length = forward.Length();
+            Vector3.Divide(ref forward, length.Neg(), out z);
             Vector3 x;
             Vector3.Cross(ref upVector, ref z, out x);
             x.Normalize();
@@ -1079,21 +1073,21 @@ namespace BEPUutilities
             viewMatrix.M11 = x.X;
             viewMatrix.M12 = y.X;
             viewMatrix.M13 = z.X;
-            viewMatrix.M14 = F64.C0;
+            viewMatrix.M14 = Fix32.Zero;
             viewMatrix.M21 = x.Y;
             viewMatrix.M22 = y.Y;
             viewMatrix.M23 = z.Y;
-            viewMatrix.M24 = F64.C0;
+            viewMatrix.M24 = Fix32.Zero;
             viewMatrix.M31 = x.Z;
             viewMatrix.M32 = y.Z;
             viewMatrix.M33 = z.Z;
-            viewMatrix.M34 = F64.C0;
+            viewMatrix.M34 = Fix32.Zero;
             Vector3.Dot(ref x, ref position, out viewMatrix.M41);
             Vector3.Dot(ref y, ref position, out viewMatrix.M42);
             Vector3.Dot(ref z, ref position, out viewMatrix.M43);
-            viewMatrix.M41 = -viewMatrix.M41;
-            viewMatrix.M42 = -viewMatrix.M42;
-            viewMatrix.M43 = -viewMatrix.M43;
+            viewMatrix.M41 = viewMatrix.M41.Neg();
+            viewMatrix.M42 = viewMatrix.M42.Neg();
+            viewMatrix.M43 = viewMatrix.M43.Neg();
             viewMatrix.M44 = F64.C1;
 
         }
@@ -1124,8 +1118,8 @@ namespace BEPUutilities
         public static void CreateWorldRH(ref Vector3 position, ref Vector3 forward, ref Vector3 upVector, out Matrix worldMatrix)
         {
             Vector3 z;
-            Fix64 length = forward.Length();
-            Vector3.Divide(ref forward, -length, out z);
+            Fix32 length = forward.Length();
+            Vector3.Divide(ref forward, length.Neg(), out z);
             Vector3 x;
             Vector3.Cross(ref upVector, ref z, out x);
             x.Normalize();
@@ -1135,15 +1129,15 @@ namespace BEPUutilities
             worldMatrix.M11 = x.X;
             worldMatrix.M12 = x.Y;
             worldMatrix.M13 = x.Z;
-            worldMatrix.M14 = F64.C0;
+            worldMatrix.M14 = Fix32.Zero;
             worldMatrix.M21 = y.X;
             worldMatrix.M22 = y.Y;
             worldMatrix.M23 = y.Z;
-            worldMatrix.M24 = F64.C0;
+            worldMatrix.M24 = Fix32.Zero;
             worldMatrix.M31 = z.X;
             worldMatrix.M32 = z.Y;
             worldMatrix.M33 = z.Z;
-            worldMatrix.M34 = F64.C0;
+            worldMatrix.M34 = Fix32.Zero;
 
             worldMatrix.M41 = position.X;
             worldMatrix.M42 = position.Y;
@@ -1235,7 +1229,7 @@ namespace BEPUutilities
         /// <param name="y">Scale along the y axis.</param>
         /// <param name="z">Scale along the z axis.</param>
         /// <param name="scaleMatrix">Matrix representing the given scale.</param>
-        public static void CreateScale(Fix64 x, Fix64 y, Fix64 z, out Matrix scaleMatrix)
+        public static void CreateScale(Fix32 x, Fix32 y, Fix32 z, out Matrix scaleMatrix)
         {
             scaleMatrix = new Matrix
             {
@@ -1253,7 +1247,7 @@ namespace BEPUutilities
         /// <param name="y">Scale along the y axis.</param>
         /// <param name="z">Scale along the z axis.</param>
         /// <returns>Matrix representing the given scale.</returns>
-        public static Matrix CreateScale(Fix64 x, Fix64 y, Fix64 z)
+        public static Matrix CreateScale(Fix32 x, Fix32 y, Fix32 z)
         {
             Matrix scaleMatrix;
             CreateScale(x, y, z, out scaleMatrix);
@@ -1266,10 +1260,10 @@ namespace BEPUutilities
         /// <returns>A string representation of the matrix.</returns>
         public override string ToString()
         {
-            return "{" + M11 + ", " + M12 + ", " + M13 + ", " + M14 + "} " +
-                   "{" + M21 + ", " + M22 + ", " + M23 + ", " + M24 + "} " +
-                   "{" + M31 + ", " + M32 + ", " + M33 + ", " + M34 + "} " +
-                   "{" + M41 + ", " + M42 + ", " + M43 + ", " + M44 + "}";
+            return "{" + M11.ToStringExt() + ", " + M12.ToStringExt() + ", " + M13.ToStringExt() + ", " + M14.ToStringExt() + "} " +
+                   "{" + M21.ToStringExt() + ", " + M22.ToStringExt() + ", " + M23.ToStringExt() + ", " + M24.ToStringExt() + "} " +
+                   "{" + M31.ToStringExt() + ", " + M32.ToStringExt() + ", " + M33.ToStringExt() + ", " + M34.ToStringExt() + "} " +
+                   "{" + M41.ToStringExt() + ", " + M42.ToStringExt() + ", " + M43.ToStringExt() + ", " + M44.ToStringExt() + "}";
         }
     }
 }

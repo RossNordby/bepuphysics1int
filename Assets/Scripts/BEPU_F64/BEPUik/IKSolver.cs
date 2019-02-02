@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using BEPUutilities;
-using FixMath.NET;
 
 namespace BEPUik
 {
@@ -48,18 +47,18 @@ namespace BEPUik
         /// <summary>
         /// Gets or sets the maximum impulse the controls will try to push bones with when AutoscaleControlImpulses is enabled.
         /// </summary>
-        public Fix64 AutoscaleControlMaximumForce { get; set; }
+        public Fix32 AutoscaleControlMaximumForce { get; set; }
 
-        private Fix64 timeStepDuration = F64.C1;
+        private Fix32 timeStepDuration = F64.C1;
         /// <summary>
         /// Gets or sets the time step duration elapsed by each position iteration.
         /// </summary>
-        public Fix64 TimeStepDuration
+        public Fix32 TimeStepDuration
         {
             get { return timeStepDuration; }
             set
             {
-                if (value <= F64.C0)
+                if (value <= Fix32.Zero)
                     throw new ArgumentException("Time step duration must be positive.");
                 timeStepDuration = value;
             }
@@ -92,7 +91,7 @@ namespace BEPUik
             //Reset the permutation index; every solve should proceed in exactly the same order.
             permutationMapper.PermutationIndex = 0;
 
-            Fix64 updateRate = F64.C1 / TimeStepDuration;
+            Fix32 updateRate = F64.C1.Div(TimeStepDuration);
             foreach (var joint in ActiveSet.joints)
             {
                 joint.Preupdate(TimeStepDuration, updateRate);
@@ -155,14 +154,14 @@ namespace BEPUik
                 //Update the control strengths to match the mass of the target bones and the desired maximum force.
                 foreach (var control in controls)
                 {
-                    control.MaximumForce = control.TargetBone.Mass * AutoscaleControlMaximumForce;
+                    control.MaximumForce = control.TargetBone.Mass.Mul(AutoscaleControlMaximumForce);
                 }
             }
 
             //Reset the permutation index; every solve should proceed in exactly the same order.
             permutationMapper.PermutationIndex = 0;
 
-            Fix64 updateRate = F64.C1 / TimeStepDuration;
+            Fix32 updateRate = F64.C1.Div(TimeStepDuration);
             foreach (var joint in ActiveSet.joints)
             {
                 joint.Preupdate(TimeStepDuration, updateRate);

@@ -11,7 +11,7 @@ using BEPUphysics.Settings;
  
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.NarrowPhaseSystems.Pairs
 {
@@ -35,7 +35,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         ///</summary>
         ///<param name="requester">Collidable requesting the update.</param>
         ///<param name="dt">Timestep duration.</param>
-        public override void UpdateTimeOfImpact(Collidable requester, Fix64 dt)
+        public override void UpdateTimeOfImpact(Collidable requester, Fix32 dt)
         {
             var collidableA = CollidableA as ConvexCollidable;
             var collidableB = CollidableB as ConvexCollidable;
@@ -78,11 +78,11 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                     Vector3.Subtract(ref collidableB.entity.linearVelocity, ref collidableA.entity.linearVelocity, out velocity);
                 }
                 Vector3.Multiply(ref velocity, dt, out velocity);
-                Fix64 velocitySquared = velocity.LengthSquared();
+                Fix32 velocitySquared = velocity.LengthSquared();
 
-                var minimumRadiusA = collidableA.Shape.MinimumRadius * MotionSettings.CoreShapeScaling;
+                var minimumRadiusA = collidableA.Shape.MinimumRadius .Mul (MotionSettings.CoreShapeScaling);
                 timeOfImpact = F64.C1;
-                if (minimumRadiusA * minimumRadiusA < velocitySquared)
+                if (minimumRadiusA .Mul (minimumRadiusA) < velocitySquared)
                 {
                     //Spherecast A against B.
                     RayHit rayHit;
@@ -90,8 +90,8 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                         timeOfImpact = rayHit.T;
                 }
 
-                var minimumRadiusB = collidableB.Shape.MinimumRadius * MotionSettings.CoreShapeScaling;
-                if (minimumRadiusB * minimumRadiusB < velocitySquared)
+                var minimumRadiusB = collidableB.Shape.MinimumRadius .Mul (MotionSettings.CoreShapeScaling);
+                if (minimumRadiusB .Mul (minimumRadiusB) < velocitySquared)
                 {
                     //Spherecast B against A.
                     RayHit rayHit;
@@ -105,7 +105,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                 //from a previous frame where CCD took place and a contact should have been created
                 //to deal with interpenetrating velocity.  Sometimes that contact isn't sufficient,
                 //but it's good enough.
-                if (timeOfImpact == F64.C0)
+                if (timeOfImpact == Fix32.Zero)
                     timeOfImpact = F64.C1;
             }
 

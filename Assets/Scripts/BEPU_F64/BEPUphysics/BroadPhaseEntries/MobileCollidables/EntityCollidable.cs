@@ -6,7 +6,6 @@ using BEPUutilities;
 using BEPUphysics.Settings;
 using System;
 using BEPUphysics.PositionUpdating;
-using FixMath.NET;
 
 namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
 {
@@ -129,7 +128,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
         ///</summary>
         public override void UpdateBoundingBox()
         {
-            UpdateBoundingBox(F64.C0);
+            UpdateBoundingBox(Fix32.Zero);
         }
 
         ///<summary>
@@ -138,7 +137,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
         /// UpdateBoundingBoxForTransform instead.
         ///</summary>
         ///<param name="dt">Timestep with which to update the bounding box.</param>
-        public override void UpdateBoundingBox(Fix64 dt)
+        public override void UpdateBoundingBox(Fix32 dt)
         {
             //The world transform update isn't strictly required for uninterrupted simulation.
             //The entity update method manages the world transforms.
@@ -172,7 +171,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
         /// <param name="dt">Duration of the simulation time step.  Used to expand the
         /// bounding box using the owning entity's velocity.  If the collidable
         /// does not have an owning entity, this must be zero.</param>
-        public void UpdateBoundingBoxForTransform(ref RigidTransform transform, Fix64 dt)
+        public void UpdateBoundingBoxForTransform(ref RigidTransform transform, Fix32 dt)
         {
             UpdateWorldTransform(ref transform.Position, ref transform.Orientation);
             UpdateBoundingBoxInternal(dt);
@@ -186,41 +185,41 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
         /// <param name="transform">Transform to use for the collidable.</param>
         public void UpdateBoundingBoxForTransform(ref RigidTransform transform)
         {
-            UpdateBoundingBoxForTransform(ref transform, F64.C0);
+            UpdateBoundingBoxForTransform(ref transform, Fix32.Zero);
         }
 
 
-        protected internal abstract void UpdateBoundingBoxInternal(Fix64 dt);
+        protected internal abstract void UpdateBoundingBoxInternal(Fix32 dt);
 
         //Helper method for mobile collidables.
-        internal void ExpandBoundingBox(ref BoundingBox boundingBox, Fix64 dt)
+        internal void ExpandBoundingBox(ref BoundingBox boundingBox, Fix32 dt)
         {
             //Expand bounding box with velocity.
-            if (dt > F64.C0)
+            if (dt > Fix32.Zero)
             {
                 bool useExtraExpansion = MotionSettings.UseExtraExpansionForContinuousBoundingBoxes && entity.PositionUpdateMode == PositionUpdateMode.Continuous;
-                Fix64 velocityScaling = useExtraExpansion ? 2 : 1;
-                if (entity.linearVelocity.X > F64.C0)
-                    boundingBox.Max.X += entity.linearVelocity.X * dt * velocityScaling;
+                Fix32 velocityScaling = useExtraExpansion ? Fix32.Two : Fix32.One;
+                if (entity.linearVelocity.X > Fix32.Zero)
+                    boundingBox.Max.X = boundingBox.Max.X.Add( entity.linearVelocity.X.Mul(dt).Mul(velocityScaling) );
                 else
-                    boundingBox.Min.X += entity.linearVelocity.X * dt * velocityScaling;
+                    boundingBox.Min.X = boundingBox.Min.X.Add( entity.linearVelocity.X.Mul(dt).Mul(velocityScaling) );
 
-                if (entity.linearVelocity.Y > F64.C0)
-                    boundingBox.Max.Y += entity.linearVelocity.Y * dt * velocityScaling;
+                if (entity.linearVelocity.Y > Fix32.Zero)
+                    boundingBox.Max.Y = boundingBox.Max.Y.Add( entity.linearVelocity.Y.Mul(dt).Mul(velocityScaling) );
                 else
-                    boundingBox.Min.Y += entity.linearVelocity.Y * dt * velocityScaling;
+                    boundingBox.Min.Y = boundingBox.Min.Y.Add( entity.linearVelocity.Y.Mul(dt).Mul(velocityScaling) );
 
-                if (entity.linearVelocity.Z > F64.C0)
-                    boundingBox.Max.Z += entity.linearVelocity.Z * dt * velocityScaling;
+                if (entity.linearVelocity.Z > Fix32.Zero)
+                    boundingBox.Max.Z = boundingBox.Max.Z.Add( entity.linearVelocity.Z.Mul(dt).Mul(velocityScaling) );
                 else
-                    boundingBox.Min.Z += entity.linearVelocity.Z * dt * velocityScaling;
+                    boundingBox.Min.Z = boundingBox.Min.Z.Add( entity.linearVelocity.Z.Mul(dt).Mul(velocityScaling) );
 
 
 
 
                 if (useExtraExpansion)
                 {
-                    Fix64 expansion = F64.C0;
+                    Fix32 expansion = Fix32.Zero;
                     //It's possible that an object could have a small bounding box since its own
                     //velocity is low, but then a collision with a high velocity object sends
                     //it way out of its bounding box.  By taking into account high velocity objects
@@ -229,20 +228,20 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                     foreach (var e in OverlappedEntities)
                     {
 
-                        Fix64 velocity = e.linearVelocity.LengthSquared();
+                        Fix32 velocity = e.linearVelocity.LengthSquared();
                         if (velocity > expansion)
                             expansion = velocity;
                     }
-                    expansion = Fix64.Sqrt(expansion) * dt;
+                    expansion = expansion.Sqrt().Mul(dt);
 
 
-                    boundingBox.Min.X -= expansion;
-                    boundingBox.Min.Y -= expansion;
-                    boundingBox.Min.Z -= expansion;
+                    boundingBox.Min.X = boundingBox.Min.X.Sub(expansion);
+                    boundingBox.Min.Y = boundingBox.Min.Y.Sub(expansion);
+                    boundingBox.Min.Z = boundingBox.Min.Z.Sub(expansion);
 
-                    boundingBox.Max.X += expansion;
-                    boundingBox.Max.Y += expansion;
-                    boundingBox.Max.Z += expansion;
+                    boundingBox.Max.X = boundingBox.Max.X.Add(expansion);
+                    boundingBox.Max.Y = boundingBox.Max.Y.Add(expansion);
+                    boundingBox.Max.Z = boundingBox.Max.Z.Add(expansion);
 
                 }
 
@@ -315,7 +314,5 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 return new EntityCollidableCollection(this);
             }
         }
-
-
     }
 }

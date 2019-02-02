@@ -1,5 +1,4 @@
 ﻿using BEPUUnity;
-using FixMath.NET;
 using UnityEngine;
 
 public class BEPUSceneInitializer : SceneInitializer {
@@ -17,9 +16,9 @@ public class BEPUSceneInitializer : SceneInitializer {
 	protected override void SpawnSphere(Vector3 startPos) {
 		BEPUSphere sphere = Instantiate(SpherePrefab, startPos, Quaternion.identity);
 		sphere.GetEntity().Position = new BEPUutilities.Vector3(
-			(Fix64) startPos.x,
-			(Fix64) startPos.y,
-			(Fix64) startPos.z
+			startPos.x.ToFix32(),
+			startPos.y.ToFix32(),
+			startPos.z.ToFix32()
 			);
 		m_space.Add(sphere);
 	}

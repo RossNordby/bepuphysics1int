@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BEPUphysics.NarrowPhaseSystems.Pairs;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 using BEPUutilities;
 
 namespace BEPUphysics.Constraints.Collision
@@ -179,7 +179,7 @@ namespace BEPUphysics.Constraints.Collision
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public sealed override void Update(Fix64 dt)
+        public sealed override void Update(Fix32 dt)
         {
             for (int i = 0; i < penetrationConstraints.Count; i++)
                 UpdateUpdateable(penetrationConstraints.Elements[i], dt);
@@ -206,7 +206,7 @@ namespace BEPUphysics.Constraints.Collision
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public sealed override Fix64 SolveIteration()
+        public sealed override Fix32 SolveIteration()
         {
             int activeConstraints = 0;
             for (int i = 0; i < penetrationConstraints.Count; i++)
@@ -214,7 +214,7 @@ namespace BEPUphysics.Constraints.Collision
             for (int i = 0; i < frictionConstraints.Count; i++)
                 SolveUpdateable(frictionConstraints.Elements[i], ref activeConstraints);
             isActiveInSolver = activeConstraints > 0;
-            return solverSettings.minimumImpulse + F64.C1; //Never let the system deactivate due to low impulses; solver group takes care of itself.
+            return solverSettings.minimumImpulse .Add (F64.C1); //Never let the system deactivate due to low impulses; solver group takes care of itself.
         }
     }
 }

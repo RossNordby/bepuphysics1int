@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using BEPUutilities;
 using BEPUphysics.BroadPhaseEntries;
-using FixMath.NET;
 
 namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
 {
@@ -32,38 +31,38 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
             throw new NotSupportedException("The Grid2DSortAndSweep broad phase cannot accelerate infinite ray casts.  Consider using a broad phase which supports infinite tests, using a custom solution, or using a finite ray.");
         }
 
-        public bool RayCast(Ray ray, Fix64 maximumLength, IList<BroadPhaseEntry> outputIntersections)
+        public bool RayCast(Ray ray, Fix32 maximumLength, IList<BroadPhaseEntry> outputIntersections)
         {
-            if (maximumLength == Fix64.MaxValue) 
+            if (maximumLength == Fix32.MaxValue) 
                 throw new NotSupportedException("The Grid2DSortAndSweep broad phase cannot accelerate infinite ray casts.  Consider specifying a maximum length or using a broad phase which supports infinite ray casts.");
         
             //Use 2d line rasterization.
             //Compute the exit location in the cell.
             //Test against each bounding box up until the exit value is reached.
-            Fix64 length = F64.C0;
+            Fix32 length = Fix32.Zero;
             Int2 cellIndex;
             Vector3 currentPosition = ray.Position;
             Grid2DSortAndSweep.ComputeCell(ref currentPosition, out cellIndex);
             while (true)
             {
 
-                Fix64 cellWidth = F64.C1 / Grid2DSortAndSweep.cellSizeInverse;
-                Fix64 nextT; //Distance along ray to next boundary.
-                Fix64 nextTy; //Distance along ray to next boundary along y axis.
-                Fix64 nextTz; //Distance along ray to next boundary along z axis.
+                Fix32 cellWidth = F64.C1.Div(Grid2DSortAndSweep.cellSizeInverse);
+                Fix32 nextT; //Distance along ray to next boundary.
+                Fix32 nextTy; //Distance along ray to next boundary along y axis.
+                Fix32 nextTz; //Distance along ray to next boundary along z axis.
 							  //Find the next cell.
-				if (ray.Direction.Y > F64.C0)
-					nextTy = ((cellIndex.Y + 1) * cellWidth - currentPosition.Y) / ray.Direction.Y;
-				else if (ray.Direction.Y < F64.C0)
-					nextTy = ((cellIndex.Y) * cellWidth - currentPosition.Y) / ray.Direction.Y;
+				if (ray.Direction.Y > Fix32.Zero)
+					nextTy = cellIndex.Y.ToFix32().Add(Fix32.One).Mul(cellWidth).Sub(currentPosition.Y).Div(ray.Direction.Y);
+				else if (ray.Direction.Y < Fix32.Zero)
+					nextTy = cellIndex.Y.ToFix32().Mul(cellWidth).Sub(currentPosition.Y).Div(ray.Direction.Y);
 				else
-					nextTy = Fix64.MaxValue;
-                if (ray.Direction.Z > F64.C0)
-                    nextTz = ((cellIndex.Z + 1) * cellWidth - currentPosition.Z) / ray.Direction.Z;
-                else if (ray.Direction.Z < F64.C0)
-                    nextTz = ((cellIndex.Z) * cellWidth - currentPosition.Z) / ray.Direction.Z;
+					nextTy = Fix32.MaxValue;
+                if (ray.Direction.Z > Fix32.Zero)
+                    nextTz = cellIndex.Z.ToFix32().Add(Fix32.One).Mul(cellWidth).Sub(currentPosition.Z).Div(ray.Direction.Z);
+                else if (ray.Direction.Z < Fix32.Zero)
+                    nextTz = cellIndex.Z.ToFix32().Mul(cellWidth).Sub(currentPosition.Z).Div(ray.Direction.Z);
                 else
-                    nextTz = Fix64.MaxValue;
+                    nextTz = Fix32.MaxValue;
 
                 bool yIsMinimum = nextTy < nextTz;
                 nextT = yIsMinimum ? nextTy : nextTz;
@@ -75,11 +74,11 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                 GridCell2D cell;
                 if (owner.cellSet.TryGetCell(ref cellIndex, out cell))
                 {
-                    Fix64 endingX;
-                    if(ray.Direction.X < F64.C0)
+                    Fix32 endingX;
+                    if(ray.Direction.X < Fix32.Zero)
                         endingX = currentPosition.X;
                     else
-                        endingX = currentPosition.X + ray.Direction.X * nextT;
+                        endingX = currentPosition.X .Add( ray.Direction.X.Mul(nextT) );
 
                     //To fully accelerate this, the entries list would need to contain both min and max interval markers.
                     //Since it only contains the sorted min intervals, we can't just start at a point in the middle of the list.
@@ -88,7 +87,7 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                         && cell.entries.Elements[i].item.boundingBox.Min.X <= endingX; i++) //TODO: Try additional x axis pruning?
                     {
                         var item = cell.entries.Elements[i].item;
-                        Fix64 t;
+                        Fix32 t;
                         if (ray.Intersects(ref item.boundingBox, out t) && t < maximumLength && !outputIntersections.Contains(item))
                         {
                             outputIntersections.Add(item);
@@ -96,23 +95,23 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                     }
                 }
 
-                //Move the position forward.
-                length += nextT;
+				//Move the position forward.
+				length = length.Add(nextT);
                 if (length > maximumLength) //Note that this catches the case in which the ray is pointing right down the middle of a row (resulting in a nextT of 10e10f).
                     break;
                 Vector3 offset;
                 Vector3.Multiply(ref ray.Direction, nextT, out offset);
                 Vector3.Add(ref offset, ref currentPosition, out currentPosition);
                 if (yIsMinimum)
-                    if (ray.Direction.Y < F64.C0)
-                        cellIndex.Y -= 1;
+                    if (ray.Direction.Y < Fix32.Zero)
+                        cellIndex.Y = cellIndex.Y - (1);
                     else
-                        cellIndex.Y += 1;
+                        cellIndex.Y = cellIndex.Y + (1);
                 else
-                    if (ray.Direction.Z < F64.C0)
-                        cellIndex.Z -= 1;
+                    if (ray.Direction.Z < Fix32.Zero)
+                        cellIndex.Z = cellIndex.Z - (1);
                     else
-                        cellIndex.Z += 1;
+                        cellIndex.Z = cellIndex.Z + (1);
             }
             return outputIntersections.Count > 0;
 

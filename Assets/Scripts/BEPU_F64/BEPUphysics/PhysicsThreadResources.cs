@@ -170,7 +170,7 @@ namespace BEPUphysics
         {
             if (SubPoolTriangleShape == null)
                 SubPoolTriangleShape = new UnsafeResourcePool<TriangleShape>();
-            triangle.collisionMargin = F64.C0;
+            triangle.collisionMargin = Fix32.Zero;
             triangle.sidedness = TriangleSidedness.DoubleSided;
             SubPoolTriangleShape.GiveBack(triangle);
         }

@@ -134,7 +134,7 @@ namespace BEPUutilities.DataStructures
                     array[lastIndex] = default(T);
                     lastIndex--;
                     if (lastIndex < 0)
-                        lastIndex += array.Length;
+                        lastIndex = lastIndex + (array.Length);
                     count--;
                     return true;
                 }
@@ -182,7 +182,7 @@ namespace BEPUutilities.DataStructures
                 array[lastIndex] = default(T);
                 lastIndex--;
                 if (lastIndex < 0)
-                    lastIndex += array.Length;
+                    lastIndex = lastIndex + (array.Length);
                 count--;
                 return true;
             }

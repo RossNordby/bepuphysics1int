@@ -1,6 +1,5 @@
 ﻿using System;
 using BEPUutilities;
-using FixMath.NET;
 
 namespace BEPUik
 {
@@ -69,13 +68,13 @@ namespace BEPUik
         {
             Vector3 worldAxisA = WorldFreeAxisA;
             Vector3 error = Vector3.Cross(worldAxisA, WorldFreeAxisB);
-            Fix64 lengthSquared = error.LengthSquared();
+            Fix32 lengthSquared = error.LengthSquared();
             Vector3 worldConstrainedAxis1, worldConstrainedAxis2;
             //Find the first constrained axis.
             if (lengthSquared > Toolbox.Epsilon)
             {
                 //The error direction can be used as the first axis!
-                Vector3.Divide(ref error, Fix64.Sqrt(lengthSquared), out worldConstrainedAxis1);
+                Vector3.Divide(ref error, lengthSquared.Sqrt(), out worldConstrainedAxis1);
             }
             else
             {
@@ -86,7 +85,7 @@ namespace BEPUik
                 if (lengthSquared > Toolbox.Epsilon)
                 {
                     //The up vector worked!
-                    Vector3.Divide(ref worldConstrainedAxis1, Fix64.Sqrt(lengthSquared), out worldConstrainedAxis1);
+                    Vector3.Divide(ref worldConstrainedAxis1, lengthSquared.Sqrt(), out worldConstrainedAxis1);
                 }
                 else
                 {
@@ -152,10 +151,8 @@ namespace BEPUik
             Vector2 constraintSpaceError;
             Vector3.Dot(ref error, ref worldConstrainedAxis1, out constraintSpaceError.X);
             Vector3.Dot(ref error, ref worldConstrainedAxis2, out constraintSpaceError.Y);
-            velocityBias.X = errorCorrectionFactor * constraintSpaceError.X;
-            velocityBias.Y = errorCorrectionFactor * constraintSpaceError.Y;
-
-
+            velocityBias.X = errorCorrectionFactor.Mul(constraintSpaceError.X);
+            velocityBias.Y = errorCorrectionFactor.Mul(constraintSpaceError.Y);
         }
     }
 }

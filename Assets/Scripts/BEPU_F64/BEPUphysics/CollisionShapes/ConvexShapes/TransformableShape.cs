@@ -3,7 +3,7 @@ using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 
 using BEPUutilities;
 using BEPUutilities.ResourceManagement;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionShapes.ConvexShapes
 {
@@ -99,12 +99,12 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             var triangles = CommonResources.GetIntList();
             ConvexHullHelper.GetConvexHull(samples, triangles);
 
-            Fix64 volume;
+            Fix32 volume;
             InertiaHelper.ComputeShapeDistribution(samples, triangles, out volume, out volumeDistribution);
             Volume = volume;
 
             //Estimate the minimum radius based on the surface mesh.
-            MinimumRadius = InertiaHelper.ComputeMinimumRadius(samples, triangles, ref Toolbox.ZeroVector) + collisionMargin;
+            MinimumRadius = InertiaHelper.ComputeMinimumRadius(samples, triangles, ref Toolbox.ZeroVector) .Add (collisionMargin);
             MaximumRadius = ComputeMaximumRadius();
             CommonResources.GiveBack(samples);
             CommonResources.GiveBack(triangles);
@@ -133,7 +133,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// it is simply an approximation that avoids underestimating.
         /// </summary>
         /// <returns>Maximum radius of the shape.</returns>
-        public Fix64 ComputeMaximumRadius()
+        public Fix32 ComputeMaximumRadius()
         {
             //This will overestimate the actual maximum radius, but such is the defined behavior of the ComputeMaximumRadius function.  It's not exact; it's an upper bound on the actual maximum.
             RigidTransform identity = RigidTransform.Identity;

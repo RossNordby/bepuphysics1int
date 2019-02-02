@@ -16,7 +16,7 @@ using BEPUphysics.NarrowPhaseSystems;
 using BEPUphysics.UpdateableSystems;
 using BEPUutilities.DataStructures;
 using BEPUutilities.Threading;
-using FixMath.NET;
+
 
 namespace BEPUphysics
 {
@@ -535,14 +535,14 @@ namespace BEPUphysics
         /// Performs as many timesteps as necessary to get as close to the elapsed time as possible.
         /// </summary>
         /// <param name="dt">Elapsed time from the previous frame.</param>
-        public void Update(Fix64 dt)
+        public void Update(Fix32 dt)
         {
-            TimeStepSettings.AccumulatedTime += dt;
+            TimeStepSettings.AccumulatedTime = TimeStepSettings.AccumulatedTime .Add (dt);
             for (int i = 0; i < TimeStepSettings.MaximumTimeStepsPerFrame; i++)
             {
                 if (TimeStepSettings.AccumulatedTime >= TimeStepSettings.TimeStepDuration)
                 {
-                    TimeStepSettings.AccumulatedTime -= TimeStepSettings.TimeStepDuration;
+                    TimeStepSettings.AccumulatedTime = TimeStepSettings.AccumulatedTime .Sub (TimeStepSettings.TimeStepDuration);
                     DoTimeStep();
                 }
                 else
@@ -551,7 +551,7 @@ namespace BEPUphysics
                 }
             }
 
-            BufferedStates.InterpolatedStates.BlendAmount = TimeStepSettings.AccumulatedTime / TimeStepSettings.TimeStepDuration;
+            BufferedStates.InterpolatedStates.BlendAmount = TimeStepSettings.AccumulatedTime .Div (TimeStepSettings.TimeStepDuration);
             BufferedStates.InterpolatedStates.Update();
             EndOfFrameUpdateables.Update();
         }
@@ -564,7 +564,7 @@ namespace BEPUphysics
         /// <returns>Whether or not the ray hit anything.</returns>
         public bool RayCast(Ray ray, out RayCastResult result)
         {
-            return RayCast(ray, Fix64.MaxValue, out result);
+            return RayCast(ray, Fix32.MaxValue, out result);
         }
 
         /// <summary>
@@ -576,7 +576,7 @@ namespace BEPUphysics
         /// <returns>Whether or not the ray hit anything.</returns>
         public bool RayCast(Ray ray, Func<BroadPhaseEntry, bool> filter, out RayCastResult result)
         {
-            return RayCast(ray, Fix64.MaxValue, filter, out result);
+            return RayCast(ray, Fix32.MaxValue, filter, out result);
         }
 
         /// <summary>
@@ -586,7 +586,7 @@ namespace BEPUphysics
         /// <param name="maximumLength">Maximum length of the ray in units of the ray direction's length.</param>
         /// <param name="result">Hit data of the ray, if any.</param>
         /// <returns>Whether or not the ray hit anything.</returns>
-        public bool RayCast(Ray ray, Fix64 maximumLength, out RayCastResult result)
+        public bool RayCast(Ray ray, Fix32 maximumLength, out RayCastResult result)
         {
             var resultsList = PhysicsResources.GetRayCastResultList();
             bool didHit = RayCast(ray, maximumLength, resultsList);
@@ -610,7 +610,7 @@ namespace BEPUphysics
         /// <param name="filter">Delegate to prune out hit candidates before performing a ray cast against them. Return true from the filter to process an entry or false to ignore the entry.</param>
         /// <param name="result">Hit data of the ray, if any.</param>
         /// <returns>Whether or not the ray hit anything.</returns>
-        public bool RayCast(Ray ray, Fix64 maximumLength, Func<BroadPhaseEntry, bool> filter, out RayCastResult result)
+        public bool RayCast(Ray ray, Fix32 maximumLength, Func<BroadPhaseEntry, bool> filter, out RayCastResult result)
         {
             var resultsList = PhysicsResources.GetRayCastResultList();
             bool didHit = RayCast(ray, maximumLength, filter, resultsList);
@@ -633,7 +633,7 @@ namespace BEPUphysics
         /// <param name="maximumLength">Maximum length of the ray in units of the ray direction's length.</param>
         /// <param name="outputRayCastResults">Hit data of the ray, if any.</param>
         /// <returns>Whether or not the ray hit anything.</returns>
-        public bool RayCast(Ray ray, Fix64 maximumLength, IList<RayCastResult> outputRayCastResults)
+        public bool RayCast(Ray ray, Fix32 maximumLength, IList<RayCastResult> outputRayCastResults)
         {
             var outputIntersections = PhysicsResources.GetBroadPhaseEntryList();
             if (BroadPhase.QueryAccelerator.RayCast(ray, maximumLength, outputIntersections))
@@ -661,7 +661,7 @@ namespace BEPUphysics
         /// <param name="filter">Delegate to prune out hit candidates before performing a cast against them. Return true from the filter to process an entry or false to ignore the entry.</param>
         /// <param name="outputRayCastResults">Hit data of the ray, if any.</param>
         /// <returns>Whether or not the ray hit anything.</returns>
-        public bool RayCast(Ray ray, Fix64 maximumLength, Func<BroadPhaseEntry, bool> filter, IList<RayCastResult> outputRayCastResults)
+        public bool RayCast(Ray ray, Fix32 maximumLength, Func<BroadPhaseEntry, bool> filter, IList<RayCastResult> outputRayCastResults)
         {
             var outputIntersections = PhysicsResources.GetBroadPhaseEntryList();
             if (BroadPhase.QueryAccelerator.RayCast(ray, maximumLength, outputIntersections))

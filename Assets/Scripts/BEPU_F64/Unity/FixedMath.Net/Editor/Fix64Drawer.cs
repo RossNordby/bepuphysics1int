@@ -1,9 +1,8 @@
-using FixMath.NET;
 using UnityEditor;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(Fix64))]
-public class Fix64FloatDrawer : PropertyDrawer
+[CustomPropertyDrawer(typeof(Fix32))]
+public class Fix32FloatDrawer : PropertyDrawer
 {
 	private static bool viewRaw = false;
 
@@ -12,16 +11,16 @@ public class Fix64FloatDrawer : PropertyDrawer
 		int buttonWidth = 20;
 
 		var r = position;
-		r.width -= buttonWidth + 20;
+		r.width = r.width - (buttonWidth + 20);
 		if (viewRaw) {
 			EditorGUI.PropertyField(r, property.FindPropertyRelative("RawValue"), label);
 		}
 		else {
 			EditorGUI.BeginChangeCheck();
-			float floatValue = (float) Fix64.FromRaw(property.FindPropertyRelative("RawValue").intValue);
+			float floatValue = property.FindPropertyRelative("RawValue").intValue.ToFix32().ToFloat();
 			floatValue = EditorGUI.FloatField(r, label, floatValue);
 			if (EditorGUI.EndChangeCheck())
-				property.FindPropertyRelative("RawValue").intValue = ((Fix64) floatValue).ToRaw();
+				property.FindPropertyRelative("RawValue").intValue = (int) floatValue.ToFix32();
 		}
 
 		r.width = buttonWidth;

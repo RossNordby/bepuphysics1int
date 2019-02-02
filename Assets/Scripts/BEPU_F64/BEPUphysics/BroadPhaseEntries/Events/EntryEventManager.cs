@@ -97,12 +97,12 @@ namespace BEPUphysics.BroadPhaseEntries.Events
         {
             add
             {
-                InternalPairCreated += value;
+                InternalPairCreated = InternalPairCreated + (value);
                 AddToEventfuls();
             }
             remove
             {
-                InternalPairCreated -= value;
+                InternalPairCreated = InternalPairCreated - (value);
                 VerifyEventStatus();
             }
         }
@@ -114,12 +114,12 @@ namespace BEPUphysics.BroadPhaseEntries.Events
         {
             add
             {
-                InternalPairRemoved += value;
+                InternalPairRemoved = InternalPairRemoved + (value);
                 AddToEventfuls();
             }
             remove
             {
-                InternalPairRemoved -= value;
+                InternalPairRemoved = InternalPairRemoved - (value);
                 VerifyEventStatus();
             }
         }
@@ -131,12 +131,12 @@ namespace BEPUphysics.BroadPhaseEntries.Events
         {
             add
             {
-                InternalPairUpdated += value;
+                InternalPairUpdated = InternalPairUpdated + (value);
                 AddToEventfuls();
             }
             remove
             {
-                InternalPairUpdated -= value;
+                InternalPairUpdated = InternalPairUpdated - (value);
                 VerifyEventStatus();
             }
         }

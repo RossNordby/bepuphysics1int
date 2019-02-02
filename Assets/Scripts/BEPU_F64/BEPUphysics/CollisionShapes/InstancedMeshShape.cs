@@ -1,7 +1,7 @@
 ﻿
 using BEPUphysics.DataStructures;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionShapes
 {
@@ -53,13 +53,13 @@ namespace BEPUphysics.CollisionShapes
 #if !WINDOWS
             boundingBox = new BoundingBox();
 #endif
-            Fix64 minX = Fix64.MaxValue;
-            Fix64 minY = Fix64.MaxValue;
-            Fix64 minZ = Fix64.MaxValue;
+            Fix32 minX = Fix32.MaxValue;
+            Fix32 minY = Fix32.MaxValue;
+            Fix32 minZ = Fix32.MaxValue;
 
-            Fix64 maxX = -Fix64.MaxValue;
-            Fix64 maxY = -Fix64.MaxValue;
-            Fix64 maxZ = -Fix64.MaxValue;
+            Fix32 maxX = Fix32.MaxValue.Neg();
+            Fix32 maxY = Fix32.MaxValue.Neg();
+            Fix32 maxZ = Fix32.MaxValue.Neg();
             for (int i = 0; i < triangleMesh.Data.vertices.Length; i++)
             {
                 Vector3 vertex;
@@ -80,13 +80,13 @@ namespace BEPUphysics.CollisionShapes
                 if (vertex.Z > maxZ)
                     maxZ = vertex.Z;
             }
-            boundingBox.Min.X = transform.Translation.X + minX;
-            boundingBox.Min.Y = transform.Translation.Y + minY;
-            boundingBox.Min.Z = transform.Translation.Z + minZ;
+            boundingBox.Min.X = transform.Translation.X .Add (minX);
+            boundingBox.Min.Y = transform.Translation.Y .Add (minY);
+            boundingBox.Min.Z = transform.Translation.Z .Add (minZ);
             
-            boundingBox.Max.X = transform.Translation.X + maxX;
-            boundingBox.Max.Y = transform.Translation.Y + maxY;
-            boundingBox.Max.Z = transform.Translation.Z + maxZ;
+            boundingBox.Max.X = transform.Translation.X .Add (maxX);
+            boundingBox.Max.Y = transform.Translation.Y .Add (maxY);
+            boundingBox.Max.Z = transform.Translation.Z .Add (maxZ);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using FixMath.NET;
-using BEPUutilities;
+﻿using BEPUutilities;
 
 namespace BEPUik
 {
@@ -32,10 +31,10 @@ namespace BEPUik
         public DragControl()
         {
             LinearMotor = new SingleBoneLinearMotor();
-            LinearMotor.Rigidity = F64.C1;
+            LinearMotor.Rigidity = Fix32.One;
         }
 
-        protected internal override void Preupdate(Fix64 dt, Fix64 updateRate)
+        protected internal override void Preupdate(Fix32 dt, Fix32 updateRate)
         {
             LinearMotor.Preupdate(dt, updateRate);
         }
@@ -65,7 +64,7 @@ namespace BEPUik
             LinearMotor.ClearAccumulatedImpulses();
         }
 
-        public override Fix64 MaximumForce
+        public override Fix32 MaximumForce
         {
             get { return LinearMotor.MaximumForce; }
             set

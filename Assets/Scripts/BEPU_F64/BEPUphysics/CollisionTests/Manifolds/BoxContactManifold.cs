@@ -6,7 +6,7 @@ using BEPUutilities.ResourceManagement;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionTests.Manifolds
 {
@@ -54,11 +54,11 @@ namespace BEPUphysics.CollisionTests.Manifolds
         /// Updates the manifold.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
 
             //Now, generate a contact between the two shapes.
-            Fix64 distance;
+            Fix32 distance;
             Vector3 axis;
             BoxContactDataCache manifold;
             if (BoxBoxCollider.AreBoxesColliding(boxA.Shape, boxB.Shape, ref boxA.worldTransform, ref boxB.worldTransform, out distance, out axis, out manifold))
@@ -123,11 +123,11 @@ namespace BEPUphysics.CollisionTests.Manifolds
             }
         }
 #else
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
 
             //Now, generate a contact between the two shapes.
-            Fix64 distance;
+            Fix32 distance;
             Vector3 axis;
             var manifold = new TinyStructList<BoxContactData>();
             if (BoxBoxCollider.AreBoxesColliding(boxA.Shape, boxB.Shape, ref boxA.worldTransform, ref boxB.worldTransform, out distance, out axis, out manifold))
@@ -146,7 +146,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                             found = true;
                             //Update contact...
                             contacts.Elements[i].Position = data.Position;
-                            contacts.Elements[i].PenetrationDepth = -data.Depth;
+                            contacts.Elements[i].PenetrationDepth = data.Depth.Neg();
                             contacts.Elements[i].Normal = axis;
                             contacts.Elements[i].Validate();
                             //Remove manifold entry
@@ -189,7 +189,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                     manifold.Get(i, out data);
                     ContactData newContact = new ContactData();
                     newContact.Position = data.Position;
-                    newContact.PenetrationDepth = -data.Depth;
+                    newContact.PenetrationDepth = data.Depth.Neg();
                     newContact.Normal = axis;
                     newContact.Id = data.Id;
 

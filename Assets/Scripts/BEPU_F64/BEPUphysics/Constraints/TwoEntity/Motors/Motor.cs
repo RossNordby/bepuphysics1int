@@ -1,4 +1,4 @@
-﻿using FixMath.NET;
+﻿
 
 namespace BEPUphysics.Constraints.TwoEntity.Motors
 {
@@ -7,29 +7,29 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
     /// </summary>
     public abstract class Motor : TwoEntityConstraint
     {
-        protected Fix64 maxForceDt = Fix64.MaxValue;
-        protected Fix64 maxForceDtSquared = Fix64.MaxValue;
+        protected Fix32 maxForceDt = Fix32.MaxValue;
+        protected Fix32 maxForceDtSquared = Fix32.MaxValue;
 
         /// <summary>
         /// Softness divided by the timestep to maintain timestep independence.
         /// </summary>
-        internal Fix64 usedSoftness;
+        internal Fix32 usedSoftness;
 
         /// <summary>
         /// Computes the maxForceDt and maxForceDtSquared fields.
         /// </summary>
-        protected void ComputeMaxForces(Fix64 maxForce, Fix64 dt)
+        protected void ComputeMaxForces(Fix32 maxForce, Fix32 dt)
         {
             //Determine maximum force
-            if (maxForce < Fix64.MaxValue)
+            if (maxForce < Fix32.MaxValue)
             {
-                maxForceDt = maxForce * dt;
-                maxForceDtSquared = maxForceDt * maxForceDt;
+                maxForceDt = maxForce .Mul (dt);
+                maxForceDtSquared = maxForceDt .Mul (maxForceDt);
             }
             else
             {
-                maxForceDt = Fix64.MaxValue;
-                maxForceDtSquared = Fix64.MaxValue;
+                maxForceDt = Fix32.MaxValue;
+                maxForceDtSquared = Fix32.MaxValue;
             }
         }
     }

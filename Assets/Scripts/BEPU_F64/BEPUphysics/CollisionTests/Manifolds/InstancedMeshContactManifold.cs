@@ -5,7 +5,7 @@ using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUphysics.DataStructures;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionTests.Manifolds
 {
@@ -29,7 +29,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
             }
         }
 
-        protected internal override int FindOverlappingTriangles(Fix64 dt)
+        protected internal override int FindOverlappingTriangles(Fix32 dt)
         {
             BoundingBox boundingBox;
             convex.Shape.GetLocalBoundingBox(ref convex.worldTransform, ref mesh.worldTransform, out boundingBox);
@@ -41,20 +41,20 @@ namespace BEPUphysics.CollisionTests.Manifolds
                 Matrix3x3.Transform(ref convex.entity.linearVelocity, ref inverse, out transformedVelocity);
                 Vector3.Multiply(ref transformedVelocity, dt, out transformedVelocity);
 
-                if (transformedVelocity.X > F64.C0)
-                    boundingBox.Max.X += transformedVelocity.X;
+                if (transformedVelocity.X > Fix32.Zero)
+                    boundingBox.Max.X = boundingBox.Max.X .Add (transformedVelocity.X);
                 else
-                    boundingBox.Min.X += transformedVelocity.X;
+                    boundingBox.Min.X = boundingBox.Min.X .Add (transformedVelocity.X);
 
-                if (transformedVelocity.Y > F64.C0)
-                    boundingBox.Max.Y += transformedVelocity.Y;
+                if (transformedVelocity.Y > Fix32.Zero)
+                    boundingBox.Max.Y = boundingBox.Max.Y .Add (transformedVelocity.Y);
                 else
-                    boundingBox.Min.Y += transformedVelocity.Y;
+                    boundingBox.Min.Y = boundingBox.Min.Y .Add (transformedVelocity.Y);
 
-                if (transformedVelocity.Z > F64.C0)
-                    boundingBox.Max.Z += transformedVelocity.Z;
+                if (transformedVelocity.Z > Fix32.Zero)
+                    boundingBox.Max.Z = boundingBox.Max.Z .Add (transformedVelocity.Z);
                 else
-                    boundingBox.Min.Z += transformedVelocity.Z;
+                    boundingBox.Min.Z = boundingBox.Min.Z .Add (transformedVelocity.Z);
             }
 
             mesh.Shape.TriangleMesh.Tree.GetOverlaps(boundingBox, overlappedTriangles);
@@ -78,7 +78,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
             int triangleIndex = overlappedTriangles.Elements[i];
             //TODO: Note the IsQuery hack to avoid missing contacts. Avoid doing this in v2.
             localTriangleShape.sidedness = IsQuery ? TriangleSidedness.DoubleSided : mesh.sidedness;
-            localTriangleShape.collisionMargin = F64.C0;
+            localTriangleShape.collisionMargin = Fix32.Zero;
             indices = new TriangleIndices
             {
                 A = data.indices[triangleIndex],

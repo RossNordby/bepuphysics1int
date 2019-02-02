@@ -1,7 +1,7 @@
 ﻿using System;
 using BEPUphysics.Entities;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Constraints.TwoEntity.Joints
 {
@@ -223,7 +223,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             Matrix3x3.Transform(ref localAxisA, ref connectionA.orientationMatrix, out worldAxisA);
             Matrix3x3.Transform(ref localAxisB, ref connectionB.orientationMatrix, out worldAxisB);
@@ -237,20 +237,20 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 
             Vector3.Dot(ref error, ref worldConstrainedAxis1, out this.error.X);
             Vector3.Dot(ref error, ref worldConstrainedAxis2, out this.error.Y);
-            Fix64 errorReduction;
-            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 / dt, out errorReduction, out softness);
-            errorReduction = -errorReduction;
-            biasVelocity.X = errorReduction * this.error.X;
-            biasVelocity.Y = errorReduction * this.error.Y;
+            Fix32 errorReduction;
+            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 .Div (dt), out errorReduction, out softness);
+            errorReduction = errorReduction.Neg();
+            biasVelocity.X = errorReduction .Mul (this.error.X);
+            biasVelocity.Y = errorReduction .Mul (this.error.Y);
 
 
             //Ensure that the corrective velocity doesn't exceed the max.
-            Fix64 length = biasVelocity.LengthSquared();
+            Fix32 length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                Fix64 multiplier = maxCorrectiveVelocity / Fix64.Sqrt(length);
-                biasVelocity.X *= multiplier;
-                biasVelocity.Y *= multiplier;
+                Fix32 multiplier = maxCorrectiveVelocity .Div (length.Sqrt());
+                biasVelocity.X = biasVelocity.X .Mul (multiplier);
+                biasVelocity.Y = biasVelocity.Y .Mul (multiplier);
             }
 
             Vector3 axis1I, axis2I;
@@ -281,8 +281,8 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Dot(ref axis1I, ref worldConstrainedAxis2, out effectiveMassMatrix.M12);
             Vector3.Dot(ref axis2I, ref worldConstrainedAxis1, out effectiveMassMatrix.M21);
             Vector3.Dot(ref axis2I, ref worldConstrainedAxis2, out effectiveMassMatrix.M22);
-            effectiveMassMatrix.M11 += softness;
-            effectiveMassMatrix.M22 += softness;
+            effectiveMassMatrix.M11 = effectiveMassMatrix.M11 .Add (softness);
+            effectiveMassMatrix.M22 = effectiveMassMatrix.M22 .Add (softness);
             Matrix2x2.Invert(ref effectiveMassMatrix, out effectiveMassMatrix);
             Matrix2x2.Negate(ref effectiveMassMatrix, out effectiveMassMatrix);
 
@@ -302,9 +302,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 #else
             Vector3 impulse;
 #endif
-            impulse.X = worldConstrainedAxis1.X * accumulatedImpulse.X + worldConstrainedAxis2.X * accumulatedImpulse.Y;
-            impulse.Y = worldConstrainedAxis1.Y * accumulatedImpulse.X + worldConstrainedAxis2.Y * accumulatedImpulse.Y;
-            impulse.Z = worldConstrainedAxis1.Z * accumulatedImpulse.X + worldConstrainedAxis2.Z * accumulatedImpulse.Y;
+            impulse.X = worldConstrainedAxis1.X .Mul (accumulatedImpulse.X) .Add (worldConstrainedAxis2.X .Mul (accumulatedImpulse.Y));
+            impulse.Y = worldConstrainedAxis1.Y .Mul (accumulatedImpulse.X) .Add (worldConstrainedAxis2.Y .Mul (accumulatedImpulse.Y));
+            impulse.Z = worldConstrainedAxis1.Z .Mul (accumulatedImpulse.X) .Add (worldConstrainedAxis2.Z .Mul (accumulatedImpulse.Y));
             if (connectionA.isDynamic)
             {
                 connectionA.ApplyAngularImpulse(ref impulse);
@@ -321,7 +321,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public override Fix64 SolveIteration()
+        public override Fix32 SolveIteration()
         {
             // lambda = -mc * (Jv + b)
             // P = JT * lambda
@@ -348,9 +348,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 #else
             Vector3 impulse;
 #endif
-            impulse.X = worldConstrainedAxis1.X * lambda.X + worldConstrainedAxis2.X * lambda.Y;
-            impulse.Y = worldConstrainedAxis1.Y * lambda.X + worldConstrainedAxis2.Y * lambda.Y;
-            impulse.Z = worldConstrainedAxis1.Z * lambda.X + worldConstrainedAxis2.Z * lambda.Y;
+            impulse.X = worldConstrainedAxis1.X .Mul (lambda.X) .Add (worldConstrainedAxis2.X .Mul (lambda.Y));
+            impulse.Y = worldConstrainedAxis1.Y .Mul (lambda.X) .Add (worldConstrainedAxis2.Y .Mul (lambda.Y));
+            impulse.Z = worldConstrainedAxis1.Z .Mul (lambda.X) .Add (worldConstrainedAxis2.Z .Mul (lambda.Y));
             if (connectionA.isDynamic)
             {
                 connectionA.ApplyAngularImpulse(ref impulse);
@@ -361,7 +361,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return (Fix64.Abs(lambda.X) + Fix64.Abs(lambda.Y));
+            return ((lambda.X).Abs() .Add ((lambda.Y).Abs()));
         }
 
 

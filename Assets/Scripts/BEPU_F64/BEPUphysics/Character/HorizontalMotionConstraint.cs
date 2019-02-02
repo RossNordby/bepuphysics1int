@@ -6,7 +6,7 @@ using BEPUphysics.Entities;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Character
 {
@@ -33,14 +33,14 @@ namespace BEPUphysics.Character
             get { return movementDirection; }
             set
             {
-                if (movementDirection.X != value.X || movementDirection.Y != value.Y) //Fix64ing point comparison is perfectly fine here. Any bitwise variation should go through.
+                if (movementDirection.X != value.X || movementDirection.Y != value.Y) //Fix32ing point comparison is perfectly fine here. Any bitwise variation should go through.
                 {
                     characterBody.ActivityInformation.Activate();
 
-                    Fix64 lengthSquared = value.LengthSquared();
+                    Fix32 lengthSquared = value.LengthSquared();
                     if (lengthSquared > Toolbox.Epsilon)
                     {
-                        Vector2.Divide(ref value, Fix64.Sqrt(lengthSquared), out movementDirection);
+                        Vector2.Divide(ref value, lengthSquared.Sqrt(), out movementDirection);
                     }
                     else
                     {
@@ -54,20 +54,20 @@ namespace BEPUphysics.Character
         /// <summary>
         /// Gets or sets the target speed of the character in its current state.
         /// </summary>
-        public Fix64 TargetSpeed { get; set; }
+        public Fix32 TargetSpeed { get; set; }
         /// <summary>
         /// Gets or sets the maximum force the character can apply to move horizontally in its current state.
         /// </summary>
-        public Fix64 MaximumForce { get; set; }
+        public Fix32 MaximumForce { get; set; }
         /// <summary>
         /// Gets or sets the maximum force the character can apply to accelerate. 
         /// This will not let the character apply more force than the MaximumForce; the actual applied force is constrained by both this and the MaximumForce property.
         /// </summary>
-        public Fix64 MaximumAccelerationForce { get; set; }
-        Fix64 maxForceDt;
-        Fix64 maxAccelerationForceDt;
+        public Fix32 MaximumAccelerationForce { get; set; }
+        Fix32 maxForceDt;
+        Fix32 maxAccelerationForceDt;
 
-        private Fix64 timeUntilPositionAnchor = (Fix64).2m;
+        private Fix32 timeUntilPositionAnchor = .2m.ToFix32();
 
         /// <summary>
         /// <para>Gets or sets the time it takes for the character to achieve stable footing after trying to stop moving.
@@ -77,7 +77,7 @@ namespace BEPUphysics.Character
         /// <para>This time should be longer than the time it takes the player to decelerate from normal movement while it has traction. Otherwise, the character 
         /// will seem to 'rubber band' back to a previous location after the character tries to stop.</para>
         /// </summary>
-        public Fix64 TimeUntilPositionAnchor
+        public Fix32 TimeUntilPositionAnchor
         {
             get { return timeUntilPositionAnchor; }
             set { timeUntilPositionAnchor = value; }
@@ -88,7 +88,7 @@ namespace BEPUphysics.Character
         /// When a character is standing still (as defined by TimeUntilStableFooting), a shove smaller than this threshold will result in an attempt to return to the previous anchor.
         /// A shove which pushes the character more than this threshold will cause a new anchor to be created.
         /// </summary>
-        public Fix64 PositionAnchorDistanceThreshold { get; set; }
+        public Fix32 PositionAnchorDistanceThreshold { get; set; }
 
         /// <summary>
         /// <para>Gets whether the character currently has stable footing. If true, the character will resist position drift relative to its support. For example,
@@ -98,7 +98,7 @@ namespace BEPUphysics.Character
         /// </summary>
         public bool HasPositionAnchor
         {
-            get { return timeSinceTransition < F64.C0; }
+            get { return timeSinceTransition < Fix32.Zero; }
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace BEPUphysics.Character
         {
             Vector3 down = characterBody.orientationMatrix.Down;
             horizontalForwardDirection = forward - down * Vector3.Dot(down, forward);
-            Fix64 forwardLengthSquared = horizontalForwardDirection.LengthSquared();
+            Fix32 forwardLengthSquared = horizontalForwardDirection.LengthSquared();
 
             if (forwardLengthSquared < Toolbox.Epsilon)
             {
@@ -173,7 +173,7 @@ namespace BEPUphysics.Character
             }
             else
             {
-                Vector3.Divide(ref horizontalForwardDirection, Fix64.Sqrt(forwardLengthSquared), out horizontalForwardDirection);
+                Vector3.Divide(ref horizontalForwardDirection, forwardLengthSquared.Sqrt(), out horizontalForwardDirection);
                 Vector3.Cross(ref down, ref horizontalForwardDirection, out strafeDirection);
                 //Don't need to normalize the strafe direction; it's the cross product of two normalized perpendicular vectors.
             }
@@ -210,14 +210,14 @@ namespace BEPUphysics.Character
             }
         }
 
-        Fix64 supportForceFactor = F64.C1;
+        Fix32 supportForceFactor = F64.C1;
         /// <summary>
         /// Gets or sets the scaling factor of forces applied to the supporting object if it is a dynamic entity.
         /// Low values (below 1) reduce the amount of motion imparted to the support object; it acts 'heavier' as far as horizontal motion is concerned.
         /// High values (above 1) increase the force applied to support objects, making them appear lighter.
         /// Be careful when changing this- it can create impossible situations!
         /// </summary>
-        public Fix64 SupportForceFactor
+        public Fix32 SupportForceFactor
         {
             get
             {
@@ -225,7 +225,7 @@ namespace BEPUphysics.Character
             }
             set
             {
-                if (value < F64.C0)
+                if (value < Fix32.Zero)
                     throw new ArgumentException("Value must be nonnegative.");
                 supportForceFactor = value;
             }
@@ -253,7 +253,7 @@ namespace BEPUphysics.Character
         bool wasTryingToMove;
         bool hadTraction;
         Entity previousSupportEntity;
-        Fix64 timeSinceTransition;
+        Fix32 timeSinceTransition;
         bool isTryingToMove;
 
         /// <summary>
@@ -266,7 +266,7 @@ namespace BEPUphysics.Character
             this.characterBody = characterBody;
             this.supportFinder = supportFinder;
             CollectInvolvedEntities();
-            MaximumAccelerationForce = Fix64.MaxValue;
+            MaximumAccelerationForce = Fix32.MaxValue;
         }
 
 
@@ -285,13 +285,13 @@ namespace BEPUphysics.Character
         /// Computes per-frame information necessary for the constraint.
         /// </summary>
         /// <param name="dt">Time step duration.</param>
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
 
-            isTryingToMove = movementDirection3d.LengthSquared() > F64.C0;
+            isTryingToMove = movementDirection3d.LengthSquared() > Fix32.Zero;
 
-            maxForceDt = MaximumForce * dt;
-            maxAccelerationForceDt = MaximumAccelerationForce * dt;
+            maxForceDt = MaximumForce .Mul (dt);
+            maxAccelerationForceDt = MaximumAccelerationForce .Mul (dt);
 
 
             //Compute the jacobians.  This is basically a PointOnLineJoint with motorized degrees of freedom.
@@ -312,8 +312,8 @@ namespace BEPUphysics.Character
 
                     Vector3 lineEnd;
                     Vector3.Add(ref lineStart, ref downDirection, out lineEnd);
-                    Plane plane = new Plane(supportData.Normal, F64.C0);
-                    Fix64 t;
+                    Plane plane = new Plane(supportData.Normal, Fix32.Zero);
+                    Fix32 t;
                     //This method can return false when the line is parallel to the plane, but previous tests and the slope limit guarantee that it won't happen.
                     Toolbox.GetLinePlaneIntersection(ref lineStart, ref lineEnd, ref plane, out t, out velocityDirection);
 
@@ -336,14 +336,14 @@ namespace BEPUphysics.Character
                     //Instead, pick two arbitrary vectors on the support plane.
                     //First guess will be based on the previous jacobian.
                     //Project the old linear jacobian onto the support normal plane.
-                    Fix64 dot;
+                    Fix32 dot;
                     Vector3.Dot(ref linearJacobianA1, ref supportData.Normal, out dot);
                     Vector3 toRemove;
                     Vector3.Multiply(ref supportData.Normal, dot, out toRemove);
                     Vector3.Subtract(ref linearJacobianA1, ref toRemove, out linearJacobianA1);
 
                     //Vector3.Cross(ref linearJacobianA2, ref supportData.Normal, out linearJacobianA1);
-                    Fix64 length = linearJacobianA1.LengthSquared();
+                    Fix32 length = linearJacobianA1.LengthSquared();
                     if (length < Toolbox.Epsilon)
                     {
                         //First guess failed.  Try the right vector.
@@ -358,7 +358,7 @@ namespace BEPUphysics.Character
                         }
 
                     }
-                    Vector3.Divide(ref linearJacobianA1, Fix64.Sqrt(length), out linearJacobianA1);
+                    Vector3.Divide(ref linearJacobianA1, length.Sqrt(), out linearJacobianA1);
                     //Pick another perpendicular vector.  Don't need to normalize it since the normal and A1 are already normalized and perpendicular.
                     Vector3.Cross(ref linearJacobianA1, ref supportData.Normal, out linearJacobianA2);
 
@@ -387,7 +387,7 @@ namespace BEPUphysics.Character
             }
             else
             {
-                //If the character is Fix64ing, then the jacobians are simply the 3d movement direction and the perpendicular direction on the character's horizontal plane.
+                //If the character is Fix32ing, then the jacobians are simply the 3d movement direction and the perpendicular direction on the character's horizontal plane.
                 linearJacobianA1 = movementDirection3d;
                 linearJacobianA2 = Vector3.Cross(linearJacobianA1, characterBody.orientationMatrix.Down);
 
@@ -396,14 +396,14 @@ namespace BEPUphysics.Character
 
 
             //Compute the target velocity (in constraint space) for this frame.  The hard work has already been done.
-            targetVelocity.X = isTryingToMove ? TargetSpeed : F64.C0;
-            targetVelocity.Y = F64.C0;
+            targetVelocity.X = isTryingToMove ? TargetSpeed : Fix32.Zero;
+            targetVelocity.Y = Fix32.Zero;
 
             //Compute the effective mass matrix.
             if (supportEntity != null && supportEntity.IsDynamic)
             {
-                Fix64 m11, m22, m1221 = F64.C0;
-                Fix64 inverseMass;
+                Fix32 m11, m22, m1221 = Fix32.Zero;
+                Fix32 inverseMass;
                 Vector3 intermediate;
 
                 inverseMass = characterBody.InverseMass;
@@ -414,16 +414,16 @@ namespace BEPUphysics.Character
                 //Scale the inertia and mass of the support.  This will make the solver view the object as 'heavier' with respect to horizontal motion.
                 Matrix3x3 inertiaInverse = supportEntity.InertiaTensorInverse;
                 Matrix3x3.Multiply(ref inertiaInverse, supportForceFactor, out inertiaInverse);
-                Fix64 extra;
-                inverseMass = supportForceFactor * supportEntity.InverseMass;
+                Fix32 extra;
+                inverseMass = supportForceFactor .Mul (supportEntity.InverseMass);
                 Matrix3x3.Transform(ref angularJacobianB1, ref inertiaInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref angularJacobianB1, out extra);
-                m11 += inverseMass + extra;
+                m11 = m11 .Add (inverseMass .Add (extra));
                 Vector3.Dot(ref intermediate, ref angularJacobianB2, out extra);
-                m1221 += extra;
+                m1221 = m1221 .Add ((extra));
                 Matrix3x3.Transform(ref angularJacobianB2, ref inertiaInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref angularJacobianB2, out extra);
-                m22 += inverseMass + extra;
+                m22 = m22 .Add (inverseMass .Add (extra));
 
 
                 massMatrix.M11 = m11;
@@ -449,7 +449,7 @@ namespace BEPUphysics.Character
                 //We're transitioning into a new 'use position correction' state.
                 //Force a recomputation of the local offset.
                 //The time since transition is used as a flag.
-                timeSinceTransition = F64.C0;
+                timeSinceTransition = Fix32.Zero;
             }
 
             //The state is now up to date.  Compute an error and velocity bias, if needed.
@@ -458,25 +458,25 @@ namespace BEPUphysics.Character
 
                 var distanceToBottomOfCharacter = supportFinder.BottomDistance;
 
-                if (timeSinceTransition >= F64.C0 && timeSinceTransition < timeUntilPositionAnchor)
-                    timeSinceTransition += dt;
+                if (timeSinceTransition >= Fix32.Zero && timeSinceTransition < timeUntilPositionAnchor)
+                    timeSinceTransition = timeSinceTransition .Add ((dt));
                 if (timeSinceTransition >= timeUntilPositionAnchor)
                 {
                     Vector3.Multiply(ref downDirection, distanceToBottomOfCharacter, out positionLocalOffset);
                     positionLocalOffset = (positionLocalOffset + characterBody.Position) - supportEntity.Position;
                     positionLocalOffset = Matrix3x3.TransformTranspose(positionLocalOffset, supportEntity.OrientationMatrix);
-                    timeSinceTransition = -1; //Negative 1 means that the offset has been computed.
+                    timeSinceTransition = Fix32.MinusOne; //Negative 1 means that the offset has been computed.
                 }
-                if (timeSinceTransition < F64.C0)
+                if (timeSinceTransition < Fix32.Zero)
                 {
                     Vector3 targetPosition;
                     Vector3.Multiply(ref downDirection, distanceToBottomOfCharacter, out targetPosition);
-                    targetPosition += characterBody.Position;
+                    targetPosition = targetPosition + (characterBody.Position);
                     Vector3 worldSupportLocation = Matrix3x3.Transform(positionLocalOffset, supportEntity.OrientationMatrix) + supportEntity.Position;
                     Vector3 error;
                     Vector3.Subtract(ref targetPosition, ref worldSupportLocation, out error);
                     //If the error is too large, then recompute the offset.  We don't want the character rubber banding around.
-                    if (error.LengthSquared() > PositionAnchorDistanceThreshold * PositionAnchorDistanceThreshold)
+                    if (error.LengthSquared() > PositionAnchorDistanceThreshold .Mul (PositionAnchorDistanceThreshold))
                     {
                         Vector3.Multiply(ref downDirection, distanceToBottomOfCharacter, out positionLocalOffset);
                         positionLocalOffset = (positionLocalOffset + characterBody.Position) - supportEntity.Position;
@@ -491,13 +491,13 @@ namespace BEPUphysics.Character
                         Vector3.Dot(ref error, ref linearJacobianA1, out positionCorrectionBias.X);
                         Vector3.Dot(ref error, ref linearJacobianA2, out positionCorrectionBias.Y);
                         //Scale the error so that a portion of the error is resolved each frame.
-                        Vector2.Multiply(ref positionCorrectionBias, F64.C0p2 / dt, out positionCorrectionBias);
+                        Vector2.Multiply(ref positionCorrectionBias, F64.C0p2 .Div (dt), out positionCorrectionBias);
                     }
                 }
             }
             else
             {
-                timeSinceTransition = F64.C0;
+                timeSinceTransition = Fix32.Zero;
                 positionCorrectionBias = new Vector2();
             }
 
@@ -522,23 +522,23 @@ namespace BEPUphysics.Character
             Vector3 impulse;
             Vector3 torque;
 #endif
-            Fix64 x = accumulatedImpulse.X;
-            Fix64 y = accumulatedImpulse.Y;
-            impulse.X = linearJacobianA1.X * x + linearJacobianA2.X * y;
-            impulse.Y = linearJacobianA1.Y * x + linearJacobianA2.Y * y;
-            impulse.Z = linearJacobianA1.Z * x + linearJacobianA2.Z * y;
+            Fix32 x = accumulatedImpulse.X;
+            Fix32 y = accumulatedImpulse.Y;
+            impulse.X = linearJacobianA1.X .Mul (x) .Add (linearJacobianA2.X .Mul (y));
+            impulse.Y = linearJacobianA1.Y .Mul (x) .Add (linearJacobianA2.Y .Mul (y));
+            impulse.Z = linearJacobianA1.Z .Mul (x) .Add (linearJacobianA2.Z .Mul (y));
 
             characterBody.ApplyLinearImpulse(ref impulse);
 
             if (supportEntity != null && supportEntity.IsDynamic)
             {
-                Vector3.Multiply(ref impulse, -supportForceFactor, out impulse);
+                Vector3.Multiply(ref impulse, supportForceFactor.Neg(), out impulse);
 
-                x *= supportForceFactor;
-                y *= supportForceFactor;
-                torque.X = x * angularJacobianB1.X + y * angularJacobianB2.X;
-                torque.Y = x * angularJacobianB1.Y + y * angularJacobianB2.Y;
-                torque.Z = x * angularJacobianB1.Z + y * angularJacobianB2.Z;
+                x = x .Mul (supportForceFactor);
+                y = y .Mul (supportForceFactor);
+                torque.X = x .Mul (angularJacobianB1.X) .Add (y .Mul (angularJacobianB2.X));
+                torque.Y = x .Mul (angularJacobianB1.Y) .Add (y .Mul (angularJacobianB2.Y));
+                torque.Z = x .Mul (angularJacobianB1.Z) .Add (y .Mul (angularJacobianB2.Z));
 
 
                 supportEntity.ApplyLinearImpulse(ref impulse);
@@ -550,7 +550,7 @@ namespace BEPUphysics.Character
         /// Computes a solution to the constraint.
         /// </summary>
         /// <returns>Impulse magnitude computed by the iteration.</returns>
-        public override Fix64 SolveIteration()
+        public override Fix32 SolveIteration()
         {
 
             Vector2 relativeVelocity = RelativeVelocity;
@@ -568,21 +568,21 @@ namespace BEPUphysics.Character
             Vector2 previousAccumulatedImpulse = accumulatedImpulse;
             if (MovementMode == MovementMode.Floating)
             {
-                //If it's Fix64ing, clamping rules are different.
+                //If it's Fix32ing, clamping rules are different.
                 //The constraint is not permitted to slow down the character; only speed it up.
                 //This offers a hole for an exploit; by jumping and curving just right,
                 //the character can accelerate beyond its maximum speed.  A bit like an HL2 speed run.
-                accumulatedImpulse.X = MathHelper.Clamp(accumulatedImpulse.X + lambda.X, F64.C0, maxForceDt);
-                accumulatedImpulse.Y = F64.C0;
+                accumulatedImpulse.X = MathHelper.Clamp(accumulatedImpulse.X .Add (lambda.X), Fix32.Zero, maxForceDt);
+                accumulatedImpulse.Y = Fix32.Zero;
             }
             else
             {
 
                 Vector2.Add(ref lambda, ref accumulatedImpulse, out accumulatedImpulse);
-                Fix64 length = accumulatedImpulse.LengthSquared();
-                if (length > maxForceDt * maxForceDt)
+                Fix32 length = accumulatedImpulse.LengthSquared();
+                if (length > maxForceDt .Mul (maxForceDt))
                 {
-                    Vector2.Multiply(ref accumulatedImpulse, maxForceDt / Fix64.Sqrt(length), out accumulatedImpulse);
+                    Vector2.Multiply(ref accumulatedImpulse, maxForceDt .Div (length.Sqrt()), out accumulatedImpulse);
                 }
                 if (isTryingToMove && accumulatedImpulse.X > maxAccelerationForceDt)
                 {
@@ -601,29 +601,29 @@ namespace BEPUphysics.Character
             Vector3 impulse;
             Vector3 torque;
 #endif
-            Fix64 x = lambda.X;
-            Fix64 y = lambda.Y;
-            impulse.X = linearJacobianA1.X * x + linearJacobianA2.X * y;
-            impulse.Y = linearJacobianA1.Y * x + linearJacobianA2.Y * y;
-            impulse.Z = linearJacobianA1.Z * x + linearJacobianA2.Z * y;
+            Fix32 x = lambda.X;
+            Fix32 y = lambda.Y;
+            impulse.X = linearJacobianA1.X .Mul (x) .Add (linearJacobianA2.X .Mul (y));
+            impulse.Y = linearJacobianA1.Y .Mul (x) .Add (linearJacobianA2.Y .Mul (y));
+            impulse.Z = linearJacobianA1.Z .Mul (x) .Add (linearJacobianA2.Z .Mul (y));
 
             characterBody.ApplyLinearImpulse(ref impulse);
 
             if (supportEntity != null && supportEntity.IsDynamic)
             {
-                Vector3.Multiply(ref impulse, -supportForceFactor, out impulse);
+                Vector3.Multiply(ref impulse, supportForceFactor.Neg(), out impulse);
 
-                x *= supportForceFactor;
-                y *= supportForceFactor;
-                torque.X = x * angularJacobianB1.X + y * angularJacobianB2.X;
-                torque.Y = x * angularJacobianB1.Y + y * angularJacobianB2.Y;
-                torque.Z = x * angularJacobianB1.Z + y * angularJacobianB2.Z;
+                x = x .Mul (supportForceFactor);
+                y = y .Mul (supportForceFactor);
+                torque.X = x .Mul (angularJacobianB1.X) .Add (y .Mul (angularJacobianB2.X));
+                torque.Y = x .Mul (angularJacobianB1.Y) .Add (y .Mul (angularJacobianB2.Y));
+                torque.Z = x .Mul (angularJacobianB1.Z) .Add (y .Mul (angularJacobianB2.Z));
 
                 supportEntity.ApplyLinearImpulse(ref impulse);
                 supportEntity.ApplyAngularImpulse(ref torque);
             }
 
-            return (Fix64.Abs(lambda.X) + Fix64.Abs(lambda.Y));
+            return ((lambda.X).Abs() .Add (lambda.Y).Abs());
 
 
         }
@@ -649,17 +649,17 @@ namespace BEPUphysics.Character
                 Vector3.Dot(ref linearJacobianA1, ref characterBody.linearVelocity, out relativeVelocity.X);
                 Vector3.Dot(ref linearJacobianA2, ref characterBody.linearVelocity, out relativeVelocity.Y);
 
-                Fix64 x, y;
+                Fix32 x, y;
                 if (supportEntity != null)
                 {
                     Vector3.Dot(ref linearJacobianB1, ref supportEntity.linearVelocity, out x);
                     Vector3.Dot(ref linearJacobianB2, ref supportEntity.linearVelocity, out y);
-                    relativeVelocity.X += x;
-                    relativeVelocity.Y += y;
+                    relativeVelocity.X = relativeVelocity.X .Add (x);
+                    relativeVelocity.Y = relativeVelocity.Y .Add (y);
                     Vector3.Dot(ref angularJacobianB1, ref supportEntity.angularVelocity, out x);
                     Vector3.Dot(ref angularJacobianB2, ref supportEntity.angularVelocity, out y);
-                    relativeVelocity.X += x;
-                    relativeVelocity.Y += y;
+                    relativeVelocity.X = relativeVelocity.X .Add (x);
+                    relativeVelocity.Y = relativeVelocity.Y .Add (y);
 
                 }
                 return relativeVelocity;
@@ -701,9 +701,9 @@ namespace BEPUphysics.Character
             {
 
                 Vector3 impulse;
-                impulse.X = accumulatedImpulse.X * linearJacobianA1.X + accumulatedImpulse.Y * linearJacobianA2.X;
-                impulse.Y = accumulatedImpulse.X * linearJacobianA1.Y + accumulatedImpulse.Y * linearJacobianA2.Y;
-                impulse.Z = accumulatedImpulse.X * linearJacobianA1.Z + accumulatedImpulse.Y * linearJacobianA2.Z;
+                impulse.X = accumulatedImpulse.X .Mul (linearJacobianA1.X) .Add (accumulatedImpulse.Y .Mul (linearJacobianA2.X));
+                impulse.Y = accumulatedImpulse.X .Mul (linearJacobianA1.Y) .Add (accumulatedImpulse.Y .Mul (linearJacobianA2.Y));
+                impulse.Z = accumulatedImpulse.X .Mul (linearJacobianA1.Z) .Add (accumulatedImpulse.Y .Mul (linearJacobianA2.Z));
                 return impulse;
             }
         }

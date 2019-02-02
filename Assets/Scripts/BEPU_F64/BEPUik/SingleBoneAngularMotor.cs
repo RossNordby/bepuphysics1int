@@ -1,5 +1,4 @@
 ﻿using BEPUutilities;
-using FixMath.NET;
 
 namespace BEPUik
 {
@@ -19,7 +18,7 @@ namespace BEPUik
             Quaternion errorQuaternion;
             Quaternion.Conjugate(ref TargetBone.Orientation, out errorQuaternion);
             Quaternion.Multiply(ref TargetOrientation, ref errorQuaternion, out errorQuaternion);
-            Fix64 angle;
+            Fix32 angle;
             Vector3 angularError;
             Quaternion.GetAxisAngleFromQuaternion(ref errorQuaternion, out angularError, out angle);
             Vector3.Multiply(ref angularError, angle, out angularError);
@@ -27,7 +26,5 @@ namespace BEPUik
             //This is equivalent to projecting the error onto the angular jacobian. The angular jacobian just happens to be the identity matrix!
             Vector3.Multiply(ref angularError, errorCorrectionFactor, out velocityBias);
         }
-
-
     }
 }

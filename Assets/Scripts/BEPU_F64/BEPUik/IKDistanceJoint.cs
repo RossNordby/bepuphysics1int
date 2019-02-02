@@ -1,6 +1,5 @@
 ﻿using System;
 using BEPUutilities;
-using FixMath.NET;
 
 namespace BEPUik
 {
@@ -36,14 +35,14 @@ namespace BEPUik
             set { LocalAnchorB = Quaternion.Transform(value - ConnectionB.Position, Quaternion.Conjugate(ConnectionB.Orientation)); }
         }
 
-        private Fix64 distance;
+        private Fix32 distance;
         /// <summary>
         /// Gets or sets the distance that the joint connections should be kept from each other.
         /// </summary>
-        public Fix64 Distance
+        public Fix32 Distance
         {
             get { return distance; }
-            set { distance = MathHelper.Max(F64.C0, value); }
+            set { distance = MathHelper.Max(Fix32.Zero, value); }
         }
 
         /// <summary>
@@ -74,7 +73,7 @@ namespace BEPUik
             //Compute the distance.
             Vector3 separation;
             Vector3.Subtract(ref anchorB, ref anchorA, out separation);
-            Fix64 currentDistance = separation.Length();
+            Fix32 currentDistance = separation.Length();
 
             //Compute jacobians
             Vector3 linearA;
@@ -83,11 +82,11 @@ namespace BEPUik
 #endif
             if (currentDistance > Toolbox.Epsilon)
             {
-                linearA.X = separation.X / currentDistance;
-                linearA.Y = separation.Y / currentDistance;
-                linearA.Z = separation.Z / currentDistance;
+                linearA.X = separation.X.Div(currentDistance);
+                linearA.Y = separation.Y.Div(currentDistance);
+                linearA.Z = separation.Z.Div(currentDistance);
 
-                velocityBias = new Vector3(errorCorrectionFactor * (currentDistance - distance), F64.C0, F64.C0);
+                velocityBias = new Vector3(errorCorrectionFactor.Mul(currentDistance.Sub(distance)), Fix32.Zero, Fix32.Zero);
             }
             else
             {
@@ -102,10 +101,9 @@ namespace BEPUik
 
             //Put all the 1x3 jacobians into a 3x3 matrix representation.
             linearJacobianA = new Matrix3x3 { M11 = linearA.X, M12 = linearA.Y, M13 = linearA.Z };
-            linearJacobianB = new Matrix3x3 { M11 = -linearA.X, M12 = -linearA.Y, M13 = -linearA.Z };
+            linearJacobianB = new Matrix3x3 { M11 = linearA.X.Neg(), M12 = linearA.Y.Neg(), M13 = linearA.Z.Neg() };
             angularJacobianA = new Matrix3x3 { M11 = angularA.X, M12 = angularA.Y, M13 = angularA.Z };
             angularJacobianB = new Matrix3x3 { M11 = angularB.X, M12 = angularB.Y, M13 = angularB.Z };
-
         }
     }
 }

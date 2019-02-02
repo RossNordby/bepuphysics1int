@@ -168,9 +168,9 @@ namespace BEPUphysics.Constraints.Collision
             }
             else
             {
-                materialInteraction.KineticFriction = F64.C0;
-                materialInteraction.StaticFriction = F64.C0;
-                materialInteraction.Bounciness = F64.C0;
+                materialInteraction.KineticFriction = Fix32.Zero;
+                materialInteraction.StaticFriction = Fix32.Zero;
+                materialInteraction.Bounciness = Fix32.Zero;
             }
         }
 

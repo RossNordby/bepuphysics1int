@@ -28,11 +28,11 @@ namespace BEPUphysics.Constraints.SolverGroups
         {
             var anchor = new Vector3();
             if (connectionA != null)
-                anchor += connectionA.position;
+                anchor = anchor + (connectionA.position);
             if (connectionB != null)
-                anchor += connectionB.position;
+                anchor = anchor + (connectionB.position);
             if (connectionA != null && connectionB != null)
-                anchor *= F64.C0p5;
+                anchor = anchor * (F64.C0p5);
             return anchor;
         }
 

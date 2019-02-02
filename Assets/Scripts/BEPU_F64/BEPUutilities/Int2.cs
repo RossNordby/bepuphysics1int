@@ -45,7 +45,5 @@ namespace BEPUutilities
         {
             return "{" + X + ", " + Y + "}";
         }
-
-
     }
 }
