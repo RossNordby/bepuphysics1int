@@ -35,9 +35,12 @@ namespace CodeFixStruct
 		private void AnalyzeInvocationUnary(OperationAnalysisContext context)
 		{
 			var operation = (IUnaryOperation)context.Operation;
-			if (operation.OperatorKind == UnaryOperatorKind.Minus)
-			{
-                context.ReportDiagnostic(Diagnostic.Create(Rule, operation.Syntax.GetLocation(), $"{operation.OperatorKind} operator"));
+            if (operation.OperatorKind == UnaryOperatorKind.Minus)
+            {
+                if (operation.Type.Name.StartsWith(StructStartName))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(Rule, operation.Syntax.GetLocation(), $"{operation.OperatorKind} operator"));
+                }
             }
         }
 
