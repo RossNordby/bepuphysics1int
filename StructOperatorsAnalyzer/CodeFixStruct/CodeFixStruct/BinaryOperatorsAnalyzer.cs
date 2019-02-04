@@ -12,7 +12,7 @@ namespace CodeFixStruct
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
 	public class BinaryOperatorsAnalyzer : DiagnosticAnalyzer
 	{
-		public const string DiagnosticId = "CodeFixStruct";
+		public const string DiagnosticId = "BinaryOperator";
 		public const string Title = "Operators not supported.";
 		public const string MessageFormat = "Replace operator with methods.";
 		public const string Category = "Errors";
