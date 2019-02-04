@@ -13,9 +13,9 @@ namespace CodeFixStruct
 	public class CodeFixStructAnalyzer : DiagnosticAnalyzer
 	{
 		public const string DiagnosticId = "CodeFixStruct";
-		public const string Title = "Verifies whether an ArgumentException is thrown with a message.";
-		public const string MessageFormat = "ArgumentException is thrown without a message.";
-		public const string Category = "Exceptions";
+		public const string Title = "ASD.";
+		public const string MessageFormat = "Replace \"a += b\" with \"a = a + b\".";
+		public const string Category = "Errors";
 		public const DiagnosticSeverity Severity = DiagnosticSeverity.Error;
 
 		internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, Severity, true);
@@ -76,7 +76,7 @@ namespace CodeFixStruct
                 context.ReportDiagnostic(Diagnostic.Create(
                     Rule,
                     assignmentNode.GetLocation(),
-                    $"Replace the operator \"x {assignmentType} y\" with \"x = x {assignmentType.Substring(0, 1)} y\" operator"));
+                    (LocalizableString) $"Replace the operator \"x {assignmentType} y\" with \"x = x {assignmentType.Substring(0, 1)} y\" operator"));
             }
         }
 
@@ -95,7 +95,7 @@ namespace CodeFixStruct
 				bool rightOk = operation.RightOperand != null && operation.RightOperand.Type.Name.StartsWith(StructStartName);
 				if (leftOk && rightOk)
 				{
-					context.ReportDiagnostic(Diagnostic.Create(Rule, operation.Syntax.GetLocation(), $"{operation.OperatorKind} operator", DiagnosticSeverity.Error));
+					context.ReportDiagnostic(Diagnostic.Create(Rule, operation.Syntax.GetLocation(), $"{operation.OperatorKind} operator"));
 				}
 			}
 		}
