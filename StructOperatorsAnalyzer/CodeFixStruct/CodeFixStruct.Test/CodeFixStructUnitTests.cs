@@ -38,9 +38,9 @@ namespace CodeFixStruct.Test
     }";
             var expected = new DiagnosticResult
             {
-                Id = CodeFixStructAnalyzer.DiagnosticId,
-                Message = CodeFixStructAnalyzer.MessageFormat,
-                Severity = CodeFixStructAnalyzer.Severity,
+                Id = CompoundAssignmentAnalyzer.DiagnosticId,
+                Message = CompoundAssignmentAnalyzer.MessageFormat,
+                Severity = CompoundAssignmentAnalyzer.Severity,
                 Locations =
                     new[] {
                             new DiagnosticResultLocation("Test0.cs", 11, 15)
@@ -68,12 +68,12 @@ namespace CodeFixStruct.Test
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
-            return new CodeFixStructCodeFixProvider();
+            return new BinaryOperatorCodeFixProvider();
         }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new CodeFixStructAnalyzer();
+            return new CompoundAssignmentAnalyzer();
         }
     }
 }

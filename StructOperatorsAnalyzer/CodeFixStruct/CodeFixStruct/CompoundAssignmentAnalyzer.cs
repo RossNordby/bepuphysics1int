@@ -10,11 +10,11 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 namespace CodeFixStruct
 {
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
-	public class CodeFixStructAnalyzer : DiagnosticAnalyzer
+	public class CompoundAssignmentAnalyzer : DiagnosticAnalyzer
 	{
 		public const string DiagnosticId = "CodeFixStruct";
-		public const string Title = "ASD.";
-		public const string MessageFormat = "Replace \"a += b\" with \"a = a + b\".";
+		public const string Title = "Operators with asignment not supported.";
+		public const string MessageFormat = "Replace operator with asignment with operators only.";
 		public const string Category = "Errors";
 		public const DiagnosticSeverity Severity = DiagnosticSeverity.Error;
 
@@ -27,8 +27,6 @@ namespace CodeFixStruct
 			context.EnableConcurrentExecution();
 			context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
 
-			context.RegisterOperationAction(AnalyzeInvocationBinary, OperationKind.BinaryOperator); // x + y
-            context.RegisterOperationAction(AnalyzeInvocationUnary, OperationKind.UnaryOperator); // -x
             context.RegisterSyntaxNodeAction(AnalyzeSyntax, 
                 SyntaxKind.AddAssignmentExpression, 
                 SyntaxKind.SubtractAssignmentExpression,
@@ -79,36 +77,7 @@ namespace CodeFixStruct
                     (LocalizableString) $"Replace the operator \"x {assignmentType} y\" with \"x = x {assignmentType.Substring(0, 1)} y\" operator"));
             }
         }
-
-		private void AnalyzeInvocationBinary(OperationAnalysisContext context)
-		{
-			var operation = (IBinaryOperation)context.Operation;
-			if (
-				operation.OperatorKind == BinaryOperatorKind.Add ||
-				operation.OperatorKind == BinaryOperatorKind.Subtract ||
-				operation.OperatorKind == BinaryOperatorKind.Multiply ||
-                operation.OperatorKind == BinaryOperatorKind.Divide ||
-                operation.OperatorKind == BinaryOperatorKind.Remainder
-                )
-			{
-				bool leftOk = operation.LeftOperand != null && operation.LeftOperand.Type.Name.StartsWith(StructStartName);
-				bool rightOk = operation.RightOperand != null && operation.RightOperand.Type.Name.StartsWith(StructStartName);
-				if (leftOk && rightOk)
-				{
-					context.ReportDiagnostic(Diagnostic.Create(Rule, operation.Syntax.GetLocation(), $"{operation.OperatorKind} operator"));
-				}
-			}
-		}
-
-		private void AnalyzeInvocationUnary(OperationAnalysisContext context)
-		{
-			var operation = (IUnaryOperation)context.Operation;
-			if (operation.OperatorKind == UnaryOperatorKind.Minus)
-			{
-
-			}
-		}
-
+        
 		private static bool IsNull(IOperation operation)
 		{
 			return operation.ConstantValue.HasValue && operation.ConstantValue.Value == null;

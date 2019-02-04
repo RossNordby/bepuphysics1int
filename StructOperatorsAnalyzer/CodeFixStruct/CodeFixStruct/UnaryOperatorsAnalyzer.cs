@@ -1,0 +1,49 @@
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Operations;
+using System;
+using System.Collections.Immutable;
+using Microsoft.CodeAnalysis.CSharp.Symbols;
+
+namespace CodeFixStruct
+{
+	[DiagnosticAnalyzer(LanguageNames.CSharp)]
+	public class UnaryOperatorsAnalyzer : DiagnosticAnalyzer
+	{
+		public const string DiagnosticId = "CodeFixStruct";
+		public const string Title = "Unary operator - not supported.";
+		public const string MessageFormat = "Replace unary operator - with method.";
+		public const string Category = "Errors";
+		public const DiagnosticSeverity Severity = DiagnosticSeverity.Error;
+
+		internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, Severity, true);
+
+		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+
+		public override void Initialize(AnalysisContext context)
+		{
+			context.EnableConcurrentExecution();
+			context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+
+            context.RegisterOperationAction(AnalyzeInvocationUnary, OperationKind.UnaryOperator); // -x
+		}
+
+        const string StructStartName = "Fix";
+        
+		private void AnalyzeInvocationUnary(OperationAnalysisContext context)
+		{
+			var operation = (IUnaryOperation)context.Operation;
+			if (operation.OperatorKind == UnaryOperatorKind.Minus)
+			{
+                context.ReportDiagnostic(Diagnostic.Create(Rule, operation.Syntax.GetLocation(), $"{operation.OperatorKind} operator"));
+            }
+        }
+
+		private static bool IsNull(IOperation operation)
+		{
+			return operation.ConstantValue.HasValue && operation.ConstantValue.Value == null;
+		}
+	}
+}
