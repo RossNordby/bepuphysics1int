@@ -253,9 +253,9 @@ namespace FixMath.NET
 		/// rounds to MinValue or MaxValue depending on sign of operands.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Fix64 operator +(Fix64 x, Fix64 y) {
+		public Fix64 Add(Fix64 y) {
 #if CHECKMATH
-			var xl = x.RawValue;
+			var xl = RawValue;
             var yl = y.RawValue;
             var sum = xl + yl;
             // if signs of operands are equal and signs of sum and x are different
@@ -264,7 +264,7 @@ namespace FixMath.NET
             }
             return new Fix64(sum);
 #else
-			return new Fix64(x.RawValue + y.RawValue);
+			return new Fix64(RawValue + y.RawValue);
 #endif
 		}
 
@@ -286,9 +286,9 @@ namespace FixMath.NET
 		/// rounds to MinValue or MaxValue depending on sign of operands.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Fix64 operator -(Fix64 x, Fix64 y) {
+		public Fix64 Sub(Fix64 y) {
 #if CHECKMATH
-			var xl = x.RawValue;
+			var xl = RawValue;
             var yl = y.RawValue;
             var diff = xl - yl;
             // if signs of operands are different and signs of sum and x are different
@@ -297,7 +297,7 @@ namespace FixMath.NET
             }
             return new Fix64(diff);
 #else
-			return new Fix64(x.RawValue - y.RawValue);
+			return new Fix64(RawValue - y.RawValue);
 #endif
 		}
 
@@ -321,10 +321,31 @@ namespace FixMath.NET
             return sum;
         }
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Fix64 operator *(Fix64 x, Fix64 y) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Fix64 operator +(Fix64 x, Fix64 y) {
+            return x.Add(y);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Fix64 operator -(Fix64 x, Fix64 y) {
+            return x.Sub(y);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Fix64 operator *(Fix64 x, Fix64 y) {
+            return x.Mul(y);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Fix64 operator /(Fix64 x, Fix64 y) {
+            return x.Div(y);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Fix64 operator %(Fix64 x, Fix64 y) {
+            return x.Mod(y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public Fix64 Mul(Fix64 y) {
 #if CHECKMATH
-			var xl = x.RawValue;
+			var xl = RawValue;
             var yl = y.RawValue;
 
             var xlo = (ulong)(xl & 0x00000000FFFFFFFF);
@@ -393,7 +414,7 @@ namespace FixMath.NET
 
             return new Fix64(sum);
 #else
-			var xl = x.RawValue;
+			var xl = RawValue;
 			var yl = y.RawValue;
 
 			var xlo = (ulong)(xl & 0x00000000FFFFFFFF);
@@ -501,8 +522,8 @@ namespace FixMath.NET
             return result;
         }
 
-        public static Fix64 operator /(Fix64 x, Fix64 y) {
-            var xl = x.RawValue;
+        public Fix64 Div(Fix64 y) {
+            var xl = RawValue;
             var yl = y.RawValue;
 
             if (yl == 0) {
@@ -553,11 +574,11 @@ namespace FixMath.NET
             return new Fix64(result);
         }
 
-        public static Fix64 operator %(Fix64 x, Fix64 y) {
+        public Fix64 Mod(Fix64 y) {
             return new Fix64(
-                x.RawValue == MIN_VALUE & y.RawValue == -1 ? 
+                RawValue == MIN_VALUE & y.RawValue == -1 ? 
                 0 :
-                x.RawValue % y.RawValue);
+                RawValue % y.RawValue);
         }
 
         /// <summary>
