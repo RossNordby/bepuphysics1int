@@ -13,8 +13,8 @@ namespace CodeFixStruct
 	public class UnaryOperatorsAnalyzer : DiagnosticAnalyzer
 	{
 		public const string DiagnosticId = "UnaryOperator";
-		public const string Title = "Unary operator - not supported.";
-		public const string MessageFormat = "Replace unary operator - with method.";
+		public const string Title = "Unary operator not supported.";
+		public const string MessageFormat = "Replace unary operator with method.";
 		public const string Category = "Errors";
 		public const DiagnosticSeverity Severity = DiagnosticSeverity.Error;
 
@@ -43,10 +43,5 @@ namespace CodeFixStruct
                 }
             }
         }
-
-		private static bool IsNull(IOperation operation)
-		{
-			return operation.ConstantValue.HasValue && operation.ConstantValue.Value == null;
-		}
 	}
 }

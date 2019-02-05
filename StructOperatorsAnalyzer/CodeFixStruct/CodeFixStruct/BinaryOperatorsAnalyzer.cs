@@ -14,7 +14,7 @@ namespace CodeFixStruct
 	{
 		public const string DiagnosticId = "BinaryOperator";
 		public const string Title = "Operators not supported.";
-		public const string MessageFormat = "Replace operator with methods.";
+		public const string MessageFormat = "Replace operator with method.";
 		public const string Category = "Errors";
 		public const DiagnosticSeverity Severity = DiagnosticSeverity.Error;
 
@@ -56,11 +56,6 @@ namespace CodeFixStruct
 					context.ReportDiagnostic(Diagnostic.Create(Rule, operation.Syntax.GetLocation(), $"{operation.OperatorKind} operator"));
 				}
 			}
-		}
-        
-		private static bool IsNull(IOperation operation)
-		{
-			return operation.ConstantValue.HasValue && operation.ConstantValue.Value == null;
 		}
 	}
 }
