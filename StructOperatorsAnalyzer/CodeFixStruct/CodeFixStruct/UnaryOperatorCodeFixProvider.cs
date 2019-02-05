@@ -56,25 +56,22 @@ namespace CodeFixStruct
             var generator = editor.Generator;
 
             var operationA = semanticModel.GetOperation(nodeToFix, cancellationToken);
-            SyntaxNode rightSyntaxNode;
-            UnaryOperatorKind operatorKind;
             if (operationA.Kind == OperationKind.UnaryOperator)
             {
                 var unOp = (IUnaryOperation)operationA;
-                operatorKind = unOp.OperatorKind;
-                rightSyntaxNode = unOp.Operand.Syntax;
+                UnaryOperatorKind operatorKind = unOp.OperatorKind;
+                SyntaxNode rightSyntaxNode = unOp.Operand.Syntax;
+
+                if (!GetFunctionForOperator(operatorKind, out string op))
+                    return document;
+                
+                var newExpression = generator.InvocationExpression(
+                    generator.MemberAccessExpression(rightSyntaxNode, op));
+
+                editor.ReplaceNode(nodeToFix, newExpression.WithAdditionalAnnotations(Formatter.Annotation));
+                return editor.GetChangedDocument();
             }
             else return document;
-
-            if (!GetFunctionForOperator(operatorKind, out string op))
-                return document;
-
-            BinaryExpressionSyntax bes = nodeToFix as BinaryExpressionSyntax;
-            var newExpression = generator.InvocationExpression(
-                generator.MemberAccessExpression(bes.Left, op));
-
-            editor.ReplaceNode(nodeToFix, newExpression.WithAdditionalAnnotations(Formatter.Annotation));
-            return editor.GetChangedDocument();
         }
 
 
