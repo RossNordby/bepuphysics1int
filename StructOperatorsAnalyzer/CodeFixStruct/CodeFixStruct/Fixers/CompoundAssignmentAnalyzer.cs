@@ -5,73 +5,73 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
 
 namespace CodeFixStruct {
-    [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class CompoundAssignmentAnalyzer : DiagnosticAnalyzer {
-        public const string DiagnosticId = "CompoundAsignment";
-        public const string Title = "Operators with asignment not supported.";
-        public const string MessageFormat = "Replace operator with asignment with operators only.";
-        public const string Category = "Errors";
-        public const DiagnosticSeverity Severity = DiagnosticSeverity.Error;
+	[DiagnosticAnalyzer(LanguageNames.CSharp)]
+	public class CompoundAssignmentAnalyzer : DiagnosticAnalyzer {
+		public const string DiagnosticId = "CompoundAsignment";
+		public const string Title = "Operators with asignment not supported.";
+		public const string MessageFormat = "Replace operator with asignment with operators only.";
+		public const string Category = "Errors";
+		public const DiagnosticSeverity Severity = DiagnosticSeverity.Error;
 
-        internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, Severity, true);
+		internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, Severity, true);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
 
-        public override void Initialize(AnalysisContext context) {
-            context.EnableConcurrentExecution();
-            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+		public override void Initialize(AnalysisContext context) {
+			context.EnableConcurrentExecution();
+			context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
 
-            context.RegisterSyntaxNodeAction(AnalyzeSyntax,
-                SyntaxKind.AddAssignmentExpression,
-                SyntaxKind.SubtractAssignmentExpression,
-                SyntaxKind.MultiplyAssignmentExpression,
-                SyntaxKind.DivideAssignmentExpression,
-                SyntaxKind.ModuloAssignmentExpression);
-        }
+			context.RegisterSyntaxNodeAction(AnalyzeSyntax,
+				SyntaxKind.AddAssignmentExpression,
+				SyntaxKind.SubtractAssignmentExpression,
+				SyntaxKind.MultiplyAssignmentExpression,
+				SyntaxKind.DivideAssignmentExpression,
+				SyntaxKind.ModuloAssignmentExpression);
+		}
 
-        const string StructStartName = "Fix";
+		const string StructStartName = "Fix";
 
-        private void AnalyzeSyntax(SyntaxNodeAnalysisContext context) {
-            var assignmentNode = context.Node as AssignmentExpressionSyntax;
-            string assignmentType = "";
+		private void AnalyzeSyntax(SyntaxNodeAnalysisContext context) {
+			var assignmentNode = context.Node as AssignmentExpressionSyntax;
+			string assignmentType = "";
 
-            if (assignmentNode.IsKind(SyntaxKind.AddAssignmentExpression))
-                assignmentType = "+=";
-            else if (assignmentNode.IsKind(SyntaxKind.SubtractAssignmentExpression))
-                assignmentType = "-=";
-            else if (assignmentNode.IsKind(SyntaxKind.MultiplyAssignmentExpression))
-                assignmentType = "*=";
-            else if (assignmentNode.IsKind(SyntaxKind.DivideAssignmentExpression))
-                assignmentType = "/=";
-            else if (assignmentNode.IsKind(SyntaxKind.ModuloAssignmentExpression))
-                assignmentType = "%=";
-            else
-                return;
+			if (assignmentNode.IsKind(SyntaxKind.AddAssignmentExpression))
+				assignmentType = "+=";
+			else if (assignmentNode.IsKind(SyntaxKind.SubtractAssignmentExpression))
+				assignmentType = "-=";
+			else if (assignmentNode.IsKind(SyntaxKind.MultiplyAssignmentExpression))
+				assignmentType = "*=";
+			else if (assignmentNode.IsKind(SyntaxKind.DivideAssignmentExpression))
+				assignmentType = "/=";
+			else if (assignmentNode.IsKind(SyntaxKind.ModuloAssignmentExpression))
+				assignmentType = "%=";
+			else
+				return;
 
 
 
-            var semanticModel = context.SemanticModel;
-            var arrayAccess = assignmentNode.Left as ElementAccessExpressionSyntax;
-            ISymbol symbolForAssignment = arrayAccess != null
-                ? semanticModel.GetSymbolInfo(arrayAccess.Expression).Symbol
-                : semanticModel.GetSymbolInfo(assignmentNode.Left).Symbol;
+			var semanticModel = context.SemanticModel;
+			var arrayAccess = assignmentNode.Left as ElementAccessExpressionSyntax;
+			ISymbol symbolForAssignment = arrayAccess != null
+				? semanticModel.GetSymbolInfo(arrayAccess.Expression).Symbol
+				: semanticModel.GetSymbolInfo(assignmentNode.Left).Symbol;
 
-            ITypeSymbol type;
-            if (symbolForAssignment is IPropertySymbol) type = ((IPropertySymbol)symbolForAssignment).Type;
-            else if (symbolForAssignment is ILocalSymbol) type = ((ILocalSymbol)symbolForAssignment).Type;
-            else if (symbolForAssignment is IFieldSymbol) type = ((IFieldSymbol)symbolForAssignment).Type;
-            else return;
+			ITypeSymbol type;
+			if (symbolForAssignment is IPropertySymbol) type = ((IPropertySymbol)symbolForAssignment).Type;
+			else if (symbolForAssignment is ILocalSymbol) type = ((ILocalSymbol)symbolForAssignment).Type;
+			else if (symbolForAssignment is IFieldSymbol) type = ((IFieldSymbol)symbolForAssignment).Type;
+			else return;
 
-            if (type.Name.StartsWith(StructStartName)) {
-                context.ReportDiagnostic(Diagnostic.Create(
-                    Rule,
-                    assignmentNode.GetLocation(),
-                    (LocalizableString)$"Replace the operator \"x {assignmentType} y\" with \"x = x {assignmentType.Substring(0, 1)} y\" operator"));
-            }
-        }
+			if (type.Name.StartsWith(StructStartName)) {
+				context.ReportDiagnostic(Diagnostic.Create(
+					Rule,
+					assignmentNode.GetLocation(),
+					(LocalizableString)$"Replace the operator \"x {assignmentType} y\" with \"x = x {assignmentType.Substring(0, 1)} y\" operator"));
+			}
+		}
 
-        private static bool IsNull(IOperation operation) {
-            return operation.ConstantValue.HasValue && operation.ConstantValue.Value == null;
-        }
-    }
+		private static bool IsNull(IOperation operation) {
+			return operation.ConstantValue.HasValue && operation.ConstantValue.Value == null;
+		}
+	}
 }
