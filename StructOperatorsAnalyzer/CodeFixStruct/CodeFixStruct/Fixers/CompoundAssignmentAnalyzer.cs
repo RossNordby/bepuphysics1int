@@ -8,8 +8,8 @@ namespace CodeFixStruct {
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
 	public class CompoundAssignmentAnalyzer : DiagnosticAnalyzer {
 		public const string DiagnosticId = "CompoundAsignment";
-		public const string Title = "Operators with asignment not supported.";
-		public const string MessageFormat = "Replace operator with asignment with operators only.";
+		public const string Title = "Operators with asignment not supported";
+		public const string MessageFormat = "Replace operator with asignment with operators only";
 		public const string Category = "Errors";
 		public const DiagnosticSeverity Severity = DiagnosticSeverity.Error;
 

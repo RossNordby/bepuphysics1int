@@ -5,10 +5,10 @@ using System.Collections.Immutable;
 
 namespace CodeFixStruct {
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
-	public class UnaryOperatorsAnalyzer : DiagnosticAnalyzer {
+	public class UnaryOperatorAnalyzer : DiagnosticAnalyzer {
 		public const string DiagnosticId = "UnaryOperator";
-		public const string Title = "Unary operator not supported.";
-		public const string MessageFormat = "Replace unary operator with method.";
+		public const string Title = "Unary operator not supported";
+		public const string MessageFormat = "Replace unary operator with function";
 		public const string Category = "Errors";
 		public const DiagnosticSeverity Severity = DiagnosticSeverity.Error;
 

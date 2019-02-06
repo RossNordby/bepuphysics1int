@@ -16,7 +16,7 @@ namespace CodeFixStruct {
 		private const string title = "Replace unary operator with function";
 
 		public sealed override ImmutableArray<string> FixableDiagnosticIds {
-			get { return ImmutableArray.Create(UnaryOperatorsAnalyzer.DiagnosticId); }
+			get { return ImmutableArray.Create(UnaryOperatorAnalyzer.DiagnosticId); }
 		}
 
 		public sealed override FixAllProvider GetFixAllProvider() {
