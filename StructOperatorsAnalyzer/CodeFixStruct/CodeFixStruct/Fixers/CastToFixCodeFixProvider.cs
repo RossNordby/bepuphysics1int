@@ -11,12 +11,12 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace CodeFixStruct {
-	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CastFromFixFixProvider)), Shared]
-	public class CastFromFixFixProvider : CodeFixProvider {
+	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CastToFixFixProvider)), Shared]
+	public class CastToFixFixProvider : CodeFixProvider {
 		private const string title = "Replace cast with function";
 
 		public sealed override ImmutableArray<string> FixableDiagnosticIds {
-			get { return ImmutableArray.Create(CastFromFixAnalyzer.DiagnosticId); }
+			get { return ImmutableArray.Create(CastToFixAnalyzer.DiagnosticId); }
 		}
 
 		public sealed override FixAllProvider GetFixAllProvider() {
@@ -47,24 +47,11 @@ namespace CodeFixStruct {
 
 			var operationA = semanticModel.GetTypeInfo(nodeToFix, cancellationToken);
 			string castMethod;
-			switch (operationA.ConvertedType.SpecialType) {
-				case SpecialType.System_Int32:
-					castMethod = "ToInt";
-					break;
-				case SpecialType.System_Int64:
-					castMethod = "ToLong";
-					break;
-				case SpecialType.System_Single:
-					castMethod = "ToFloat";
-					break;
-				case SpecialType.System_Double:
-					castMethod = "ToDouble";
-					break;
-				case SpecialType.System_Decimal:
-					castMethod = "ToDecimal";
-					break;
-				default:
-					return document;
+			if (operationA.ConvertedType.Name.StartsWith("Fix")) {
+				castMethod = "ToFix";
+			}
+			else {
+				return document;
 			}
 
 			SyntaxNode toReplace = nodeToFix is CastExpressionSyntax bes ? bes.Expression : nodeToFix;
