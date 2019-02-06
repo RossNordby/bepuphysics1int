@@ -44,7 +44,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
             info.NormalImpulse = F64.C0;
             for (int i = 0; i < contactConstraint.penetrationConstraints.Count; i++)
             {
-                totalNormalImpulse += contactConstraint.penetrationConstraints.Elements[i].accumulatedImpulse;
+				totalNormalImpulse = totalNormalImpulse.Add(contactConstraint.penetrationConstraints.Elements[i].accumulatedImpulse);
                 if (contactConstraint.penetrationConstraints.Elements[i].contact == info.Contact)
                 {
                     info.NormalImpulse = contactConstraint.penetrationConstraints.Elements[i].accumulatedImpulse;
@@ -54,7 +54,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
             Fix64 radius;
             Vector3.Distance(ref contactConstraint.slidingFriction.manifoldCenter, ref info.Contact.Position, out radius);
             if (totalNormalImpulse > F64.C0)
-                info.FrictionImpulse = (info.NormalImpulse / totalNormalImpulse) * (contactConstraint.slidingFriction.accumulatedImpulse.Length() + contactConstraint.twistFriction.accumulatedImpulse * radius);
+                info.FrictionImpulse = (info.NormalImpulse.Div(totalNormalImpulse)).Mul((contactConstraint.slidingFriction.accumulatedImpulse.Length().Add(contactConstraint.twistFriction.accumulatedImpulse.Mul(radius))));
             else
                 info.FrictionImpulse = F64.C0;
             //Compute relative velocity

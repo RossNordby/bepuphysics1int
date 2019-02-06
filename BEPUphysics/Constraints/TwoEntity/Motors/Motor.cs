@@ -23,8 +23,8 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
             //Determine maximum force
             if (maxForce < Fix64.MaxValue)
             {
-                maxForceDt = maxForce * dt;
-                maxForceDtSquared = maxForceDt * maxForceDt;
+                maxForceDt = maxForce.Mul(dt);
+                maxForceDtSquared = maxForceDt.Mul(maxForceDt);
             }
             else
             {

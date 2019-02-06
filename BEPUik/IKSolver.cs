@@ -92,7 +92,7 @@ namespace BEPUik
             //Reset the permutation index; every solve should proceed in exactly the same order.
             permutationMapper.PermutationIndex = 0;
 
-            Fix64 updateRate = F64.C1 / TimeStepDuration;
+            Fix64 updateRate = F64.C1.Div(TimeStepDuration);
             foreach (var joint in ActiveSet.joints)
             {
                 joint.Preupdate(TimeStepDuration, updateRate);
@@ -155,14 +155,14 @@ namespace BEPUik
                 //Update the control strengths to match the mass of the target bones and the desired maximum force.
                 foreach (var control in controls)
                 {
-                    control.MaximumForce = control.TargetBone.Mass * AutoscaleControlMaximumForce;
+                    control.MaximumForce = control.TargetBone.Mass.Mul(AutoscaleControlMaximumForce);
                 }
             }
 
             //Reset the permutation index; every solve should proceed in exactly the same order.
             permutationMapper.PermutationIndex = 0;
 
-            Fix64 updateRate = F64.C1 / TimeStepDuration;
+            Fix64 updateRate = F64.C1.Div(TimeStepDuration);
             foreach (var joint in ActiveSet.joints)
             {
                 joint.Preupdate(TimeStepDuration, updateRate);

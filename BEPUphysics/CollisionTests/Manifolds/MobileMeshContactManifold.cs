@@ -61,19 +61,19 @@ namespace BEPUphysics.CollisionTests.Manifolds
             Vector3.Multiply(ref transformedVelocity, dt, out transformedVelocity);
 
             if (transformedVelocity.X > F64.C0)
-                boundingBox.Max.X += transformedVelocity.X;
+				boundingBox.Max.X = boundingBox.Max.X.Add(transformedVelocity.X);
             else
-                boundingBox.Min.X += transformedVelocity.X;
+				boundingBox.Min.X = boundingBox.Min.X.Add(transformedVelocity.X);
 
             if (transformedVelocity.Y > F64.C0)
-                boundingBox.Max.Y += transformedVelocity.Y;
+				boundingBox.Max.Y = boundingBox.Max.Y.Add(transformedVelocity.Y);
             else
-                boundingBox.Min.Y += transformedVelocity.Y;
+				boundingBox.Min.Y = boundingBox.Min.Y.Add(transformedVelocity.Y);
 
             if (transformedVelocity.Z > F64.C0)
-                boundingBox.Max.Z += transformedVelocity.Z;
+				boundingBox.Max.Z = boundingBox.Max.Z.Add(transformedVelocity.Z);
             else
-                boundingBox.Min.Z += transformedVelocity.Z;
+				boundingBox.Min.Z = boundingBox.Min.Z.Add(transformedVelocity.Z);
 
             mesh.Shape.TriangleMesh.Tree.GetOverlaps(boundingBox, overlappedTriangles);
             return overlappedTriangles.Count;
@@ -205,7 +205,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
 
                     Fix64 factor;
                     Vector3.Dot(ref ray.Direction, ref newContact.Normal, out factor);
-                    newContact.PenetrationDepth = -factor * hit.T + convex.Shape.MinimumRadius;
+                    newContact.PenetrationDepth = ((factor.Neg()).Mul(hit.T)).Add(convex.Shape.MinimumRadius);
 
                     Matrix3x3.Transform(ref newContact.Normal, ref orientation, out newContact.Normal);
 

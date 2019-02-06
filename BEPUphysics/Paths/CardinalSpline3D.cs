@@ -53,7 +53,7 @@ namespace BEPUphysics.Paths
                 Vector3 previous = ControlPoints[i - 1].Value;
                 Vector3 next = ControlPoints[i + 1].Value;
                 Vector3.Subtract(ref next, ref previous, out tangent);
-                Vector3.Multiply(ref tangent, (Fix64)((F64.C1 - tension) / (ControlPoints[i + 1].Time - ControlPoints[i - 1].Time)), out tangent);
+                Vector3.Multiply(ref tangent, (Fix64)((F64.C1.Sub(tension)).Div((ControlPoints[i + 1].Time.Sub(ControlPoints[i - 1].Time)))), out tangent);
                 tangents.Add(tangent);
             }
             tangents.Add(Vector3.Zero);

@@ -62,8 +62,8 @@ namespace BEPUphysics.Character
             get { return headThreshold; }
             set
             {
-                if (value < -1 || value > -Toolbox.BigEpsilon)
-                    throw new ArgumentException("Head threshold values must range from -1 to " + -Toolbox.BigEpsilon + ", inclusive.");
+                if (value < F64.C1.Neg() || value > Toolbox.BigEpsilon.Neg())
+                    throw new ArgumentException("Head threshold values must range from -1 to " + Toolbox.BigEpsilon.Neg() + ", inclusive.");
                 headThreshold = value;
             }
         }
@@ -96,7 +96,7 @@ namespace BEPUphysics.Character
 		{
 			MaximumTractionSlope = maximumTractionSlope;
 			MaximumSupportSlope = maximumSupportSlope;
-			HeadThreshold = (Fix64)(-.01m);
+			HeadThreshold = (Fix64)(-.01m).ToFix();
 			Debug.Assert(SupportThreshold <= TractionThreshold, "The character's support threshold should be no higher than the traction threshold for the traction threshold to be meaningful.");
 		}
 

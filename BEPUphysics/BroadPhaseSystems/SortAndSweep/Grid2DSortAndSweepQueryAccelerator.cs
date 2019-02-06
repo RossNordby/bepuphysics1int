@@ -47,21 +47,21 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
             while (true)
             {
 
-                Fix64 cellWidth = F64.C1 / Grid2DSortAndSweep.cellSizeInverse;
+                Fix64 cellWidth = F64.C1.Div(Grid2DSortAndSweep.cellSizeInverse);
                 Fix64 nextT; //Distance along ray to next boundary.
                 Fix64 nextTy; //Distance along ray to next boundary along y axis.
                 Fix64 nextTz; //Distance along ray to next boundary along z axis.
 							  //Find the next cell.
 				if (ray.Direction.Y > F64.C0)
-					nextTy = ((cellIndex.Y + 1) * cellWidth - currentPosition.Y) / ray.Direction.Y;
+					nextTy = (((cellIndex.Y + 1).ToFix().Mul(cellWidth)).Sub(currentPosition.Y)).Div(ray.Direction.Y);
 				else if (ray.Direction.Y < F64.C0)
-					nextTy = ((cellIndex.Y) * cellWidth - currentPosition.Y) / ray.Direction.Y;
+					nextTy = (((cellIndex.Y).ToFix().Mul(cellWidth)).Sub(currentPosition.Y)).Div(ray.Direction.Y);
 				else
 					nextTy = Fix64.MaxValue;
                 if (ray.Direction.Z > F64.C0)
-                    nextTz = ((cellIndex.Z + 1) * cellWidth - currentPosition.Z) / ray.Direction.Z;
+                    nextTz = (((cellIndex.Z + 1).ToFix().Mul(cellWidth)).Sub(currentPosition.Z)).Div(ray.Direction.Z);
                 else if (ray.Direction.Z < F64.C0)
-                    nextTz = ((cellIndex.Z) * cellWidth - currentPosition.Z) / ray.Direction.Z;
+                    nextTz = (((cellIndex.Z).ToFix().Mul(cellWidth)).Sub(currentPosition.Z)).Div(ray.Direction.Z);
                 else
                     nextTz = Fix64.MaxValue;
 
@@ -79,7 +79,7 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                     if(ray.Direction.X < F64.C0)
                         endingX = currentPosition.X;
                     else
-                        endingX = currentPosition.X + ray.Direction.X * nextT;
+                        endingX = currentPosition.X.Add(ray.Direction.X.Mul(nextT));
 
                     //To fully accelerate this, the entries list would need to contain both min and max interval markers.
                     //Since it only contains the sorted min intervals, we can't just start at a point in the middle of the list.
@@ -96,8 +96,9 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                     }
                 }
 
-                //Move the position forward.
-                length += nextT;
+				//Move the position forward.
+				length =
+length.Add(nextT);
                 if (length > maximumLength) //Note that this catches the case in which the ray is pointing right down the middle of a row (resulting in a nextT of 10e10f).
                     break;
                 Vector3 offset;

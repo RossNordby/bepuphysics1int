@@ -101,9 +101,9 @@ namespace BEPUphysics.Vehicle
             Matrix.Transform(ref wheel.suspension.localDirection, ref worldTransform, out worldDirection);
 
             Fix64 length = wheel.suspension.currentLength;
-            newPosition.X = worldAttachmentPoint.X + worldDirection.X * length;
-            newPosition.Y = worldAttachmentPoint.Y + worldDirection.Y * length;
-            newPosition.Z = worldAttachmentPoint.Z + worldDirection.Z * length;
+            newPosition.X = worldAttachmentPoint.X.Add(worldDirection.X.Mul(length));
+            newPosition.Y = worldAttachmentPoint.Y.Add(worldDirection.Y.Mul(length));
+            newPosition.Z = worldAttachmentPoint.Z.Add(worldDirection.Z.Mul(length));
 
             Matrix spinTransform;
 
@@ -162,9 +162,9 @@ namespace BEPUphysics.Vehicle
                 {
                     if (CollisionRules.CollisionRuleCalculator(this, testCollidable) == CollisionRule.Normal &&
                         testCollidable.ConvexCast(shape, ref startingTransform, ref sweep, out rayHit) &&
-                        rayHit.T * wheel.suspension.restLength < suspensionLength)
+rayHit.T.Mul(wheel.suspension.restLength) < suspensionLength)
                     {
-                        suspensionLength = rayHit.T * wheel.suspension.restLength;
+                        suspensionLength = rayHit.T.Mul(wheel.suspension.restLength);
                         EntityCollidable entityCollidable;
                         if ((entityCollidable = testCollidable as EntityCollidable) != null)
                         {
@@ -217,24 +217,24 @@ namespace BEPUphysics.Vehicle
             shape.GetBoundingBox(ref initialTransform, out boundingBox);
             var expansion = wheel.suspension.localDirection * wheel.suspension.restLength;
             if (expansion.X > F64.C0)
-                boundingBox.Max.X += expansion.X;
+				boundingBox.Max.X = boundingBox.Max.X.Add(expansion.X);
             else if (expansion.X < F64.C0)
-                boundingBox.Min.X += expansion.X;
+				boundingBox.Min.X = boundingBox.Min.X.Add(expansion.X);
 
             if (expansion.Y > F64.C0)
-                boundingBox.Max.Y += expansion.Y;
+				boundingBox.Max.Y = boundingBox.Max.Y.Add(expansion.Y);
             else if (expansion.Y < F64.C0)
-                boundingBox.Min.Y += expansion.Y;
+				boundingBox.Min.Y = boundingBox.Min.Y.Add(expansion.Y);
 
             if (expansion.Z > F64.C0)
-                boundingBox.Max.Z += expansion.Z;
+				boundingBox.Max.Z = boundingBox.Max.Z.Add(expansion.Z);
             else if (expansion.Z < F64.C0)
-                boundingBox.Min.Z += expansion.Z;
+				boundingBox.Min.Z = boundingBox.Min.Z.Add(expansion.Z);
 
 
-            detector.Width = boundingBox.Max.X - boundingBox.Min.X;
-            detector.Height = boundingBox.Max.Y - boundingBox.Min.Y;
-            detector.Length = boundingBox.Max.Z - boundingBox.Min.Z;
+            detector.Width = boundingBox.Max.X.Sub(boundingBox.Min.X);
+            detector.Height = boundingBox.Max.Y.Sub(boundingBox.Min.Y);
+            detector.Length = boundingBox.Max.Z.Sub(boundingBox.Min.Z);
         }
 
         /// <summary>
@@ -248,9 +248,9 @@ namespace BEPUphysics.Vehicle
             Vector3 newPosition;
 #endif
 
-            newPosition.X = wheel.suspension.worldAttachmentPoint.X + wheel.suspension.worldDirection.X * wheel.suspension.restLength * F64.C0p5;
-            newPosition.Y = wheel.suspension.worldAttachmentPoint.Y + wheel.suspension.worldDirection.Y * wheel.suspension.restLength * F64.C0p5;
-            newPosition.Z = wheel.suspension.worldAttachmentPoint.Z + wheel.suspension.worldDirection.Z * wheel.suspension.restLength * F64.C0p5;
+            newPosition.X = wheel.suspension.worldAttachmentPoint.X.Add((wheel.suspension.worldDirection.X.Mul(wheel.suspension.restLength)).Mul(F64.C0p5));
+            newPosition.Y = wheel.suspension.worldAttachmentPoint.Y.Add((wheel.suspension.worldDirection.Y.Mul(wheel.suspension.restLength)).Mul(F64.C0p5));
+            newPosition.Z = wheel.suspension.worldAttachmentPoint.Z.Add((wheel.suspension.worldDirection.Z.Mul(wheel.suspension.restLength)).Mul(F64.C0p5));
 
             detector.Position = newPosition;
             if (IncludeSteeringTransformInCast)

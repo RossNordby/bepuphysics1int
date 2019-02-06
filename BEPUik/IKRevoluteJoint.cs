@@ -152,8 +152,8 @@ namespace BEPUik
             Vector2 constraintSpaceError;
             Vector3.Dot(ref error, ref worldConstrainedAxis1, out constraintSpaceError.X);
             Vector3.Dot(ref error, ref worldConstrainedAxis2, out constraintSpaceError.Y);
-            velocityBias.X = errorCorrectionFactor * constraintSpaceError.X;
-            velocityBias.Y = errorCorrectionFactor * constraintSpaceError.Y;
+            velocityBias.X = errorCorrectionFactor.Mul(constraintSpaceError.X);
+            velocityBias.Y = errorCorrectionFactor.Mul(constraintSpaceError.Y);
 
 
         }

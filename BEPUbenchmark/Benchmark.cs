@@ -22,8 +22,8 @@ namespace BEPUbenchmark
 		public void Initialize()
 		{
 			Space = new Space();
-			Space.ForceUpdater.Gravity = new Vector3(0, (Fix64)(-9.81m), 0);
-			Space.TimeStepSettings.TimeStepDuration = 1 / 60m;
+			Space.ForceUpdater.Gravity = new Vector3(0.ToFix(), (Fix64)(-9.81m).ToFix(), 0.ToFix());
+			Space.TimeStepSettings.TimeStepDuration = (1 / 60m).ToFix();
 
 			InitializeSpace();
 		}

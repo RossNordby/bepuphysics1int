@@ -17,7 +17,7 @@ namespace BEPUik
         /// <remarks>
         /// This is used over independent coefficients because IK usages of the constraints don't really vary in behavior, just strength.
         /// </remarks>
-        private readonly Fix64 StiffnessOverDamping = (Fix64)0.25m;
+        private readonly Fix64 StiffnessOverDamping = (Fix64)0.25m.ToFix();
 
         private Fix64 rigidity = F64.C16;
         /// <summary>
@@ -66,12 +66,12 @@ namespace BEPUik
         /// <param name="updateRate">Inverse time step duration.</param>
         protected internal void Preupdate(Fix64 dt, Fix64 updateRate)
         {
-            Fix64 stiffness = StiffnessOverDamping * rigidity;
+            Fix64 stiffness = StiffnessOverDamping.Mul(rigidity);
             Fix64 damping = rigidity;
-            Fix64 multiplier = F64.C1 / (dt * stiffness + damping);
-            errorCorrectionFactor = stiffness * multiplier;
-            softness = updateRate * multiplier;
-            maximumImpulse = maximumForce * dt;
+            Fix64 multiplier = F64.C1.Div(((dt.Mul(stiffness)).Add(damping)));
+            errorCorrectionFactor = stiffness.Mul(multiplier);
+            softness = updateRate.Mul(multiplier);
+            maximumImpulse = maximumForce.Mul(dt);
             maximumImpulseSquared = Fix64.SafeMul(maximumImpulse, maximumImpulse);
 
         }

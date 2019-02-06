@@ -89,9 +89,9 @@ namespace BEPUphysics.CollisionShapes
 #if !WINDOWS
             boundingBox = new BoundingBox();
 #endif
-            Fix64 minX = Fix64.MaxValue, maxX = -Fix64.MaxValue,
-                  minY = Fix64.MaxValue, maxY = -Fix64.MaxValue,
-                  minZ = Fix64.MaxValue, maxZ = -Fix64.MaxValue;
+            Fix64 minX = Fix64.MaxValue, maxX = Fix64.MaxValue.Neg(),
+                  minY = Fix64.MaxValue, maxY = Fix64.MaxValue.Neg(),
+                  minZ = Fix64.MaxValue, maxZ = Fix64.MaxValue.Neg();
             Vector3 minXvertex = new Vector3(),
                     maxXvertex = new Vector3(),
                     minYvertex = new Vector3(),
@@ -104,7 +104,7 @@ namespace BEPUphysics.CollisionShapes
             {
                 for (int j = 0; j < heights.GetLength(1); j++)
                 {
-                    var vertex = new Vector3(i, heights[i, j], j);
+                    var vertex = new Vector3(i.ToFixFast(), heights[i, j], j.ToFixFast());
                     Matrix3x3.Transform(ref vertex, ref transform.LinearTransform, out vertex);
                     if (vertex.X < minX)
                     {
@@ -142,12 +142,12 @@ namespace BEPUphysics.CollisionShapes
             }
 
             //Shift the bounding box.
-            boundingBox.Min.X = minXvertex.X + transform.Translation.X;
-            boundingBox.Min.Y = minYvertex.Y + transform.Translation.Y;
-            boundingBox.Min.Z = minZvertex.Z + transform.Translation.Z;
-            boundingBox.Max.X = maxXvertex.X + transform.Translation.X;
-            boundingBox.Max.Y = maxYvertex.Y + transform.Translation.Y;
-            boundingBox.Max.Z = maxZvertex.Z + transform.Translation.Z;
+            boundingBox.Min.X = minXvertex.X.Add(transform.Translation.X);
+            boundingBox.Min.Y = minYvertex.Y.Add(transform.Translation.Y);
+            boundingBox.Min.Z = minZvertex.Z.Add(transform.Translation.Z);
+            boundingBox.Max.X = maxXvertex.X.Add(transform.Translation.X);
+            boundingBox.Max.Y = maxYvertex.Y.Add(transform.Translation.Y);
+            boundingBox.Max.Z = maxZvertex.Z.Add(transform.Translation.Z);
         }
 
         ///<summary>
@@ -184,8 +184,8 @@ namespace BEPUphysics.CollisionShapes
             //Use rasterizey traversal.
             //The origin is at 0,0,0 and the map goes +X, +Y, +Z.
             //if it's before the origin and facing away, or outside the max and facing out, early out.
-            Fix64 maxX = heights.GetLength(0) - 1;
-            Fix64 maxZ = heights.GetLength(1) - 1;
+            Fix64 maxX = (heights.GetLength(0) - 1).ToFix();
+            Fix64 maxZ = (heights.GetLength(1) - 1).ToFix();
 
             Vector3 progressingOrigin = localRay.Position;
             Fix64 distance = F64.C0;
@@ -195,8 +195,8 @@ namespace BEPUphysics.CollisionShapes
                 if (localRay.Direction.X > F64.C0)
                 {
                     //Off the left side.
-                    Fix64 timeToMinX = -progressingOrigin.X / localRay.Direction.X;
-                    distance += timeToMinX;
+                    Fix64 timeToMinX = (progressingOrigin.X.Neg()).Div(localRay.Direction.X);
+					distance = distance.Add(timeToMinX);
                     Vector3 increment;
                     Vector3.Multiply(ref localRay.Direction, timeToMinX, out increment);
                     Vector3.Add(ref increment, ref progressingOrigin, out progressingOrigin);
@@ -209,8 +209,8 @@ namespace BEPUphysics.CollisionShapes
                 if (localRay.Direction.X < F64.C0)
                 {
                     //Off the left side.
-                    Fix64 timeToMinX = -(progressingOrigin.X - maxX) / localRay.Direction.X;
-                    distance += timeToMinX;
+                    Fix64 timeToMinX = (progressingOrigin.X.Sub(maxX).Neg()).Div(localRay.Direction.X);
+					distance = distance.Add(timeToMinX);
                     Vector3 increment;
                     Vector3.Multiply(ref localRay.Direction, timeToMinX, out increment);
                     Vector3.Add(ref increment, ref progressingOrigin, out progressingOrigin);
@@ -223,8 +223,8 @@ namespace BEPUphysics.CollisionShapes
             {
                 if (localRay.Direction.Z > F64.C0)
                 {
-                    Fix64 timeToMinZ = -progressingOrigin.Z / localRay.Direction.Z;
-                    distance += timeToMinZ;
+                    Fix64 timeToMinZ = (progressingOrigin.Z.Neg()).Div(localRay.Direction.Z);
+					distance = distance.Add(timeToMinZ);
                     Vector3 increment;
                     Vector3.Multiply(ref localRay.Direction, timeToMinZ, out increment);
                     Vector3.Add(ref increment, ref progressingOrigin, out progressingOrigin);
@@ -236,8 +236,8 @@ namespace BEPUphysics.CollisionShapes
             {
                 if (localRay.Direction.Z < F64.C0)
                 {
-                    Fix64 timeToMinZ = -(progressingOrigin.Z - maxZ) / localRay.Direction.Z;
-                    distance += timeToMinZ;
+                    Fix64 timeToMinZ = (progressingOrigin.Z.Sub(maxZ).Neg()).Div(localRay.Direction.Z);
+					distance = distance.Add(timeToMinZ);
                     Vector3 increment;
                     Vector3.Multiply(ref localRay.Direction, timeToMinZ, out increment);
                     Vector3.Add(ref increment, ref progressingOrigin, out progressingOrigin);
@@ -253,8 +253,8 @@ namespace BEPUphysics.CollisionShapes
 
             //By now, we should be entering the main body of the terrain.
 
-            int xCell = (int)progressingOrigin.X;
-            int zCell = (int)progressingOrigin.Z;
+            int xCell = progressingOrigin.X.ToInt();
+            int zCell = progressingOrigin.Z.ToInt();
             //If it's hitting the border and going in, then correct the index
             //so that it will initially target a valid quad.
             //Without this, a quad beyond the border would be tried and failed.
@@ -356,17 +356,17 @@ namespace BEPUphysics.CollisionShapes
 
                 Fix64 timeToX;
                 if (localRay.Direction.X < F64.C0)
-                    timeToX = -(progressingOrigin.X - xCell) / localRay.Direction.X;
+                    timeToX = (progressingOrigin.X.Sub(xCell.ToFixFast()).Neg()).Div(localRay.Direction.X);
                 else if (localRay.Direction.X > F64.C0)
-                    timeToX = (xCell + 1 - progressingOrigin.X) / localRay.Direction.X;
+                    timeToX = ((xCell + 1).ToFixFast().Sub(progressingOrigin.X)).Div(localRay.Direction.X);
                 else
                     timeToX = Fix64.MaxValue;
 
                 Fix64 timeToZ;
                 if (localRay.Direction.Z < F64.C0)
-                    timeToZ = -(progressingOrigin.Z - zCell) / localRay.Direction.Z;
+                    timeToZ = (progressingOrigin.Z.Sub(zCell.ToFixFast()).Neg()).Div(localRay.Direction.Z);
                 else if (localRay.Direction.Z > F64.C0)
-                    timeToZ = (zCell + 1 - progressingOrigin.Z) / localRay.Direction.Z;
+                    timeToZ = ((zCell + 1).ToFixFast().Sub(progressingOrigin.Z)).Div(localRay.Direction.Z);
                 else
                     timeToZ = Fix64.MaxValue;
 
@@ -378,7 +378,8 @@ namespace BEPUphysics.CollisionShapes
                     else
                         xCell++;
 
-                    distance += timeToX;
+					distance =
+distance.Add(timeToX);
                     if (distance > maximumLength)
                         return false;
 
@@ -393,7 +394,8 @@ namespace BEPUphysics.CollisionShapes
                     else
                         zCell++;
 
-                    distance += timeToZ;
+					distance =
+distance.Add(timeToZ);
                     if (distance > maximumLength)
                         return false;
 
@@ -418,9 +420,9 @@ namespace BEPUphysics.CollisionShapes
 #if !WINDOWS
             v = new Vector3();
 #endif
-            v.X = columnIndex;
+            v.X = columnIndex.ToFix();
             v.Y = heights[columnIndex, rowIndex];
-            v.Z = rowIndex;
+            v.Z = rowIndex.ToFix();
         }
 
         /// <summary>
@@ -443,9 +445,9 @@ namespace BEPUphysics.CollisionShapes
 #if !WINDOWS
             position = new Vector3();
 #endif
-            position.X = columnIndex;
+            position.X = columnIndex.ToFix();
             position.Y = heights[columnIndex, rowIndex];
-            position.Z = rowIndex;
+            position.Z = rowIndex.ToFix();
             AffineTransform.Transform(ref position, ref transform, out position);
 
 
@@ -482,9 +484,9 @@ namespace BEPUphysics.CollisionShapes
             //Fix64 resultY = 2 * 2 - 0 * 0;
             //Fix64 resultZ = 0 * leftToRight.Y - bottomToTop.Y * 2;
             //Which becomes:
-            normal.X = rightHeight - leftHeight;
+            normal.X = rightHeight.Sub(leftHeight);
             normal.Y = F64.C2;
-            normal.Z = topHeight - bottomHeight;
+            normal.Z = topHeight.Sub(bottomHeight);
 
         }
 
@@ -498,10 +500,10 @@ namespace BEPUphysics.CollisionShapes
         public bool GetOverlaps<T>(BoundingBox localBoundingBox, ref T overlappedElements) where T : IList<int> //Designed to work with value type ILists, hence anti-boxing interface constraint and ref.
         {
             int width = heights.GetLength(0);
-            int minX = Math.Max((int)localBoundingBox.Min.X, 0);
-            int minY = Math.Max((int)localBoundingBox.Min.Z, 0);
-            int maxX = Math.Min((int)localBoundingBox.Max.X, width - 2);
-            int maxY = Math.Min((int)localBoundingBox.Max.Z, heights.GetLength(1) - 2);
+            int minX = Math.Max(localBoundingBox.Min.X.ToInt(), 0);
+            int minY = Math.Max(localBoundingBox.Min.Z.ToInt(), 0);
+            int maxX = Math.Min(localBoundingBox.Max.X.ToInt(), width - 2);
+            int maxY = Math.Min(localBoundingBox.Max.Z.ToInt(), heights.GetLength(1) - 2);
             for (int i = minX; i <= maxX; i++)
             {
                 for (int j = minY; j <= maxY; j++)

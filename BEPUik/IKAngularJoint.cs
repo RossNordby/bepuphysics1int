@@ -33,7 +33,7 @@ namespace BEPUik
         {
             linearJacobianA = linearJacobianB = new Matrix3x3();
             angularJacobianA = new Matrix3x3 { M11 = F64.C1, M22 = F64.C1, M33 = F64.C1 };
-            angularJacobianB = new Matrix3x3 { M11 = -1, M22 = -1, M33 = -1 };
+            angularJacobianB = new Matrix3x3 { M11 = F64.C1.Neg(), M22 = F64.C1.Neg(), M33 = F64.C1.Neg() };
 
             //The error is computed using this equation:
             //GoalRelativeOrientation * ConnectionA.Orientation * Error = ConnectionB.Orientation
@@ -55,9 +55,9 @@ namespace BEPUik
             Vector3 axis;
             Quaternion.GetAxisAngleFromQuaternion(ref error, out axis, out angle);
 
-            velocityBias.X = errorCorrectionFactor * axis.X * angle;
-            velocityBias.Y = errorCorrectionFactor * axis.Y * angle;
-            velocityBias.Z = errorCorrectionFactor * axis.Z * angle;
+            velocityBias.X = (errorCorrectionFactor.Mul(axis.X)).Mul(angle);
+            velocityBias.Y = (errorCorrectionFactor.Mul(axis.Y)).Mul(angle);
+            velocityBias.Z = (errorCorrectionFactor.Mul(axis.Z)).Mul(angle);
 
 
         }

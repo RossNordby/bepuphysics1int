@@ -186,7 +186,7 @@ namespace BEPUphysics.Constraints.SingleEntity
             if (sumImpulseLengthSquared > maxForceDtSquared)
             {
                 //max / impulse gives some value 0 < x < 1.  Basically, normalize the vector (divide by the length) and scale by the maximum.
-                accumulatedImpulse *= maxForceDt / Fix64.Sqrt(sumImpulseLengthSquared);
+                accumulatedImpulse *= maxForceDt.Div(Fix64.Sqrt(sumImpulseLengthSquared));
 
                 //Since the limit was exceeded by this corrective impulse, limit it so that the accumulated impulse remains constrained.
                 lambda = accumulatedImpulse - previousAccumulatedImpulse;
@@ -198,7 +198,7 @@ namespace BEPUphysics.Constraints.SingleEntity
             Vector3.Cross(ref r, ref lambda, out taImpulse);
             entity.ApplyAngularImpulse(ref taImpulse);
 
-            return (Fix64.Abs(lambda.X) + Fix64.Abs(lambda.Y) + Fix64.Abs(lambda.Z));
+            return ((Fix64.Abs(lambda.X).Add(Fix64.Abs(lambda.Y))).Add(Fix64.Abs(lambda.Z)));
         }
 
         ///<summary>
@@ -211,7 +211,7 @@ namespace BEPUphysics.Constraints.SingleEntity
             Matrix3x3.Transform(ref localPoint, ref entity.orientationMatrix, out r);
             Vector3.Add(ref r, ref entity.position, out worldPoint);
 
-            Fix64 updateRate = F64.C1 / dt;
+            Fix64 updateRate = F64.C1.Div(dt);
             if (settings.mode == MotorMode.Servomechanism)
             {
                 Vector3.Subtract(ref settings.servo.goal, ref worldPoint, out error);
@@ -223,18 +223,17 @@ namespace BEPUphysics.Constraints.SingleEntity
 
                     //The rate of correction can be based on a constant correction velocity as well as a 'spring like' correction velocity.
                     //The constant correction velocity could overshoot the destination, so clamp it.
-                    Fix64 correctionSpeed = MathHelper.Min(settings.servo.baseCorrectiveSpeed, separationDistance * updateRate) +
-                                            separationDistance * errorReduction;
+                    Fix64 correctionSpeed = MathHelper.Min(settings.servo.baseCorrectiveSpeed, separationDistance.Mul(updateRate)).Add(separationDistance.Mul(errorReduction));
 
-                    Vector3.Multiply(ref error, correctionSpeed / separationDistance, out biasVelocity);
+                    Vector3.Multiply(ref error, correctionSpeed.Div(separationDistance), out biasVelocity);
                     //Ensure that the corrective velocity doesn't exceed the max.
                     Fix64 length = biasVelocity.LengthSquared();
                     if (length > settings.servo.maxCorrectiveVelocitySquared)
                     {
-                        Fix64 multiplier = settings.servo.maxCorrectiveVelocity / Fix64.Sqrt(length);
-                        biasVelocity.X *= multiplier;
-                        biasVelocity.Y *= multiplier;
-                        biasVelocity.Z *= multiplier;
+                        Fix64 multiplier = settings.servo.maxCorrectiveVelocity.Div(Fix64.Sqrt(length));
+						biasVelocity.X = biasVelocity.X.Mul(multiplier);
+						biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
+						biasVelocity.Z = biasVelocity.Z.Mul(multiplier);
                     }
                 }
                 else
@@ -245,7 +244,7 @@ namespace BEPUphysics.Constraints.SingleEntity
             }
             else
             {
-                usedSoftness = settings.velocityMotor.softness * updateRate;
+                usedSoftness = settings.velocityMotor.softness.Mul(updateRate);
                 biasVelocity = settings.velocityMotor.goalVelocity;
                 error = Vector3.Zero;
             }
@@ -264,9 +263,10 @@ namespace BEPUphysics.Constraints.SingleEntity
             Matrix3x3.Multiply(ref angularComponentA, ref rACrossProduct, out angularComponentA);
             Matrix3x3.Subtract(ref linearComponent, ref angularComponentA, out effectiveMassMatrix);
 
-            effectiveMassMatrix.M11 += usedSoftness;
-            effectiveMassMatrix.M22 += usedSoftness;
-            effectiveMassMatrix.M33 += usedSoftness;
+			effectiveMassMatrix.M11 =
+effectiveMassMatrix.M11.Add(usedSoftness);
+			effectiveMassMatrix.M22 = effectiveMassMatrix.M22.Add(usedSoftness);
+			effectiveMassMatrix.M33 = effectiveMassMatrix.M33.Add(usedSoftness);
 
             Matrix3x3.Invert(ref effectiveMassMatrix, out effectiveMassMatrix);
 
@@ -294,8 +294,8 @@ namespace BEPUphysics.Constraints.SingleEntity
             //Determine maximum force
             if (maxForce < Fix64.MaxValue)
             {
-                maxForceDt = maxForce * dt;
-                maxForceDtSquared = maxForceDt * maxForceDt;
+                maxForceDt = maxForce.Mul(dt);
+                maxForceDtSquared = maxForceDt.Mul(maxForceDt);
             }
             else
             {

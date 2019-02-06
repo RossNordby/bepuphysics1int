@@ -15,14 +15,14 @@ namespace BEPUtests
     {
 		Matrix3x3[] testCases = {
 			Matrix3x3.Identity,
-			new Matrix3x3(6770.833m, 0, 0, 0, 13500, 0, 0, 0, 6770.833m),
-			new Matrix3x3(0.6770833m, 0, 0, 0, 1.35m, 0, 0, 0, 0.6770833m),
-			new Matrix3x3(0, 0, 0, 0, 13500, 0, 0, 0, 6770.833m),
+			new Matrix3x3(6770.833m.ToFix(), 0.ToFix(), 0.ToFix(), 0.ToFix(), 13500.ToFix(), 0.ToFix(), 0.ToFix(), 0.ToFix(), 6770.833m.ToFix()),
+			new Matrix3x3(0.6770833m.ToFix(), 0.ToFix(), 0.ToFix(), 0.ToFix(), 1.35m.ToFix(), 0.ToFix(), 0.ToFix(), 0.ToFix(), 0.6770833m.ToFix()),
+			new Matrix3x3(0.ToFix(), 0.ToFix(), 0.ToFix(), 0.ToFix(), 13500.ToFix(), 0.ToFix(), 0.ToFix(), 0.ToFix(), 6770.833m.ToFix()),
 
-			new Matrix3x3(5, 135, -5, 8, 13500, 20, -5, 100, 6770.833m),
-			new Matrix3x3(0.1m, 3, 838, -200, 13500, 0.001m, 22, 42, 6770.833m),
-			new Matrix3x3(-3, 3, 2, -1, -8, -5, 63, 5, 0.833m),
-			new Matrix3x3(5, 3, 2, -3, 11, 1900, 76, 96, 33.833m),
+			new Matrix3x3(5.ToFix(), 135.ToFix(), (-5).ToFix(), 8.ToFix(), 13500.ToFix(), 20.ToFix(), (-5).ToFix(), 100.ToFix(), 6770.833m.ToFix()),
+			new Matrix3x3(0.1m.ToFix(), 3.ToFix(), 838.ToFix(), (-200).ToFix(), 13500.ToFix(), 0.001m.ToFix(), 22.ToFix(), 42.ToFix(), 6770.833m.ToFix()),
+			new Matrix3x3((-3).ToFix(), 3.ToFix(), 2.ToFix(), (-1).ToFix(), (-8).ToFix(), (-5).ToFix(), 63.ToFix(), 5.ToFix(), 0.833m.ToFix()),
+			new Matrix3x3(5.ToFix(), 3.ToFix(), 2.ToFix(), (-3).ToFix(), 11.ToFix(), 1900.ToFix(), 76.ToFix(), 96.ToFix(), 33.833m.ToFix()),
 
 		};
 
@@ -178,17 +178,17 @@ namespace BEPUtests
 		{
 			decimal[] result = new decimal[9];
 			int i = 0;
-			result[i++] = (decimal)actual.M11 - (decimal)expected.M11;
-			result[i++] = (decimal)actual.M12 - (decimal)expected.M12;
-			result[i++] = (decimal)actual.M13 - (decimal)expected.M13;
+			result[i++] = (decimal)actual.M11.ToDecimal() - (decimal)expected.M11;
+			result[i++] = (decimal)actual.M12.ToDecimal() - (decimal)expected.M12;
+			result[i++] = (decimal)actual.M13.ToDecimal() - (decimal)expected.M13;
 
-			result[i++] = (decimal)actual.M21 - (decimal)expected.M21;
-			result[i++] = (decimal)actual.M22 - (decimal)expected.M22;
-			result[i++] = (decimal)actual.M23 - (decimal)expected.M23;
+			result[i++] = (decimal)actual.M21.ToDecimal() - (decimal)expected.M21;
+			result[i++] = (decimal)actual.M22.ToDecimal() - (decimal)expected.M22;
+			result[i++] = (decimal)actual.M23.ToDecimal() - (decimal)expected.M23;
 
-			result[i++] = (decimal)actual.M31 - (decimal)expected.M31;
-			result[i++] = (decimal)actual.M32 - (decimal)expected.M32;
-			result[i++] = (decimal)actual.M33 - (decimal)expected.M33;
+			result[i++] = (decimal)actual.M31.ToDecimal() - (decimal)expected.M31;
+			result[i++] = (decimal)actual.M32.ToDecimal() - (decimal)expected.M32;
+			result[i++] = (decimal)actual.M33.ToDecimal() - (decimal)expected.M33;
 
 			return result;
 		}

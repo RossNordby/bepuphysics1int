@@ -98,7 +98,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                 Fix64 velocityA, velocityB;
                 Vector3.Dot(ref connectionA.angularVelocity, ref jacobianA, out velocityA);
                 Vector3.Dot(ref connectionB.angularVelocity, ref jacobianB, out velocityB);
-                return velocityA + velocityB;
+                return velocityA.Add(velocityB);
             }
         }
 
@@ -216,15 +216,16 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
             Vector3.Dot(ref connectionA.angularVelocity, ref jacobianA, out velocityA);
             Vector3.Dot(ref connectionB.angularVelocity, ref jacobianB, out velocityB);
             //Add in the constraint space bias velocity
-            Fix64 lambda = -(velocityA + velocityB) + biasVelocity - usedSoftness * accumulatedImpulse;
+            Fix64 lambda = ((velocityA.Add(velocityB).Neg()).Add(biasVelocity)).Sub(usedSoftness.Mul(accumulatedImpulse));
 
-            //Transform to an impulse
-            lambda *= velocityToImpulse;
+			//Transform to an impulse
+			lambda =
+lambda.Mul(velocityToImpulse);
 
             //Accumulate the impulse
             Fix64 previousAccumulatedImpulse = accumulatedImpulse;
-            accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse + lambda, -maxForceDt, maxForceDt);
-            lambda = accumulatedImpulse - previousAccumulatedImpulse;
+            accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse.Add(lambda), maxForceDt.Neg(), maxForceDt);
+            lambda = accumulatedImpulse.Sub(previousAccumulatedImpulse);
 
             //Apply the impulse
             Vector3 impulse;
@@ -271,17 +272,17 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
 
                 //Compute goal velocity.
                 error = GetDistanceFromGoal(angle);
-                Fix64 absErrorOverDt = Fix64.Abs(error / dt);
+                Fix64 absErrorOverDt = Fix64.Abs(error.Div(dt));
                 Fix64 errorReduction;
-                settings.servo.springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 / dt, out errorReduction, out usedSoftness);
-                biasVelocity = Fix64.Sign(error) * MathHelper.Min(settings.servo.baseCorrectiveSpeed, absErrorOverDt) + error * errorReduction;
+                settings.servo.springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReduction, out usedSoftness);
+                biasVelocity = (Fix64.Sign(error).Mul(MathHelper.Min(settings.servo.baseCorrectiveSpeed, absErrorOverDt))).Add(error.Mul(errorReduction));
 
-                biasVelocity = MathHelper.Clamp(biasVelocity, -settings.servo.maxCorrectiveVelocity, settings.servo.maxCorrectiveVelocity);
+                biasVelocity = MathHelper.Clamp(biasVelocity, settings.servo.maxCorrectiveVelocity.Neg(), settings.servo.maxCorrectiveVelocity);
             }
             else
             {
                 biasVelocity = settings.velocityMotor.goalVelocity;
-                usedSoftness = settings.velocityMotor.softness / dt;
+                usedSoftness = settings.velocityMotor.softness.Div(dt);
                 error = F64.C0;
             }
 
@@ -301,9 +302,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
             }
 
             jacobianB.Normalize();
-            jacobianA.X = -jacobianB.X;
-            jacobianA.Y = -jacobianB.Y;
-            jacobianA.Z = -jacobianB.Z;
+            jacobianA.X = jacobianB.X.Neg();
+            jacobianA.Y = jacobianB.Y.Neg();
+            jacobianA.Z = jacobianB.Z.Neg();
 
             //Update the maximum force
             ComputeMaxForces(settings.maximumForce, dt);
@@ -332,7 +333,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                 entryB = F64.C0;
 
             //Compute the inverse mass matrix
-            velocityToImpulse = F64.C1 / (usedSoftness + entryA + entryB);
+            velocityToImpulse = F64.C1.Div(((usedSoftness.Add(entryA)).Add(entryB)));
 
             
         }
@@ -366,22 +367,22 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
             if (goalAngle > F64.C0)
             {
                 if (angle > goalAngle)
-                    forwardDistance = angle - goalAngle;
+                    forwardDistance = angle.Sub(goalAngle);
                 else if (angle > F64.C0)
-                    forwardDistance = MathHelper.TwoPi - goalAngle + angle;
+                    forwardDistance = (MathHelper.TwoPi.Sub(goalAngle)).Add(angle);
                 else //if (angle <= 0)
-                    forwardDistance = MathHelper.TwoPi - goalAngle + angle;
+                    forwardDistance = (MathHelper.TwoPi.Sub(goalAngle)).Add(angle);
             }
             else
             {
                 if (angle < goalAngle)
-                    forwardDistance = MathHelper.TwoPi - goalAngle + angle;
+                    forwardDistance = (MathHelper.TwoPi.Sub(goalAngle)).Add(angle);
                 else //if (angle < 0)
-                    forwardDistance = angle - goalAngle;
+                    forwardDistance = angle.Sub(goalAngle);
                 //else //if (currentAngle >= 0)
                 //    return angle - myMinimumAngle;
             }
-            return forwardDistance > MathHelper.Pi ? MathHelper.TwoPi - forwardDistance : -forwardDistance;
+            return forwardDistance > MathHelper.Pi ? MathHelper.TwoPi.Sub(forwardDistance) : forwardDistance.Neg();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace BEPUbenchmark.Benchmarks
 		{
 			Entity movingEntity;
 			//The moving entity can be either kinematic or dynamic; the EntityMover/Rotator works for either.
-			movingEntity = new Box(new Vector3(-10, 0, -10), 3, 1, 1);
+			movingEntity = new Box(new Vector3((-10).ToFix(), 0.ToFix(), (-10).ToFix()), 3.ToFix(), 1.ToFix(), 1.ToFix());
 
 			//We're going to use a speed-controlled curve that wraps another curve.
 			//This is the internal curve.
@@ -43,16 +43,16 @@ namespace BEPUbenchmark.Benchmarks
 			//There's two control points because the very first and very last control points
 			//aren't actually reached by the curve in a CardinalSpline3D; they are used
 			//to define the tangents on the interior points.
-			wrappedPositionCurve.ControlPoints.Add(-1, new Vector3(0, 30, 0));
-			wrappedPositionCurve.ControlPoints.Add(0, new Vector3(0, 20, 0));
+			wrappedPositionCurve.ControlPoints.Add((-1).ToFix(), new Vector3(0.ToFix(), 30.ToFix(), 0.ToFix()));
+			wrappedPositionCurve.ControlPoints.Add(0.ToFix(), new Vector3(0.ToFix(), 20.ToFix(), 0.ToFix()));
 			//Add a bunch of random control points to the curve.
 			var random = new Random(0);
 			for (int i = 1; i <= 10; i++)
 			{
-				wrappedPositionCurve.ControlPoints.Add(i, new Vector3(
-															  (Fix64)random.NextDouble() * 20 - 10,
-															  (Fix64)random.NextDouble() * 12,
-															  (Fix64)random.NextDouble() * 20 - 10));
+				wrappedPositionCurve.ControlPoints.Add(i.ToFix(), new Vector3(
+(((Fix64)random.NextDouble().ToFix()).Mul(20.ToFix())).Sub(10.ToFix()),
+((Fix64)random.NextDouble().ToFix()).Mul(12.ToFix()),
+(((Fix64)random.NextDouble().ToFix()).Mul(20.ToFix())).Sub(10.ToFix())));
 			}
 
 			positionPath = wrappedPositionCurve;
@@ -62,11 +62,11 @@ namespace BEPUbenchmark.Benchmarks
 			//positionPath = new ConstantLinearSpeedCurve(5, wrappedPositionCurve);
 
 			var slerpCurve = new QuaternionSlerpCurve();
-			slerpCurve.ControlPoints.Add(0, Quaternion.Identity);
-			slerpCurve.ControlPoints.Add(1, Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver2));
-			slerpCurve.ControlPoints.Add(2, Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi));
-			slerpCurve.ControlPoints.Add(3, Quaternion.CreateFromAxisAngle(Vector3.Up, 3 * MathHelper.PiOver2));
-			slerpCurve.ControlPoints.Add(4, Quaternion.Identity);
+			slerpCurve.ControlPoints.Add(0.ToFix(), Quaternion.Identity);
+			slerpCurve.ControlPoints.Add(1.ToFix(), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver2));
+			slerpCurve.ControlPoints.Add(2.ToFix(), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi));
+			slerpCurve.ControlPoints.Add(3.ToFix(), Quaternion.CreateFromAxisAngle(Vector3.Up, 3.ToFix().Mul(MathHelper.PiOver2)));
+			slerpCurve.ControlPoints.Add(4.ToFix(), Quaternion.Identity);
 
 			slerpCurve.PostLoop = CurveEndpointBehavior.Mirror;
 			orientationPath = slerpCurve;
@@ -75,7 +75,7 @@ namespace BEPUbenchmark.Benchmarks
 			mover = new EntityMover(movingEntity);
 			//Offset the place that the mover tries to reach a little.
 			//Now, when the entity spins, it acts more like a hammer swing than a saw.
-			mover.LocalOffset = new Vector3(3, 0, 0);
+			mover.LocalOffset = new Vector3(3.ToFix(), 0.ToFix(), 0.ToFix());
 			rotator = new EntityRotator(movingEntity);
 
 			//Add the entity and movers to the space.
@@ -84,29 +84,29 @@ namespace BEPUbenchmark.Benchmarks
 			Space.Add(rotator);
 
 			//Add some extra stuff to the space.
-			Space.Add(new Box(new Vector3(0, -5, 0), 25, 10, 25));
+			Space.Add(new Box(new Vector3(0.ToFix(), (-5).ToFix(), 0.ToFix()), 25.ToFix(), 10.ToFix(), 25.ToFix()));
 
 			int numColumns = 7;
 			int numRows = 7;
 			int numHigh = 3;
-			Fix64 xSpacing = 2.09m;
-			Fix64 ySpacing = 2.08m;
-			Fix64 zSpacing = 2.09m;
+			Fix64 xSpacing = 2.09m.ToFix();
+			Fix64 ySpacing = 2.08m.ToFix();
+			Fix64 zSpacing = 2.09m.ToFix();
 			for (int i = 0; i < numRows; i++)
 				for (int j = 0; j < numColumns; j++)
 					for (int k = 0; k < numHigh; k++)
 					{
 						Space.Add(new Box(new Vector3(
-											  xSpacing * i - (numRows - 1) * xSpacing / 2,
-											  1.58m + k * (ySpacing),
-											  2 + zSpacing * j - (numColumns - 1) * zSpacing / 2),
-										  2, 2, 2, 10));
+(xSpacing.Mul(i.ToFix())).Sub(((numRows - 1).ToFix().Mul(xSpacing)).Div(2.ToFix())),
+1.58m.ToFix().Add(k.ToFix().Mul((ySpacing))),
+(2.ToFix().Add(zSpacing.Mul(j.ToFix()))).Sub(((numColumns - 1).ToFix().Mul(zSpacing)).Div(2.ToFix()))),
+										  2.ToFix(), 2.ToFix(), 2.ToFix(), 10.ToFix()));
 					}
 		}
 
 		protected override void Step()
 		{
-			pathTime += Space.TimeStepSettings.TimeStepDuration;
+			pathTime = pathTime.Add(Space.TimeStepSettings.TimeStepDuration);
 			mover.TargetPosition = positionPath.Evaluate(pathTime);
 			rotator.TargetOrientation = orientationPath.Evaluate(pathTime);
 			base.Step();

@@ -20,7 +20,7 @@ namespace FixMath.NET
 
         public Fix64 NextInt(int maxValue)
         {
-            return random.Next(maxValue);
+            return random.Next(maxValue).ToFixFast();
         }
     }
 }

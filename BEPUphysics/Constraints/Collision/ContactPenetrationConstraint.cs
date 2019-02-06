@@ -93,13 +93,11 @@ namespace BEPUphysics.Constraints.Collision
                 Fix64 lambda = F64.C0;
                 if (entityA != null)
                 {
-                    lambda = entityA.linearVelocity.X * linearAX + entityA.linearVelocity.Y * linearAY + entityA.linearVelocity.Z * linearAZ +
-                             entityA.angularVelocity.X * angularAX + entityA.angularVelocity.Y * angularAY + entityA.angularVelocity.Z * angularAZ;
+                    lambda = (((((entityA.linearVelocity.X.Mul(linearAX)).Add(entityA.linearVelocity.Y.Mul(linearAY))).Add(entityA.linearVelocity.Z.Mul(linearAZ))).Add(entityA.angularVelocity.X.Mul(angularAX))).Add(entityA.angularVelocity.Y.Mul(angularAY))).Add(entityA.angularVelocity.Z.Mul(angularAZ));
                 }
                 if (entityB != null)
                 {
-                    lambda += -entityB.linearVelocity.X * linearAX - entityB.linearVelocity.Y * linearAY - entityB.linearVelocity.Z * linearAZ +
-                              entityB.angularVelocity.X * angularBX + entityB.angularVelocity.Y * angularBY + entityB.angularVelocity.Z * angularBZ;
+					lambda = lambda.Add((((((entityB.linearVelocity.X.Neg().Mul(linearAX)).Sub(entityB.linearVelocity.Y.Mul(linearAY))).Sub(entityB.linearVelocity.Z.Mul(linearAZ))).Add(entityB.angularVelocity.X.Mul(angularBX))).Add(entityB.angularVelocity.Y.Mul(angularBY))).Add(entityB.angularVelocity.Z.Mul(angularBZ)));
                 }
                 return lambda;
             }
@@ -119,9 +117,9 @@ namespace BEPUphysics.Constraints.Collision
             entityBDynamic = entityB != null && entityB.isDynamic;
 
             //Set up the jacobians.
-            linearAX = -contact.Normal.X;
-            linearAY = -contact.Normal.Y;
-            linearAZ = -contact.Normal.Z;
+            linearAX = contact.Normal.X.Neg();
+            linearAY = contact.Normal.Y.Neg();
+            linearAZ = contact.Normal.Z.Neg();
             //linearBX = -linearAX;
             //linearBY = -linearAY;
             //linearBZ = -linearAZ;
@@ -132,9 +130,9 @@ namespace BEPUphysics.Constraints.Collision
             if (entityA != null)
             {
                 Vector3.Subtract(ref contact.Position, ref entityA.position, out ra);
-                angularAX = (ra.Y * linearAZ) - (ra.Z * linearAY);
-                angularAY = (ra.Z * linearAX) - (ra.X * linearAZ);
-                angularAZ = (ra.X * linearAY) - (ra.Y * linearAX);
+                angularAX = (ra.Y.Mul(linearAZ)).Sub((ra.Z.Mul(linearAY)));
+                angularAY = (ra.Z.Mul(linearAX)).Sub((ra.X.Mul(linearAZ)));
+                angularAZ = (ra.X.Mul(linearAY)).Sub((ra.Y.Mul(linearAX)));
             }
 
 
@@ -142,9 +140,9 @@ namespace BEPUphysics.Constraints.Collision
             if (entityB != null)
             {
                 Vector3.Subtract(ref contact.Position, ref entityB.position, out rb);
-                angularBX = (linearAY * rb.Z) - (linearAZ * rb.Y);
-                angularBY = (linearAZ * rb.X) - (linearAX * rb.Z);
-                angularBZ = (linearAX * rb.Y) - (linearAY * rb.X);
+                angularBX = (linearAY.Mul(rb.Z)).Sub((linearAZ.Mul(rb.Y)));
+                angularBY = (linearAZ.Mul(rb.X)).Sub((linearAX.Mul(rb.Z)));
+                angularBZ = (linearAX.Mul(rb.Y)).Sub((linearAY.Mul(rb.X)));
             }
 
 
@@ -155,20 +153,20 @@ namespace BEPUphysics.Constraints.Collision
             Fix64 tX, tY, tZ;
             if (entityADynamic)
             {
-                tX = angularAX * entityA.inertiaTensorInverse.M11 + angularAY * entityA.inertiaTensorInverse.M21 + angularAZ * entityA.inertiaTensorInverse.M31;
-                tY = angularAX * entityA.inertiaTensorInverse.M12 + angularAY * entityA.inertiaTensorInverse.M22 + angularAZ * entityA.inertiaTensorInverse.M32;
-                tZ = angularAX * entityA.inertiaTensorInverse.M13 + angularAY * entityA.inertiaTensorInverse.M23 + angularAZ * entityA.inertiaTensorInverse.M33;
-                entryA = tX * angularAX + tY * angularAY + tZ * angularAZ + entityA.inverseMass;
+                tX = ((angularAX.Mul(entityA.inertiaTensorInverse.M11)).Add(angularAY.Mul(entityA.inertiaTensorInverse.M21))).Add(angularAZ.Mul(entityA.inertiaTensorInverse.M31));
+                tY = ((angularAX.Mul(entityA.inertiaTensorInverse.M12)).Add(angularAY.Mul(entityA.inertiaTensorInverse.M22))).Add(angularAZ.Mul(entityA.inertiaTensorInverse.M32));
+                tZ = ((angularAX.Mul(entityA.inertiaTensorInverse.M13)).Add(angularAY.Mul(entityA.inertiaTensorInverse.M23))).Add(angularAZ.Mul(entityA.inertiaTensorInverse.M33));
+                entryA = (((tX.Mul(angularAX)).Add(tY.Mul(angularAY))).Add(tZ.Mul(angularAZ))).Add(entityA.inverseMass);
             }
             else
                 entryA = F64.C0;
 
             if (entityBDynamic)
             {
-                tX = angularBX * entityB.inertiaTensorInverse.M11 + angularBY * entityB.inertiaTensorInverse.M21 + angularBZ * entityB.inertiaTensorInverse.M31;
-                tY = angularBX * entityB.inertiaTensorInverse.M12 + angularBY * entityB.inertiaTensorInverse.M22 + angularBZ * entityB.inertiaTensorInverse.M32;
-                tZ = angularBX * entityB.inertiaTensorInverse.M13 + angularBY * entityB.inertiaTensorInverse.M23 + angularBZ * entityB.inertiaTensorInverse.M33;
-                entryB = tX * angularBX + tY * angularBY + tZ * angularBZ + entityB.inverseMass;
+                tX = ((angularBX.Mul(entityB.inertiaTensorInverse.M11)).Add(angularBY.Mul(entityB.inertiaTensorInverse.M21))).Add(angularBZ.Mul(entityB.inertiaTensorInverse.M31));
+                tY = ((angularBX.Mul(entityB.inertiaTensorInverse.M12)).Add(angularBY.Mul(entityB.inertiaTensorInverse.M22))).Add(angularBZ.Mul(entityB.inertiaTensorInverse.M32));
+                tZ = ((angularBX.Mul(entityB.inertiaTensorInverse.M13)).Add(angularBY.Mul(entityB.inertiaTensorInverse.M23))).Add(angularBZ.Mul(entityB.inertiaTensorInverse.M33));
+                entryB = (((tX.Mul(angularBX)).Add(tY.Mul(angularBY))).Add(tZ.Mul(angularBZ))).Add(entityB.inverseMass);
             }
             else
                 entryB = F64.C0;
@@ -182,29 +180,28 @@ namespace BEPUphysics.Constraints.Collision
             //Larger effective masses should correspond to smaller softnesses so that the spring has the same positional behavior.
             //Fortunately, we're already computing the necessary values: the raw, unsoftened effective mass inverse shall be used to compute the softness.
 
-            Fix64 effectiveMassInverse = entryA + entryB;
-            Fix64 updateRate = F64.C1 / dt;
-            softness = CollisionResponseSettings.Softness * effectiveMassInverse * updateRate;
-            velocityToImpulse = -1 / (softness + effectiveMassInverse);
+            Fix64 effectiveMassInverse = entryA.Add(entryB);
+            Fix64 updateRate = F64.C1.Div(dt);
+            softness = (CollisionResponseSettings.Softness.Mul(effectiveMassInverse)).Mul(updateRate);
+            velocityToImpulse = (F64.C1.Neg()).Div((softness.Add(effectiveMassInverse)));
 
 
             //Bounciness and bias (penetration correction)
             if (contact.PenetrationDepth >= F64.C0)
             {
                 bias = MathHelper.Min(
-                    MathHelper.Max(F64.C0, contact.PenetrationDepth - CollisionDetectionSettings.AllowedPenetration) *
-                    CollisionResponseSettings.PenetrationRecoveryStiffness * updateRate,
+(MathHelper.Max(F64.C0, contact.PenetrationDepth.Sub(CollisionDetectionSettings.AllowedPenetration)).Mul(CollisionResponseSettings.PenetrationRecoveryStiffness)).Mul(updateRate),
                     CollisionResponseSettings.MaximumPenetrationRecoverySpeed);
 
                 if (contactManifoldConstraint.materialInteraction.Bounciness > F64.C0)
                 {
                     //Target a velocity which includes a portion of the incident velocity.
-                    Fix64 bounceVelocity = -RelativeVelocity;
+                    Fix64 bounceVelocity = RelativeVelocity.Neg();
                     if (bounceVelocity > F64.C0)
                     {
-                        var lowThreshold = CollisionResponseSettings.BouncinessVelocityThreshold * F64.C0p3;
-                        var velocityFraction = MathHelper.Clamp((bounceVelocity - lowThreshold) / (CollisionResponseSettings.BouncinessVelocityThreshold - lowThreshold + Toolbox.Epsilon), F64.C0, F64.C1);
-                        var bouncinessVelocity = velocityFraction * bounceVelocity * contactManifoldConstraint.materialInteraction.Bounciness;
+                        var lowThreshold = CollisionResponseSettings.BouncinessVelocityThreshold.Mul(F64.C0p3);
+                        var velocityFraction = MathHelper.Clamp((bounceVelocity.Sub(lowThreshold)).Div(((CollisionResponseSettings.BouncinessVelocityThreshold.Sub(lowThreshold)).Add(Toolbox.Epsilon))), F64.C0, F64.C1);
+                        var bouncinessVelocity = (velocityFraction.Mul(bounceVelocity)).Mul(contactManifoldConstraint.materialInteraction.Bounciness);
                         bias = MathHelper.Max(bouncinessVelocity, bias);
                     }
                 }
@@ -213,7 +210,7 @@ namespace BEPUphysics.Constraints.Collision
             {
                 //The contact is actually separated right now.  Allow the solver to target a position that is just barely in collision.
                 //If the solver finds that an accumulated negative impulse is required to hit this target, then no work will be done.
-                bias = contact.PenetrationDepth * updateRate;
+                bias = contact.PenetrationDepth.Mul(updateRate);
 
                 //This implementation is going to ignore bounciness for now.
                 //Since it's not being used for CCD, these negative-depth contacts
@@ -247,25 +244,25 @@ namespace BEPUphysics.Constraints.Collision
 #else
             Vector3 linear, angular;
 #endif
-            linear.X = accumulatedImpulse * linearAX;
-            linear.Y = accumulatedImpulse * linearAY;
-            linear.Z = accumulatedImpulse * linearAZ;
+            linear.X = accumulatedImpulse.Mul(linearAX);
+            linear.Y = accumulatedImpulse.Mul(linearAY);
+            linear.Z = accumulatedImpulse.Mul(linearAZ);
             if (entityADynamic)
             {
-                angular.X = accumulatedImpulse * angularAX;
-                angular.Y = accumulatedImpulse * angularAY;
-                angular.Z = accumulatedImpulse * angularAZ;
+                angular.X = accumulatedImpulse.Mul(angularAX);
+                angular.Y = accumulatedImpulse.Mul(angularAY);
+                angular.Z = accumulatedImpulse.Mul(angularAZ);
                 entityA.ApplyLinearImpulse(ref linear);
                 entityA.ApplyAngularImpulse(ref angular);
             }
             if (entityBDynamic)
             {
-                linear.X = -linear.X;
-                linear.Y = -linear.Y;
-                linear.Z = -linear.Z;
-                angular.X = accumulatedImpulse * angularBX;
-                angular.Y = accumulatedImpulse * angularBY;
-                angular.Z = accumulatedImpulse * angularBZ;
+                linear.X = linear.X.Neg();
+                linear.Y = linear.Y.Neg();
+                linear.Z = linear.Z.Neg();
+                angular.X = accumulatedImpulse.Mul(angularBX);
+                angular.Y = accumulatedImpulse.Mul(angularBY);
+                angular.Z = accumulatedImpulse.Mul(angularBZ);
                 entityB.ApplyLinearImpulse(ref linear);
                 entityB.ApplyAngularImpulse(ref angular);
             }
@@ -280,12 +277,12 @@ namespace BEPUphysics.Constraints.Collision
         {
 
             //Compute relative velocity
-            Fix64 lambda = (RelativeVelocity - bias + softness * accumulatedImpulse) * velocityToImpulse;
+            Fix64 lambda = ((RelativeVelocity.Sub(bias)).Add(softness.Mul(accumulatedImpulse))).Mul(velocityToImpulse);
 
             //Clamp accumulated impulse
             Fix64 previousAccumulatedImpulse = accumulatedImpulse;
-            accumulatedImpulse = MathHelper.Max(F64.C0, accumulatedImpulse + lambda);
-            lambda = accumulatedImpulse - previousAccumulatedImpulse;
+            accumulatedImpulse = MathHelper.Max(F64.C0, accumulatedImpulse.Add(lambda));
+            lambda = accumulatedImpulse.Sub(previousAccumulatedImpulse);
 
 
             //Apply the impulse
@@ -295,25 +292,25 @@ namespace BEPUphysics.Constraints.Collision
 #else
             Vector3 linear, angular;
 #endif
-            linear.X = lambda * linearAX;
-            linear.Y = lambda * linearAY;
-            linear.Z = lambda * linearAZ;
+            linear.X = lambda.Mul(linearAX);
+            linear.Y = lambda.Mul(linearAY);
+            linear.Z = lambda.Mul(linearAZ);
             if (entityADynamic)
             {
-                angular.X = lambda * angularAX;
-                angular.Y = lambda * angularAY;
-                angular.Z = lambda * angularAZ;
+                angular.X = lambda.Mul(angularAX);
+                angular.Y = lambda.Mul(angularAY);
+                angular.Z = lambda.Mul(angularAZ);
                 entityA.ApplyLinearImpulse(ref linear);
                 entityA.ApplyAngularImpulse(ref angular);
             }
             if (entityBDynamic)
             {
-                linear.X = -linear.X;
-                linear.Y = -linear.Y;
-                linear.Z = -linear.Z;
-                angular.X = lambda * angularBX;
-                angular.Y = lambda * angularBY;
-                angular.Z = lambda * angularBZ;
+                linear.X = linear.X.Neg();
+                linear.Y = linear.Y.Neg();
+                linear.Z = linear.Z.Neg();
+                angular.X = lambda.Mul(angularBX);
+                angular.Y = lambda.Mul(angularBY);
+                angular.Z = lambda.Mul(angularBZ);
                 entityB.ApplyLinearImpulse(ref linear);
                 entityB.ApplyAngularImpulse(ref angular);
             }

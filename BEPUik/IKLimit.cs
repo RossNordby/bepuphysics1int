@@ -37,7 +37,7 @@ namespace BEPUik
             Vector3.Subtract(ref constraintVelocityError, ref velocityBias, out constraintVelocityError);
             //And second, the bias from softness:
             Vector3 softnessBias;
-            Vector3.Multiply(ref accumulatedImpulse, -softness, out softnessBias);
+            Vector3.Multiply(ref accumulatedImpulse, softness.Neg(), out softnessBias);
             Vector3.Subtract(ref constraintVelocityError, ref softnessBias, out constraintVelocityError);
 
             //By now, the constraint velocity error contains all the velocity we want to get rid of.
@@ -57,7 +57,7 @@ namespace BEPUik
             if (impulseSquared > maximumImpulseSquared)
             {
                 //Oops! Clamp that down.
-                Vector3.Multiply(ref accumulatedImpulse, maximumImpulse / Fix64.Sqrt(impulseSquared), out accumulatedImpulse);
+                Vector3.Multiply(ref accumulatedImpulse, maximumImpulse.Div(Fix64.Sqrt(impulseSquared)), out accumulatedImpulse);
             }
             //Update the impulse based upon the clamped accumulated impulse and the original, pre-add accumulated impulse.
             Vector3.Subtract(ref accumulatedImpulse, ref preadd, out constraintSpaceImpulse);

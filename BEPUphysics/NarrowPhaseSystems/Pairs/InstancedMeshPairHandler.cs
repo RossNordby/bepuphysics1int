@@ -128,9 +128,9 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                 Vector3.Multiply(ref convex.entity.linearVelocity, dt, out velocity);
                 Fix64 velocitySquared = velocity.LengthSquared();
 
-                var minimumRadius = convex.Shape.MinimumRadius * MotionSettings.CoreShapeScaling;
+                var minimumRadius = convex.Shape.MinimumRadius.Mul(MotionSettings.CoreShapeScaling);
                 timeOfImpact = F64.C1;
-                if (minimumRadius * minimumRadius < velocitySquared)
+                if (minimumRadius.Mul(minimumRadius) < velocitySquared)
                 {
                     var triangle = PhysicsThreadResources.GetTriangle();
                     triangle.collisionMargin = F64.C0;

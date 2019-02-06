@@ -17,11 +17,11 @@ namespace BEPUphysics.Vehicle
     /// </summary>
     public abstract class WheelShape : ICollisionRulesOwner
     {
-        private Fix64 airborneWheelAcceleration = (Fix64)40;
+        private Fix64 airborneWheelAcceleration = (Fix64)40.ToFix();
 
 
-        private Fix64 airborneWheelDeceleration = (Fix64)4;
-        private Fix64 brakeFreezeWheelDeceleration = (Fix64)40;
+        private Fix64 airborneWheelDeceleration = (Fix64)4.ToFix();
+        private Fix64 brakeFreezeWheelDeceleration = (Fix64)40.ToFix();
 
         /// <summary>
         /// Collects collision pairs from the environment.
@@ -192,18 +192,18 @@ namespace BEPUphysics.Vehicle
             if (wheel.HasSupport && !(wheel.brake.IsBraking && FreezeWheelsWhileBraking))
             {
                 //On the ground, not braking.
-                spinVelocity = wheel.drivingMotor.RelativeVelocity / Radius;
+                spinVelocity = wheel.drivingMotor.RelativeVelocity.Div(Radius);
             }
             else if (wheel.HasSupport && wheel.brake.IsBraking && FreezeWheelsWhileBraking)
             {
                 //On the ground, braking
                 Fix64 deceleratedValue = F64.C0;
                 if (spinVelocity > F64.C0)
-                    deceleratedValue = MathHelper.Max(spinVelocity - brakeFreezeWheelDeceleration * dt, F64.C0);
+                    deceleratedValue = MathHelper.Max(spinVelocity.Sub(brakeFreezeWheelDeceleration.Mul(dt)), F64.C0);
                 else if (spinVelocity < F64.C0)
-                    deceleratedValue = MathHelper.Min(spinVelocity + brakeFreezeWheelDeceleration * dt, F64.C0);
+                    deceleratedValue = MathHelper.Min(spinVelocity.Add(brakeFreezeWheelDeceleration.Mul(dt)), F64.C0);
 
-                spinVelocity = wheel.drivingMotor.RelativeVelocity / Radius;
+                spinVelocity = wheel.drivingMotor.RelativeVelocity.Div(Radius);
 
                 if (Fix64.Abs(deceleratedValue) < Fix64.Abs(spinVelocity))
                     spinVelocity = deceleratedValue;
@@ -211,26 +211,26 @@ namespace BEPUphysics.Vehicle
             else if (!wheel.HasSupport && wheel.drivingMotor.TargetSpeed != F64.C0)
             {
                 //Airborne and accelerating, increase spin velocity.
-                Fix64 maxSpeed = Fix64.Abs(wheel.drivingMotor.TargetSpeed) / Radius;
-                spinVelocity = MathHelper.Clamp(spinVelocity + Fix64.Sign(wheel.drivingMotor.TargetSpeed) * airborneWheelAcceleration * dt, -maxSpeed, maxSpeed);
+                Fix64 maxSpeed = Fix64.Abs(wheel.drivingMotor.TargetSpeed).Div(Radius);
+                spinVelocity = MathHelper.Clamp(spinVelocity.Add((Fix64.Sign(wheel.drivingMotor.TargetSpeed).Mul(airborneWheelAcceleration)).Mul(dt)), maxSpeed.Neg(), maxSpeed);
             }
             else if (!wheel.HasSupport && wheel.Brake.IsBraking)
             {
                 //Airborne and braking
                 if (spinVelocity > F64.C0)
-                    spinVelocity = MathHelper.Max(spinVelocity - brakeFreezeWheelDeceleration * dt, F64.C0);
+                    spinVelocity = MathHelper.Max(spinVelocity.Sub(brakeFreezeWheelDeceleration.Mul(dt)), F64.C0);
                 else if (spinVelocity < F64.C0)
-                    spinVelocity = MathHelper.Min(spinVelocity + brakeFreezeWheelDeceleration * dt, F64.C0);
+                    spinVelocity = MathHelper.Min(spinVelocity.Add(brakeFreezeWheelDeceleration.Mul(dt)), F64.C0);
             }
             else if (!wheel.HasSupport)
             {
                 //Just idly slowing down.
                 if (spinVelocity > F64.C0)
-                    spinVelocity = MathHelper.Max(spinVelocity - airborneWheelDeceleration * dt, F64.C0);
+                    spinVelocity = MathHelper.Max(spinVelocity.Sub(airborneWheelDeceleration.Mul(dt)), F64.C0);
                 else if (spinVelocity < F64.C0)
-                    spinVelocity = MathHelper.Min(spinVelocity + airborneWheelDeceleration * dt, F64.C0);
+                    spinVelocity = MathHelper.Min(spinVelocity.Add(airborneWheelDeceleration.Mul(dt)), F64.C0);
             }
-            spinAngle += spinVelocity * dt;
+			spinAngle = spinAngle.Add(spinVelocity.Mul(dt));
         }
 
         /// <summary>

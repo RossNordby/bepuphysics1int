@@ -211,7 +211,7 @@ namespace BEPUphysics.Character
         public void AnalyzeSupportState(ref QuickList<CharacterContact> tractionContacts, ref QuickList<CharacterContact> supportContacts,
                                         out CharacterContactPositionState state, out CharacterContact supportContact)
         {
-            Fix64 maxDepth = -Fix64.MaxValue;
+            Fix64 maxDepth = Fix64.MaxValue.Neg();
             int deepestIndex = -1;
             if (tractionContacts.Count > 0)
             {

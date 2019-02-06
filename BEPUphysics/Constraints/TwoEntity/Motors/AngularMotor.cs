@@ -175,30 +175,30 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
 #endif
             Vector3 aVel = connectionA.angularVelocity;
             Vector3 bVel = connectionB.angularVelocity;
-            lambda.X = bVel.X - aVel.X - biasVelocity.X - usedSoftness * accumulatedImpulse.X;
-            lambda.Y = bVel.Y - aVel.Y - biasVelocity.Y - usedSoftness * accumulatedImpulse.Y;
-            lambda.Z = bVel.Z - aVel.Z - biasVelocity.Z - usedSoftness * accumulatedImpulse.Z;
+            lambda.X = ((bVel.X.Sub(aVel.X)).Sub(biasVelocity.X)).Sub(usedSoftness.Mul(accumulatedImpulse.X));
+            lambda.Y = ((bVel.Y.Sub(aVel.Y)).Sub(biasVelocity.Y)).Sub(usedSoftness.Mul(accumulatedImpulse.Y));
+            lambda.Z = ((bVel.Z.Sub(aVel.Z)).Sub(biasVelocity.Z)).Sub(usedSoftness.Mul(accumulatedImpulse.Z));
 
             Matrix3x3.Transform(ref lambda, ref effectiveMassMatrix, out lambda);
 
             Vector3 previousAccumulatedImpulse = accumulatedImpulse;
-            accumulatedImpulse.X += lambda.X;
-            accumulatedImpulse.Y += lambda.Y;
-            accumulatedImpulse.Z += lambda.Z;
+			accumulatedImpulse.X = accumulatedImpulse.X.Add(lambda.X);
+			accumulatedImpulse.Y = accumulatedImpulse.Y.Add(lambda.Y);
+			accumulatedImpulse.Z = accumulatedImpulse.Z.Add(lambda.Z);
             Fix64 sumLengthSquared = accumulatedImpulse.LengthSquared();
 
             if (sumLengthSquared > maxForceDtSquared)
             {
                 //max / impulse gives some value 0 < x < 1.  Basically, normalize the vector (divide by the length) and scale by the maximum.
-                Fix64 multiplier = maxForceDt / Fix64.Sqrt(sumLengthSquared);
-                accumulatedImpulse.X *= multiplier;
-                accumulatedImpulse.Y *= multiplier;
-                accumulatedImpulse.Z *= multiplier;
+                Fix64 multiplier = maxForceDt.Div(Fix64.Sqrt(sumLengthSquared));
+				accumulatedImpulse.X = accumulatedImpulse.X.Mul(multiplier);
+				accumulatedImpulse.Y = accumulatedImpulse.Y.Mul(multiplier);
+				accumulatedImpulse.Z = accumulatedImpulse.Z.Mul(multiplier);
 
                 //Since the limit was exceeded by this corrective impulse, limit it so that the accumulated impulse remains constrained.
-                lambda.X = accumulatedImpulse.X - previousAccumulatedImpulse.X;
-                lambda.Y = accumulatedImpulse.Y - previousAccumulatedImpulse.Y;
-                lambda.Z = accumulatedImpulse.Z - previousAccumulatedImpulse.Z;
+                lambda.X = accumulatedImpulse.X.Sub(previousAccumulatedImpulse.X);
+                lambda.Y = accumulatedImpulse.Y.Sub(previousAccumulatedImpulse.Y);
+                lambda.Z = accumulatedImpulse.Z.Sub(previousAccumulatedImpulse.Z);
             }
 
 
@@ -213,7 +213,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                 connectionB.ApplyAngularImpulse(ref torqueB);
             }
 
-            return (Fix64.Abs(lambda.X) + Fix64.Abs(lambda.Y) + Fix64.Abs(lambda.Z));
+            return ((Fix64.Abs(lambda.X).Add(Fix64.Abs(lambda.Y))).Add(Fix64.Abs(lambda.Z)));
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
             basis.rotationMatrix = connectionA.orientationMatrix;
             basis.ComputeWorldSpaceAxes();
 
-            Fix64 inverseDt = F64.C1 / dt;
+            Fix64 inverseDt = F64.C1.Div(dt);
             if (settings.mode == MotorMode.Servomechanism) //Only need to do the bulk of this work if it's a servo.
             {
 
@@ -258,21 +258,21 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                 //Scale the axis by the desired velocity if the angle is sufficiently large (epsilon).
                 if (angle > Toolbox.BigEpsilon)
                 {
-                    Fix64 velocity = -(MathHelper.Min(settings.servo.baseCorrectiveSpeed, angle * inverseDt) + angle * errorReduction);
+                    Fix64 velocity = MathHelper.Min(settings.servo.baseCorrectiveSpeed, angle.Mul(inverseDt)).Add(angle.Mul(errorReduction)).Neg();
 
-                    biasVelocity.X = axis.X * velocity;
-                    biasVelocity.Y = axis.Y * velocity;
-                    biasVelocity.Z = axis.Z * velocity;
+                    biasVelocity.X = axis.X.Mul(velocity);
+                    biasVelocity.Y = axis.Y.Mul(velocity);
+                    biasVelocity.Z = axis.Z.Mul(velocity);
 
 
                     //Ensure that the corrective velocity doesn't exceed the max.
                     Fix64 length = biasVelocity.LengthSquared();
                     if (length > settings.servo.maxCorrectiveVelocitySquared)
                     {
-                        Fix64 multiplier = settings.servo.maxCorrectiveVelocity / Fix64.Sqrt(length);
-                        biasVelocity.X *= multiplier;
-                        biasVelocity.Y *= multiplier;
-                        biasVelocity.Z *= multiplier;
+                        Fix64 multiplier = settings.servo.maxCorrectiveVelocity.Div(Fix64.Sqrt(length));
+						biasVelocity.X = biasVelocity.X.Mul(multiplier);
+						biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
+						biasVelocity.Z = biasVelocity.Z.Mul(multiplier);
                     }
                 }
                 else
@@ -284,7 +284,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
             }
             else
             {
-                usedSoftness = settings.velocityMotor.softness * inverseDt;
+                usedSoftness = settings.velocityMotor.softness.Mul(inverseDt);
                 angle = F64.C0; //Zero out the error;
                 Matrix3x3 transform = basis.WorldTransform;
                 Matrix3x3.Transform(ref settings.velocityMotor.goalVelocity, ref transform, out biasVelocity);
@@ -292,9 +292,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
 
             //Compute effective mass
             Matrix3x3.Add(ref connectionA.inertiaTensorInverse, ref connectionB.inertiaTensorInverse, out effectiveMassMatrix);
-            effectiveMassMatrix.M11 += usedSoftness;
-            effectiveMassMatrix.M22 += usedSoftness;
-            effectiveMassMatrix.M33 += usedSoftness;
+			effectiveMassMatrix.M11 = effectiveMassMatrix.M11.Add(usedSoftness);
+			effectiveMassMatrix.M22 = effectiveMassMatrix.M22.Add(usedSoftness);
+			effectiveMassMatrix.M33 = effectiveMassMatrix.M33.Add(usedSoftness);
             Matrix3x3.Invert(ref effectiveMassMatrix, out effectiveMassMatrix);
 
             //Update the maximum force

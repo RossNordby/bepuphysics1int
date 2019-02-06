@@ -73,10 +73,10 @@ namespace BEPUphysics.Vehicle
             Vector3 worldDirection;
             Matrix.Transform(ref wheel.suspension.localDirection, ref worldTransform, out worldDirection);
 
-            Fix64 length = wheel.suspension.currentLength - graphicalRadius;
-            newPosition.X = worldAttachmentPoint.X + worldDirection.X * length;
-            newPosition.Y = worldAttachmentPoint.Y + worldDirection.Y * length;
-            newPosition.Z = worldAttachmentPoint.Z + worldDirection.Z * length;
+            Fix64 length = wheel.suspension.currentLength.Sub(graphicalRadius);
+            newPosition.X = worldAttachmentPoint.X.Add(worldDirection.X.Mul(length));
+            newPosition.Y = worldAttachmentPoint.Y.Add(worldDirection.Y.Mul(length));
+            newPosition.Z = worldAttachmentPoint.Z.Add(worldDirection.Z.Mul(length));
 
             Matrix spinTransform;
 
@@ -172,9 +172,9 @@ namespace BEPUphysics.Vehicle
             Vector3.Min(ref startpoint, ref endpoint, out min);
             Vector3.Max(ref startpoint, ref endpoint, out max);
 
-            detector.Width = max.X - min.X;
-            detector.Height = max.Y - min.Y;
-            detector.Length = max.Z - min.Z;
+            detector.Width = max.X.Sub(min.X);
+            detector.Height = max.Y.Sub(min.Y);
+            detector.Length = max.Z.Sub(min.Z);
         }
 
         /// <summary>
@@ -188,9 +188,9 @@ namespace BEPUphysics.Vehicle
             Vector3 newPosition;
 #endif
 
-            newPosition.X = wheel.suspension.worldAttachmentPoint.X + wheel.suspension.worldDirection.X * wheel.suspension.restLength * F64.C0p5;
-            newPosition.Y = wheel.suspension.worldAttachmentPoint.Y + wheel.suspension.worldDirection.Y * wheel.suspension.restLength * F64.C0p5;
-            newPosition.Z = wheel.suspension.worldAttachmentPoint.Z + wheel.suspension.worldDirection.Z * wheel.suspension.restLength * F64.C0p5;
+            newPosition.X = wheel.suspension.worldAttachmentPoint.X.Add((wheel.suspension.worldDirection.X.Mul(wheel.suspension.restLength)).Mul(F64.C0p5));
+            newPosition.Y = wheel.suspension.worldAttachmentPoint.Y.Add((wheel.suspension.worldDirection.Y.Mul(wheel.suspension.restLength)).Mul(F64.C0p5));
+            newPosition.Z = wheel.suspension.worldAttachmentPoint.Z.Add((wheel.suspension.worldDirection.Z.Mul(wheel.suspension.restLength)).Mul(F64.C0p5));
 
             detector.Position = newPosition;
             detector.OrientationMatrix = wheel.Vehicle.Body.orientationMatrix;

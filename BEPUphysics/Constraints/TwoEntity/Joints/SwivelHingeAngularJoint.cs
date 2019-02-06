@@ -119,7 +119,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 //Find the velocity contribution from each connection
                 Vector3.Dot(ref connectionA.angularVelocity, ref jacobianA, out velocityA);
                 Vector3.Dot(ref connectionB.angularVelocity, ref jacobianB, out velocityB);
-                return velocityA + velocityB;
+                return velocityA.Add(velocityB);
             }
         }
 
@@ -200,13 +200,15 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Dot(ref connectionA.angularVelocity, ref jacobianA, out velocityA);
             Vector3.Dot(ref connectionB.angularVelocity, ref jacobianB, out velocityB);
             //Add in the constraint space bias velocity
-            Fix64 lambda = -(velocityA + velocityB) - biasVelocity - softness * accumulatedImpulse;
+            Fix64 lambda = ((velocityA.Add(velocityB).Neg()).Sub(biasVelocity)).Sub(softness.Mul(accumulatedImpulse));
 
-            //Transform to an impulse
-            lambda *= velocityToImpulse;
+			//Transform to an impulse
+			lambda =
+lambda.Mul(velocityToImpulse);
 
-            //Accumulate the impulse
-            accumulatedImpulse += lambda;
+			//Accumulate the impulse
+			accumulatedImpulse =
+accumulatedImpulse.Add(lambda);
 
             //Apply the impulse
             Vector3 impulse;
@@ -239,9 +241,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             //Compute the correction velocity.
 
             Fix64 errorReduction;
-            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 / dt, out errorReduction, out softness);
+            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReduction, out softness);
 
-            biasVelocity = MathHelper.Clamp(error * errorReduction, -maxCorrectiveVelocity, maxCorrectiveVelocity);
+            biasVelocity = MathHelper.Clamp(error.Mul(errorReduction), maxCorrectiveVelocity.Neg(), maxCorrectiveVelocity);
 
             //Compute the jacobian
             Vector3.Cross(ref worldHingeAxis, ref worldTwistAxis, out jacobianA);
@@ -250,9 +252,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 Vector3.Divide(ref jacobianA, Fix64.Sqrt(length), out jacobianA);
             else
                 jacobianA = new Vector3();
-            jacobianB.X = -jacobianA.X;
-            jacobianB.Y = -jacobianA.Y;
-            jacobianB.Z = -jacobianA.Z;
+            jacobianB.X = jacobianA.X.Neg();
+            jacobianB.Y = jacobianA.Y.Neg();
+            jacobianB.Z = jacobianA.Z.Neg();
 
 
             //****** EFFECTIVE MASS MATRIX ******//
@@ -278,7 +280,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 entryB = F64.C0;
 
             //Compute the inverse mass matrix
-            velocityToImpulse = F64.C1 / (softness + entryA + entryB);
+            velocityToImpulse = F64.C1.Div(((softness.Add(entryA)).Add(entryB)));
 
             
         }

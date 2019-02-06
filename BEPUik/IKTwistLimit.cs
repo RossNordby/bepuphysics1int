@@ -162,13 +162,13 @@ namespace BEPUik
             //We can now compare the angle between the twist axes.
             Fix64 angle;
             Vector3.Dot(ref twistMeasureAxisA, ref twistMeasureAxisB, out angle);
-            angle = Fix64.Acos(MathHelper.Clamp(angle, -1, F64.C1));
+            angle = Fix64.Acos(MathHelper.Clamp(angle, F64.C1.Neg(), F64.C1));
 
             //Compute the bias based upon the error.
             if (angle > maximumAngle)
-                velocityBias = new Vector3(errorCorrectionFactor * (angle - maximumAngle), F64.C0, F64.C0);
+                velocityBias = new Vector3(errorCorrectionFactor.Mul((angle.Sub(maximumAngle))), F64.C0, F64.C0);
             else //If the constraint isn't violated, set up the velocity bias to allow a 'speculative' limit.
-                velocityBias = new Vector3(angle - maximumAngle, F64.C0, F64.C0);
+                velocityBias = new Vector3(angle.Sub(maximumAngle), F64.C0, F64.C0);
 
             //We can't just use the axes directly as jacobians. Consider 'cranking' one object around the other.
             Vector3 jacobian;
@@ -197,7 +197,7 @@ namespace BEPUik
                 Vector3.Negate(ref jacobian, out jacobian);
 
             angularJacobianA = new Matrix3x3 { M11 = jacobian.X, M12 = jacobian.Y, M13 = jacobian.Z };
-            angularJacobianB = new Matrix3x3 { M11 = -jacobian.X, M12 = -jacobian.Y, M13 = -jacobian.Z };
+            angularJacobianB = new Matrix3x3 { M11 = jacobian.X.Neg(), M12 = jacobian.Y.Neg(), M13 = jacobian.Z.Neg() };
 
 
 

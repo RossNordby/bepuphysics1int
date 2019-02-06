@@ -38,7 +38,7 @@ namespace BEPUik
         /// </summary>
         public bool UseAutomass { get; set; }
 
-        private Fix64 automassUnstressedFalloff = (Fix64)0.9m;
+        private Fix64 automassUnstressedFalloff = (Fix64)0.9m.ToFix();
         /// <summary>
         /// Gets or sets the multiplier applied to the mass of a bone before distributing it to the child bones.
         /// Used only when UseAutomass is set to true.
@@ -252,7 +252,7 @@ namespace BEPUik
             //We distribute a portion of the current bone's total mass to the child bones.
             //By applying a multiplier automassUnstressedFalloff, we guarantee that a chain has a certain maximum weight (excluding cycles).
             //This is thanks to the convergent geometric series sum(automassUnstressedFalloff^n, 1, infinity).
-            Fix64 massPerChild = uniqueChildren.Count > 0 ? automassUnstressedFalloff * bone.Mass / uniqueChildren.Count : F64.C0;
+            Fix64 massPerChild = uniqueChildren.Count > 0 ? (automassUnstressedFalloff.Mul(bone.Mass)).Div(uniqueChildren.Count.ToFix()) : F64.C0;
 
             uniqueChildren.Clear();
             //(If the number of children is 0, then the only bones which can exist are either bones which were already traversed and will be skipped
@@ -341,7 +341,7 @@ namespace BEPUik
                 else
                 {
                     //The mass of stressed bones is a multiplier on the number of stressed paths overlapping the bone.
-                    bone.Mass = bone.stressCount;
+                    bone.Mass = bone.stressCount.ToFix();
                 }
                 //This bone is not an unstressed branch root. Continue the breadth first search!
                 foreach (var joint in bone.joints)
@@ -371,12 +371,13 @@ namespace BEPUik
                     lowestInverseMass = bone.inverseMass;
             }
 
-            Fix64 inverseMassScale = F64.C1 / (AutomassTarget * lowestInverseMass);
+            Fix64 inverseMassScale = F64.C1.Div((AutomassTarget.Mul(lowestInverseMass)));
 
             foreach (var bone in bones)
             {
-                //Normalize the mass to the AutomassTarget.
-                bone.inverseMass *= inverseMassScale;
+				//Normalize the mass to the AutomassTarget.
+				bone.inverseMass =
+bone.inverseMass.Mul(inverseMassScale);
 
                 //Also clear the traversal flags while we're at it.
                 bone.IsActive = false;

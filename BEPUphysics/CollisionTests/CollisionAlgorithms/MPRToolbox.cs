@@ -28,7 +28,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         /// </summary>
         public static int OuterIterationLimit = 15;
 
-        private static Fix64 surfaceEpsilon = (Fix64)1e-7m;
+        private static Fix64 surfaceEpsilon = (Fix64)1e-7m.ToFix();
         /// <summary>
         /// Gets or sets how close surface-finding based MPR methods have to get before exiting.
         /// Defaults to 1e-7.
@@ -48,7 +48,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
         }
 
-        private static Fix64 depthRefinementEpsilon = (Fix64)1e-4m;
+        private static Fix64 depthRefinementEpsilon = (Fix64)1e-4m.ToFix();
         /// <summary>
         /// Gets or sets how close the penetration depth refinement system should converge before quitting.
         /// Making this smaller can help more precisely find a local minimum at the cost of performance.
@@ -70,7 +70,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
         }
 
-        private static Fix64 rayCastSurfaceEpsilon = (Fix64)1e-9m;
+        private static Fix64 rayCastSurfaceEpsilon = (Fix64)1e-9m.ToFix();
         /// <summary>
         /// Gets or sets how close surface-finding ray casts have to get before exiting.
         /// Defaults to 1e-9.
@@ -196,7 +196,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Fix64 dotv0;
                 //Dot > 0, so dotv0 starts out negative.
                 Vector3.Dot(ref v0, ref originRay, out dotv0);
-                Fix64 barycentricCoordinate = -dotv0 / (dot - dotv0);
+                Fix64 barycentricCoordinate = (dotv0.Neg()).Div((dot.Sub(dotv0)));
                 //Vector3.Subtract(ref v1A, ref v0A, out offset); //'v0a' is just the zero vector, so there's no need to calculate the offset.
                 Vector3.Multiply(ref v1A, barycentricCoordinate, out position);
                 return true;
@@ -301,13 +301,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     Fix64 v0v1ov3volume;
                     Vector3.Dot(ref cross, ref temp3, out v0v1ov3volume);
 
-                    if (v0v1v2v3volume > Toolbox.Epsilon * F64.C0p01)
+                    if (v0v1v2v3volume > Toolbox.Epsilon.Mul(F64.C0p01))
                     {
-                        Fix64 inverseTotalVolume = F64.C1 / v0v1v2v3volume;
-                        Fix64 v0Weight = ov1v2v3volume * inverseTotalVolume;
-                        Fix64 v1Weight = v0ov2v3volume * inverseTotalVolume;
-                        Fix64 v2Weight = v0v1ov3volume * inverseTotalVolume;
-                        Fix64 v3Weight = F64.C1 - v0Weight - v1Weight - v2Weight;
+                        Fix64 inverseTotalVolume = F64.C1.Div(v0v1v2v3volume);
+                        Fix64 v0Weight = ov1v2v3volume.Mul(inverseTotalVolume);
+                        Fix64 v1Weight = v0ov2v3volume.Mul(inverseTotalVolume);
+                        Fix64 v2Weight = v0v1ov3volume.Mul(inverseTotalVolume);
+                        Fix64 v3Weight = ((F64.C1.Sub(v0Weight)).Sub(v1Weight)).Sub(v2Weight);
                         position = v1Weight * v1A + v2Weight * v2A + v3Weight * v3A;
                     }
                     else
@@ -333,7 +333,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                 //If the plane which generated the normal is very close to the extreme point, then we're at the surface
                 //and we have not found the origin; it's either just BARELY inside, or it is outside.  Assume it's outside.
-                if (dot2 - dot < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
+                if (dot2.Sub(dot) < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
                 {
                     position = new Vector3();
                     //DEBUGlastPosition = position;
@@ -555,7 +555,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                 //If the plane which generated the normal is very close to the extreme point, then we're at the surface
                 //and we have not found the origin; it's either just BARELY inside, or it is outside.  Assume it's outside.
-                if (dot2 - dot < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
+                if (dot2.Sub(dot) < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
                 {
                     return false;
                 }
@@ -643,7 +643,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
 
                 Fix64 rayLengthSquared = direction.LengthSquared();
-                if (rayLengthSquared > Toolbox.Epsilon * F64.C0p01)
+                if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
                     Vector3.Divide(ref direction, Fix64.Sqrt(rayLengthSquared), out normal);
                 else
                     normal = new Vector3();
@@ -653,7 +653,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Fix64 distance;
                 Vector3.Dot(ref  normal, ref v1, out distance);
                 if (rate > F64.C0)
-                    t = distance / rate;
+                    t = distance.Div(rate);
                 else
                     t = F64.C0;
                 return;
@@ -749,7 +749,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Fix64 supportDot;
                 Vector3.Dot(ref v4, ref n, out supportDot);
 
-                if (supportDot - dot < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
+                if (supportDot.Sub(dot) < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
                 {
                     //normal = n;
                     //Fix64 normalLengthInverse = 1 / normal.Length();
@@ -758,7 +758,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     //t = dot * normalLengthInverse;
 
                     Fix64 lengthSquared = n.LengthSquared();
-                    if (lengthSquared > Toolbox.Epsilon * F64.C0p01)
+                    if (lengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
                     {
                         Vector3.Divide(ref n, Fix64.Sqrt(lengthSquared), out normal);
 
@@ -768,7 +768,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                         //supportDot is the distance to the plane.
                         Vector3.Dot(ref normal, ref v1, out supportDot);
                         if (dot > F64.C0)
-                            t = supportDot / dot;
+                            t = supportDot.Div(dot);
                         else
                             t = F64.C0;
                     }
@@ -919,7 +919,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
 
                 Fix64 rayLengthSquared = direction.LengthSquared();
-                if (rayLengthSquared > Toolbox.Epsilon * F64.C0p01)
+                if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
                     Vector3.Divide(ref direction, Fix64.Sqrt(rayLengthSquared), out normal);
                 else
                     normal = new Vector3();
@@ -929,7 +929,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Fix64 distance;
                 Vector3.Dot(ref  normal, ref v1, out distance);
                 if (rate > F64.C0)
-                    t = distance / rate;
+                    t = distance.Div(rate);
                 else
                     t = F64.C0;
                 position = v1A;
@@ -1033,7 +1033,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Fix64 supportDot;
                 Vector3.Dot(ref v4, ref n, out supportDot);
 
-                if (supportDot - dot < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
+                if (supportDot.Sub(dot) < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
                 {
                     //normal = n;
                     //Fix64 normalLengthInverse = 1 / normal.Length();
@@ -1042,7 +1042,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     //t = dot * normalLengthInverse;
 
                     Fix64 lengthSquared = n.LengthSquared();
-                    if (lengthSquared > Toolbox.Epsilon * F64.C0p01)
+                    if (lengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
                     {
                         Vector3.Divide(ref n, Fix64.Sqrt(lengthSquared), out normal);
 
@@ -1052,7 +1052,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                         //supportDot is the distance to the plane.
                         Vector3.Dot(ref normal, ref v1, out supportDot);
                         if (dot > F64.C0)
-                            t = supportDot / dot;
+                            t = supportDot.Div(dot);
                         else
                             t = F64.C0;
                     }
@@ -1293,7 +1293,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
 
                 MPRToolbox.LocalSurfaceCast(shapeA, shapeB, ref localTransformB, ref refinedNormal, out candidateDepth, out candidateNormal, out position);
-                if (penetrationDepth - candidateDepth <= depthRefinementEpsilon ||
+                if (penetrationDepth.Sub(candidateDepth) <= depthRefinementEpsilon ||
                     ++optimizingCount >= maximumDepthRefinementIterations)
                 {
                     //If we've reached the end due to convergence, the normal will be extremely close to correct (if not 100% correct).
@@ -1367,12 +1367,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             Fix64 rayLengthSquared = localDirection.LengthSquared();
             Fix64 sweepLength;
-            if (rayLengthSquared > Toolbox.Epsilon * F64.C0p01)
+            if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
             {
                 Vector3.Dot(ref localTransformB.Position, ref localDirection, out sweepLength);
-                sweepLength /= rayLengthSquared;
-                //Scale the sweep length by the margins.  Divide by the length to pull the margin into terms of the length of the ray.
-                sweepLength += (shapeA.MaximumRadius + shapeB.MaximumRadius) / Fix64.Sqrt(rayLengthSquared);
+				sweepLength = sweepLength.Div(rayLengthSquared);
+				//Scale the sweep length by the margins.  Divide by the length to pull the margin into terms of the length of the ray.
+				sweepLength =
+sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64.Sqrt(rayLengthSquared)));
             }
             else
             {
@@ -1416,7 +1417,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             if (LocalSweepCast(shapeA, shapeB, sweepLength, rayLengthSquared, ref localDirection, ref sweep, ref localTransformB, out hit))
             {
                 //Compute the actual hit location on the minkowski surface.
-                Vector3 minkowskiRayHit = -hit.T * localDirection;
+                Vector3 minkowskiRayHit = hit.T.Neg() * localDirection;
                 //TODO: This uses MPR to identify a witness point on shape A.
                 //It's a very roundabout way to do it.  There should be a much simpler/faster way to compute the witness point directly, or with a little sampling. 
                 GetLocalPosition(shapeA, shapeB, ref localTransformB, ref minkowskiRayHit, out hit.Location);
@@ -1460,13 +1461,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 v2, v2A;
             Vector3.Cross(ref localDirection, ref v1, out n);
             hit.Location = new Vector3();
-            if (n.LengthSquared() < Toolbox.Epsilon * F64.C0p01)
+            if (n.LengthSquared() < Toolbox.Epsilon.Mul(F64.C0p01))
             {
                 //v1 and v0 could be parallel.
                 //This isn't a bad thing- it means the direction is exactly aligned with the extreme point offset.
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
 
-                if (rayLengthSquared > Toolbox.Epsilon * F64.C0p01)
+                if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
                     Vector3.Divide(ref localDirection, Fix64.Sqrt(rayLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
@@ -1476,7 +1477,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Fix64 distance;
                 Vector3.Dot(ref  hit.Normal, ref v1, out distance);
                 if (rate > F64.C0)
-                    hit.T = sweepLength - distance / rate;
+                    hit.T = sweepLength.Sub(distance.Div(rate));
                 else
                     hit.T = sweepLength;
 
@@ -1587,11 +1588,11 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Fix64 supportDot;
                 Vector3.Dot(ref v4, ref n, out supportDot);
 
-                if (supportDot - dot < rayCastSurfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
+                if (supportDot.Sub(dot) < rayCastSurfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
                 {
                     //The portal is now on the surface.  The algorithm can now compute the TOI and exit.
                     Fix64 lengthSquared = n.LengthSquared();
-                    if (lengthSquared > Toolbox.Epsilon * F64.C1em5)
+                    if (lengthSquared > Toolbox.Epsilon.Mul(F64.C1em5))
                     {
                         Vector3.Divide(ref n, Fix64.Sqrt(lengthSquared), out hit.Normal);
 
@@ -1602,7 +1603,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                         Vector3.Dot(ref  hit.Normal, ref v1, out supportDot);
 
 
-                        hit.T = sweepLength - supportDot / dot;
+                        hit.T = sweepLength.Sub(supportDot.Div(dot));
                     }
                     else
                     {
@@ -1750,7 +1751,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Fix64 dotv0 = Vector3.Dot(v0 - minkowskiPosition, rayDirection);
                 //Dot > 0, so dotv0 starts out negative.
                 //Vector3.Dot(ref v0, ref rayDirection, out dotv0);
-                Fix64 barycentricCoordinate = -dotv0 / (dot - dotv0);
+                Fix64 barycentricCoordinate = (dotv0.Neg()).Div((dot.Sub(dotv0)));
                 //Vector3.Subtract(ref v1A, ref v0A, out offset); //'v0a' is just the zero vector, so there's no need to calculate the offset.
                 Vector3.Multiply(ref v1A, barycentricCoordinate, out position);
                 Vector3 offset;
@@ -1898,7 +1899,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                 //If the plane which generated the normal is very close to the extreme point, then we're at the surface
                 //and we have not found the origin; it's either just BARELY inside, or it is outside.  Assume it's outside.
-                if (dot2 - dot < rayCastSurfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
+                if (dot2.Sub(dot) < rayCastSurfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
                 {
                     //We found the surface.  Technically, we did not find the minkowski point yet, but it must be really close based on the guarantees
                     //required by this method.
@@ -2023,7 +2024,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Fix64 dotv0;
                 //Dot > 0, so dotv0 starts out negative.
                 Vector3.Dot(ref v0, ref localTransformB.Position, out dotv0);
-                Fix64 barycentricCoordinate = -dotv0 / (dot - dotv0);
+                Fix64 barycentricCoordinate = (dotv0.Neg()).Div((dot.Sub(dotv0)));
                 //Vector3.Subtract(ref v1A, ref v0A, out offset); //'v0a' is just the zero vector, so there's no need to calculate the offset.
                 Vector3.Multiply(ref v1A, barycentricCoordinate, out position);
                 return true;
@@ -2129,11 +2130,11 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     Vector3.Dot(ref cross, ref temp3, out v0v1ov3volume);
 
 
-                    Fix64 inverseTotalVolume = F64.C1 / v0v1v2v3volume;
-                    Fix64 v0Weight = ov1v2v3volume * inverseTotalVolume;
-                    Fix64 v1Weight = v0ov2v3volume * inverseTotalVolume;
-                    Fix64 v2Weight = v0v1ov3volume * inverseTotalVolume;
-                    Fix64 v3Weight = F64.C1 - v0Weight - v1Weight - v2Weight;
+                    Fix64 inverseTotalVolume = F64.C1.Div(v0v1v2v3volume);
+                    Fix64 v0Weight = ov1v2v3volume.Mul(inverseTotalVolume);
+                    Fix64 v1Weight = v0ov2v3volume.Mul(inverseTotalVolume);
+                    Fix64 v2Weight = v0v1ov3volume.Mul(inverseTotalVolume);
+                    Fix64 v3Weight = ((F64.C1.Sub(v0Weight)).Sub(v1Weight)).Sub(v2Weight);
                     position = v1Weight * v1A + v2Weight * v2A + v3Weight * v3A;
                     //DEBUGlastPosition = position;
                     return true;
@@ -2156,7 +2157,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                 //If the plane which generated the normal is very close to the extreme point, then we're at the surface
                 //and we have not found the origin; it's either just BARELY inside, or it is outside.  Assume it's outside.
-                if (dot2 - dot < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
+                if (dot2.Sub(dot) < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
                 {
                     position = new Vector3();
                     //DEBUGlastPosition = position;
@@ -2275,9 +2276,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
                 //We can scoot ourselves almost all the way up to the intersection with the outer sphere.
                 //Stop just short to prevent a possible erroneous 'just-barely-contained' result.
-                sphereHit.T = MathHelper.Max(sphereHit.T - F64.C0p1, F64.C0);
+                sphereHit.T = MathHelper.Max(sphereHit.T.Sub(F64.C0p1), F64.C0);
                 Vector3 offset;
-                Vector3.Multiply(ref localRay.Direction, -sphereHit.T, out offset);
+                Vector3.Multiply(ref localRay.Direction, sphereHit.T.Neg(), out offset);
                 Vector3.Add(ref localRay.Position, ref offset, out localRay.Position);
             }
             else
@@ -2296,13 +2297,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             Fix64 rayLengthSquared = localRay.Direction.LengthSquared();
             Fix64 sweepLength;
-            if (rayLengthSquared > Toolbox.Epsilon * F64.C0p01)
+            if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
             {
                 Vector3.Dot(ref localRay.Position, ref localRay.Direction, out sweepLength);
-                //Ray length isn't necessarily normalized...
-                sweepLength /= rayLengthSquared;
-                //Scale the sweep length by the margins.  Divide by the length to pull the margin into terms of the length of the ray.
-                sweepLength += shape.MaximumRadius / Fix64.Sqrt(rayLengthSquared);
+				//Ray length isn't necessarily normalized...
+				sweepLength =
+sweepLength.Div(rayLengthSquared);
+				//Scale the sweep length by the margins.  Divide by the length to pull the margin into terms of the length of the ray.
+				sweepLength =
+sweepLength.Add(shape.MaximumRadius.Div(Fix64.Sqrt(rayLengthSquared)));
             }
             else
             {
@@ -2341,7 +2344,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //OKAY! We've finally finished all the pre-testing.  Cast the ray!
             if (LocalSweepCast(shape, sweepLength, rayLengthSquared, ref localRay.Direction, ref sweep, ref localRay.Position, out hit))
             {
-                hit.T += sphereHit.T;
+				hit.T = hit.T.Add(sphereHit.T);
                 if (hit.T <= maximumLength)
                 {
                     //Get the world space hit location.
@@ -2495,7 +2498,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                 //If the plane which generated the normal is very close to the extreme point, then we're at the surface
                 //and we have not found the origin; it's either just BARELY inside, or it is outside.  Assume it's outside.
-                if (dot2 - dot < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
+                if (dot2.Sub(dot) < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
                 {
                     //DEBUGlastPosition = position;
                     return false;
@@ -2567,13 +2570,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 v2;
             Vector3.Cross(ref localDirection, ref v1, out n);
             hit.Location = new Vector3();
-            if (n.LengthSquared() < Toolbox.Epsilon * F64.C0p01)
+            if (n.LengthSquared() < Toolbox.Epsilon.Mul(F64.C0p01))
             {
                 //v1 and v0 could be parallel.
                 //This isn't a bad thing- it means the direction is exactly aligned with the extreme point offset.
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
 
-                if (rayLengthSquared > Toolbox.Epsilon * F64.C0p01)
+                if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
                     Vector3.Divide(ref localDirection, Fix64.Sqrt(rayLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
@@ -2583,7 +2586,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Fix64 distance;
                 Vector3.Dot(ref  hit.Normal, ref v1, out distance);
                 if (rate > F64.C0)
-                    hit.T = sweepLength - distance / rate;
+                    hit.T = sweepLength.Sub(distance.Div(rate));
                 else
                     hit.T = sweepLength;
 
@@ -2689,11 +2692,11 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Fix64 supportDot;
                 Vector3.Dot(ref v4, ref n, out supportDot);
 
-                if (supportDot - dot < rayCastSurfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
+                if (supportDot.Sub(dot) < rayCastSurfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
                 {
                     //The portal is now on the surface.  The algorithm can now compute the TOI and exit.
                     Fix64 lengthSquared = n.LengthSquared();
-                    if (lengthSquared > Toolbox.Epsilon * F64.C1em5)
+                    if (lengthSquared > Toolbox.Epsilon.Mul(F64.C1em5))
                     {
                         Vector3.Divide(ref n, Fix64.Sqrt(lengthSquared), out hit.Normal);
 
@@ -2704,7 +2707,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                         Vector3.Dot(ref  hit.Normal, ref v1, out supportDot);
 
 
-                        hit.T = sweepLength - supportDot / dot;
+                        hit.T = sweepLength.Sub(supportDot.Div(dot));
                     }
                     else
                     {

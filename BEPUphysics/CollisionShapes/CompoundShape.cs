@@ -235,11 +235,11 @@ namespace BEPUphysics.CollisionShapes
             {
                 center += entries[i].LocalTransform.Position * entries[i].Weight;
                 volume += entries[i].Shape.Volume;
-                totalWeight += entries[i].Weight;
+				totalWeight = totalWeight.Add(entries[i].Weight);
             }
             if (totalWeight <= F64.C0)
                 throw new NotFiniteNumberException("Cannot compute distribution; the total weight of a compound shape must be positive.");
-            Fix64 totalWeightInverse = F64.C1 / totalWeight;
+            Fix64 totalWeightInverse = F64.C1.Div(totalWeight);
             totalWeightInverse.Validate();
             center *= totalWeightInverse;
 

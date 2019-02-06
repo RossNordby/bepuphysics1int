@@ -38,7 +38,7 @@ namespace BEPUutilities
 				}
 
 				// Divide row by pivot
-				Fix64 pivotInverse = F64.C1 / M[k, k];
+				Fix64 pivotInverse = F64.C1.Div(M[k, k]);
 
 				M[k, k] = F64.C1;
 				for (int j = k + 1; j < n; j++)
@@ -54,7 +54,7 @@ namespace BEPUutilities
 					Fix64 f = M[i, k];					
 					for (int j = k + 1; j < n; j++)
 					{
-						M[i, j] = M[i, j] - M[k, j] * f;
+						M[i, j] = M[i, j].Sub(M[k, j].Mul(f));
 					}
 					M[i, k] = F64.C0;
 				}

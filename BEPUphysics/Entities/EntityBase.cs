@@ -396,7 +396,7 @@ namespace BEPUphysics.Entities
                         //If it's already dynamic, then we don't need to recompute the inertia tensor.
                         //Instead, scale the one we have already.
                         Matrix3x3 newInertia;
-                        Matrix3x3.Multiply(ref localInertiaTensor, value * inverseMass, out newInertia);
+                        Matrix3x3.Multiply(ref localInertiaTensor, value.Mul(inverseMass), out newInertia);
                         BecomeDynamic(value, newInertia);
                     }
                     else
@@ -420,7 +420,7 @@ namespace BEPUphysics.Entities
             set
             {
                 if (value > F64.C0)
-                    Mass = F64.C1 / value;
+                    Mass = F64.C1.Div(value);
                 else
                     Mass = F64.C0;
             }
@@ -638,7 +638,7 @@ namespace BEPUphysics.Entities
 
             if (mass > F64.C0)
             {
-                BecomeDynamic(mass, collisionInformation.Shape.VolumeDistribution * (mass * InertiaHelper.InertiaTensorScale));
+                BecomeDynamic(mass, collisionInformation.Shape.VolumeDistribution * (mass.Mul(InertiaHelper.InertiaTensorScale)));
             }
             else
             {
@@ -735,9 +735,9 @@ namespace BEPUphysics.Entities
 #else
             Vector3 positionDifference = new Vector3();
 #endif
-            positionDifference.X = location.X - position.X;
-            positionDifference.Y = location.Y - position.Y;
-            positionDifference.Z = location.Z - position.Z;
+            positionDifference.X = location.X.Sub(position.X);
+            positionDifference.Y = location.Y.Sub(position.Y);
+            positionDifference.Z = location.Z.Sub(position.Z);
 
             Vector3 cross;
             Vector3.Cross(ref positionDifference, ref impulse, out cross);
@@ -756,9 +756,9 @@ namespace BEPUphysics.Entities
         /// <param name="impulse">Impulse to apply.</param>
         public void ApplyLinearImpulse(ref Vector3 impulse)
         {
-            linearVelocity.X += impulse.X * inverseMass;
-            linearVelocity.Y += impulse.Y * inverseMass;
-            linearVelocity.Z += impulse.Z * inverseMass;
+			linearVelocity.X = linearVelocity.X.Add(impulse.X.Mul(inverseMass));
+			linearVelocity.Y = linearVelocity.Y.Add(impulse.Y.Mul(inverseMass));
+			linearVelocity.Z = linearVelocity.Z.Add(impulse.Z.Mul(inverseMass));
             MathChecker.Validate(linearVelocity);
 
         }
@@ -771,7 +771,7 @@ namespace BEPUphysics.Entities
         /// <param name="impulse">Impulse to apply.</param>
         public void ApplyAngularImpulse(ref Vector3 impulse)
         {
-            //There's some room here for SIMD-friendliness.  However, since the phone doesn't accelerate non-XNA types, the matrix3x3 operations don't gain much.
+			//There's some room here for SIMD-friendliness.  However, since the phone doesn't accelerate non-XNA types, the matrix3x3 operations don't gain much.
 #if CONSERVE
             angularMomentum.X += impulse.X;
             angularMomentum.Y += impulse.Y;
@@ -782,9 +782,10 @@ namespace BEPUphysics.Entities
             
             MathChecker.Validate(angularMomentum);
 #else
-            angularVelocity.X += impulse.X * inertiaTensorInverse.M11 + impulse.Y * inertiaTensorInverse.M21 + impulse.Z * inertiaTensorInverse.M31;
-            angularVelocity.Y += impulse.X * inertiaTensorInverse.M12 + impulse.Y * inertiaTensorInverse.M22 + impulse.Z * inertiaTensorInverse.M32;
-            angularVelocity.Z += impulse.X * inertiaTensorInverse.M13 + impulse.Y * inertiaTensorInverse.M23 + impulse.Z * inertiaTensorInverse.M33;
+			angularVelocity.X =
+angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.Mul(inertiaTensorInverse.M21))).Add(impulse.Z.Mul(inertiaTensorInverse.M31)));
+			angularVelocity.Y = angularVelocity.Y.Add(((impulse.X.Mul(inertiaTensorInverse.M12)).Add(impulse.Y.Mul(inertiaTensorInverse.M22))).Add(impulse.Z.Mul(inertiaTensorInverse.M32)));
+			angularVelocity.Z = angularVelocity.Z.Add(((impulse.X.Mul(inertiaTensorInverse.M13)).Add(impulse.Y.Mul(inertiaTensorInverse.M23))).Add(impulse.Z.Mul(inertiaTensorInverse.M33)));
 #endif
 
             MathChecker.Validate(angularVelocity);
@@ -804,7 +805,7 @@ namespace BEPUphysics.Entities
                 activityInformation.Activate();
                 if (isDynamic)
                 {
-                    LocalInertiaTensor = collisionInformation.Shape.VolumeDistribution * (InertiaHelper.InertiaTensorScale * mass);
+                    LocalInertiaTensor = collisionInformation.Shape.VolumeDistribution * (InertiaHelper.InertiaTensorScale.Mul(mass));
                 }
                 else
                 {
@@ -854,7 +855,7 @@ namespace BEPUphysics.Entities
         ///<param name="mass">Mass to use for the entity.</param>
         public void BecomeDynamic(Fix64 mass)
         {
-            BecomeDynamic(mass, collisionInformation.Shape.VolumeDistribution * (mass * InertiaHelper.InertiaTensorScale));
+            BecomeDynamic(mass, collisionInformation.Shape.VolumeDistribution * (mass.Mul(InertiaHelper.InertiaTensorScale)));
         }
 
         ///<summary>
@@ -871,7 +872,7 @@ namespace BEPUphysics.Entities
             isDynamic = true;
             LocalInertiaTensor = localInertiaTensor;
             this.mass = mass;
-            this.inverseMass = F64.C1 / mass;
+            this.inverseMass = F64.C1.Div(mass);
 
             //Notify simulation island system of the change.
             if (!previousState)
@@ -916,29 +917,29 @@ namespace BEPUphysics.Entities
             if (activityInformation.DeactivationManager.useStabilization && activityInformation.allowStabilization &&
                 (activityInformation.isSlowing || activityInformation.velocityTimeBelowLimit > activityInformation.DeactivationManager.lowVelocityTimeMinimum))
             {
-                Fix64 energy = linearVelocity.LengthSquared() + angularVelocity.LengthSquared();
+                Fix64 energy = linearVelocity.LengthSquared().Add(angularVelocity.LengthSquared());
                 if (energy < activityInformation.DeactivationManager.velocityLowerLimitSquared)
                 {
-                    Fix64 boost = F64.C1 - Fix64.Sqrt(energy) / (F64.C2 * activityInformation.DeactivationManager.velocityLowerLimit);
+                    Fix64 boost = F64.C1.Sub(Fix64.Sqrt(energy).Div((F64.C2.Mul(activityInformation.DeactivationManager.velocityLowerLimit))));
                     ModifyAngularDamping(boost);
                     ModifyLinearDamping(boost);
                 }
             }
 
             //Damping
-            Fix64 linear = LinearDamping + linearDampingBoost;
+            Fix64 linear = LinearDamping.Add(linearDampingBoost);
             if (linear > F64.C0)
             {
-                Vector3.Multiply(ref linearVelocity, Fix64.Pow(MathHelper.Clamp(F64.C1 - linear, F64.C0, F64.C1), dt), out linearVelocity);
+                Vector3.Multiply(ref linearVelocity, Fix64.Pow(MathHelper.Clamp(F64.C1.Sub(linear), F64.C0, F64.C1), dt), out linearVelocity);
             }
             //When applying angular damping, the momentum or velocity is damped depending on the conservation setting.
-            Fix64 angular = AngularDamping + angularDampingBoost;
+            Fix64 angular = AngularDamping.Add(angularDampingBoost);
             if (angular > F64.C0)
             {
 #if CONSERVE
                 Vector3.Multiply(ref angularMomentum, Fix64.Pow(MathHelper.Clamp(1 - angular, 0, 1), dt), out angularMomentum);
 #else
-				Vector3.Multiply(ref angularVelocity, Fix64.Pow(MathHelper.Clamp(F64.C1 - angular, F64.C0, F64.C1), dt), out angularVelocity);
+				Vector3.Multiply(ref angularVelocity, Fix64.Pow(MathHelper.Clamp(F64.C1.Sub(angular), F64.C0, F64.C1), dt), out angularVelocity);
 #endif
             }
 
@@ -1093,7 +1094,7 @@ namespace BEPUphysics.Entities
             //That means we still need to update the linear motion.
 
             Vector3 increment;
-            Vector3.Multiply(ref linearVelocity, dt * minimumToi, out increment);
+            Vector3.Multiply(ref linearVelocity, dt.Mul(minimumToi), out increment);
             Vector3.Add(ref position, ref increment, out position);
 
             collisionInformation.UpdateWorldTransform(ref position, ref orientation);
@@ -1114,7 +1115,7 @@ namespace BEPUphysics.Entities
         {
             Vector3 increment;
 
-            Vector3.Multiply(ref angularVelocity, dt * F64.C0p5, out increment);
+            Vector3.Multiply(ref angularVelocity, dt.Mul(F64.C0p5), out increment);
             var multiplier = new Quaternion(increment.X, increment.Y, increment.Z, F64.C0);
             Quaternion.Multiply(ref multiplier, ref orientation, out multiplier);
             Quaternion.Add(ref orientation, ref multiplier, out orientation);
@@ -1150,8 +1151,8 @@ namespace BEPUphysics.Entities
 
 
         Fix64 linearDampingBoost, angularDampingBoost;
-        Fix64 angularDamping = (Fix64).15m;
-        Fix64 linearDamping = (Fix64).03m;
+        Fix64 angularDamping = (Fix64).15m.ToFix();
+        Fix64 linearDamping = (Fix64).03m.ToFix();
         ///<summary>
         /// Gets or sets the angular damping of the entity.
         /// Values range from 0 to 1, corresponding to a fraction of angular momentum removed
@@ -1193,9 +1194,9 @@ namespace BEPUphysics.Entities
         /// <param name="damping">Damping to add.</param>
         public void ModifyLinearDamping(Fix64 damping)
         {
-            Fix64 totalDamping = LinearDamping + linearDampingBoost;
-            Fix64 remainder = F64.C1 - totalDamping;
-            linearDampingBoost += damping * remainder;
+            Fix64 totalDamping = LinearDamping.Add(linearDampingBoost);
+            Fix64 remainder = F64.C1.Sub(totalDamping);
+			linearDampingBoost = linearDampingBoost.Add(damping.Mul(remainder));
         }
         /// <summary>
         /// Temporarily adjusts the angular damping by an amount.  After the value is used, the
@@ -1204,9 +1205,9 @@ namespace BEPUphysics.Entities
         /// <param name="damping">Damping to add.</param>
         public void ModifyAngularDamping(Fix64 damping)
         {
-            Fix64 totalDamping = AngularDamping + angularDampingBoost;
-            Fix64 remainder = F64.C1 - totalDamping;
-            angularDampingBoost += damping * remainder;
+            Fix64 totalDamping = AngularDamping.Add(angularDampingBoost);
+            Fix64 remainder = F64.C1.Sub(totalDamping);
+			angularDampingBoost = angularDampingBoost.Add(damping.Mul(remainder));
         }
 
         /// <summary>

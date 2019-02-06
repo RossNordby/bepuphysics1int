@@ -240,7 +240,7 @@ namespace BEPUutilities
 
         private static int GetExtremePoint(ref Vector3 direction, RawList<Vector3> points, RawList<int> outsidePoints)
         {
-            Fix64 maximumDot = -Fix64.MaxValue;
+            Fix64 maximumDot = Fix64.MaxValue.Neg();
             int extremeIndex = 0;
             for (int i = 0; i < outsidePoints.Count; ++i)
             {
@@ -287,7 +287,7 @@ namespace BEPUutilities
             int a, b, c, d;
             Vector3 direction;
             //Find the extreme points along the x axis.
-            Fix64 minimumX = Fix64.MaxValue, maximumX = -Fix64.MaxValue;
+            Fix64 minimumX = Fix64.MaxValue, maximumX = Fix64.MaxValue.Neg();
             int minimumXIndex = 0, maximumXIndex = 0;
             for (int i = 0; i < points.Count; ++i)
             {
@@ -322,7 +322,7 @@ namespace BEPUutilities
             Fix64 dot;
             Vector3.Dot(ref direction, ref points.Elements[a], out dot);
             //Use the point further from the axis.
-            if (Fix64.Abs(dot - minimumDot) > Fix64.Abs(dot - maximumDot))
+            if (Fix64.Abs(dot.Sub(minimumDot)) > Fix64.Abs(dot.Sub(maximumDot)))
             {
                 //In this case, we should use the minimum index.
                 c = minimumIndex;
@@ -346,7 +346,7 @@ namespace BEPUutilities
             //Compare the location of the extreme points to the location of the plane.
             Vector3.Dot(ref direction, ref points.Elements[a], out dot);
             //Use the point further from the plane. 
-            if (Fix64.Abs(dot - minimumDot) > Fix64.Abs(dot - maximumDot))
+            if (Fix64.Abs(dot.Sub(minimumDot)) > Fix64.Abs(dot.Sub(maximumDot)))
             {
                 //In this case, we should use the minimum index.
                 d = minimumIndex;

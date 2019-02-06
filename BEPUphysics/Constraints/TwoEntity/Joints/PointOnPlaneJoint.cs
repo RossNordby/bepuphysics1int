@@ -241,7 +241,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <param name="outputMassMatrix">Constraint's mass matrix.</param>
         public void GetMassMatrix(out Fix64 outputMassMatrix)
         {
-            outputMassMatrix = -negativeEffectiveMass;
+            outputMassMatrix = negativeEffectiveMass.Neg();
         }
 
         #endregion
@@ -269,8 +269,8 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             //if(velocityDifference > 0)
             //    Debug.WriteLine("Velocity difference: " + velocityDifference);
             //Debug.WriteLine("softness velocity: " + softness * accumulatedImpulse);
-            Fix64 lambda = negativeEffectiveMass * (velocityDifference + biasVelocity + softness * accumulatedImpulse);
-            accumulatedImpulse += lambda;
+            Fix64 lambda = negativeEffectiveMass.Mul(((velocityDifference.Add(biasVelocity)).Add(softness.Mul(accumulatedImpulse))));
+			accumulatedImpulse = accumulatedImpulse.Add(lambda);
 
             Vector3 impulse;
             Vector3 torque;
@@ -310,7 +310,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Fix64 pointDistance, planeDistance;
             Vector3.Dot(ref worldPointAnchor, ref worldPlaneNormal, out pointDistance);
             Vector3.Dot(ref worldPlaneAnchor, ref worldPlaneNormal, out planeDistance);
-            Fix64 distanceChange = planeDistance - pointDistance;
+            Fix64 distanceChange = planeDistance.Sub(pointDistance);
             Vector3 closestPointOnPlane;
             Vector3.Multiply(ref worldPlaneNormal, distanceChange, out closestPointOnPlane);
             Vector3.Add(ref closestPointOnPlane, ref worldPointAnchor, out closestPointOnPlane);
@@ -325,8 +325,8 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Subtract(ref worldPointAnchor, ref closestPointOnPlane, out offset);
             Vector3.Dot(ref offset, ref worldPlaneNormal, out error);
             Fix64 errorReduction;
-            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 / dt, out errorReduction, out softness);
-            biasVelocity = MathHelper.Clamp(-errorReduction * error, -maxCorrectiveVelocity, maxCorrectiveVelocity);
+            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReduction, out softness);
+            biasVelocity = MathHelper.Clamp((errorReduction.Neg()).Mul(error), maxCorrectiveVelocity.Neg(), maxCorrectiveVelocity);
 
             if (connectionA.IsDynamic && connectionB.IsDynamic)
             {
@@ -336,8 +336,8 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 Fix64 angularA, angularB;
                 Vector3.Dot(ref rAcrossN, ref IrACrossN, out angularA);
                 Vector3.Dot(ref rBcrossN, ref IrBCrossN, out angularB);
-                negativeEffectiveMass = connectionA.inverseMass + connectionB.inverseMass + angularA + angularB;
-                negativeEffectiveMass = -1 / (negativeEffectiveMass + softness);
+                negativeEffectiveMass = ((connectionA.inverseMass.Add(connectionB.inverseMass)).Add(angularA)).Add(angularB);
+                negativeEffectiveMass = (F64.C1.Neg()).Div((negativeEffectiveMass.Add(softness)));
             }
             else if (connectionA.IsDynamic && !connectionB.IsDynamic)
             {
@@ -345,8 +345,8 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 Matrix3x3.Transform(ref rAcrossN, ref connectionA.inertiaTensorInverse, out IrACrossN);
                 Fix64 angularA;
                 Vector3.Dot(ref rAcrossN, ref IrACrossN, out angularA);
-                negativeEffectiveMass = connectionA.inverseMass + angularA;
-                negativeEffectiveMass = -1 / (negativeEffectiveMass + softness);
+                negativeEffectiveMass = connectionA.inverseMass.Add(angularA);
+                negativeEffectiveMass = (F64.C1.Neg()).Div((negativeEffectiveMass.Add(softness)));
             }
             else if (!connectionA.IsDynamic && connectionB.IsDynamic)
             {
@@ -354,8 +354,8 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 Matrix3x3.Transform(ref rBcrossN, ref connectionB.inertiaTensorInverse, out IrBCrossN);
                 Fix64 angularB;
                 Vector3.Dot(ref rBcrossN, ref IrBCrossN, out angularB);
-                negativeEffectiveMass = connectionB.inverseMass + angularB;
-                negativeEffectiveMass = -1 / (negativeEffectiveMass + softness);
+                negativeEffectiveMass = connectionB.inverseMass.Add(angularB);
+                negativeEffectiveMass = (F64.C1.Neg()).Div((negativeEffectiveMass.Add(softness)));
             }
             else
                 negativeEffectiveMass = F64.C0;

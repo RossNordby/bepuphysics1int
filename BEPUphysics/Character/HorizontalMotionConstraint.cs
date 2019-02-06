@@ -67,7 +67,7 @@ namespace BEPUphysics.Character
         Fix64 maxForceDt;
         Fix64 maxAccelerationForceDt;
 
-        private Fix64 timeUntilPositionAnchor = (Fix64).2m;
+        private Fix64 timeUntilPositionAnchor = (Fix64).2m.ToFix();
 
         /// <summary>
         /// <para>Gets or sets the time it takes for the character to achieve stable footing after trying to stop moving.
@@ -290,8 +290,8 @@ namespace BEPUphysics.Character
 
             isTryingToMove = movementDirection3d.LengthSquared() > F64.C0;
 
-            maxForceDt = MaximumForce * dt;
-            maxAccelerationForceDt = MaximumAccelerationForce * dt;
+            maxForceDt = MaximumForce.Mul(dt);
+            maxAccelerationForceDt = MaximumAccelerationForce.Mul(dt);
 
 
             //Compute the jacobians.  This is basically a PointOnLineJoint with motorized degrees of freedom.
@@ -415,15 +415,15 @@ namespace BEPUphysics.Character
                 Matrix3x3 inertiaInverse = supportEntity.InertiaTensorInverse;
                 Matrix3x3.Multiply(ref inertiaInverse, supportForceFactor, out inertiaInverse);
                 Fix64 extra;
-                inverseMass = supportForceFactor * supportEntity.InverseMass;
+                inverseMass = supportForceFactor.Mul(supportEntity.InverseMass);
                 Matrix3x3.Transform(ref angularJacobianB1, ref inertiaInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref angularJacobianB1, out extra);
-                m11 += inverseMass + extra;
+				m11 = m11.Add(inverseMass.Add(extra));
                 Vector3.Dot(ref intermediate, ref angularJacobianB2, out extra);
-                m1221 += extra;
+				m1221 = m1221.Add(extra);
                 Matrix3x3.Transform(ref angularJacobianB2, ref inertiaInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref angularJacobianB2, out extra);
-                m22 += inverseMass + extra;
+				m22 = m22.Add(inverseMass.Add(extra));
 
 
                 massMatrix.M11 = m11;
@@ -459,13 +459,13 @@ namespace BEPUphysics.Character
                 var distanceToBottomOfCharacter = supportFinder.BottomDistance;
 
                 if (timeSinceTransition >= F64.C0 && timeSinceTransition < timeUntilPositionAnchor)
-                    timeSinceTransition += dt;
+					timeSinceTransition = timeSinceTransition.Add(dt);
                 if (timeSinceTransition >= timeUntilPositionAnchor)
                 {
                     Vector3.Multiply(ref downDirection, distanceToBottomOfCharacter, out positionLocalOffset);
                     positionLocalOffset = (positionLocalOffset + characterBody.Position) - supportEntity.Position;
                     positionLocalOffset = Matrix3x3.TransformTranspose(positionLocalOffset, supportEntity.OrientationMatrix);
-                    timeSinceTransition = -1; //Negative 1 means that the offset has been computed.
+                    timeSinceTransition = F64.C1.Neg(); //Negative 1 means that the offset has been computed.
                 }
                 if (timeSinceTransition < F64.C0)
                 {
@@ -476,7 +476,7 @@ namespace BEPUphysics.Character
                     Vector3 error;
                     Vector3.Subtract(ref targetPosition, ref worldSupportLocation, out error);
                     //If the error is too large, then recompute the offset.  We don't want the character rubber banding around.
-                    if (error.LengthSquared() > PositionAnchorDistanceThreshold * PositionAnchorDistanceThreshold)
+                    if (error.LengthSquared() > PositionAnchorDistanceThreshold.Mul(PositionAnchorDistanceThreshold))
                     {
                         Vector3.Multiply(ref downDirection, distanceToBottomOfCharacter, out positionLocalOffset);
                         positionLocalOffset = (positionLocalOffset + characterBody.Position) - supportEntity.Position;
@@ -491,7 +491,7 @@ namespace BEPUphysics.Character
                         Vector3.Dot(ref error, ref linearJacobianA1, out positionCorrectionBias.X);
                         Vector3.Dot(ref error, ref linearJacobianA2, out positionCorrectionBias.Y);
                         //Scale the error so that a portion of the error is resolved each frame.
-                        Vector2.Multiply(ref positionCorrectionBias, F64.C0p2 / dt, out positionCorrectionBias);
+                        Vector2.Multiply(ref positionCorrectionBias, F64.C0p2.Div(dt), out positionCorrectionBias);
                     }
                 }
             }
@@ -524,21 +524,22 @@ namespace BEPUphysics.Character
 #endif
             Fix64 x = accumulatedImpulse.X;
             Fix64 y = accumulatedImpulse.Y;
-            impulse.X = linearJacobianA1.X * x + linearJacobianA2.X * y;
-            impulse.Y = linearJacobianA1.Y * x + linearJacobianA2.Y * y;
-            impulse.Z = linearJacobianA1.Z * x + linearJacobianA2.Z * y;
+            impulse.X = (linearJacobianA1.X.Mul(x)).Add(linearJacobianA2.X.Mul(y));
+            impulse.Y = (linearJacobianA1.Y.Mul(x)).Add(linearJacobianA2.Y.Mul(y));
+            impulse.Z = (linearJacobianA1.Z.Mul(x)).Add(linearJacobianA2.Z.Mul(y));
 
             characterBody.ApplyLinearImpulse(ref impulse);
 
             if (supportEntity != null && supportEntity.IsDynamic)
             {
-                Vector3.Multiply(ref impulse, -supportForceFactor, out impulse);
+                Vector3.Multiply(ref impulse, supportForceFactor.Neg(), out impulse);
 
-                x *= supportForceFactor;
-                y *= supportForceFactor;
-                torque.X = x * angularJacobianB1.X + y * angularJacobianB2.X;
-                torque.Y = x * angularJacobianB1.Y + y * angularJacobianB2.Y;
-                torque.Z = x * angularJacobianB1.Z + y * angularJacobianB2.Z;
+				x =
+x.Mul(supportForceFactor);
+				y = y.Mul(supportForceFactor);
+                torque.X = (x.Mul(angularJacobianB1.X)).Add(y.Mul(angularJacobianB2.X));
+                torque.Y = (x.Mul(angularJacobianB1.Y)).Add(y.Mul(angularJacobianB2.Y));
+                torque.Z = (x.Mul(angularJacobianB1.Z)).Add(y.Mul(angularJacobianB2.Z));
 
 
                 supportEntity.ApplyLinearImpulse(ref impulse);
@@ -572,7 +573,7 @@ namespace BEPUphysics.Character
                 //The constraint is not permitted to slow down the character; only speed it up.
                 //This offers a hole for an exploit; by jumping and curving just right,
                 //the character can accelerate beyond its maximum speed.  A bit like an HL2 speed run.
-                accumulatedImpulse.X = MathHelper.Clamp(accumulatedImpulse.X + lambda.X, F64.C0, maxForceDt);
+                accumulatedImpulse.X = MathHelper.Clamp(accumulatedImpulse.X.Add(lambda.X), F64.C0, maxForceDt);
                 accumulatedImpulse.Y = F64.C0;
             }
             else
@@ -580,9 +581,9 @@ namespace BEPUphysics.Character
 
                 Vector2.Add(ref lambda, ref accumulatedImpulse, out accumulatedImpulse);
                 Fix64 length = accumulatedImpulse.LengthSquared();
-                if (length > maxForceDt * maxForceDt)
+                if (length > maxForceDt.Mul(maxForceDt))
                 {
-                    Vector2.Multiply(ref accumulatedImpulse, maxForceDt / Fix64.Sqrt(length), out accumulatedImpulse);
+                    Vector2.Multiply(ref accumulatedImpulse, maxForceDt.Div(Fix64.Sqrt(length)), out accumulatedImpulse);
                 }
                 if (isTryingToMove && accumulatedImpulse.X > maxAccelerationForceDt)
                 {
@@ -603,27 +604,28 @@ namespace BEPUphysics.Character
 #endif
             Fix64 x = lambda.X;
             Fix64 y = lambda.Y;
-            impulse.X = linearJacobianA1.X * x + linearJacobianA2.X * y;
-            impulse.Y = linearJacobianA1.Y * x + linearJacobianA2.Y * y;
-            impulse.Z = linearJacobianA1.Z * x + linearJacobianA2.Z * y;
+            impulse.X = (linearJacobianA1.X.Mul(x)).Add(linearJacobianA2.X.Mul(y));
+            impulse.Y = (linearJacobianA1.Y.Mul(x)).Add(linearJacobianA2.Y.Mul(y));
+            impulse.Z = (linearJacobianA1.Z.Mul(x)).Add(linearJacobianA2.Z.Mul(y));
 
             characterBody.ApplyLinearImpulse(ref impulse);
 
             if (supportEntity != null && supportEntity.IsDynamic)
             {
-                Vector3.Multiply(ref impulse, -supportForceFactor, out impulse);
+                Vector3.Multiply(ref impulse, supportForceFactor.Neg(), out impulse);
 
-                x *= supportForceFactor;
-                y *= supportForceFactor;
-                torque.X = x * angularJacobianB1.X + y * angularJacobianB2.X;
-                torque.Y = x * angularJacobianB1.Y + y * angularJacobianB2.Y;
-                torque.Z = x * angularJacobianB1.Z + y * angularJacobianB2.Z;
+				x =
+x.Mul(supportForceFactor);
+				y = y.Mul(supportForceFactor);
+                torque.X = (x.Mul(angularJacobianB1.X)).Add(y.Mul(angularJacobianB2.X));
+                torque.Y = (x.Mul(angularJacobianB1.Y)).Add(y.Mul(angularJacobianB2.Y));
+                torque.Z = (x.Mul(angularJacobianB1.Z)).Add(y.Mul(angularJacobianB2.Z));
 
                 supportEntity.ApplyLinearImpulse(ref impulse);
                 supportEntity.ApplyAngularImpulse(ref torque);
             }
 
-            return (Fix64.Abs(lambda.X) + Fix64.Abs(lambda.Y));
+            return (Fix64.Abs(lambda.X).Add(Fix64.Abs(lambda.Y)));
 
 
         }
@@ -654,12 +656,12 @@ namespace BEPUphysics.Character
                 {
                     Vector3.Dot(ref linearJacobianB1, ref supportEntity.linearVelocity, out x);
                     Vector3.Dot(ref linearJacobianB2, ref supportEntity.linearVelocity, out y);
-                    relativeVelocity.X += x;
-                    relativeVelocity.Y += y;
+					relativeVelocity.X = relativeVelocity.X.Add(x);
+					relativeVelocity.Y = relativeVelocity.Y.Add(y);
                     Vector3.Dot(ref angularJacobianB1, ref supportEntity.angularVelocity, out x);
                     Vector3.Dot(ref angularJacobianB2, ref supportEntity.angularVelocity, out y);
-                    relativeVelocity.X += x;
-                    relativeVelocity.Y += y;
+					relativeVelocity.X = relativeVelocity.X.Add(x);
+					relativeVelocity.Y = relativeVelocity.Y.Add(y);
 
                 }
                 return relativeVelocity;
@@ -701,9 +703,9 @@ namespace BEPUphysics.Character
             {
 
                 Vector3 impulse;
-                impulse.X = accumulatedImpulse.X * linearJacobianA1.X + accumulatedImpulse.Y * linearJacobianA2.X;
-                impulse.Y = accumulatedImpulse.X * linearJacobianA1.Y + accumulatedImpulse.Y * linearJacobianA2.Y;
-                impulse.Z = accumulatedImpulse.X * linearJacobianA1.Z + accumulatedImpulse.Y * linearJacobianA2.Z;
+                impulse.X = (accumulatedImpulse.X.Mul(linearJacobianA1.X)).Add(accumulatedImpulse.Y.Mul(linearJacobianA2.X));
+                impulse.Y = (accumulatedImpulse.X.Mul(linearJacobianA1.Y)).Add(accumulatedImpulse.Y.Mul(linearJacobianA2.Y));
+                impulse.Z = (accumulatedImpulse.X.Mul(linearJacobianA1.Z)).Add(accumulatedImpulse.Y.Mul(linearJacobianA2.Z));
                 return impulse;
             }
         }

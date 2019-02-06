@@ -33,13 +33,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3.Subtract(ref triangle.vC, ref triangle.vA, out ac);
             Vector3 triangleNormal;
             Vector3.Cross(ref ab, ref ac, out triangleNormal);
-            if (triangleNormal.LengthSquared() < Toolbox.Epsilon * F64.C0p01)
+            if (triangleNormal.LengthSquared() < Toolbox.Epsilon.Mul(F64.C0p01))
             {
                 //If the triangle is degenerate, use the offset between its center and the sphere.
                 Vector3.Add(ref triangle.vA, ref triangle.vB, out triangleNormal);
                 Vector3.Add(ref triangleNormal, ref triangle.vC, out triangleNormal);
                 Vector3.Multiply(ref triangleNormal, F64.OneThird, out triangleNormal);
-                if (triangleNormal.LengthSquared() < Toolbox.Epsilon * F64.C0p01)
+                if (triangleNormal.LengthSquared() < Toolbox.Epsilon.Mul(F64.C0p01))
                     triangleNormal = Toolbox.UpVector; //Alrighty then! Pick a random direction.
                     
             }
@@ -70,9 +70,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //there is a little extra possible optimization.
             lastRegion = Toolbox.GetClosestPointOnTriangleToPoint(ref triangle.vA, ref triangle.vB, ref triangle.vC, ref Toolbox.ZeroVector, out closestPoint);
             Fix64 lengthSquared = closestPoint.LengthSquared();
-            Fix64 marginSum = triangle.collisionMargin + sphere.collisionMargin;
+            Fix64 marginSum = triangle.collisionMargin.Add(sphere.collisionMargin);
 
-            if (lengthSquared <= marginSum * marginSum)
+            if (lengthSquared <= marginSum.Mul(marginSum))
             {
                 var contact = new ContactData();
                 if (lengthSquared < Toolbox.Epsilon)
@@ -88,7 +88,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                 lengthSquared = Fix64.Sqrt(lengthSquared);
                 Vector3.Divide(ref closestPoint, lengthSquared, out contact.Normal);
-                contact.PenetrationDepth = marginSum - lengthSquared;
+                contact.PenetrationDepth = marginSum.Sub(lengthSquared);
                 contact.Position = closestPoint;
                 contactList.Add(ref contact);
                 return true;

@@ -8,10 +8,10 @@ namespace BEPUbenchmark.Benchmarks
 	{
 		protected override void InitializeSpace()
 		{
-			Fix64 boxSize = 2;
+			Fix64 boxSize = 2.ToFix();
 			int boxCount = 20;
-			Fix64 platformLength = MathHelper.Min(50, boxCount * boxSize + 10);
-			Space.Add(new Box(new Vector3(0, -.5m, 0), boxCount * boxSize + 20, 1,
+			Fix64 platformLength = MathHelper.Min(50.ToFix(), (boxCount.ToFix().Mul(boxSize)).Add(10.ToFix()));
+			Space.Add(new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), (boxCount.ToFix().Mul(boxSize)).Add(20.ToFix()), 1.ToFix(),
 							  platformLength));
 
 			for (int i = 0; i < boxCount; i++)
@@ -20,31 +20,31 @@ namespace BEPUbenchmark.Benchmarks
 				{
 					Space.Add(new Box(
 								  new Vector3(
-									  -boxCount * boxSize / 2 + boxSize / 2 * i + j * (boxSize),
-									  (boxSize / 2) + i * boxSize,
-									  0),
-								  boxSize, boxSize, boxSize, 20));
+((((-boxCount).ToFix().Mul(boxSize)).Div(2.ToFix())).Add((boxSize.Div(2.ToFix())).Mul(i.ToFix()))).Add(j.ToFix().Mul((boxSize))),
+(boxSize.Div(2.ToFix())).Add(i.ToFix().Mul(boxSize)),
+									  0.ToFix()),
+								  boxSize, boxSize, boxSize, 20.ToFix()));
 				}
 			}
 			//Down here are the 'destructors' used to blow up the pyramid.
 
-			Sphere pow = new Sphere(new Vector3(-25, 5, 70), 2, 40);
-			pow.LinearVelocity = new Vector3(0, 10, -100);
+			Sphere pow = new Sphere(new Vector3((-25).ToFix(), 5.ToFix(), 70.ToFix()), 2.ToFix(), 40.ToFix());
+			pow.LinearVelocity = new Vector3(0.ToFix(), 10.ToFix(), (-100).ToFix());
 			Space.Add(pow);
-			pow = new Sphere(new Vector3(-15, 10, 70), 2, 40);
-			pow.LinearVelocity = new Vector3(0, 10, -100);
+			pow = new Sphere(new Vector3((-15).ToFix(), 10.ToFix(), 70.ToFix()), 2.ToFix(), 40.ToFix());
+			pow.LinearVelocity = new Vector3(0.ToFix(), 10.ToFix(), (-100).ToFix());
 			Space.Add(pow);
-			pow = new Sphere(new Vector3(-5, 15, 70), 2, 40);
-			pow.LinearVelocity = new Vector3(0, 10, -100);
+			pow = new Sphere(new Vector3((-5).ToFix(), 15.ToFix(), 70.ToFix()), 2.ToFix(), 40.ToFix());
+			pow.LinearVelocity = new Vector3(0.ToFix(), 10.ToFix(), (-100).ToFix());
 			Space.Add(pow);
-			pow = new Sphere(new Vector3(5, 15, 70), 2, 40);
-			pow.LinearVelocity = new Vector3(0, 10, -100);
+			pow = new Sphere(new Vector3(5.ToFix(), 15.ToFix(), 70.ToFix()), 2.ToFix(), 40.ToFix());
+			pow.LinearVelocity = new Vector3(0.ToFix(), 10.ToFix(), (-100).ToFix());
 			Space.Add(pow);
-			pow = new Sphere(new Vector3(15, 10, 70), 2, 40);
-			pow.LinearVelocity = new Vector3(0, 10, -100);
+			pow = new Sphere(new Vector3(15.ToFix(), 10.ToFix(), 70.ToFix()), 2.ToFix(), 40.ToFix());
+			pow.LinearVelocity = new Vector3(0.ToFix(), 10.ToFix(), (-100).ToFix());
 			Space.Add(pow);
-			pow = new Sphere(new Vector3(25, 5, 70), 2, 40);
-			pow.LinearVelocity = new Vector3(0, 10, -100);
+			pow = new Sphere(new Vector3(25.ToFix(), 5.ToFix(), 70.ToFix()), 2.ToFix(), 40.ToFix());
+			pow.LinearVelocity = new Vector3(0.ToFix(), 10.ToFix(), (-100).ToFix());
 			Space.Add(pow);
 		}
 	}

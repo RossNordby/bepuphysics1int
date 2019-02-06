@@ -251,13 +251,15 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 BoundingBox.CreateMerged(ref boundingBox, ref toMerge, out boundingBox);
             }
 
-            boundingBox.Min.X -= collisionMargin;
-            boundingBox.Min.Y -= collisionMargin;
-            boundingBox.Min.Z -= collisionMargin;
+			boundingBox.Min.X =
+boundingBox.Min.X.Sub(collisionMargin);
+			boundingBox.Min.Y = boundingBox.Min.Y.Sub(collisionMargin);
+			boundingBox.Min.Z = boundingBox.Min.Z.Sub(collisionMargin);
 
-            boundingBox.Max.X += collisionMargin;
-            boundingBox.Max.Y += collisionMargin;
-            boundingBox.Max.Z += collisionMargin;
+			boundingBox.Max.X =
+boundingBox.Max.X.Add(collisionMargin);
+			boundingBox.Max.Y = boundingBox.Max.Y.Add(collisionMargin);
+			boundingBox.Max.Z = boundingBox.Max.Z.Add(collisionMargin);
         }
 
 
@@ -299,12 +301,11 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             Fix64 maxRadius = F64.C0;
             for (int i = 0; i < shapes.Count; i++)
             {
-                Fix64 radius = shapes.WrappedList.Elements[i].CollisionShape.MaximumRadius +
-                               shapes.WrappedList.Elements[i].Transform.Position.Length();
+                Fix64 radius = shapes.WrappedList.Elements[i].CollisionShape.MaximumRadius.Add(shapes.WrappedList.Elements[i].Transform.Position.Length());
                 if (radius > maxRadius)
                     maxRadius = radius;
             }
-            return maxRadius + collisionMargin;
+            return maxRadius.Add(collisionMargin);
         }
         /// <summary>
         /// Computes the minimum radius of the shape.
@@ -322,7 +323,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 if (radius < minRadius)
                     minRadius = radius;
             }
-            return minRadius + collisionMargin;
+            return minRadius.Add(collisionMargin);
         }
 
         /// <summary>

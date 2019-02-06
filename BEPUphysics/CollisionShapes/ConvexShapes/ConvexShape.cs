@@ -93,7 +93,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 			Fix64 directionLength = direction.LengthSquared();
             if (directionLength > Toolbox.Epsilon)
             {
-                Vector3.Multiply(ref direction, collisionMargin / Fix64.Sqrt(directionLength), out direction);
+                Vector3.Multiply(ref direction, collisionMargin.Div(Fix64.Sqrt(directionLength)), out direction);
                 Vector3.Add(ref extremePoint, ref direction, out extremePoint);
             }
 
@@ -111,7 +111,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 			Fix64 directionLength = direction.LengthSquared();
             if (directionLength > Toolbox.Epsilon)
             {
-                Vector3.Multiply(ref direction, collisionMargin / Fix64.Sqrt(directionLength), out direction);
+                Vector3.Multiply(ref direction, collisionMargin.Div(Fix64.Sqrt(directionLength)), out direction);
                 Vector3.Add(ref extremePoint, ref direction, out extremePoint);
             }
         }
@@ -137,7 +137,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             GetLocalExtremePointWithoutMargin(ref direction, out right);
 
             Vector3 left;
-            direction = new Vector3(-o.M11, -o.M21, -o.M31);
+            direction = new Vector3(o.M11.Neg(), o.M21.Neg(), o.M31.Neg());
             GetLocalExtremePointWithoutMargin(ref direction, out left);
 
             Vector3 up;
@@ -145,7 +145,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             GetLocalExtremePointWithoutMargin(ref direction, out up);
 
             Vector3 down;
-            direction = new Vector3(-o.M12, -o.M22, -o.M32);
+            direction = new Vector3(o.M12.Neg(), o.M22.Neg(), o.M32.Neg());
             GetLocalExtremePointWithoutMargin(ref direction, out down);
 
             Vector3 backward;
@@ -153,7 +153,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             GetLocalExtremePointWithoutMargin(ref direction, out backward);
 
             Vector3 forward;
-            direction = new Vector3(-o.M13, -o.M23, -o.M33);
+            direction = new Vector3(o.M13.Neg(), o.M23.Neg(), o.M33.Neg());
             GetLocalExtremePointWithoutMargin(ref direction, out forward);
 
 
@@ -163,13 +163,13 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             TransformLocalExtremePoints(ref left, ref down, ref forward, ref o, out negative);
 
             //The positive and negative vectors represent the X, Y and Z coordinates of the extreme points in world space along the world space axes.
-            boundingBox.Max.X = shapeTransform.Position.X + positive.X + collisionMargin;
-            boundingBox.Max.Y = shapeTransform.Position.Y + positive.Y + collisionMargin;
-            boundingBox.Max.Z = shapeTransform.Position.Z + positive.Z + collisionMargin;
+            boundingBox.Max.X = (shapeTransform.Position.X.Add(positive.X)).Add(collisionMargin);
+            boundingBox.Max.Y = (shapeTransform.Position.Y.Add(positive.Y)).Add(collisionMargin);
+            boundingBox.Max.Z = (shapeTransform.Position.Z.Add(positive.Z)).Add(collisionMargin);
 
-            boundingBox.Min.X = shapeTransform.Position.X + negative.X - collisionMargin;
-            boundingBox.Min.Y = shapeTransform.Position.Y + negative.Y - collisionMargin;
-            boundingBox.Min.Z = shapeTransform.Position.Z + negative.Z - collisionMargin;
+            boundingBox.Min.X = (shapeTransform.Position.X.Add(negative.X)).Sub(collisionMargin);
+            boundingBox.Min.Y = (shapeTransform.Position.Y.Add(negative.Y)).Sub(collisionMargin);
+            boundingBox.Min.Z = (shapeTransform.Position.Z.Add(negative.Z)).Sub(collisionMargin);
 
         }
 
@@ -246,7 +246,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             GetLocalExtremePoint(direction, out right);
 
             Vector3 left;
-            direction = new Vector3(-transform.LinearTransform.M11, -transform.LinearTransform.M21, -transform.LinearTransform.M31);
+            direction = new Vector3(transform.LinearTransform.M11.Neg(), transform.LinearTransform.M21.Neg(), transform.LinearTransform.M31.Neg());
             GetLocalExtremePoint(direction, out left);
 
             Vector3 up;
@@ -254,7 +254,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             GetLocalExtremePoint(direction, out up);
 
             Vector3 down;
-            direction = new Vector3(-transform.LinearTransform.M12, -transform.LinearTransform.M22, -transform.LinearTransform.M32);
+            direction = new Vector3(transform.LinearTransform.M12.Neg(), transform.LinearTransform.M22.Neg(), transform.LinearTransform.M32.Neg());
             GetLocalExtremePoint(direction, out down);
 
             Vector3 backward;
@@ -262,7 +262,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             GetLocalExtremePoint(direction, out backward);
 
             Vector3 forward;
-            direction = new Vector3(-transform.LinearTransform.M13, -transform.LinearTransform.M23, -transform.LinearTransform.M33);
+            direction = new Vector3(transform.LinearTransform.M13.Neg(), transform.LinearTransform.M23.Neg(), transform.LinearTransform.M33.Neg());
             GetLocalExtremePoint(direction, out forward);
 
             //Rather than transforming each axis independently (and doing three times as many operations as required), just get the 6 required values directly.
@@ -271,13 +271,13 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             TransformLocalExtremePoints(ref left, ref down, ref forward, ref transform.LinearTransform, out negative);
 
             //The positive and negative vectors represent the X, Y and Z coordinates of the extreme points in world space along the world space axes.
-            boundingBox.Max.X = transform.Translation.X + positive.X;
-            boundingBox.Max.Y = transform.Translation.Y + positive.Y;
-            boundingBox.Max.Z = transform.Translation.Z + positive.Z;
+            boundingBox.Max.X = transform.Translation.X.Add(positive.X);
+            boundingBox.Max.Y = transform.Translation.Y.Add(positive.Y);
+            boundingBox.Max.Z = transform.Translation.Z.Add(positive.Z);
 
-            boundingBox.Min.X = transform.Translation.X + negative.X;
-            boundingBox.Min.Y = transform.Translation.Y + negative.Y;
-            boundingBox.Min.Z = transform.Translation.Z + negative.Z;
+            boundingBox.Min.X = transform.Translation.X.Add(negative.X);
+            boundingBox.Min.Y = transform.Translation.Y.Add(negative.Y);
+            boundingBox.Min.Z = transform.Translation.Z.Add(negative.Z);
         }
 
 

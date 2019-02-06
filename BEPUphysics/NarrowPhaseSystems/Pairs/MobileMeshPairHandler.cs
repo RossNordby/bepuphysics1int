@@ -163,9 +163,9 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                 Vector3.Multiply(ref velocity, dt, out velocity);
                 Fix64 velocitySquared = velocity.LengthSquared();
 
-                var minimumRadius = convex.Shape.MinimumRadius * MotionSettings.CoreShapeScaling;
+                var minimumRadius = convex.Shape.MinimumRadius.Mul(MotionSettings.CoreShapeScaling);
                 timeOfImpact = F64.C1;
-                if (minimumRadius * minimumRadius < velocitySquared)
+                if (minimumRadius.Mul(minimumRadius) < velocitySquared)
                 {
                     TriangleSidedness sidedness = mobileMesh.Shape.Sidedness;
                     Matrix3x3 orientation;

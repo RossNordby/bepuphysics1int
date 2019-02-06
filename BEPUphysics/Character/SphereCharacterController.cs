@@ -51,7 +51,7 @@ namespace BEPUphysics.Character
         /// </summary>
         private CharacterPairLocker PairLocker { get; set; }
 
-        private Vector3 down = new Vector3(F64.C0, -1, F64.C0);
+        private Vector3 down = new Vector3(F64.C0, F64.C1.Neg(), F64.C0);
         /// <summary>
         /// Gets or sets the down direction of the character. Controls the interpretation of movement and support finding.
         /// </summary>
@@ -71,7 +71,7 @@ namespace BEPUphysics.Character
             }
         }
 
-        Vector3 viewDirection = new Vector3(F64.C0, F64.C0, -1);
+        Vector3 viewDirection = new Vector3(F64.C0, F64.C0, F64.C1.Neg());
 
         /// <summary>
         /// Gets or sets the view direction associated with the character.
@@ -301,31 +301,31 @@ namespace BEPUphysics.Character
             Fix64? maximumGlueForce = null)
         {
 			if (radius == null)
-				radius = (Fix64).85m;
+				radius = (Fix64).85m.ToFix();
 			if (mass == null)
-				mass = 10;
+				mass = 10.ToFix();
 			if (maximumTractionSlope == null)
-				maximumTractionSlope = (Fix64)0.8m;
+				maximumTractionSlope = (Fix64)0.8m.ToFix();
 			if (maximumSupportSlope == null)
-				maximumSupportSlope = (Fix64)1.3m;
+				maximumSupportSlope = (Fix64)1.3m.ToFix();
 			if (speed == null)
-				speed = 8;
+				speed = 8.ToFix();
 			if (tractionForce == null)
-				tractionForce = 1000;
+				tractionForce = 1000.ToFix();
 			if (slidingSpeed == null)
-				slidingSpeed = 6;
+				slidingSpeed = 6.ToFix();
 			if (slidingForce == null)
-				slidingForce = 50;
+				slidingForce = 50.ToFix();
 			if (airSpeed == null)
-				airSpeed = 1;
+				airSpeed = 1.ToFix();
 			if (airForce == null)
-				airForce = 250;
-			if (jumpSpeed == 0)
-				jumpSpeed = (Fix64)4.5m;
+				airForce = 250.ToFix();
+			if (jumpSpeed == 0.ToFix())
+				jumpSpeed = (Fix64)4.5m.ToFix();
 			if (slidingJumpSpeed == null)
-				slidingJumpSpeed = 3;
+				slidingJumpSpeed = 3.ToFix();
 			if (maximumGlueForce == null)
-				maximumGlueForce = 5000;
+				maximumGlueForce = 5000.ToFix();
 
 			Body = new Sphere(position, (Fix64)radius, (Fix64)mass);
             Body.IgnoreShapeChanges = true; //Wouldn't want inertia tensor recomputations to occur if the shape changes.
@@ -340,7 +340,7 @@ namespace BEPUphysics.Character
             QueryManager = new QueryManager(Body, ContactCategorizer);
             SupportFinder = new SupportFinder(Body, QueryManager, ContactCategorizer);
             HorizontalMotionConstraint = new HorizontalMotionConstraint(Body, SupportFinder);
-            HorizontalMotionConstraint.PositionAnchorDistanceThreshold = (Fix64)(3m / 17m) * (Fix64)radius;
+            HorizontalMotionConstraint.PositionAnchorDistanceThreshold = ((Fix64)(3m / 17m).ToFix()).Mul((Fix64)radius);
             VerticalMotionConstraint = new VerticalMotionConstraint(Body, SupportFinder, (Fix64)maximumGlueForce);
             PairLocker = new CharacterPairLocker(Body);
 
@@ -385,17 +385,17 @@ namespace BEPUphysics.Character
                 Vector3 expansion = SupportFinder.MaximumAssistedDownStepHeight * down;
                 BoundingBox box = Body.CollisionInformation.BoundingBox;
                 if (down.X < F64.C0)
-                    box.Min.X += expansion.X;
+					box.Min.X = box.Min.X.Add(expansion.X);
                 else
-                    box.Max.X += expansion.X;
+					box.Max.X = box.Max.X.Add(expansion.X);
                 if (down.Y < F64.C0)
-                    box.Min.Y += expansion.Y;
+					box.Min.Y = box.Min.Y.Add(expansion.Y);
                 else
-                    box.Max.Y += expansion.Y;
+					box.Max.Y = box.Max.Y.Add(expansion.Y);
                 if (down.Z < F64.C0)
-                    box.Min.Z += expansion.Z;
+					box.Min.Z = box.Min.Z.Add(expansion.Z);
                 else
-                    box.Max.Z += expansion.Z;
+					box.Max.Z = box.Max.Z.Add(expansion.Z);
                 Body.CollisionInformation.BoundingBox = box;
             }
 
@@ -449,8 +449,8 @@ namespace BEPUphysics.Character
                         Fix64 currentDownVelocity;
                         Vector3.Dot(ref down, ref relativeVelocity, out currentDownVelocity);
                         //Target velocity is JumpSpeed.
-                        Fix64 velocityChange = MathHelper.Max(jumpSpeed + currentDownVelocity, F64.C0);
-                        ApplyJumpVelocity(ref supportData, down * -velocityChange, ref relativeVelocity);
+                        Fix64 velocityChange = MathHelper.Max(jumpSpeed.Add(currentDownVelocity), F64.C0);
+                        ApplyJumpVelocity(ref supportData, down * velocityChange.Neg(), ref relativeVelocity);
 
 
                         //Prevent any old contacts from hanging around and coming back with a negative depth.
@@ -464,8 +464,8 @@ namespace BEPUphysics.Character
                         //The character does not have traction, so jump along the surface normal instead.
                         Fix64 currentNormalVelocity = Vector3.Dot(supportData.Normal, relativeVelocity);
                         //Target velocity is JumpSpeed.
-                        Fix64 velocityChange = MathHelper.Max(slidingJumpSpeed - currentNormalVelocity, F64.C0);
-                        ApplyJumpVelocity(ref supportData, supportData.Normal * -velocityChange, ref relativeVelocity);
+                        Fix64 velocityChange = MathHelper.Max(slidingJumpSpeed.Sub(currentNormalVelocity), F64.C0);
+                        ApplyJumpVelocity(ref supportData, supportData.Normal * velocityChange.Neg(), ref relativeVelocity);
 
                         //Prevent any old contacts from hanging around and coming back with a negative depth.
                         foreach (var pair in Body.CollisionInformation.Pairs)
@@ -510,7 +510,7 @@ namespace BEPUphysics.Character
                 HorizontalMotionConstraint.TargetSpeed = airSpeed;
                 HorizontalMotionConstraint.MaximumForce = airForce;
             }
-            HorizontalMotionConstraint.TargetSpeed *= SpeedScale;
+			HorizontalMotionConstraint.TargetSpeed = HorizontalMotionConstraint.TargetSpeed.Mul(SpeedScale);
 
 
 
@@ -568,7 +568,7 @@ namespace BEPUphysics.Character
                     entityCollidable.Entity.Locker.Enter();
                     try
                     {
-                        entityCollidable.Entity.LinearMomentum += change * -Body.Mass;
+                        entityCollidable.Entity.LinearMomentum += change * Body.Mass.Neg();
                     }
                     finally
                     {

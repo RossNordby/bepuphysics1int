@@ -212,11 +212,11 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
                     Fix64 lambda, dot;
                     Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out lambda);
                     Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
-                    lambda += dot;
+					lambda = lambda.Add(dot);
                     Vector3.Dot(ref jLinearB, ref connectionB.linearVelocity, out dot);
-                    lambda += dot;
+					lambda = lambda.Add(dot);
                     Vector3.Dot(ref jAngularB, ref connectionB.angularVelocity, out dot);
-                    lambda += dot;
+					lambda = lambda.Add(dot);
                     return lambda;
                 }
                 return F64.C0;
@@ -302,25 +302,26 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
             Fix64 lambda, dot;
             Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out lambda);
             Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
-            lambda += dot;
+			lambda = lambda.Add(dot);
             Vector3.Dot(ref jLinearB, ref connectionB.linearVelocity, out dot);
-            lambda += dot;
+			lambda = lambda.Add(dot);
             Vector3.Dot(ref jAngularB, ref connectionB.angularVelocity, out dot);
-            lambda += dot;
+			lambda = lambda.Add(dot);
 
             //Add in the constraint space bias velocity
-            lambda = -lambda + biasVelocity - softness * accumulatedImpulse;
+            lambda = ((lambda.Neg()).Add(biasVelocity)).Sub(softness.Mul(accumulatedImpulse));
 
-            //Transform to an impulse
-            lambda *= massMatrix;
+			//Transform to an impulse
+			lambda =
+lambda.Mul(massMatrix);
 
             //Clamp accumulated impulse (can't go negative)
             Fix64 previousAccumulatedImpulse = accumulatedImpulse;
             if (unadjustedError < F64.C0)
-                accumulatedImpulse = MathHelper.Min(accumulatedImpulse + lambda, F64.C0);
+                accumulatedImpulse = MathHelper.Min(accumulatedImpulse.Add(lambda), F64.C0);
             else
-                accumulatedImpulse = MathHelper.Max(accumulatedImpulse + lambda, F64.C0);
-            lambda = accumulatedImpulse - previousAccumulatedImpulse;
+                accumulatedImpulse = MathHelper.Max(accumulatedImpulse.Add(lambda), F64.C0);
+            lambda = accumulatedImpulse.Sub(previousAccumulatedImpulse);
 
             //Apply the impulse
             Vector3 impulse;
@@ -362,17 +363,17 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
 #else
             Vector3 separation;
 #endif
-            separation.X = worldAnchorB.X - worldAnchorA.X;
-            separation.Y = worldAnchorB.Y - worldAnchorA.Y;
-            separation.Z = worldAnchorB.Z - worldAnchorA.Z;
+            separation.X = worldAnchorB.X.Sub(worldAnchorA.X);
+            separation.Y = worldAnchorB.Y.Sub(worldAnchorA.Y);
+            separation.Z = worldAnchorB.Z.Sub(worldAnchorA.Z);
 
             Vector3.Dot(ref separation, ref worldAxis, out unadjustedError);
 
             //Compute error
             if (unadjustedError < minimum)
-                unadjustedError = minimum - unadjustedError;
+                unadjustedError = minimum.Sub(unadjustedError);
             else if (unadjustedError > maximum)
-                unadjustedError = maximum - unadjustedError;
+                unadjustedError = maximum.Sub(unadjustedError);
             else
             {
                 unadjustedError = F64.C0;
@@ -383,41 +384,41 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
             }
             isLimitActive = true;
 
-            unadjustedError = -unadjustedError;
+            unadjustedError = unadjustedError.Neg();
             //Adjust Error
             if (unadjustedError > F64.C0)
-                error = MathHelper.Max(F64.C0, unadjustedError - margin);
+                error = MathHelper.Max(F64.C0, unadjustedError.Sub(margin));
             else if (unadjustedError < F64.C0)
-                error = MathHelper.Min(F64.C0, unadjustedError + margin);
+                error = MathHelper.Min(F64.C0, unadjustedError.Add(margin));
 
             //Compute jacobians
             jLinearA = worldAxis;
-            jLinearB.X = -jLinearA.X;
-            jLinearB.Y = -jLinearA.Y;
-            jLinearB.Z = -jLinearA.Z;
+            jLinearB.X = jLinearA.X.Neg();
+            jLinearB.Y = jLinearA.Y.Neg();
+            jLinearB.Z = jLinearA.Z.Neg();
             Vector3.Cross(ref rA, ref jLinearA, out jAngularA);
             Vector3.Cross(ref worldOffsetB, ref jLinearB, out jAngularB);
 
             //Compute bias
             Fix64 errorReductionParameter;
-            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 / dt, out errorReductionParameter, out softness);
+            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReductionParameter, out softness);
 
-            biasVelocity = MathHelper.Clamp(errorReductionParameter * error, -maxCorrectiveVelocity, maxCorrectiveVelocity);
+            biasVelocity = MathHelper.Clamp(errorReductionParameter.Mul(error), maxCorrectiveVelocity.Neg(), maxCorrectiveVelocity);
             if (bounciness > F64.C0)
             {
                 //Compute currently relative velocity for bounciness.
                 Fix64 relativeVelocity, dot;
                 Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out relativeVelocity);
                 Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
-                relativeVelocity += dot;
+				relativeVelocity = relativeVelocity.Add(dot);
                 Vector3.Dot(ref jLinearB, ref connectionB.linearVelocity, out dot);
-                relativeVelocity += dot;
+				relativeVelocity = relativeVelocity.Add(dot);
                 Vector3.Dot(ref jAngularB, ref connectionB.angularVelocity, out dot);
-                relativeVelocity += dot;
-                if (unadjustedError > F64.C0 && -relativeVelocity > bounceVelocityThreshold)
-                    biasVelocity = MathHelper.Max(biasVelocity, ComputeBounceVelocity(-relativeVelocity));
+				relativeVelocity = relativeVelocity.Add(dot);
+                if (unadjustedError > F64.C0 && relativeVelocity.Neg() > bounceVelocityThreshold)
+                    biasVelocity = MathHelper.Max(biasVelocity, ComputeBounceVelocity(relativeVelocity.Neg()));
                 else if (unadjustedError < F64.C0 && relativeVelocity > bounceVelocityThreshold)
-                    biasVelocity = MathHelper.Min(biasVelocity, -ComputeBounceVelocity(relativeVelocity));
+                    biasVelocity = MathHelper.Min(biasVelocity, ComputeBounceVelocity(relativeVelocity).Neg());
             }
 
 
@@ -428,7 +429,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
             {
                 Matrix3x3.Transform(ref jAngularA, ref connectionA.inertiaTensorInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref jAngularA, out entryA);
-                entryA += connectionA.inverseMass;
+				entryA = entryA.Add(connectionA.inverseMass);
             }
             else
                 entryA = F64.C0;
@@ -436,11 +437,11 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
             {
                 Matrix3x3.Transform(ref jAngularB, ref connectionB.inertiaTensorInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref jAngularB, out entryB);
-                entryB += connectionB.inverseMass;
+				entryB = entryB.Add(connectionB.inverseMass);
             }
             else
                 entryB = F64.C0;
-            massMatrix = F64.C1 / (entryA + entryB + softness);
+            massMatrix = F64.C1.Div(((entryA.Add(entryB)).Add(softness)));
 
 
             

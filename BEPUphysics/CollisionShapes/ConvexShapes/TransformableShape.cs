@@ -104,7 +104,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             Volume = volume;
 
             //Estimate the minimum radius based on the surface mesh.
-            MinimumRadius = InertiaHelper.ComputeMinimumRadius(samples, triangles, ref Toolbox.ZeroVector) + collisionMargin;
+            MinimumRadius = InertiaHelper.ComputeMinimumRadius(samples, triangles, ref Toolbox.ZeroVector).Add(collisionMargin);
             MaximumRadius = ComputeMaximumRadius();
             CommonResources.GiveBack(samples);
             CommonResources.GiveBack(triangles);

@@ -537,12 +537,12 @@ namespace BEPUphysics
         /// <param name="dt">Elapsed time from the previous frame.</param>
         public void Update(Fix64 dt)
         {
-            TimeStepSettings.AccumulatedTime += dt;
+			TimeStepSettings.AccumulatedTime = TimeStepSettings.AccumulatedTime.Add(dt);
             for (int i = 0; i < TimeStepSettings.MaximumTimeStepsPerFrame; i++)
             {
                 if (TimeStepSettings.AccumulatedTime >= TimeStepSettings.TimeStepDuration)
                 {
-                    TimeStepSettings.AccumulatedTime -= TimeStepSettings.TimeStepDuration;
+					TimeStepSettings.AccumulatedTime = TimeStepSettings.AccumulatedTime.Sub(TimeStepSettings.TimeStepDuration);
                     DoTimeStep();
                 }
                 else
@@ -551,7 +551,7 @@ namespace BEPUphysics
                 }
             }
 
-            BufferedStates.InterpolatedStates.BlendAmount = TimeStepSettings.AccumulatedTime / TimeStepSettings.TimeStepDuration;
+            BufferedStates.InterpolatedStates.BlendAmount = TimeStepSettings.AccumulatedTime.Div(TimeStepSettings.TimeStepDuration);
             BufferedStates.InterpolatedStates.Update();
             EndOfFrameUpdateables.Update();
         }

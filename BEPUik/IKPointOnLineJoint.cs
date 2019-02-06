@@ -139,8 +139,8 @@ namespace BEPUik
             Vector3.Dot(ref error3D, ref worldRestrictedAxis1, out error.X);
             Vector3.Dot(ref error3D, ref worldRestrictedAxis2, out error.Y);
 
-            velocityBias.X = errorCorrectionFactor * error.X;
-            velocityBias.Y = errorCorrectionFactor * error.Y;
+            velocityBias.X = errorCorrectionFactor.Mul(error.X);
+            velocityBias.Y = errorCorrectionFactor.Mul(error.Y);
 
 
             //Set up the jacobians

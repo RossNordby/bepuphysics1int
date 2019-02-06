@@ -199,21 +199,21 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             if (dt > F64.C0)
             {
                 bool useExtraExpansion = MotionSettings.UseExtraExpansionForContinuousBoundingBoxes && entity.PositionUpdateMode == PositionUpdateMode.Continuous;
-                Fix64 velocityScaling = useExtraExpansion ? 2 : 1;
+                Fix64 velocityScaling = useExtraExpansion ? F64.C2 : F64.C1;
                 if (entity.linearVelocity.X > F64.C0)
-                    boundingBox.Max.X += entity.linearVelocity.X * dt * velocityScaling;
+					boundingBox.Max.X = boundingBox.Max.X.Add((entity.linearVelocity.X.Mul(dt)).Mul(velocityScaling));
                 else
-                    boundingBox.Min.X += entity.linearVelocity.X * dt * velocityScaling;
+					boundingBox.Min.X = boundingBox.Min.X.Add((entity.linearVelocity.X.Mul(dt)).Mul(velocityScaling));
 
                 if (entity.linearVelocity.Y > F64.C0)
-                    boundingBox.Max.Y += entity.linearVelocity.Y * dt * velocityScaling;
+					boundingBox.Max.Y = boundingBox.Max.Y.Add((entity.linearVelocity.Y.Mul(dt)).Mul(velocityScaling));
                 else
-                    boundingBox.Min.Y += entity.linearVelocity.Y * dt * velocityScaling;
+					boundingBox.Min.Y = boundingBox.Min.Y.Add((entity.linearVelocity.Y.Mul(dt)).Mul(velocityScaling));
 
                 if (entity.linearVelocity.Z > F64.C0)
-                    boundingBox.Max.Z += entity.linearVelocity.Z * dt * velocityScaling;
+					boundingBox.Max.Z = boundingBox.Max.Z.Add((entity.linearVelocity.Z.Mul(dt)).Mul(velocityScaling));
                 else
-                    boundingBox.Min.Z += entity.linearVelocity.Z * dt * velocityScaling;
+					boundingBox.Min.Z = boundingBox.Min.Z.Add((entity.linearVelocity.Z.Mul(dt)).Mul(velocityScaling));
 
 
 
@@ -233,16 +233,18 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                         if (velocity > expansion)
                             expansion = velocity;
                     }
-                    expansion = Fix64.Sqrt(expansion) * dt;
+                    expansion = Fix64.Sqrt(expansion).Mul(dt);
 
 
-                    boundingBox.Min.X -= expansion;
-                    boundingBox.Min.Y -= expansion;
-                    boundingBox.Min.Z -= expansion;
+					boundingBox.Min.X =
+boundingBox.Min.X.Sub(expansion);
+					boundingBox.Min.Y = boundingBox.Min.Y.Sub(expansion);
+					boundingBox.Min.Z = boundingBox.Min.Z.Sub(expansion);
 
-                    boundingBox.Max.X += expansion;
-                    boundingBox.Max.Y += expansion;
-                    boundingBox.Max.Z += expansion;
+					boundingBox.Max.X =
+boundingBox.Max.X.Add(expansion);
+					boundingBox.Max.Y = boundingBox.Max.Y.Add(expansion);
+					boundingBox.Max.Z = boundingBox.Max.Z.Add(expansion);
 
                 }
 

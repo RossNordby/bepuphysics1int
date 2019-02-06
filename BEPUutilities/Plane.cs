@@ -26,7 +26,7 @@ namespace BEPUutilities
         {
             Fix64 d;
             Vector3.Dot(ref position, ref normal, out d);
-            D = -d;
+            D = d.Neg();
             Normal = normal;
         }
 
@@ -71,7 +71,7 @@ namespace BEPUutilities
         /// <param name="dot">Dot product.</param>
         public void DotCoordinate(ref Vector3 v, out Fix64 dot)
         {
-            dot = Normal.X * v.X + Normal.Y * v.Y + Normal.Z * v.Z + D;
+            dot = (((Normal.X.Mul(v.X)).Add(Normal.Y.Mul(v.Y))).Add(Normal.Z.Mul(v.Z))).Add(D);
         }
     }
 }

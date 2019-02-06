@@ -150,8 +150,8 @@ namespace BEPUphysics.Paths
             }
 
 
-            Fix64 curveTime = (time - samples[indexMin].Wrapped) / (samples[indexMin + 1].Wrapped - samples[indexMin].Wrapped);
-            return (F64.C1 - curveTime) * samples[indexMin].SpeedControlled + (curveTime) * samples[indexMin + 1].SpeedControlled;
+            Fix64 curveTime = (time.Sub(samples[indexMin].Wrapped)).Div((samples[indexMin + 1].Wrapped.Sub(samples[indexMin].Wrapped)));
+            return ((F64.C1.Sub(curveTime)).Mul(samples[indexMin].SpeedControlled)).Add((curveTime).Mul(samples[indexMin + 1].SpeedControlled));
         }
 
         /// <summary>
@@ -217,7 +217,7 @@ namespace BEPUphysics.Paths
             TValue currentValue = Curve.ControlPoints[minIndex].Value;
             TValue previousValue = currentValue;
 
-            Fix64 inverseSampleCount = 1 / (SamplesPerInterval + 1);
+            Fix64 inverseSampleCount = F64.C1.Div((SamplesPerInterval + 1).ToFix());
 
             Fix64 speed = GetSpeedAtCurveTime(Curve.ControlPoints[minIndex].Time);
             Fix64 previousSpeed = speed;
@@ -227,23 +227,24 @@ namespace BEPUphysics.Paths
                 currentValue = Curve.ControlPoints[i].Value;
 
                 if (speed != F64.C0)
-                    timeElapsed += GetDistance(previousValue, currentValue) / speed;
+					timeElapsed = timeElapsed.Add(GetDistance(previousValue, currentValue).Div(speed));
                 previousSpeed = speed;
                 speed = GetSpeedAtCurveTime(Curve.ControlPoints[i].Time);
 
                 samples.Add(new SpeedControlledCurveSample { Wrapped = timeElapsed, SpeedControlled = Curve.ControlPoints[i].Time });
 
                 var curveTime = Curve.ControlPoints[i].Time;
-                var intervalLength = Curve.ControlPoints[i + 1].Time - curveTime;
-                var curveTimePerSample = intervalLength / (SamplesPerInterval + 1);
+                var intervalLength = Curve.ControlPoints[i + 1].Time.Sub(curveTime);
+                var curveTimePerSample = intervalLength.Div((SamplesPerInterval + 1).ToFixFast());
                 for (int j = 1; j <= SamplesPerInterval; j++)
                 {
                     previousValue = currentValue;
-                    Curve.Evaluate(i, j * inverseSampleCount, out currentValue);
+                    Curve.Evaluate(i, j.ToFixFast().Mul(inverseSampleCount), out currentValue);
 
-                    curveTime += curveTimePerSample;
+					curveTime =
+curveTime.Add(curveTimePerSample);
                     if (speed != F64.C0)
-                        timeElapsed += GetDistance(previousValue, currentValue) / speed;
+						timeElapsed = timeElapsed.Add(GetDistance(previousValue, currentValue).Div(speed));
 
                     previousSpeed = speed;
                     speed = GetSpeedAtCurveTime(curveTime);
@@ -251,7 +252,7 @@ namespace BEPUphysics.Paths
                     samples.Add(new SpeedControlledCurveSample { Wrapped = timeElapsed, SpeedControlled = curveTime });
                 }
             }
-            timeElapsed += GetDistance(previousValue, currentValue) / previousSpeed;
+			timeElapsed = timeElapsed.Add(GetDistance(previousValue, currentValue).Div(previousSpeed));
             samples.Add(new SpeedControlledCurveSample { Wrapped = timeElapsed, SpeedControlled = Curve.ControlPoints[maxIndex].Time });
         }
 

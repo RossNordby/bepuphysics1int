@@ -335,7 +335,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
                 var volume = Fix64.SafeMul(Fix64.SafeMul(offset.X, offset.Y), offset.Z);
                 if (volume < F64.C1em9)
                     return F64.C0;
-                return root.MeasureSubtreeCost() / volume;
+                return root.MeasureSubtreeCost().Div(volume);
             }
             return F64.C0;
         }

@@ -60,14 +60,14 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 Fix64 originalMass = a.mass;
                 if (a.CollisionInformation.children.Count > 0)
                 {
-                    Fix64 newMassA = (weightA / (weightA + weightB)) * originalMass;
-                    Matrix3x3.Multiply(ref distributionInfoA.VolumeDistribution, newMassA * InertiaHelper.InertiaTensorScale, out distributionInfoA.VolumeDistribution);
+                    Fix64 newMassA = (weightA.Div((weightA.Add(weightB)))).Mul(originalMass);
+                    Matrix3x3.Multiply(ref distributionInfoA.VolumeDistribution, newMassA.Mul(InertiaHelper.InertiaTensorScale), out distributionInfoA.VolumeDistribution);
                     a.Initialize(a.CollisionInformation, newMassA, distributionInfoA.VolumeDistribution);
                 }
                 if (bCollidable.children.Count > 0)
                 {
-                    Fix64 newMassB = (weightB / (weightA + weightB)) * originalMass;
-                    Matrix3x3.Multiply(ref distributionInfoB.VolumeDistribution, newMassB * InertiaHelper.InertiaTensorScale, out distributionInfoB.VolumeDistribution);
+                    Fix64 newMassB = (weightB.Div((weightA.Add(weightB)))).Mul(originalMass);
+                    Matrix3x3.Multiply(ref distributionInfoB.VolumeDistribution, newMassB.Mul(InertiaHelper.InertiaTensorScale), out distributionInfoB.VolumeDistribution);
                     b = new Entity<CompoundCollidable>();
                     b.Initialize(bCollidable, newMassB, distributionInfoB.VolumeDistribution);
                 }
@@ -89,7 +89,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             Vector3.Multiply(ref distributionInfoB.Center, weightB, out weightedB);
             Vector3 newLocalCenter;
             Vector3.Add(ref weightedA, ref weightedB, out newLocalCenter);
-            Vector3.Divide(ref newLocalCenter, weightA + weightB, out newLocalCenter);
+            Vector3.Divide(ref newLocalCenter, weightA.Add(weightB), out newLocalCenter);
 
             Vector3 localOffsetA;
             Vector3 localOffsetB;
@@ -151,15 +151,15 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 Fix64 originalMass = a.mass;
                 if (a.CollisionInformation.children.Count > 0)
                 {
-                    Fix64 newMassA = (weightA / (weightA + weightB)) * originalMass;
-                    Matrix3x3.Multiply(ref distributionInfoA.VolumeDistribution, newMassA * InertiaHelper.InertiaTensorScale, out distributionInfoA.VolumeDistribution);
+                    Fix64 newMassA = (weightA.Div((weightA.Add(weightB)))).Mul(originalMass);
+                    Matrix3x3.Multiply(ref distributionInfoA.VolumeDistribution, newMassA.Mul(InertiaHelper.InertiaTensorScale), out distributionInfoA.VolumeDistribution);
                     a.Initialize(a.CollisionInformation, newMassA, distributionInfoA.VolumeDistribution);
                 }
 
                 if (b.CollisionInformation.children.Count > 0)
                 {
-                    Fix64 newMassB = (weightB / (weightA + weightB)) * originalMass;
-                    Matrix3x3.Multiply(ref distributionInfoB.VolumeDistribution, newMassB * InertiaHelper.InertiaTensorScale, out distributionInfoB.VolumeDistribution);
+                    Fix64 newMassB = (weightB.Div((weightA.Add(weightB)))).Mul(originalMass);
+                    Matrix3x3.Multiply(ref distributionInfoB.VolumeDistribution, newMassB.Mul(InertiaHelper.InertiaTensorScale), out distributionInfoB.VolumeDistribution);
                     b.Initialize(b.CollisionInformation, newMassB, distributionInfoB.VolumeDistribution);
                 }
 
@@ -225,7 +225,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 Vector3 weightedCenter;
                 Vector3.Multiply(ref entry.LocalTransform.Position, entry.Weight, out weightedCenter);
                 Vector3.Add(ref weightedCenter, ref distributionInfoA.Center, out distributionInfoA.Center);
-                distributionInfoA.Volume += entry.Shape.Volume;
+				distributionInfoA.Volume = distributionInfoA.Volume.Add(entry.Shape.Volume);
                 weightA += entry.Weight;
             }
             for (int i = b.children.Count - 1; i >= 0; i--)
@@ -235,7 +235,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 Vector3 weightedCenter;
                 Vector3.Multiply(ref entry.LocalTransform.Position, entry.Weight, out weightedCenter);
                 Vector3.Add(ref weightedCenter, ref distributionInfoB.Center, out distributionInfoB.Center);
-                distributionInfoB.Volume += entry.Shape.Volume;
+				distributionInfoB.Volume = distributionInfoB.Volume.Add(entry.Shape.Volume);
                 weightB += entry.Weight;
             }
 
@@ -283,8 +283,8 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             }
 
             //Normalize the volume distribution.
-            Matrix3x3.Multiply(ref distributionInfoA.VolumeDistribution, F64.C1 / weightA, out distributionInfoA.VolumeDistribution);
-            Matrix3x3.Multiply(ref distributionInfoB.VolumeDistribution, F64.C1 / weightB, out distributionInfoB.VolumeDistribution);
+            Matrix3x3.Multiply(ref distributionInfoA.VolumeDistribution, F64.C1.Div(weightA), out distributionInfoA.VolumeDistribution);
+            Matrix3x3.Multiply(ref distributionInfoB.VolumeDistribution, F64.C1.Div(weightB), out distributionInfoB.VolumeDistribution);
 
             //Update the hierarchies of the compounds.
             //TODO: Create a new method that does this quickly without garbage.  Requires a new Reconstruct method which takes a pool which stores the appropriate node types.
@@ -306,7 +306,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             Vector3.Multiply(ref removedCenter, removedWeight, out weightedB);
             Vector3 newLocalCenter;
             Vector3.Add(ref weightedA, ref weightedB, out newLocalCenter);
-            Vector3.Divide(ref newLocalCenter, weight + removedWeight, out newLocalCenter);
+            Vector3.Divide(ref newLocalCenter, weight.Add(removedWeight), out newLocalCenter);
 
             Vector3 localOffset;
             Vector3.Subtract(ref distributionInfo.Center, ref newLocalCenter, out localOffset);
@@ -361,8 +361,8 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 if (compound.CollisionInformation.Children.Count > 0)
                 {
                     Fix64 originalMass = compound.mass;
-                    Fix64 newMass = (weight / (weight + removedWeight)) * originalMass;
-                    Matrix3x3.Multiply(ref distributionInfo.VolumeDistribution, newMass * InertiaHelper.InertiaTensorScale, out distributionInfo.VolumeDistribution);
+                    Fix64 newMass = (weight.Div((weight.Add(removedWeight)))).Mul(originalMass);
+                    Matrix3x3.Multiply(ref distributionInfo.VolumeDistribution, newMass.Mul(InertiaHelper.InertiaTensorScale), out distributionInfo.VolumeDistribution);
                     compound.Initialize(compound.CollisionInformation, newMass, distributionInfo.VolumeDistribution);
 
                     RemoveReposition(compound, ref distributionInfo, weight, removedWeight, ref removedCenter);
@@ -433,7 +433,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 Vector3.Add(ref contribution.Center, ref entry.LocalTransform.Position, out contribution.Center);
                 Vector3.Multiply(ref contribution.Center, child.Entry.Weight, out contribution.Center);
                 Vector3.Add(ref contribution.Center, ref distributionInfo.Center, out distributionInfo.Center);
-                distributionInfo.Volume += contribution.Volume;
+				distributionInfo.Volume = distributionInfo.Volume.Add(contribution.Volume);
                 weight += entry.Weight;
             }
             //Average the center out.
@@ -462,7 +462,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             }
 
             //Normalize the volume distribution.
-            Matrix3x3.Multiply(ref distributionInfo.VolumeDistribution, F64.C1 / weight, out distributionInfo.VolumeDistribution);
+            Matrix3x3.Multiply(ref distributionInfo.VolumeDistribution, F64.C1.Div(weight), out distributionInfo.VolumeDistribution);
 
             //Update the hierarchies of the compounds.
             //TODO: Create a new method that does this quickly without garbage.  Requires a new Reconstruct method which takes a pool which stores the appropriate node types.
@@ -494,7 +494,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 Vector3 toAdd;
                 Vector3.Multiply(ref entry.LocalTransform.Position, entry.Weight, out toAdd);
                 Vector3.Add(ref center, ref toAdd, out center);
-                totalWeight += entry.Weight;
+				totalWeight = totalWeight.Add(entry.Weight);
             }
             if (totalWeight <= F64.C0)
             {

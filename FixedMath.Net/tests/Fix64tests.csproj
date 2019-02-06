@@ -35,14 +35,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ConsoleTestOutputHelper.cs" />
-    <Compile Include="Experimental\Fix16.cs" />
-    <Compile Include="Experimental\Fix16SinLut.cs" />
-    <Compile Include="Experimental\Fix16Test.cs" />
-    <Compile Include="Fix64RandomExpectedValues.cs" />
-    <Compile Include="Fix64RandomTests.cs" />
-    <Compile Include="Fix64Tests.cs" />
-    <Compile Include="Experimental\Fix8.cs" />
-    <Compile Include="Experimental\Fix8Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

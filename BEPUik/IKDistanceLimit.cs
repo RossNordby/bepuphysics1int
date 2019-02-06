@@ -96,31 +96,31 @@ namespace BEPUik
 #endif
             if (currentDistance > Toolbox.Epsilon)
             {
-                linearA.X = separation.X / currentDistance;
-                linearA.Y = separation.Y / currentDistance;
-                linearA.Z = separation.Z / currentDistance;
+                linearA.X = separation.X.Div(currentDistance);
+                linearA.Y = separation.Y.Div(currentDistance);
+                linearA.Z = separation.Z.Div(currentDistance);
 
                 if (currentDistance > maximumDistance)
                 {
                     //We are exceeding the maximum limit.
-                    velocityBias = new Vector3(errorCorrectionFactor * (currentDistance - maximumDistance), F64.C0, F64.C0);
+                    velocityBias = new Vector3(errorCorrectionFactor.Mul((currentDistance.Sub(maximumDistance))), F64.C0, F64.C0);
                 }
                 else if (currentDistance < minimumDistance)
                 {
                     //We are exceeding the minimum limit.
-                    velocityBias = new Vector3(errorCorrectionFactor * (minimumDistance - currentDistance), F64.C0, F64.C0);
+                    velocityBias = new Vector3(errorCorrectionFactor.Mul((minimumDistance.Sub(currentDistance))), F64.C0, F64.C0);
                     //The limit can only push in one direction. Flip the jacobian!
                     Vector3.Negate(ref linearA, out linearA);
                 }
-                else if (currentDistance - minimumDistance > (maximumDistance - minimumDistance) * F64.C0p5)
+                else if (currentDistance.Sub(minimumDistance) > (maximumDistance.Sub(minimumDistance)).Mul(F64.C0p5))
                 {
                     //The objects are closer to hitting the maximum limit.
-                    velocityBias = new Vector3(currentDistance - maximumDistance, F64.C0, F64.C0);
+                    velocityBias = new Vector3(currentDistance.Sub(maximumDistance), F64.C0, F64.C0);
                 }
                 else
                 {
                     //The objects are closer to hitting the minimum limit.
-                    velocityBias = new Vector3(minimumDistance - currentDistance, F64.C0, F64.C0);
+                    velocityBias = new Vector3(minimumDistance.Sub(currentDistance), F64.C0, F64.C0);
                     //The limit can only push in one direction. Flip the jacobian!
                     Vector3.Negate(ref linearA, out linearA);
                 }
@@ -138,7 +138,7 @@ namespace BEPUik
 
             //Put all the 1x3 jacobians into a 3x3 matrix representation.
             linearJacobianA = new Matrix3x3 { M11 = linearA.X, M12 = linearA.Y, M13 = linearA.Z };
-            linearJacobianB = new Matrix3x3 { M11 = -linearA.X, M12 = -linearA.Y, M13 = -linearA.Z };
+            linearJacobianB = new Matrix3x3 { M11 = linearA.X.Neg(), M12 = linearA.Y.Neg(), M13 = linearA.Z.Neg() };
             angularJacobianA = new Matrix3x3 { M11 = angularA.X, M12 = angularA.Y, M13 = angularA.Z };
             angularJacobianB = new Matrix3x3 { M11 = angularB.X, M12 = angularB.Y, M13 = angularB.Z };
 

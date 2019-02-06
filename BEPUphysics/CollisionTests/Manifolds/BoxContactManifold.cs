@@ -79,7 +79,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                                 contacts.Elements[i].Validate();
                                 //Update contact...
                                 contacts.Elements[i].Position = manifoldPointer[j].Position;
-                                contacts.Elements[i].PenetrationDepth = -manifoldPointer[j].Depth;
+                                contacts.Elements[i].PenetrationDepth = manifoldPointer[j].Depth.Neg();
                                 contacts.Elements[i].Normal = axis;
                                 //Remove manifold entry
                                 contacts.Elements[i].Validate();
@@ -104,7 +104,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                         var newContact = new ContactData
                                              {
                                                  Position = manifoldPointer[i].Position,
-                                                 PenetrationDepth = -manifoldPointer[i].Depth,
+                                                 PenetrationDepth = manifoldPointer[i].Depth.Neg(),
                                                  Normal = axis,
                                                  Id = manifoldPointer[i].Id
                                              };

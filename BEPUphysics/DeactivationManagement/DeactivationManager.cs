@@ -16,8 +16,8 @@ namespace BEPUphysics.DeactivationManagement
         private int maximumDeactivationAttemptsPerFrame = 100;
         private int deactivationIslandIndex;
 
-        internal Fix64 velocityLowerLimit = (Fix64).26m;
-        internal Fix64 velocityLowerLimitSquared = (Fix64)(.26m * .26m);
+        internal Fix64 velocityLowerLimit = (Fix64).26m.ToFix();
+        internal Fix64 velocityLowerLimitSquared = (Fix64)(.26m * .26m).ToFix();
         internal Fix64 lowVelocityTimeMinimum = F64.C1;
 
         ///<summary>
@@ -35,7 +35,7 @@ namespace BEPUphysics.DeactivationManagement
             set
             {
                 velocityLowerLimit = MathHelper.Max(F64.C0, value);
-                velocityLowerLimitSquared = velocityLowerLimit * velocityLowerLimit;
+                velocityLowerLimitSquared = velocityLowerLimit.Mul(velocityLowerLimit);
             }
         }
 
@@ -228,7 +228,7 @@ namespace BEPUphysics.DeactivationManagement
 
         ConcurrentDeque<SimulationIslandConnection> splitAttempts = new ConcurrentDeque<SimulationIslandConnection>();
 
-        static Fix64 maximumSplitAttemptsFraction = (Fix64).01m;
+        static Fix64 maximumSplitAttemptsFraction = (Fix64).01m.ToFix();
         /// <summary>
         /// Gets or sets the fraction of splits that the deactivation manager will attempt in a single frame.
         /// The total splits queued multiplied by this value results in the number of splits managed.
@@ -269,7 +269,7 @@ namespace BEPUphysics.DeactivationManagement
         {
 
             //Only do a portion of the total splits.
-            int maxAttempts = Math.Max(minimumSplitAttempts, (int)((Fix64)splitAttempts.Count * maximumSplitAttemptsFraction));
+            int maxAttempts = Math.Max(minimumSplitAttempts, (int)((splitAttempts.Count.ToFix()).Mul(maximumSplitAttemptsFraction)).ToInt());
             int attempts = 0;
             SimulationIslandConnection attempt;
             while (attempts < maxAttempts && splitAttempts.TryUnsafeDequeueFirst(out attempt))

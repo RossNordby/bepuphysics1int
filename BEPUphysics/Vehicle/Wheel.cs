@@ -26,7 +26,7 @@ namespace BEPUphysics.Vehicle
         internal WheelDrivingMotor drivingMotor;
 
 
-        internal Vector3 localForwardDirection = new Vector3(F64.C0, F64.C0, -1);
+        internal Vector3 localForwardDirection = new Vector3(F64.C0, F64.C0, F64.C1.Neg());
 
         internal Vector3 normal;
         internal WheelShape shape;

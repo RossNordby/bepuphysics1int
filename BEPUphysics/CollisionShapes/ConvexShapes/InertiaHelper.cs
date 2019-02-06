@@ -18,7 +18,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// Larger tensors (above 1) improve stiffness of constraints and contacts, while smaller values (towards 1) are closer to 'realistic' behavior.
         /// Defaults to 2.5.
         /// </summary>
-        public static Fix64 InertiaTensorScale = (Fix64)2.5m;
+        public static Fix64 InertiaTensorScale = (Fix64)2.5m.ToFix();
 
         ///<summary>
         /// Number of samples the system takes along a side of an object's AABB when voxelizing it.
@@ -37,15 +37,15 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         public static void GetPointContribution(Fix64 pointWeight, ref Vector3 center, ref Vector3 point, out Matrix3x3 contribution)
         {
             Vector3.Subtract(ref point, ref center, out point);
-			Fix64 xx = pointWeight * point.X * point.X;
-			Fix64 yy = pointWeight * point.Y * point.Y;
-			Fix64 zz = pointWeight * point.Z * point.Z;
-            contribution.M11 = yy + zz;
-            contribution.M22 = xx + zz;
-            contribution.M33 = xx + yy;
-            contribution.M12 = -pointWeight * point.X * point.Y;
-            contribution.M13 = -pointWeight * point.X * point.Z;
-            contribution.M23 = -pointWeight * point.Y * point.Z;
+			Fix64 xx = (pointWeight.Mul(point.X)).Mul(point.X);
+			Fix64 yy = (pointWeight.Mul(point.Y)).Mul(point.Y);
+			Fix64 zz = (pointWeight.Mul(point.Z)).Mul(point.Z);
+            contribution.M11 = yy.Add(zz);
+            contribution.M22 = xx.Add(zz);
+            contribution.M33 = xx.Add(yy);
+            contribution.M12 = ((pointWeight.Neg()).Mul(point.X)).Mul(point.Y);
+            contribution.M13 = ((pointWeight.Neg()).Mul(point.X)).Mul(point.Z);
+            contribution.M23 = ((pointWeight.Neg()).Mul(point.Y)).Mul(point.Z);
             contribution.M21 = contribution.M12;
             contribution.M31 = contribution.M13;
             contribution.M32 = contribution.M23;
@@ -144,23 +144,23 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 			//Create the regular icosahedron vertices.
 			//Vector3[] vertices = new Vector3[12];
 			var goldenRatio = F64.GoldenRatio;
-			Fix64 length = Fix64.Sqrt(F64.C1 + goldenRatio * goldenRatio);
-			Fix64 x = F64.C1 / length;
-			Fix64 y = goldenRatio / length;
+			Fix64 length = Fix64.Sqrt(F64.C1.Add(goldenRatio.Mul(goldenRatio)));
+			Fix64 x = F64.C1.Div(length);
+			Fix64 y = goldenRatio.Div(length);
             vertices[0] = new Vector3(F64.C0, x, y);
-            vertices[1] = new Vector3(F64.C0, -x, y);
-            vertices[2] = new Vector3(F64.C0, x, -y);
-            vertices[3] = new Vector3(F64.C0, -x, -y);
+            vertices[1] = new Vector3(F64.C0, x.Neg(), y);
+            vertices[2] = new Vector3(F64.C0, x, y.Neg());
+            vertices[3] = new Vector3(F64.C0, x.Neg(), y.Neg());
 
             vertices[4] = new Vector3(x, y, F64.C0);
-            vertices[5] = new Vector3(-x, y, F64.C0);
-            vertices[6] = new Vector3(x, -y, F64.C0);
-            vertices[7] = new Vector3(-x, -y, F64.C0);
+            vertices[5] = new Vector3(x.Neg(), y, F64.C0);
+            vertices[6] = new Vector3(x, y.Neg(), F64.C0);
+            vertices[7] = new Vector3(x.Neg(), y.Neg(), F64.C0);
 
             vertices[8] = new Vector3(y, F64.C0, x);
-            vertices[9] = new Vector3(-y, F64.C0, x);
-            vertices[10] = new Vector3(y, F64.C0, -x);
-            vertices[11] = new Vector3(-y, F64.C0, -x);
+            vertices[9] = new Vector3(y.Neg(), F64.C0, x);
+            vertices[10] = new Vector3(y, F64.C0, x.Neg());
+            vertices[11] = new Vector3(y.Neg(), F64.C0, x.Neg());
 
             //Just treat this array as a list.
             int vertexCount = 12;
@@ -364,32 +364,29 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 Vector3 v4 = vertices[triangleIndices[i + 2]];
 
                 //Determinant is 6 * volume.  It's signed, though; the mesh isn't necessarily convex and the origin isn't necessarily in the mesh even if it is convex.
-                Fix64 scaledTetrahedronVolume = v2.X * (v3.Z * v4.Y - v3.Y * v4.Z) -
-                                                v3.X * (v2.Z * v4.Y - v2.Y * v4.Z) +
-                                                v4.X * (v2.Z * v3.Y - v2.Y * v3.Z);
+                Fix64 scaledTetrahedronVolume = ((v2.X.Mul(((v3.Z.Mul(v4.Y)).Sub(v3.Y.Mul(v4.Z))))).Sub(v3.X.Mul(((v2.Z.Mul(v4.Y)).Sub(v2.Y.Mul(v4.Z)))))).Add(v4.X.Mul(((v2.Z.Mul(v3.Y)).Sub(v2.Y.Mul(v3.Z)))));
 
-                scaledVolume += scaledTetrahedronVolume;
+				scaledVolume =
+scaledVolume.Add(scaledTetrahedronVolume);
 
-                a += scaledTetrahedronVolume * (v2.Y * v2.Y + v2.Y * v3.Y + v3.Y * v3.Y + v2.Y * v4.Y + v3.Y * v4.Y + v4.Y * v4.Y +
-                                                v2.Z * v2.Z + v2.Z * v3.Z + v3.Z * v3.Z + v2.Z * v4.Z + v3.Z * v4.Z + v4.Z * v4.Z);
-                b += scaledTetrahedronVolume * (v2.X * v2.X + v2.X * v3.X + v3.X * v3.X + v2.X * v4.X + v3.X * v4.X + v4.X * v4.X +
-                                                v2.Z * v2.Z + v2.Z * v3.Z + v3.Z * v3.Z + v2.Z * v4.Z + v3.Z * v4.Z + v4.Z * v4.Z);
-                c += scaledTetrahedronVolume * (v2.X * v2.X + v2.X * v3.X + v3.X * v3.X + v2.X * v4.X + v3.X * v4.X + v4.X * v4.X +
-                                                v2.Y * v2.Y + v2.Y * v3.Y + v3.Y * v3.Y + v2.Y * v4.Y + v3.Y * v4.Y + v4.Y * v4.Y);
-                ao += scaledTetrahedronVolume * (F64.C2 * v2.Y * v2.Z + v3.Y * v2.Z + v4.Y * v2.Z + v2.Y * v3.Z + F64.C2 * v3.Y * v3.Z + v4.Y * v3.Z + v2.Y * v4.Z + v3.Y * v4.Z + F64.C2 * v4.Y * v4.Z);
-                bo += scaledTetrahedronVolume * (F64.C2 * v2.X * v2.Z + v3.X * v2.Z + v4.X * v2.Z + v2.X * v3.Z + F64.C2 * v3.X * v3.Z + v4.X * v3.Z + v2.X * v4.Z + v3.X * v4.Z + F64.C2 * v4.X * v4.Z);
-                co += scaledTetrahedronVolume * (F64.C2 * v2.X * v2.Y + v3.X * v2.Y + v4.X * v2.Y + v2.X * v3.Y + F64.C2 * v3.X * v3.Y + v4.X * v3.Y + v2.X * v4.Y + v3.X * v4.Y + F64.C2 * v4.X * v4.Y);
+				a =
+a.Add(scaledTetrahedronVolume.Mul(((((((((((((v2.Y.Mul(v2.Y)).Add(v2.Y.Mul(v3.Y))).Add(v3.Y.Mul(v3.Y))).Add(v2.Y.Mul(v4.Y))).Add(v3.Y.Mul(v4.Y))).Add(v4.Y.Mul(v4.Y))).Add(v2.Z.Mul(v2.Z))).Add(v2.Z.Mul(v3.Z))).Add(v3.Z.Mul(v3.Z))).Add(v2.Z.Mul(v4.Z))).Add(v3.Z.Mul(v4.Z))).Add(v4.Z.Mul(v4.Z)))));
+				b = b.Add(scaledTetrahedronVolume.Mul(((((((((((((v2.X.Mul(v2.X)).Add(v2.X.Mul(v3.X))).Add(v3.X.Mul(v3.X))).Add(v2.X.Mul(v4.X))).Add(v3.X.Mul(v4.X))).Add(v4.X.Mul(v4.X))).Add(v2.Z.Mul(v2.Z))).Add(v2.Z.Mul(v3.Z))).Add(v3.Z.Mul(v3.Z))).Add(v2.Z.Mul(v4.Z))).Add(v3.Z.Mul(v4.Z))).Add(v4.Z.Mul(v4.Z)))));
+				c = c.Add(scaledTetrahedronVolume.Mul(((((((((((((v2.X.Mul(v2.X)).Add(v2.X.Mul(v3.X))).Add(v3.X.Mul(v3.X))).Add(v2.X.Mul(v4.X))).Add(v3.X.Mul(v4.X))).Add(v4.X.Mul(v4.X))).Add(v2.Y.Mul(v2.Y))).Add(v2.Y.Mul(v3.Y))).Add(v3.Y.Mul(v3.Y))).Add(v2.Y.Mul(v4.Y))).Add(v3.Y.Mul(v4.Y))).Add(v4.Y.Mul(v4.Y)))));
+				ao = ao.Add(scaledTetrahedronVolume.Mul(((((((((((F64.C2.Mul(v2.Y)).Mul(v2.Z)).Add(v3.Y.Mul(v2.Z))).Add(v4.Y.Mul(v2.Z))).Add(v2.Y.Mul(v3.Z))).Add((F64.C2.Mul(v3.Y)).Mul(v3.Z))).Add(v4.Y.Mul(v3.Z))).Add(v2.Y.Mul(v4.Z))).Add(v3.Y.Mul(v4.Z))).Add((F64.C2.Mul(v4.Y)).Mul(v4.Z)))));
+				bo = bo.Add(scaledTetrahedronVolume.Mul(((((((((((F64.C2.Mul(v2.X)).Mul(v2.Z)).Add(v3.X.Mul(v2.Z))).Add(v4.X.Mul(v2.Z))).Add(v2.X.Mul(v3.Z))).Add((F64.C2.Mul(v3.X)).Mul(v3.Z))).Add(v4.X.Mul(v3.Z))).Add(v2.X.Mul(v4.Z))).Add(v3.X.Mul(v4.Z))).Add((F64.C2.Mul(v4.X)).Mul(v4.Z)))));
+				co = co.Add(scaledTetrahedronVolume.Mul(((((((((((F64.C2.Mul(v2.X)).Mul(v2.Y)).Add(v3.X.Mul(v2.Y))).Add(v4.X.Mul(v2.Y))).Add(v2.X.Mul(v3.Y))).Add((F64.C2.Mul(v3.X)).Mul(v3.Y))).Add(v4.X.Mul(v3.Y))).Add(v2.X.Mul(v4.Y))).Add(v3.X.Mul(v4.Y))).Add((F64.C2.Mul(v4.X)).Mul(v4.Y)))));
             }
-            volume = scaledVolume / F64.C6;
-            Fix64 scaledDensity = F64.C1 / volume;
-            Fix64 diagonalFactor = scaledDensity / F64.C60;
-            Fix64 offFactor = -scaledDensity / F64.C120;
-            a *= diagonalFactor;
-            b *= diagonalFactor;
-            c *= diagonalFactor;
-            ao *= offFactor;
-            bo *= offFactor;
-            co *= offFactor;
+            volume = scaledVolume.Div(F64.C6);
+            Fix64 scaledDensity = F64.C1.Div(volume);
+            Fix64 diagonalFactor = scaledDensity.Div(F64.C60);
+            Fix64 offFactor = (scaledDensity.Neg()).Div(F64.C120);
+			a = a.Mul(diagonalFactor);
+			b = b.Mul(diagonalFactor);
+			c = c.Mul(diagonalFactor);
+			ao = ao.Mul(offFactor);
+			bo = bo.Mul(offFactor);
+			co = co.Mul(offFactor);
             volumeDistribution = new Matrix3x3(a, bo, co,
                                                bo, b, ao,
                                                co, ao, c);
@@ -425,11 +422,10 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 Vector3 v4 = vertices[triangleIndices[i + 2]];
 
                 //Determinant is 6 * volume.  It's signed, though; the mesh isn't necessarily convex and the origin isn't necessarily in the mesh even if it is convex.
-                Fix64 scaledTetrahedronVolume = v2.X * (v3.Z * v4.Y - v3.Y * v4.Z) -
-                                                v3.X * (v2.Z * v4.Y - v2.Y * v4.Z) +
-                                                v4.X * (v2.Z * v3.Y - v2.Y * v3.Z);
+                Fix64 scaledTetrahedronVolume = ((v2.X.Mul(((v3.Z.Mul(v4.Y)).Sub(v3.Y.Mul(v4.Z))))).Sub(v3.X.Mul(((v2.Z.Mul(v4.Y)).Sub(v2.Y.Mul(v4.Z)))))).Add(v4.X.Mul(((v2.Z.Mul(v3.Y)).Sub(v2.Y.Mul(v3.Z)))));
 
-                scaledVolume += scaledTetrahedronVolume;
+				scaledVolume =
+scaledVolume.Add(scaledTetrahedronVolume);
 
                 Vector3 tetrahedronCentroid;
                 Vector3.Add(ref v2, ref v3, out tetrahedronCentroid);
@@ -437,15 +433,13 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 Vector3.Multiply(ref tetrahedronCentroid, scaledTetrahedronVolume, out tetrahedronCentroid);
                 Vector3.Add(ref tetrahedronCentroid, ref summedCenter, out summedCenter);
 
-                a += scaledTetrahedronVolume * (v2.Y * v2.Y + v2.Y * v3.Y + v3.Y * v3.Y + v2.Y * v4.Y + v3.Y * v4.Y + v4.Y * v4.Y +
-                                                v2.Z * v2.Z + v2.Z * v3.Z + v3.Z * v3.Z + v2.Z * v4.Z + v3.Z * v4.Z + v4.Z * v4.Z);
-                b += scaledTetrahedronVolume * (v2.X * v2.X + v2.X * v3.X + v3.X * v3.X + v2.X * v4.X + v3.X * v4.X + v4.X * v4.X +
-                                                v2.Z * v2.Z + v2.Z * v3.Z + v3.Z * v3.Z + v2.Z * v4.Z + v3.Z * v4.Z + v4.Z * v4.Z);
-                c += scaledTetrahedronVolume * (v2.X * v2.X + v2.X * v3.X + v3.X * v3.X + v2.X * v4.X + v3.X * v4.X + v4.X * v4.X +
-                                                v2.Y * v2.Y + v2.Y * v3.Y + v3.Y * v3.Y + v2.Y * v4.Y + v3.Y * v4.Y + v4.Y * v4.Y);
-                ao += scaledTetrahedronVolume * (F64.C2 * v2.Y * v2.Z + v3.Y * v2.Z + v4.Y * v2.Z + v2.Y * v3.Z + F64.C2 * v3.Y * v3.Z + v4.Y * v3.Z + v2.Y * v4.Z + v3.Y * v4.Z + F64.C2 * v4.Y * v4.Z);
-                bo += scaledTetrahedronVolume * (F64.C2 * v2.X * v2.Z + v3.X * v2.Z + v4.X * v2.Z + v2.X * v3.Z + F64.C2 * v3.X * v3.Z + v4.X * v3.Z + v2.X * v4.Z + v3.X * v4.Z + F64.C2 * v4.X * v4.Z);
-                co += scaledTetrahedronVolume * (F64.C2 * v2.X * v2.Y + v3.X * v2.Y + v4.X * v2.Y + v2.X * v3.Y + F64.C2 * v3.X * v3.Y + v4.X * v3.Y + v2.X * v4.Y + v3.X * v4.Y + F64.C2 * v4.X * v4.Y);
+				a =
+a.Add(scaledTetrahedronVolume.Mul(((((((((((((v2.Y.Mul(v2.Y)).Add(v2.Y.Mul(v3.Y))).Add(v3.Y.Mul(v3.Y))).Add(v2.Y.Mul(v4.Y))).Add(v3.Y.Mul(v4.Y))).Add(v4.Y.Mul(v4.Y))).Add(v2.Z.Mul(v2.Z))).Add(v2.Z.Mul(v3.Z))).Add(v3.Z.Mul(v3.Z))).Add(v2.Z.Mul(v4.Z))).Add(v3.Z.Mul(v4.Z))).Add(v4.Z.Mul(v4.Z)))));
+				b = b.Add(scaledTetrahedronVolume.Mul(((((((((((((v2.X.Mul(v2.X)).Add(v2.X.Mul(v3.X))).Add(v3.X.Mul(v3.X))).Add(v2.X.Mul(v4.X))).Add(v3.X.Mul(v4.X))).Add(v4.X.Mul(v4.X))).Add(v2.Z.Mul(v2.Z))).Add(v2.Z.Mul(v3.Z))).Add(v3.Z.Mul(v3.Z))).Add(v2.Z.Mul(v4.Z))).Add(v3.Z.Mul(v4.Z))).Add(v4.Z.Mul(v4.Z)))));
+				c = c.Add(scaledTetrahedronVolume.Mul(((((((((((((v2.X.Mul(v2.X)).Add(v2.X.Mul(v3.X))).Add(v3.X.Mul(v3.X))).Add(v2.X.Mul(v4.X))).Add(v3.X.Mul(v4.X))).Add(v4.X.Mul(v4.X))).Add(v2.Y.Mul(v2.Y))).Add(v2.Y.Mul(v3.Y))).Add(v3.Y.Mul(v3.Y))).Add(v2.Y.Mul(v4.Y))).Add(v3.Y.Mul(v4.Y))).Add(v4.Y.Mul(v4.Y)))));
+				ao = ao.Add(scaledTetrahedronVolume.Mul(((((((((((F64.C2.Mul(v2.Y)).Mul(v2.Z)).Add(v3.Y.Mul(v2.Z))).Add(v4.Y.Mul(v2.Z))).Add(v2.Y.Mul(v3.Z))).Add((F64.C2.Mul(v3.Y)).Mul(v3.Z))).Add(v4.Y.Mul(v3.Z))).Add(v2.Y.Mul(v4.Z))).Add(v3.Y.Mul(v4.Z))).Add((F64.C2.Mul(v4.Y)).Mul(v4.Z)))));
+				bo = bo.Add(scaledTetrahedronVolume.Mul(((((((((((F64.C2.Mul(v2.X)).Mul(v2.Z)).Add(v3.X.Mul(v2.Z))).Add(v4.X.Mul(v2.Z))).Add(v2.X.Mul(v3.Z))).Add((F64.C2.Mul(v3.X)).Mul(v3.Z))).Add(v4.X.Mul(v3.Z))).Add(v2.X.Mul(v4.Z))).Add(v3.X.Mul(v4.Z))).Add((F64.C2.Mul(v4.X)).Mul(v4.Z)))));
+				co = co.Add(scaledTetrahedronVolume.Mul(((((((((((F64.C2.Mul(v2.X)).Mul(v2.Y)).Add(v3.X.Mul(v2.Y))).Add(v4.X.Mul(v2.Y))).Add(v2.X.Mul(v3.Y))).Add((F64.C2.Mul(v3.X)).Mul(v3.Y))).Add(v4.X.Mul(v3.Y))).Add(v2.X.Mul(v4.Y))).Add(v3.X.Mul(v4.Y))).Add((F64.C2.Mul(v4.X)).Mul(v4.Y)))));
             }
             if (scaledVolume < Toolbox.Epsilon)
             {
@@ -460,17 +454,17 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             }
             else
             {
-                Vector3.Multiply(ref summedCenter, F64.C0p25 / scaledVolume, out center);
-                volume = scaledVolume / F64.C6;
-                Fix64 scaledDensity = F64.C1 / volume;
-                Fix64 diagonalFactor = scaledDensity / F64.C60;
-                Fix64 offFactor = -scaledDensity / F64.C120;
-                a *= diagonalFactor;
-                b *= diagonalFactor;
-                c *= diagonalFactor;
-                ao *= offFactor;
-                bo *= offFactor;
-                co *= offFactor;
+                Vector3.Multiply(ref summedCenter, F64.C0p25.Div(scaledVolume), out center);
+                volume = scaledVolume.Div(F64.C6);
+                Fix64 scaledDensity = F64.C1.Div(volume);
+                Fix64 diagonalFactor = scaledDensity.Div(F64.C60);
+                Fix64 offFactor = (scaledDensity.Neg()).Div(F64.C120);
+				a = a.Mul(diagonalFactor);
+				b = b.Mul(diagonalFactor);
+				c = c.Mul(diagonalFactor);
+				ao = ao.Mul(offFactor);
+				bo = bo.Mul(offFactor);
+				co = co.Mul(offFactor);
                 //volumeDistribution = new Matrix3x3(a, bo, co,
                 //                                   bo, b, ao,
                 //                                   co, ao, c);

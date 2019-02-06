@@ -128,9 +128,9 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                 Vector3.Multiply(ref convex.entity.linearVelocity, dt, out velocity);
                 Fix64 velocitySquared = velocity.LengthSquared();
 
-                var minimumRadius = convex.Shape.MinimumRadius * MotionSettings.CoreShapeScaling;
+                var minimumRadius = convex.Shape.MinimumRadius.Mul(MotionSettings.CoreShapeScaling);
                 timeOfImpact = F64.C1;
-                if (minimumRadius * minimumRadius < velocitySquared)
+                if (minimumRadius.Mul(minimumRadius) < velocitySquared)
                 {
                     var triangle = PhysicsThreadResources.GetTriangle();
                     triangle.collisionMargin = F64.C0;
@@ -161,7 +161,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                             else
                             {
                                 Vector3.Dot(ref normal, ref rayHit.Normal, out dot);
-                                dot = -dot;
+                                dot = dot.Neg();
                             }
                             //Only perform sweep if the object is in danger of hitting the object.
                             //Triangles can be one sided, so check the impact normal against the triangle normal.

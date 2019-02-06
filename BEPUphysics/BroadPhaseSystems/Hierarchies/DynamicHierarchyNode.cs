@@ -53,7 +53,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
         internal Fix64 currentVolume;
         internal Fix64 maximumVolume;
 
-        internal static Fix64 MaximumVolumeScale = (Fix64)1.4m;
+        internal static Fix64 MaximumVolumeScale = 1.4m.ToFix();
 
         internal override Node ChildA
         {
@@ -214,7 +214,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
             mergedBVolume = Fix64.SafeMul(Fix64.SafeMul(offset.X, offset.Y), offset.Z);
 
             //Could use factor increase or absolute difference
-            if (mergedAVolume - originalAVolume < mergedBVolume - originalBVolume)
+            if (mergedAVolume.Sub(originalAVolume) < mergedBVolume.Sub(originalBVolume))
             {
                 //merging A produces a better result.
                 if (childA.IsLeaf)
@@ -294,7 +294,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
             childB.Refit();
             BoundingBox.CreateMerged(ref childA.BoundingBox, ref childB.BoundingBox, out BoundingBox);
             //Fix64 DEBUGlastVolume = currentVolume;
-            currentVolume = Fix64.SafeMul(Fix64.SafeMul(BoundingBox.Max.X - BoundingBox.Min.X, BoundingBox.Max.Y - BoundingBox.Min.Y), BoundingBox.Max.Z - BoundingBox.Min.Z);
+            currentVolume = Fix64.SafeMul(Fix64.SafeMul(BoundingBox.Max.X.Sub(BoundingBox.Min.X), BoundingBox.Max.Y.Sub(BoundingBox.Min.Y)), BoundingBox.Max.Z.Sub(BoundingBox.Min.Z));
             //if (Math.Abs(currentVolume - DEBUGlastVolume) > .000001 * (DEBUGlastVolume + currentVolume))
             //    Debug.WriteLine(":Break>:)");
         }
@@ -433,7 +433,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
                 childB.PostRefit(splitDepth, currentDepth + 1);
             }
             BoundingBox.CreateMerged(ref childA.BoundingBox, ref childB.BoundingBox, out BoundingBox);
-            currentVolume = Fix64.SafeMul(Fix64.SafeMul(BoundingBox.Max.X - BoundingBox.Min.X, BoundingBox.Max.Y - BoundingBox.Min.Y), BoundingBox.Max.Z - BoundingBox.Min.Z);
+            currentVolume = Fix64.SafeMul(Fix64.SafeMul(BoundingBox.Max.X.Sub(BoundingBox.Min.X), BoundingBox.Max.Y.Sub(BoundingBox.Min.Y)), BoundingBox.Max.Z.Sub(BoundingBox.Min.Z));
         }
 
         internal override void GetMultithreadedOverlaps(Node opposingNode, int splitDepth, int currentDepth, DynamicHierarchy owner, RawList<DynamicHierarchy.NodePair> multithreadingSourceOverlaps)
@@ -618,7 +618,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
         {
             Vector3 offset;
             Vector3.Subtract(ref BoundingBox.Max, ref BoundingBox.Min, out offset);
-            return Fix64.SafeMul(Fix64.SafeMul(offset.X, offset.Y), offset.Z) + ChildA.MeasureSubtreeCost() + childB.MeasureSubtreeCost();
+            return (Fix64.SafeMul(Fix64.SafeMul(offset.X, offset.Y), offset.Z).Add(ChildA.MeasureSubtreeCost())).Add(childB.MeasureSubtreeCost());
         }
 
 

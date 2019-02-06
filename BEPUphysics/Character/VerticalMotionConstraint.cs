@@ -90,7 +90,7 @@ namespace BEPUphysics.Character
 		{
 			this.characterBody = characterBody;
 			this.supportFinder = supportFinder;
-			MaximumGlueForce = (Fix64)5000;
+			MaximumGlueForce = (Fix64)5000.ToFix();
 		}
 
 		/// <summary>
@@ -172,13 +172,13 @@ namespace BEPUphysics.Character
                 supportEntity = null;
             }
 
-            maximumForce = maximumGlueForce * dt;
+            maximumForce = maximumGlueForce.Mul(dt);
 
             //If we don't allow the character to get out of the ground, it could apply some significant forces to a dynamic support object.
             //Let the character escape penetration in a controlled manner. This mirrors the regular penetration recovery speed.
             //Since the vertical motion constraint works in the opposite direction of the contact penetration constraint,
             //this actually eliminates the 'bounce' that can occur with non-character objects in deep penetration.
-            permittedVelocity = MathHelper.Min(MathHelper.Max(supportData.Depth * CollisionResponseSettings.PenetrationRecoveryStiffness / dt, F64.C0), CollisionResponseSettings.MaximumPenetrationRecoverySpeed);
+            permittedVelocity = MathHelper.Min(MathHelper.Max((supportData.Depth.Mul(CollisionResponseSettings.PenetrationRecoveryStiffness)).Div(dt), F64.C0), CollisionResponseSettings.MaximumPenetrationRecoverySpeed);
 
             //Compute the jacobians and effective mass matrix.  This constraint works along a single degree of freedom, so the mass matrix boils down to a scalar.
 
@@ -199,10 +199,11 @@ namespace BEPUphysics.Character
                     Fix64 effectiveMassContribution;
                     Vector3.Dot(ref angularComponentB, ref angularJacobianB, out effectiveMassContribution);
 
-                    inverseEffectiveMass += supportForceFactor * (effectiveMassContribution + supportEntity.InverseMass);
+					inverseEffectiveMass =
+inverseEffectiveMass.Add(supportForceFactor.Mul((effectiveMassContribution.Add(supportEntity.InverseMass))));
                 }
             }
-            effectiveMass = F64.C1 / (inverseEffectiveMass);
+            effectiveMass = F64.C1.Div((inverseEffectiveMass));
             //So much nicer and shorter than the horizontal constraint!
 
         }
@@ -226,8 +227,8 @@ namespace BEPUphysics.Character
 
             if (supportEntity != null && supportEntity.IsDynamic)
             {
-                Vector3.Multiply(ref impulse, -supportForceFactor, out impulse);
-                Vector3.Multiply(ref angularJacobianB, accumulatedImpulse * supportForceFactor, out torque);
+                Vector3.Multiply(ref impulse, supportForceFactor.Neg(), out impulse);
+                Vector3.Multiply(ref angularJacobianB, accumulatedImpulse.Mul(supportForceFactor), out torque);
 
                 supportEntity.ApplyLinearImpulse(ref impulse);
                 supportEntity.ApplyAngularImpulse(ref torque);
@@ -244,16 +245,16 @@ namespace BEPUphysics.Character
             //y is the perpendicular direction.
 
             //Note that positive velocity is penetrating velocity.
-            Fix64 relativeVelocity = RelativeVelocity + permittedVelocity;
+            Fix64 relativeVelocity = RelativeVelocity.Add(permittedVelocity);
 
 
             //Create the full velocity change, and convert it to an impulse in constraint space.
-            Fix64 lambda = -relativeVelocity * effectiveMass;
+            Fix64 lambda = (relativeVelocity.Neg()).Mul(effectiveMass);
 
             //Add and clamp the impulse.
             Fix64 previousAccumulatedImpulse = accumulatedImpulse;
-            accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse + lambda, F64.C0, maximumForce);
-            lambda = accumulatedImpulse - previousAccumulatedImpulse;
+            accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse.Add(lambda), F64.C0, maximumForce);
+            lambda = accumulatedImpulse.Sub(previousAccumulatedImpulse);
             //Use the jacobians to put the impulse into world space.
 
 #if !WINDOWS
@@ -269,9 +270,9 @@ namespace BEPUphysics.Character
 
             if (supportEntity != null && supportEntity.IsDynamic)
             {
-                Vector3.Multiply(ref impulse, -supportForceFactor, out impulse);
+                Vector3.Multiply(ref impulse, supportForceFactor.Neg(), out impulse);
 
-                Vector3.Multiply(ref angularJacobianB, lambda * supportForceFactor, out torque);
+                Vector3.Multiply(ref angularJacobianB, lambda.Mul(supportForceFactor), out torque);
 
                 supportEntity.ApplyLinearImpulse(ref impulse);
                 supportEntity.ApplyAngularImpulse(ref torque);
@@ -296,9 +297,9 @@ namespace BEPUphysics.Character
                 {
                     Fix64 supportVelocity;
                     Vector3.Dot(ref linearJacobianB, ref supportEntity.linearVelocity, out supportVelocity);
-                    relativeVelocity += supportVelocity;
+					relativeVelocity = relativeVelocity.Add(supportVelocity);
                     Vector3.Dot(ref angularJacobianB, ref supportEntity.angularVelocity, out supportVelocity);
-                    relativeVelocity += supportVelocity;
+					relativeVelocity = relativeVelocity.Add(supportVelocity);
 
                 }
                 return relativeVelocity;

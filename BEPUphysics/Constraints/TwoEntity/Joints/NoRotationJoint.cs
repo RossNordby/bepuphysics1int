@@ -187,7 +187,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 connectionB.ApplyAngularImpulse(ref torqueB);
             }
 
-            return Fix64.Abs(lambda.X) + Fix64.Abs(lambda.Y) + Fix64.Abs(lambda.Z);
+            return (Fix64.Abs(lambda.X).Add(Fix64.Abs(lambda.Y))).Add(Fix64.Abs(lambda.Z));
         }
 
         /// <summary>
@@ -209,31 +209,31 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3 axis;
             Quaternion.GetAxisAngleFromQuaternion(ref intermediate, out axis, out angle);
 
-            error.X = axis.X * angle;
-            error.Y = axis.Y * angle;
-            error.Z = axis.Z * angle;
+            error.X = axis.X.Mul(angle);
+            error.Y = axis.Y.Mul(angle);
+            error.Z = axis.Z.Mul(angle);
 
             Fix64 errorReduction;
-            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 / dt, out errorReduction, out softness);
-            errorReduction = -errorReduction;
-            biasVelocity.X = errorReduction * error.X;
-            biasVelocity.Y = errorReduction * error.Y;
-            biasVelocity.Z = errorReduction * error.Z;
+            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReduction, out softness);
+            errorReduction = errorReduction.Neg();
+            biasVelocity.X = errorReduction.Mul(error.X);
+            biasVelocity.Y = errorReduction.Mul(error.Y);
+            biasVelocity.Z = errorReduction.Mul(error.Z);
 
             //Ensure that the corrective velocity doesn't exceed the max.
             Fix64 length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                Fix64 multiplier = maxCorrectiveVelocity / Fix64.Sqrt(length);
-                biasVelocity.X *= multiplier;
-                biasVelocity.Y *= multiplier;
-                biasVelocity.Z *= multiplier;
+                Fix64 multiplier = maxCorrectiveVelocity.Div(Fix64.Sqrt(length));
+				biasVelocity.X = biasVelocity.X.Mul(multiplier);
+				biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
+				biasVelocity.Z = biasVelocity.Z.Mul(multiplier);
             }
 
             Matrix3x3.Add(ref connectionA.inertiaTensorInverse, ref connectionB.inertiaTensorInverse, out effectiveMassMatrix);
-            effectiveMassMatrix.M11 += softness;
-            effectiveMassMatrix.M22 += softness;
-            effectiveMassMatrix.M33 += softness;
+			effectiveMassMatrix.M11 = effectiveMassMatrix.M11.Add(softness);
+			effectiveMassMatrix.M22 = effectiveMassMatrix.M22.Add(softness);
+			effectiveMassMatrix.M33 = effectiveMassMatrix.M33.Add(softness);
             Matrix3x3.Invert(ref effectiveMassMatrix, out effectiveMassMatrix);
 
 

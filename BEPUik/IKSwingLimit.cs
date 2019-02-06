@@ -79,26 +79,26 @@ namespace BEPUik
 
             //Yes, we could avoid this acos here. Performance is not the highest goal of this system; the less tricks used, the easier it is to understand.
 			// TODO investigate performance
-            Fix64 angle = Fix64.Acos(MathHelper.Clamp(dot, -1, F64.C1));
+            Fix64 angle = Fix64.Acos(MathHelper.Clamp(dot, F64.C1.Neg(), F64.C1));
 
             //One angular DOF is constrained by this limit.
             Vector3 hingeAxis;
             Vector3.Cross(ref axisA, ref axisB, out hingeAxis);
 
             angularJacobianA = new Matrix3x3 { M11 = hingeAxis.X, M12 = hingeAxis.Y, M13 = hingeAxis.Z };
-            angularJacobianB = new Matrix3x3 { M11 = -hingeAxis.X, M12 = -hingeAxis.Y, M13 = -hingeAxis.Z };
+            angularJacobianB = new Matrix3x3 { M11 = hingeAxis.X.Neg(), M12 = hingeAxis.Y.Neg(), M13 = hingeAxis.Z.Neg() };
 
             //Note how we've computed the jacobians despite the limit being potentially inactive.
             //This is to enable 'speculative' limits.
             if (angle >= maximumAngle)
             {
-                velocityBias = new Vector3(errorCorrectionFactor * (angle - maximumAngle), F64.C0, F64.C0);
+                velocityBias = new Vector3(errorCorrectionFactor.Mul((angle.Sub(maximumAngle))), F64.C0, F64.C0);
             }
             else
             {
                 //The constraint is not yet violated. But, it may be- allow only as much motion as could occur without violating the constraint.
                 //Limits can't 'pull,' so this will not result in erroneous sticking.
-                velocityBias = new Vector3(angle - maximumAngle, F64.C0, F64.C0);
+                velocityBias = new Vector3(angle.Sub(maximumAngle), F64.C0, F64.C0);
             }
 
 

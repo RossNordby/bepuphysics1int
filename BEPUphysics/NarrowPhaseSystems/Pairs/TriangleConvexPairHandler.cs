@@ -142,9 +142,9 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                 Vector3.Multiply(ref velocity, dt, out velocity);
                 Fix64 velocitySquared = velocity.LengthSquared();
 
-                var minimumRadiusA = convex.Shape.MinimumRadius * MotionSettings.CoreShapeScaling;
+                var minimumRadiusA = convex.Shape.MinimumRadius.Mul(MotionSettings.CoreShapeScaling);
                 timeOfImpact = F64.C1;
-                if (minimumRadiusA * minimumRadiusA < velocitySquared)
+                if (minimumRadiusA.Mul(minimumRadiusA) < velocitySquared)
                 {
                     //Spherecast A against B.
                     RayHit rayHit;

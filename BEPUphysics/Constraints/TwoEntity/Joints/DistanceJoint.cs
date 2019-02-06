@@ -146,11 +146,11 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 Fix64 lambda, dot;
                 Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out lambda);
                 Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
-                lambda += dot;
+				lambda = lambda.Add(dot);
                 Vector3.Dot(ref jLinearB, ref connectionB.linearVelocity, out dot);
-                lambda += dot;
+				lambda = lambda.Add(dot);
                 Vector3.Dot(ref jAngularB, ref connectionB.angularVelocity, out dot);
-                lambda += dot;
+				lambda = lambda.Add(dot);
                 return lambda;
             }
         }
@@ -233,20 +233,22 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Fix64 lambda, dot;
             Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out lambda);
             Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
-            lambda += dot;
+			lambda = lambda.Add(dot);
             Vector3.Dot(ref jLinearB, ref connectionB.linearVelocity, out dot);
-            lambda += dot;
+			lambda = lambda.Add(dot);
             Vector3.Dot(ref jAngularB, ref connectionB.angularVelocity, out dot);
-            lambda += dot;
+			lambda = lambda.Add(dot);
 
             //Add in the constraint space bias velocity
-            lambda = -lambda + biasVelocity - softness * accumulatedImpulse;
+            lambda = ((lambda.Neg()).Add(biasVelocity)).Sub(softness.Mul(accumulatedImpulse));
 
-            //Transform to an impulse
-            lambda *= velocityToImpulse;
+			//Transform to an impulse
+			lambda =
+lambda.Mul(velocityToImpulse);
 
-            //Accumulate impulse
-            accumulatedImpulse += lambda;
+			//Accumulate impulse
+			accumulatedImpulse =
+accumulatedImpulse.Add(lambda);
 
             //Apply the impulse
             Vector3 impulse;
@@ -288,16 +290,16 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             //Compute jacobians
             if (currentDistance > Toolbox.Epsilon)
             {
-                jLinearB.X = separation.X / currentDistance;
-                jLinearB.Y = separation.Y / currentDistance;
-                jLinearB.Z = separation.Z / currentDistance;
+                jLinearB.X = separation.X.Div(currentDistance);
+                jLinearB.Y = separation.Y.Div(currentDistance);
+                jLinearB.Z = separation.Z.Div(currentDistance);
             }
             else
                 jLinearB = Toolbox.ZeroVector;
 
-            jLinearA.X = -jLinearB.X;
-            jLinearA.Y = -jLinearB.Y;
-            jLinearA.Z = -jLinearB.Z;
+            jLinearA.X = jLinearB.X.Neg();
+            jLinearA.Y = jLinearB.Y.Neg();
+            jLinearA.Z = jLinearB.Z.Neg();
 
             Vector3.Cross(ref offsetA, ref jLinearB, out jAngularA);
             //Still need to negate angular A.  It's done after the effective mass matrix.
@@ -315,7 +317,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 Vector3.Cross(ref bAngular, ref offsetB, out bAngular);
                 Vector3.Add(ref aAngular, ref bAngular, out aAngular);
                 Vector3.Dot(ref aAngular, ref jLinearB, out velocityToImpulse);
-                velocityToImpulse += connectionA.inverseMass + connectionB.inverseMass;
+				velocityToImpulse = velocityToImpulse.Add(connectionA.inverseMass.Add(connectionB.inverseMass));
             }
             else if (connectionA.isDynamic)
             {
@@ -323,7 +325,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 Matrix3x3.Transform(ref jAngularA, ref connectionA.localInertiaTensorInverse, out aAngular);
                 Vector3.Cross(ref aAngular, ref offsetA, out aAngular);
                 Vector3.Dot(ref aAngular, ref jLinearB, out velocityToImpulse);
-                velocityToImpulse += connectionA.inverseMass;
+				velocityToImpulse = velocityToImpulse.Add(connectionA.inverseMass);
             }
             else if (connectionB.isDynamic)
             {
@@ -331,7 +333,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 Matrix3x3.Transform(ref jAngularB, ref connectionB.localInertiaTensorInverse, out bAngular);
                 Vector3.Cross(ref bAngular, ref offsetB, out bAngular);
                 Vector3.Dot(ref bAngular, ref jLinearB, out velocityToImpulse);
-                velocityToImpulse += connectionB.inverseMass;
+				velocityToImpulse = velocityToImpulse.Add(connectionB.inverseMass);
             }
             else
             {
@@ -342,17 +344,17 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             }
 
             Fix64 errorReduction;
-            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 / dt, out errorReduction, out softness);
+            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReduction, out softness);
 
-            velocityToImpulse = F64.C1 / (softness + velocityToImpulse);
+            velocityToImpulse = F64.C1.Div((softness.Add(velocityToImpulse)));
             //Finish computing jacobian; it's down here as an optimization (since it didn't need to be negated in mass matrix)
-            jAngularA.X = -jAngularA.X;
-            jAngularA.Y = -jAngularA.Y;
-            jAngularA.Z = -jAngularA.Z;
+            jAngularA.X = jAngularA.X.Neg();
+            jAngularA.Y = jAngularA.Y.Neg();
+            jAngularA.Z = jAngularA.Z.Neg();
 
             //Compute bias velocity
-            error = distance - currentDistance;
-            biasVelocity = MathHelper.Clamp(error * errorReduction, -maxCorrectiveVelocity, maxCorrectiveVelocity);
+            error = distance.Sub(currentDistance);
+            biasVelocity = MathHelper.Clamp(error.Mul(errorReduction), maxCorrectiveVelocity.Neg(), maxCorrectiveVelocity);
 
 
 

@@ -53,9 +53,9 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         public static ConvexShapeDescription ComputeDescription(Fix64 radius)
         {
             ConvexShapeDescription description;
-            description.EntityShapeVolume.Volume = F64.FourThirds * MathHelper.Pi * radius * radius * radius;
+            description.EntityShapeVolume.Volume = (((F64.FourThirds.Mul(MathHelper.Pi)).Mul(radius)).Mul(radius)).Mul(radius);
             description.EntityShapeVolume.VolumeDistribution = new Matrix3x3();
-            Fix64 diagValue = ((F64.TwoFifths) * radius * radius);
+            Fix64 diagValue = (((F64.TwoFifths).Mul(radius)).Mul(radius));
             description.EntityShapeVolume.VolumeDistribution.M11 = diagValue;
             description.EntityShapeVolume.VolumeDistribution.M22 = diagValue;
             description.EntityShapeVolume.VolumeDistribution.M33 = diagValue;
@@ -78,12 +78,12 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 #if !WINDOWS
             boundingBox = new BoundingBox();
 #endif
-            boundingBox.Min.X = shapeTransform.Position.X - collisionMargin;
-            boundingBox.Min.Y = shapeTransform.Position.Y - collisionMargin;
-            boundingBox.Min.Z = shapeTransform.Position.Z - collisionMargin;
-            boundingBox.Max.X = shapeTransform.Position.X + collisionMargin;
-            boundingBox.Max.Y = shapeTransform.Position.Y + collisionMargin;
-            boundingBox.Max.Z = shapeTransform.Position.Z + collisionMargin;
+            boundingBox.Min.X = shapeTransform.Position.X.Sub(collisionMargin);
+            boundingBox.Min.Y = shapeTransform.Position.Y.Sub(collisionMargin);
+            boundingBox.Min.Z = shapeTransform.Position.Z.Sub(collisionMargin);
+            boundingBox.Max.X = shapeTransform.Position.X.Add(collisionMargin);
+            boundingBox.Max.Y = shapeTransform.Position.Y.Add(collisionMargin);
+            boundingBox.Max.Z = shapeTransform.Position.Z.Add(collisionMargin);
         }
 
 

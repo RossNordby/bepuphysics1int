@@ -91,7 +91,7 @@ namespace BEPUphysics.Paths.PathFollowing
 			Fix64 angle;
             //Turn this into an axis-angle representation.
             Quaternion.GetAxisAngleFromQuaternion(ref errorOrientation, out axis, out angle);
-            Vector3.Multiply(ref axis, angle / dt, out axis);
+            Vector3.Multiply(ref axis, angle.Div(dt), out axis);
             return axis;
         }
 

@@ -38,7 +38,7 @@ namespace BEPUik
 
 
             Vector3.Dot(ref boneAxis, ref PlaneNormal, out velocityBias.X);
-            velocityBias.X = -errorCorrectionFactor * velocityBias.X;
+            velocityBias.X = (errorCorrectionFactor.Neg()).Mul(velocityBias.X);
 
 
         }

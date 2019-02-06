@@ -53,8 +53,8 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             CommonResources.GiveBack(hullTriangleIndices);
             CommonResources.GiveBack(surfaceVertices);
 
-            unexpandedMaximumRadius = MaximumRadius - collisionMargin;
-            unexpandedMinimumRadius = MinimumRadius - collisionMargin;
+            unexpandedMaximumRadius = MaximumRadius.Sub(collisionMargin);
+            unexpandedMinimumRadius = MinimumRadius.Sub(collisionMargin);
         }
 
         ///<summary>
@@ -78,8 +78,8 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             CommonResources.GiveBack(hullTriangleIndices);
             CommonResources.GiveBack(surfaceVertices);
 
-            unexpandedMaximumRadius = MaximumRadius - collisionMargin;
-            unexpandedMinimumRadius = MinimumRadius - collisionMargin;
+            unexpandedMaximumRadius = MaximumRadius.Sub(collisionMargin);
+            unexpandedMinimumRadius = MinimumRadius.Sub(collisionMargin);
 
         }
 
@@ -101,8 +101,8 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             this.vertices = new Vector3[outputUniqueSurfaceVertices.Count];
             outputUniqueSurfaceVertices.CopyTo(this.vertices, 0);
 
-            unexpandedMaximumRadius = MaximumRadius - collisionMargin;
-            unexpandedMinimumRadius = MinimumRadius - collisionMargin;
+            unexpandedMaximumRadius = MaximumRadius.Sub(collisionMargin);
+            unexpandedMinimumRadius = MinimumRadius.Sub(collisionMargin);
 
         }
 
@@ -117,8 +117,8 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             if (localSurfaceVertices.Count == 0)
                 throw new ArgumentException("Vertices list used to create a ConvexHullShape cannot be empty.");
 
-            unexpandedMaximumRadius = description.MaximumRadius - collisionMargin;
-            unexpandedMinimumRadius = description.MinimumRadius - collisionMargin;
+            unexpandedMaximumRadius = description.MaximumRadius.Sub(collisionMargin);
+            unexpandedMinimumRadius = description.MinimumRadius.Sub(collisionMargin);
             vertices = new Vector3[localSurfaceVertices.Count];
             localSurfaceVertices.CopyTo(vertices, 0);
             UpdateConvexShapeInfo(description);
@@ -135,8 +135,8 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             UpdateConvexShapeInfo(new ConvexShapeDescription
             {
                 EntityShapeVolume = new EntityShapeVolumeDescription { Volume = Volume, VolumeDistribution = VolumeDistribution },
-                MinimumRadius = unexpandedMinimumRadius + collisionMargin,
-                MaximumRadius = unexpandedMaximumRadius + collisionMargin,
+                MinimumRadius = unexpandedMinimumRadius.Add(collisionMargin),
+                MaximumRadius = unexpandedMaximumRadius.Add(collisionMargin),
                 CollisionMargin = collisionMargin
             });
             base.OnShapeChanged();
@@ -168,7 +168,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 outputUniqueSurfaceVertices[i] -= center;
             }
 
-            description.MinimumRadius = InertiaHelper.ComputeMinimumRadius(vertices, outputHullTriangleIndices, ref center) + collisionMargin;
+            description.MinimumRadius = InertiaHelper.ComputeMinimumRadius(vertices, outputHullTriangleIndices, ref center).Add(collisionMargin);
             description.MaximumRadius = ComputeMaximumRadius(outputUniqueSurfaceVertices, collisionMargin);
 
             description.CollisionMargin = collisionMargin;
@@ -193,7 +193,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                     longestLengthSquared = lengthCandidate;
                 }
             }
-            return Fix64.Sqrt(longestLengthSquared) + collisionMargin;
+            return Fix64.Sqrt(longestLengthSquared).Add(collisionMargin);
         }
 
 
@@ -277,13 +277,13 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             TransformLocalExtremePoints(ref vertices[minXIndex], ref vertices[minYIndex], ref vertices[minZIndex], ref o, out negative);
 
             //The positive and negative vectors represent the X, Y and Z coordinates of the extreme points in world space along the world space axes.
-            boundingBox.Max.X = shapeTransform.Position.X + positive.X + collisionMargin;
-            boundingBox.Max.Y = shapeTransform.Position.Y + positive.Y + collisionMargin;
-            boundingBox.Max.Z = shapeTransform.Position.Z + positive.Z + collisionMargin;
+            boundingBox.Max.X = (shapeTransform.Position.X.Add(positive.X)).Add(collisionMargin);
+            boundingBox.Max.Y = (shapeTransform.Position.Y.Add(positive.Y)).Add(collisionMargin);
+            boundingBox.Max.Z = (shapeTransform.Position.Z.Add(positive.Z)).Add(collisionMargin);
 
-            boundingBox.Min.X = shapeTransform.Position.X + negative.X - collisionMargin;
-            boundingBox.Min.Y = shapeTransform.Position.Y + negative.Y - collisionMargin;
-            boundingBox.Min.Z = shapeTransform.Position.Z + negative.Z - collisionMargin;
+            boundingBox.Min.X = (shapeTransform.Position.X.Add(negative.X)).Sub(collisionMargin);
+            boundingBox.Min.Y = (shapeTransform.Position.Y.Add(negative.Y)).Sub(collisionMargin);
+            boundingBox.Min.Z = (shapeTransform.Position.Z.Add(negative.Z)).Sub(collisionMargin);
         }
 
 

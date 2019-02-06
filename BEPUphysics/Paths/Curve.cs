@@ -50,19 +50,19 @@ namespace BEPUphysics.Paths
                 switch (preLoop)
                 {
                     case CurveEndpointBehavior.Wrap:
-                        Fix64 modifiedTime = time - intervalBegin;
-                        Fix64 intervalLength = intervalEnd - intervalBegin;
-                        modifiedTime %= intervalLength;
-                        return intervalEnd + modifiedTime;
+                        Fix64 modifiedTime = time.Sub(intervalBegin);
+                        Fix64 intervalLength = intervalEnd.Sub(intervalBegin);
+						modifiedTime = modifiedTime.Mod(intervalLength);
+                        return intervalEnd.Add(modifiedTime);
                     case CurveEndpointBehavior.Clamp:
                         return MathHelper.Max(intervalBegin, time);
                     case CurveEndpointBehavior.Mirror:
-                        modifiedTime = time - intervalBegin;
-                        intervalLength = intervalEnd - intervalBegin;
-                        var numFlips = (int) (modifiedTime / intervalLength);
+                        modifiedTime = time.Sub(intervalBegin);
+                        intervalLength = intervalEnd.Sub(intervalBegin);
+                        var numFlips = (int) (modifiedTime.Div(intervalLength)).ToInt();
                         if (numFlips % 2 == 0)
-                            return intervalBegin - modifiedTime % intervalLength;
-                        return intervalEnd + modifiedTime % intervalLength;
+                            return intervalBegin.Sub(modifiedTime.Mod(intervalLength));
+                        return intervalEnd.Add(modifiedTime.Mod(intervalLength));
                 }
             }
             else if (time >= intervalEnd)
@@ -70,19 +70,19 @@ namespace BEPUphysics.Paths
                 switch (postLoop)
                 {
                     case CurveEndpointBehavior.Wrap:
-                        Fix64 modifiedTime = time - intervalEnd;
-                        Fix64 intervalLength = intervalEnd - intervalBegin;
-                        modifiedTime %= intervalLength;
-                        return intervalBegin + modifiedTime;
+                        Fix64 modifiedTime = time.Sub(intervalEnd);
+                        Fix64 intervalLength = intervalEnd.Sub(intervalBegin);
+						modifiedTime = modifiedTime.Mod(intervalLength);
+                        return intervalBegin.Add(modifiedTime);
                     case CurveEndpointBehavior.Clamp:
                         return MathHelper.Min(intervalEnd, time);
                     case CurveEndpointBehavior.Mirror:
-                        modifiedTime = time - intervalEnd;
-                        intervalLength = intervalEnd - intervalBegin;
-                        var numFlips = (int) (modifiedTime / intervalLength);
+                        modifiedTime = time.Sub(intervalEnd);
+                        intervalLength = intervalEnd.Sub(intervalBegin);
+                        var numFlips = (int) (modifiedTime.Div(intervalLength)).ToInt();
                         if (numFlips % 2 == 0)
-                            return intervalEnd - modifiedTime % intervalLength;
-                        return intervalBegin + modifiedTime % intervalLength;
+                            return intervalEnd.Sub(modifiedTime.Mod(intervalLength));
+                        return intervalBegin.Add(modifiedTime.Mod(intervalLength));
                 }
             }
             return time;
@@ -140,13 +140,13 @@ namespace BEPUphysics.Paths
             }
             else
             {
-                var denominator = ControlPoints[index + 1].Time - ControlPoints[index].Time;
+                var denominator = ControlPoints[index + 1].Time.Sub(ControlPoints[index].Time);
 
                 Fix64 intervalTime;
                 if (denominator < Toolbox.Epsilon)
                     intervalTime = F64.C0;
                 else
-                    intervalTime = (time - ControlPoints[index].Time) / denominator;
+                    intervalTime = (time.Sub(ControlPoints[index].Time)).Div(denominator);
 
 
                 Evaluate(index, intervalTime, out value);

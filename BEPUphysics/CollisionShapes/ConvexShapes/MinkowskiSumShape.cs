@@ -199,12 +199,12 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             Fix64 minRadius = F64.C0, maxRadius = F64.C0;
             for (int i = 0; i < shapes.Count; i++)
             {
-                minRadius += shapes.WrappedList.Elements[i].CollisionShape.MinimumRadius;
-                maxRadius += shapes.WrappedList.Elements[i].CollisionShape.MaximumRadius;
+				minRadius = minRadius.Add(shapes.WrappedList.Elements[i].CollisionShape.MinimumRadius);
+				maxRadius = maxRadius.Add(shapes.WrappedList.Elements[i].CollisionShape.MaximumRadius);
             }
 
-            MinimumRadius = minRadius + collisionMargin;
-            MaximumRadius = maxRadius + collisionMargin;
+            MinimumRadius = minRadius.Add(collisionMargin);
+            MaximumRadius = maxRadius.Add(collisionMargin);
 
 
 

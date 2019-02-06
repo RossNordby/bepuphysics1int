@@ -91,11 +91,11 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
             get { return maximumAngle; }
             set
             {
-                maximumAngle = value % (MathHelper.TwoPi);
+                maximumAngle = value.Mod((MathHelper.TwoPi));
                 if (minimumAngle > MathHelper.Pi)
-                    minimumAngle -= MathHelper.TwoPi;
-                if (minimumAngle <= -MathHelper.Pi)
-                    minimumAngle += MathHelper.TwoPi;
+					minimumAngle = minimumAngle.Sub(MathHelper.TwoPi);
+                if (minimumAngle <= MathHelper.Pi.Neg())
+					minimumAngle = minimumAngle.Add(MathHelper.TwoPi);
             }
         }
 
@@ -107,11 +107,11 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
             get { return minimumAngle; }
             set
             {
-                minimumAngle = value % (MathHelper.TwoPi);
+                minimumAngle = value.Mod((MathHelper.TwoPi));
                 if (minimumAngle > MathHelper.Pi)
-                    minimumAngle -= MathHelper.TwoPi;
-                if (minimumAngle <= -MathHelper.Pi)
-                    minimumAngle += MathHelper.TwoPi;
+					minimumAngle = minimumAngle.Sub(MathHelper.TwoPi);
+                if (minimumAngle <= MathHelper.Pi.Neg())
+					minimumAngle = minimumAngle.Add(MathHelper.TwoPi);
             }
         }
 
@@ -130,7 +130,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
                     //Find the velocity contribution from each connection
                     Vector3.Dot(ref connectionA.angularVelocity, ref jacobianA, out velocityA);
                     Vector3.Dot(ref connectionB.angularVelocity, ref jacobianB, out velocityB);
-                    return velocityA + velocityB;
+                    return velocityA.Add(velocityB);
                 }
                 return F64.C0;
             }
@@ -249,15 +249,16 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
             Vector3.Dot(ref connectionA.angularVelocity, ref jacobianA, out velocityA);
             Vector3.Dot(ref connectionB.angularVelocity, ref jacobianB, out velocityB);
             //Add in the constraint space bias velocity
-            Fix64 lambda = -(velocityA + velocityB) + biasVelocity - softness * accumulatedImpulse;
+            Fix64 lambda = ((velocityA.Add(velocityB).Neg()).Add(biasVelocity)).Sub(softness.Mul(accumulatedImpulse));
 
-            //Transform to an impulse
-            lambda *= velocityToImpulse;
+			//Transform to an impulse
+			lambda =
+lambda.Mul(velocityToImpulse);
 
             //Clamp accumulated impulse (can't go negative)
             Fix64 previousAccumulatedImpulse = accumulatedImpulse;
-            accumulatedImpulse = MathHelper.Max(accumulatedImpulse + lambda, F64.C0);
-            lambda = accumulatedImpulse - previousAccumulatedImpulse;
+            accumulatedImpulse = MathHelper.Max(accumulatedImpulse.Add(lambda), F64.C0);
+            lambda = accumulatedImpulse.Sub(previousAccumulatedImpulse);
 
             //Apply the impulse
             Vector3 impulse;
@@ -323,9 +324,9 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
                 }
 
                 jacobianB.Normalize();
-                jacobianA.X = -jacobianB.X;
-                jacobianA.Y = -jacobianB.Y;
-                jacobianA.Z = -jacobianB.Z;
+                jacobianA.X = jacobianB.X.Neg();
+                jacobianA.Y = jacobianB.Y.Neg();
+                jacobianA.Z = jacobianB.Z.Neg();
             }
             else
             {
@@ -340,20 +341,20 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
                 }
 
                 jacobianA.Normalize();
-                jacobianB.X = -jacobianA.X;
-                jacobianB.Y = -jacobianA.Y;
-                jacobianB.Z = -jacobianA.Z;
+                jacobianB.X = jacobianA.X.Neg();
+                jacobianB.Y = jacobianA.Y.Neg();
+                jacobianB.Z = jacobianA.Z.Neg();
             }
 
             //****** VELOCITY BIAS ******//
             //Compute the correction velocity.
             error = ComputeAngleError(distanceFromCurrent, distanceFromMaximum);
             Fix64 errorReduction;
-            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 / dt, out errorReduction, out softness);
+            springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReduction, out softness);
 
 
             //biasVelocity = MathHelper.Clamp(-error * myCorrectionStrength / dt, -myMaxCorrectiveVelocity, myMaxCorrectiveVelocity);
-            biasVelocity = MathHelper.Min(MathHelper.Max(F64.C0, Fix64.Abs(error) - margin) * errorReduction, maxCorrectiveVelocity);
+            biasVelocity = MathHelper.Min(MathHelper.Max(F64.C0, Fix64.Abs(error).Sub(margin)).Mul(errorReduction), maxCorrectiveVelocity);
             if (bounciness > F64.C0)
             {
                 Fix64 relativeVelocity;
@@ -361,8 +362,8 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
                 //Find the velocity contribution from each connection
                 Vector3.Dot(ref connectionA.angularVelocity, ref jacobianA, out relativeVelocity);
                 Vector3.Dot(ref connectionB.angularVelocity, ref jacobianB, out dot);
-                relativeVelocity += dot;
-                biasVelocity = MathHelper.Max(biasVelocity, ComputeBounceVelocity(-relativeVelocity));
+				relativeVelocity = relativeVelocity.Add(dot);
+                biasVelocity = MathHelper.Max(biasVelocity, ComputeBounceVelocity(relativeVelocity.Neg()));
             }
 
             //The nice thing about this approach is that the jacobian entry doesn't flip.
@@ -393,7 +394,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
                 entryB = F64.C0;
 
             //Compute the inverse mass matrix
-            velocityToImpulse = F64.C1 / (softness + entryA + entryB);
+            velocityToImpulse = F64.C1.Div(((softness.Add(entryA)).Add(entryB)));
 
             
         }
@@ -422,9 +423,9 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
 
         private static Fix64 ComputeAngleError(Fix64 distanceFromCurrent, Fix64 distanceFromMaximum)
         {
-            Fix64 errorFromMin = MathHelper.TwoPi - distanceFromCurrent;
-            Fix64 errorFromMax = distanceFromCurrent - distanceFromMaximum;
-            return errorFromMax > errorFromMin ? errorFromMin : -errorFromMax;
+            Fix64 errorFromMin = MathHelper.TwoPi.Sub(distanceFromCurrent);
+            Fix64 errorFromMax = distanceFromCurrent.Sub(distanceFromMaximum);
+            return errorFromMax > errorFromMin ? errorFromMin : errorFromMax.Neg();
         }
 
         private Fix64 GetDistanceFromMinimum(Fix64 angle)
@@ -432,14 +433,14 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
             if (minimumAngle > F64.C0)
             {
                 if (angle >= minimumAngle)
-                    return angle - minimumAngle;
+                    return angle.Sub(minimumAngle);
                 if (angle > F64.C0)
-                    return MathHelper.TwoPi - minimumAngle + angle;
-                return MathHelper.TwoPi - minimumAngle + angle;
+                    return (MathHelper.TwoPi.Sub(minimumAngle)).Add(angle);
+                return (MathHelper.TwoPi.Sub(minimumAngle)).Add(angle);
             }
             if (angle < minimumAngle)
-                return MathHelper.TwoPi - minimumAngle + angle;
-            return angle - minimumAngle;
+                return (MathHelper.TwoPi.Sub(minimumAngle)).Add(angle);
+            return angle.Sub(minimumAngle);
             //else //if (currentAngle >= 0)
             //    return angle - myMinimumAngle;
         }

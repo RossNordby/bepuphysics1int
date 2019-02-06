@@ -35,7 +35,7 @@ namespace BEPUphysics.Vehicle
         /// <returns>Blended friction coefficient.</returns>
         public static Fix64 BlendFriction(Fix64 wheelFriction, Fix64 materialFriction, bool usingKineticFriction, Wheel wheel)
         {
-            return wheelFriction * materialFriction;
+            return wheelFriction.Mul(materialFriction);
         }
 
         #endregion
@@ -203,11 +203,9 @@ namespace BEPUphysics.Vehicle
         {
             get
             {
-                Fix64 velocity = vehicleEntity.linearVelocity.X * linearAX + vehicleEntity.linearVelocity.Y * linearAY + vehicleEntity.linearVelocity.Z * linearAZ +
-                            vehicleEntity.angularVelocity.X * angularAX + vehicleEntity.angularVelocity.Y * angularAY + vehicleEntity.angularVelocity.Z * angularAZ;
+                Fix64 velocity = (((((vehicleEntity.linearVelocity.X.Mul(linearAX)).Add(vehicleEntity.linearVelocity.Y.Mul(linearAY))).Add(vehicleEntity.linearVelocity.Z.Mul(linearAZ))).Add(vehicleEntity.angularVelocity.X.Mul(angularAX))).Add(vehicleEntity.angularVelocity.Y.Mul(angularAY))).Add(vehicleEntity.angularVelocity.Z.Mul(angularAZ));
                 if (supportEntity != null)
-                    velocity += -supportEntity.linearVelocity.X * linearAX - supportEntity.linearVelocity.Y * linearAY - supportEntity.linearVelocity.Z * linearAZ +
-                                supportEntity.angularVelocity.X * angularBX + supportEntity.angularVelocity.Y * angularBY + supportEntity.angularVelocity.Z * angularBZ;
+					velocity = velocity.Add((((((supportEntity.linearVelocity.X.Neg().Mul(linearAX)).Sub(supportEntity.linearVelocity.Y.Mul(linearAY))).Sub(supportEntity.linearVelocity.Z.Mul(linearAZ))).Add(supportEntity.angularVelocity.X.Mul(angularBX))).Add(supportEntity.angularVelocity.Y.Mul(angularBY))).Add(supportEntity.angularVelocity.Z.Mul(angularBZ)));
                 return velocity;
             }
         }
@@ -215,14 +213,14 @@ namespace BEPUphysics.Vehicle
         internal Fix64 ApplyImpulse()
         {
             //Compute relative velocity and convert to impulse
-            Fix64 lambda = RelativeVelocity * velocityToImpulse;
+            Fix64 lambda = RelativeVelocity.Mul(velocityToImpulse);
 
 
             //Clamp accumulated impulse
             Fix64 previousAccumulatedImpulse = accumulatedImpulse;
-            Fix64 maxForce = -blendedCoefficient * wheel.suspension.accumulatedImpulse;
-            accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse + lambda, -maxForce, maxForce);
-            lambda = accumulatedImpulse - previousAccumulatedImpulse;
+            Fix64 maxForce = (blendedCoefficient.Neg()).Mul(wheel.suspension.accumulatedImpulse);
+            accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse.Add(lambda), maxForce.Neg(), maxForce);
+            lambda = accumulatedImpulse.Sub(previousAccumulatedImpulse);
 
             //Apply the impulse
 #if !WINDOWS
@@ -231,25 +229,25 @@ namespace BEPUphysics.Vehicle
 #else
             Vector3 linear, angular;
 #endif
-            linear.X = lambda * linearAX;
-            linear.Y = lambda * linearAY;
-            linear.Z = lambda * linearAZ;
+            linear.X = lambda.Mul(linearAX);
+            linear.Y = lambda.Mul(linearAY);
+            linear.Z = lambda.Mul(linearAZ);
             if (vehicleEntity.isDynamic)
             {
-                angular.X = lambda * angularAX;
-                angular.Y = lambda * angularAY;
-                angular.Z = lambda * angularAZ;
+                angular.X = lambda.Mul(angularAX);
+                angular.Y = lambda.Mul(angularAY);
+                angular.Z = lambda.Mul(angularAZ);
                 vehicleEntity.ApplyLinearImpulse(ref linear);
                 vehicleEntity.ApplyAngularImpulse(ref angular);
             }
             if (supportIsDynamic)
             {
-                linear.X = -linear.X;
-                linear.Y = -linear.Y;
-                linear.Z = -linear.Z;
-                angular.X = lambda * angularBX;
-                angular.Y = lambda * angularBY;
-                angular.Z = lambda * angularBZ;
+                linear.X = linear.X.Neg();
+                linear.Y = linear.Y.Neg();
+                linear.Z = linear.Z.Neg();
+                angular.X = lambda.Mul(angularBX);
+                angular.Y = lambda.Mul(angularBY);
+                angular.Z = lambda.Mul(angularBZ);
                 supportEntity.ApplyLinearImpulse(ref linear);
                 supportEntity.ApplyAngularImpulse(ref angular);
             }
@@ -300,25 +298,25 @@ namespace BEPUphysics.Vehicle
 #else
             Vector3 linear, angular;
 #endif
-            linear.X = accumulatedImpulse * linearAX;
-            linear.Y = accumulatedImpulse * linearAY;
-            linear.Z = accumulatedImpulse * linearAZ;
+            linear.X = accumulatedImpulse.Mul(linearAX);
+            linear.Y = accumulatedImpulse.Mul(linearAY);
+            linear.Z = accumulatedImpulse.Mul(linearAZ);
             if (vehicleEntity.isDynamic)
             {
-                angular.X = accumulatedImpulse * angularAX;
-                angular.Y = accumulatedImpulse * angularAY;
-                angular.Z = accumulatedImpulse * angularAZ;
+                angular.X = accumulatedImpulse.Mul(angularAX);
+                angular.Y = accumulatedImpulse.Mul(angularAY);
+                angular.Z = accumulatedImpulse.Mul(angularAZ);
                 vehicleEntity.ApplyLinearImpulse(ref linear);
                 vehicleEntity.ApplyAngularImpulse(ref angular);
             }
             if (supportIsDynamic)
             {
-                linear.X = -linear.X;
-                linear.Y = -linear.Y;
-                linear.Z = -linear.Z;
-                angular.X = accumulatedImpulse * angularBX;
-                angular.Y = accumulatedImpulse * angularBY;
-                angular.Z = accumulatedImpulse * angularBZ;
+                linear.X = linear.X.Neg();
+                linear.Y = linear.Y.Neg();
+                linear.Z = linear.Z.Neg();
+                angular.X = accumulatedImpulse.Mul(angularBX);
+                angular.Y = accumulatedImpulse.Mul(angularBY);
+                angular.Z = accumulatedImpulse.Mul(angularBZ);
                 supportEntity.ApplyLinearImpulse(ref linear);
                 supportEntity.ApplyAngularImpulse(ref angular);
             }

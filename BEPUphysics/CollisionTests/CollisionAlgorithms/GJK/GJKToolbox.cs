@@ -62,7 +62,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             while (count++ < MaximumGJKIterations)
             {
                 if (simplex.GetPointClosestToOrigin(out closestPoint) || //Also reduces the simplex.
-                    closestPoint.LengthSquared() <= simplex.GetErrorTolerance() * Toolbox.BigEpsilon)
+                    closestPoint.LengthSquared() <= simplex.GetErrorTolerance().Mul(Toolbox.BigEpsilon))
                 {
                     //Intersecting, or so close to it that it will be difficult/expensive to figure out the separation.
                     return true;
@@ -153,7 +153,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             while (true)
             {
                 if (simplex.GetPointClosestToOrigin(out closestPoint) || //Also reduces the simplex and computes barycentric coordinates if necessary. 
-                    closestPoint.LengthSquared() <= Toolbox.Epsilon * simplex.errorTolerance)
+                    closestPoint.LengthSquared() <= Toolbox.Epsilon.Mul(simplex.errorTolerance))
                 {
                     //Intersecting.
                     localClosestPointA = Toolbox.ZeroVector;
@@ -214,7 +214,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             Fix64 vw, closestPointDotDirection;
             int count = 0;
             //This epsilon has a significant impact on performance and accuracy.  Changing it to use BigEpsilon instead increases speed by around 30-40% usually, but jigging is more evident.
-            while (closestOffset.LengthSquared() >= Toolbox.Epsilon * simplex.GetErrorTolerance(ref ray.Position))
+            while (closestOffset.LengthSquared() >= Toolbox.Epsilon.Mul(simplex.GetErrorTolerance(ref ray.Position)))
             {
                 if (++count > MaximumGJKIterations)
                 {
@@ -238,7 +238,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                         hit = new RayHit();
                         return false;
                     }
-                    hit.T = hit.T - vw / closestPointDotDirection;
+                    hit.T = hit.T.Sub(vw.Div(closestPointDotDirection));
                     if (hit.T > maximumLength)
                     {
                         //If we've gone beyond where the ray can reach, there's obviously no hit.
@@ -344,7 +344,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                         hit = new RayHit();
                         return false;
                     }
-                    hit.T = hit.T - vw / vdir;
+                    hit.T = hit.T.Sub(vw.Div(vdir));
                     if (hit.T > F64.C1)
                     {
                         //If we've gone beyond where the ray can reach, there's obviously no hit.
@@ -365,7 +365,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 //Could measure the progress of the ray.  If it's too little, could early out.
                 //Not used by default since it's biased towards precision over performance.
 
-            } while (v.LengthSquared() >= Toolbox.Epsilon * simplex.GetErrorTolerance(ref Toolbox.ZeroVector));
+            } while (v.LengthSquared() >= Toolbox.Epsilon.Mul(simplex.GetErrorTolerance(ref Toolbox.ZeroVector)));
             //This epsilon has a significant impact on performance and accuracy.  Changing it to use BigEpsilon instead increases speed by around 30-40% usually, but jigging is more evident.
             //Transform the hit data into world space.
             Quaternion.Transform(ref hit.Normal, ref transformA.Orientation, out hit.Normal);
@@ -407,7 +407,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             int count = 0;
 
             //This epsilon has a significant impact on performance and accuracy.  Changing it to use BigEpsilon instead increases speed by around 30-40% usually, but jigging is more evident.
-            while (v.LengthSquared() >= Toolbox.Epsilon * simplex.GetErrorTolerance(ref ray.Position))
+            while (v.LengthSquared() >= Toolbox.Epsilon.Mul(simplex.GetErrorTolerance(ref ray.Position)))
             {
                 if (++count > MaximumGJKIterations)
                 {
@@ -426,7 +426,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 if (vw > F64.C0)
                 {
                     Vector3.Dot(ref v, ref ray.Direction, out vdir);
-                    hit.T = hit.T - vw / vdir;
+                    hit.T = hit.T.Sub(vw.Div(vdir));
                     if (vdir >= F64.C0)
                     {
                         //We would have to back up!

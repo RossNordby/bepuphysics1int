@@ -61,7 +61,7 @@ namespace BEPUphysics.Constraints
         /// High values quicken the short circuit but can cause instability, while low values will often prevent short circuiting, possibly increasing accuracy but harming performance.
         /// Defaults to .001f.
         /// </summary>
-        public static Fix64 DefaultMinimumImpulse = (Fix64).001m;
+        public static Fix64 DefaultMinimumImpulse = (Fix64).001m.ToFix();
 
         /// <summary>
         /// The value to assign to new constraints' SolverSettings.MinimumIterations.

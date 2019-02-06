@@ -214,7 +214,7 @@ namespace BEPUphysics.Constraints.Collision
             for (int i = 0; i < frictionConstraints.Count; i++)
                 SolveUpdateable(frictionConstraints.Elements[i], ref activeConstraints);
             isActiveInSolver = activeConstraints > 0;
-            return solverSettings.minimumImpulse + F64.C1; //Never let the system deactivate due to low impulses; solver group takes care of itself.
+            return solverSettings.minimumImpulse.Add(F64.C1); //Never let the system deactivate due to low impulses; solver group takes care of itself.
         }
     }
 }

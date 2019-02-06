@@ -213,7 +213,7 @@ namespace BEPUphysics.Vehicle
             }
             if (numActive == 0)
                 isActiveInSolver = false;
-            return solverSettings.minimumImpulse + F64.C1; //We take care of ourselves.
+            return solverSettings.minimumImpulse.Add(F64.C1); //We take care of ourselves.
         }
 
         /// <summary>

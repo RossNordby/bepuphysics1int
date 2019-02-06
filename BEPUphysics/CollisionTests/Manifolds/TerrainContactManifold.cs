@@ -44,19 +44,19 @@ namespace BEPUphysics.CollisionTests.Manifolds
 
 
                 if (transformedVelocity.X > F64.C0)
-                    boundingBox.Max.X += transformedVelocity.X;
+					boundingBox.Max.X = boundingBox.Max.X.Add(transformedVelocity.X);
                 else
-                    boundingBox.Min.X += transformedVelocity.X;
+					boundingBox.Min.X = boundingBox.Min.X.Add(transformedVelocity.X);
 
                 if (transformedVelocity.Y > F64.C0)
-                    boundingBox.Max.Y += transformedVelocity.Y;
+					boundingBox.Max.Y = boundingBox.Max.Y.Add(transformedVelocity.Y);
                 else
-                    boundingBox.Min.Y += transformedVelocity.Y;
+					boundingBox.Min.Y = boundingBox.Min.Y.Add(transformedVelocity.Y);
 
                 if (transformedVelocity.Z > F64.C0)
-                    boundingBox.Max.Z += transformedVelocity.Z;
+					boundingBox.Max.Z = boundingBox.Max.Z.Add(transformedVelocity.Z);
                 else
-                    boundingBox.Min.Z += transformedVelocity.Z;
+					boundingBox.Min.Z = boundingBox.Min.Z.Add(transformedVelocity.Z);
             }
 
 
@@ -121,8 +121,8 @@ namespace BEPUphysics.CollisionTests.Manifolds
                         Normal = rayHit.Normal,
                         Position = convex.worldTransform.Position,
                         Id = 2,
-                        PenetrationDepth = -rayHit.T * dot + convex.Shape.MinimumRadius
-                    };
+                        PenetrationDepth = ((rayHit.T.Neg()).Mul(dot)).Add(convex.Shape.MinimumRadius)
+					};
                     newContact.Validate();
                     bool found = false;
                     for (int i = 0; i < contacts.Count; i++)

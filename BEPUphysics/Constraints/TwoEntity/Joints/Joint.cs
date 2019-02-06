@@ -41,7 +41,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 }
                 else
                 {
-                    maxCorrectiveVelocitySquared = maxCorrectiveVelocity * maxCorrectiveVelocity;
+                    maxCorrectiveVelocitySquared = maxCorrectiveVelocity.Mul(maxCorrectiveVelocity);
                 }
             }
         }

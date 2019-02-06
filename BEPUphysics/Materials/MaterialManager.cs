@@ -27,7 +27,7 @@ namespace BEPUphysics.Materials
         /// Default coefficient of kinetic friction. 
         /// Defaults to 0.8.
         ///</summary>
-        public static Fix64 DefaultKineticFriction = (Fix64).8m;
+        public static Fix64 DefaultKineticFriction = (Fix64).8m.ToFix();
         ///<summary>
         /// Default coefficient of static friction.
         /// Defaults to 1.
@@ -79,10 +79,10 @@ namespace BEPUphysics.Materials
         {
             properties = new InteractionProperties
             {
-                Bounciness = a.bounciness * b.bounciness,
-                KineticFriction = a.kineticFriction * b.kineticFriction,
-                StaticFriction = a.staticFriction * b.staticFriction
-            };
+                Bounciness = a.bounciness.Mul(b.bounciness),
+                KineticFriction = a.kineticFriction.Mul(b.kineticFriction),
+                StaticFriction = a.staticFriction.Mul(b.staticFriction)
+			};
         }
 
 

@@ -52,9 +52,9 @@ namespace BEPUutilities
             }
             else
             {
-                var inverseDirection = F64.C1 / Direction.X;
-                var t1 = (boundingBox.Min.X - Position.X) * inverseDirection;
-                var t2 = (boundingBox.Max.X - Position.X) * inverseDirection;
+                var inverseDirection = F64.C1.Div(Direction.X);
+                var t1 = (boundingBox.Min.X.Sub(Position.X)).Mul(inverseDirection);
+                var t2 = (boundingBox.Max.X.Sub(Position.X)).Mul(inverseDirection);
                 if (t1 > t2)
                 {
 					Fix64 temp = t1;
@@ -81,9 +81,9 @@ namespace BEPUutilities
             }
             else
             {
-                var inverseDirection = F64.C1 / Direction.Y;
-                var t1 = (boundingBox.Min.Y - Position.Y) * inverseDirection;
-                var t2 = (boundingBox.Max.Y - Position.Y) * inverseDirection;
+                var inverseDirection = F64.C1.Div(Direction.Y);
+                var t1 = (boundingBox.Min.Y.Sub(Position.Y)).Mul(inverseDirection);
+                var t2 = (boundingBox.Max.Y.Sub(Position.Y)).Mul(inverseDirection);
                 if (t1 > t2)
                 {
 					Fix64 temp = t1;
@@ -110,9 +110,9 @@ namespace BEPUutilities
             }
             else
             {
-                var inverseDirection = F64.C1 / Direction.Z;
-                var t1 = (boundingBox.Min.Z - Position.Z) * inverseDirection;
-                var t2 = (boundingBox.Max.Z - Position.Z) * inverseDirection;
+                var inverseDirection = F64.C1.Div(Direction.Z);
+                var t1 = (boundingBox.Min.Z.Sub(Position.Z)).Mul(inverseDirection);
+                var t2 = (boundingBox.Max.Z.Sub(Position.Z)).Mul(inverseDirection);
                 if (t1 > t2)
                 {
 					Fix64 temp = t1;
@@ -159,9 +159,9 @@ namespace BEPUutilities
             }
 			Fix64 distanceAlongNormal;
             Vector3.Dot(ref Position, ref plane.Normal, out distanceAlongNormal);
-            distanceAlongNormal += plane.D;
-            t = -distanceAlongNormal / velocity;
-            return t >= -Toolbox.Epsilon;
+			distanceAlongNormal = distanceAlongNormal.Add(plane.D);
+            t = (distanceAlongNormal.Neg()).Div(velocity);
+            return t >= Toolbox.Epsilon.Neg();
         }
 
         /// <summary>

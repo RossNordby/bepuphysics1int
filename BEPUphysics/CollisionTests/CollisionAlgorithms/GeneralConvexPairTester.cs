@@ -151,16 +151,16 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
 
             localDirection = displacement; //Use this as the direction for future deep contacts.
-            Fix64 margin = collidableA.Shape.collisionMargin + collidableB.Shape.collisionMargin;
+            Fix64 margin = collidableA.Shape.collisionMargin.Add(collidableB.Shape.collisionMargin);
 
 
-            if (distanceSquared < margin * margin)
+            if (distanceSquared < margin.Mul(margin))
             {
                 //Generate a contact.
                 contact = new ContactData();
                 //Displacement is from A to B.  point = A + t * AB, where t = marginA / margin.
                 if (margin > Toolbox.Epsilon) //Avoid a NaN!
-                    Vector3.Multiply(ref displacement, collidableA.Shape.collisionMargin / margin, out contact.Position); //t * AB
+                    Vector3.Multiply(ref displacement, collidableA.Shape.collisionMargin.Div(margin), out contact.Position); //t * AB
                 else
                     contact.Position = new Vector3();
 
@@ -169,7 +169,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 contact.Normal = displacement;
                 Fix64 distance = Fix64.Sqrt(distanceSquared);
                 Vector3.Divide(ref contact.Normal, distance, out contact.Normal);
-                contact.PenetrationDepth = margin - distance;
+                contact.PenetrationDepth = margin.Sub(distance);
                 return true;
 
             }
@@ -211,7 +211,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
             if (MPRToolbox.GetContact(collidableA.Shape, collidableB.Shape, ref collidableA.worldTransform, ref collidableB.worldTransform, ref localDirection, out contact))
             {
-                if (contact.PenetrationDepth < collidableA.Shape.collisionMargin + collidableB.Shape.collisionMargin)
+                if (contact.PenetrationDepth < collidableA.Shape.collisionMargin.Add(collidableB.Shape.collisionMargin))
                     state = CollisionState.ShallowContact;
                 return true;
             }

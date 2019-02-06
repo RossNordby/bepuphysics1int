@@ -210,7 +210,7 @@ namespace BEPUphysics.Constraints.Collision
 
             isActiveInSolver = activeConstraints > 0;
 
-            return solverSettings.minimumImpulse + F64.C1; //Never let the system deactivate due to low impulses; solver group takes care of itself.
+            return solverSettings.minimumImpulse.Add(F64.C1); //Never let the system deactivate due to low impulses; solver group takes care of itself.
         }
 
     }

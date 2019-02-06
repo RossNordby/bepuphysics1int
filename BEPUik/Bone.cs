@@ -45,16 +45,16 @@ namespace BEPUik
         /// </summary>
         public Fix64 Mass
         {
-            get { return F64.C1 / inverseMass; }
+            get { return F64.C1.Div(inverseMass); }
             set
             {
                 //Long chains could produce exceptionally small values.
                 //Attempting to invert them would result in NaNs.
                 //Clamp the lowest mass to 1e-7f.
                 if (value > Toolbox.Epsilon)
-                    inverseMass = F64.C1 / value;
+                    inverseMass = F64.C1.Div(value);
                 else
-                    inverseMass = (Fix64)1e7m;
+                    inverseMass = 1e7m.ToFix();
                 ComputeLocalInertiaTensor();
             }
         }
@@ -65,7 +65,7 @@ namespace BEPUik
         /// <summary>
         /// An arbitrary scaling factor is applied to the inertia tensor. This tends to improve stability.
         /// </summary>
-        public static Fix64 InertiaTensorScaling = (Fix64)2.5m;
+        public static Fix64 InertiaTensorScaling = 2.5m.ToFix();
 
         /// <summary>
         /// Gets the list of joints affecting this bone.
@@ -124,10 +124,10 @@ namespace BEPUik
         /// </summary>
         public Fix64 Height
         {
-            get { return halfHeight * F64.C2; }
+            get { return halfHeight.Mul(F64.C2); }
             set
             {
-                halfHeight = value / F64.C2;
+                halfHeight = value.Div(F64.C2);
                 ComputeLocalInertiaTensor();
             }
         }
@@ -166,10 +166,10 @@ namespace BEPUik
         void ComputeLocalInertiaTensor()
         {
             var localInertiaTensor = new Matrix3x3();
-            var multiplier = Mass * InertiaTensorScaling;
-            Fix64 diagValue = (F64.C0p0833333333 * Height * Height + F64.C0p25 * Radius * Radius) * multiplier;
+            var multiplier = Mass.Mul(InertiaTensorScaling);
+            Fix64 diagValue = (((F64.C0p0833333333.Mul(Height)).Mul(Height)).Add((F64.C0p25.Mul(Radius)).Mul(Radius))).Mul(multiplier);
             localInertiaTensor.M11 = diagValue;
-            localInertiaTensor.M22 = F64.C0p5 * Radius * Radius * multiplier;
+            localInertiaTensor.M22 = ((F64.C0p5.Mul(Radius)).Mul(Radius)).Mul(multiplier);
             localInertiaTensor.M33 = diagValue;
             Matrix3x3.Invert(ref localInertiaTensor, out localInertiaTensorInverse);
         }

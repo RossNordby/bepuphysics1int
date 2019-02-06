@@ -26,7 +26,7 @@ namespace BEPUutilities
     /// <summary>
     /// Approximate value of Pi divided by four.
     /// </summary>
-    public static readonly Fix64 PiOver4 = Fix64.Pi / new Fix64(4);
+    public static readonly Fix64 PiOver4 = Fix64.Pi.Div(new Fix64(4));
 
     /// <summary>
     /// Calculate remainder of of Fix64 division using same algorithm
@@ -37,7 +37,7 @@ namespace BEPUutilities
     /// <returns>Remainder</returns>
     public static Fix64 IEEERemainder(Fix64 dividend, Fix64 divisor)
     {
-		return dividend - (divisor * Fix64.Round(dividend / divisor));
+		return dividend.Sub((divisor.Mul(Fix64.Round(dividend.Div(divisor)))));
     }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace BEPUutilities
         public static Fix64 WrapAngle(Fix64 angle)
         {
             angle = IEEERemainder(angle, TwoPi);
-            if (angle < -Pi)
+            if (angle < Pi.Neg())
             {
                 angle += TwoPi;
                 return angle;
@@ -107,7 +107,7 @@ namespace BEPUutilities
         /// <returns>Radians equivalent to the input degrees.</returns>
         public static Fix64 ToRadians(Fix64 degrees)
         {
-            return degrees * (Pi / F64.C180);
+            return degrees.Mul((Pi.Div(F64.C180)));
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace BEPUutilities
         /// <returns>Degrees equivalent to the input radians.</returns>
         public static Fix64 ToDegrees(Fix64 radians)
         {
-            return radians * (F64.C180 / Pi);
+            return radians.Mul((F64.C180.Div(Pi)));
         }
     }
 }

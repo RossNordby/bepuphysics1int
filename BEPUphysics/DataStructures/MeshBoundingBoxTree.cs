@@ -323,18 +323,18 @@ namespace BEPUphysics.DataStructures
                 Vector3 offset;
                 Fix64 originalAVolume, originalBVolume;
                 Vector3.Subtract(ref ChildA.BoundingBox.Max, ref ChildA.BoundingBox.Min, out offset);
-                originalAVolume = offset.X * offset.Y * offset.Z;
+                originalAVolume = (offset.X.Mul(offset.Y)).Mul(offset.Z);
                 Vector3.Subtract(ref ChildB.BoundingBox.Max, ref ChildB.BoundingBox.Min, out offset);
-                originalBVolume = offset.X * offset.Y * offset.Z;
+                originalBVolume = (offset.X.Mul(offset.Y)).Mul(offset.Z);
 
                 Fix64 mergedAVolume, mergedBVolume;
                 Vector3.Subtract(ref mergedA.Max, ref mergedA.Min, out offset);
-                mergedAVolume = offset.X * offset.Y * offset.Z;
+                mergedAVolume = (offset.X.Mul(offset.Y)).Mul(offset.Z);
                 Vector3.Subtract(ref mergedB.Max, ref mergedB.Min, out offset);
-                mergedBVolume = offset.X * offset.Y * offset.Z;
+                mergedBVolume = (offset.X.Mul(offset.Y)).Mul(offset.Z);
 
                 //Could use factor increase or absolute difference
-                if (mergedAVolume - originalAVolume < mergedBVolume - originalBVolume)
+                if (mergedAVolume.Sub(originalAVolume) < mergedBVolume.Sub(originalBVolume))
                 {
                     //merging A produces a better result.
                     if (ChildA.IsLeaf)
@@ -396,7 +396,7 @@ namespace BEPUphysics.DataStructures
         /// <summary>
         /// The tiny extra margin added to leaf bounding boxes that allow the volume cost metric to function properly even in degenerate cases.
         /// </summary>
-        public static Fix64 LeafMargin = (Fix64).001m;
+        public static Fix64 LeafMargin = (Fix64).001m.ToFix();
         sealed class LeafNode : Node
         {
             int LeafIndex;
@@ -410,13 +410,14 @@ namespace BEPUphysics.DataStructures
             {
                 LeafIndex = leafIndex;
                 data.GetBoundingBox(leafIndex, out BoundingBox);
-                //Having an ever-so-slight margin allows the hierarchy use a volume metric even for degenerate shapes (consider a flat tessellated plane).
-                BoundingBox.Max.X += LeafMargin;
-                BoundingBox.Max.Y += LeafMargin;
-                BoundingBox.Max.Z += LeafMargin;
-                BoundingBox.Min.X -= LeafMargin;
-                BoundingBox.Min.Y -= LeafMargin;
-                BoundingBox.Min.Z -= LeafMargin;
+				//Having an ever-so-slight margin allows the hierarchy use a volume metric even for degenerate shapes (consider a flat tessellated plane).
+				BoundingBox.Max.X =
+BoundingBox.Max.X.Add(LeafMargin);
+				BoundingBox.Max.Y = BoundingBox.Max.Y.Add(LeafMargin);
+				BoundingBox.Max.Z = BoundingBox.Max.Z.Add(LeafMargin);
+				BoundingBox.Min.X = BoundingBox.Min.X.Sub(LeafMargin);
+				BoundingBox.Min.Y = BoundingBox.Min.Y.Sub(LeafMargin);
+				BoundingBox.Min.Z = BoundingBox.Min.Z.Sub(LeafMargin);
             }
 
             internal override void GetOverlaps(ref BoundingBox boundingBox, IList<int> outputOverlappedElements)
@@ -464,13 +465,14 @@ namespace BEPUphysics.DataStructures
             internal override void Refit(MeshBoundingBoxTreeData data)
             {
                 data.GetBoundingBox(LeafIndex, out BoundingBox);
-                //Having an ever-so-slight margin allows the hierarchy use a volume metric even for degenerate shapes (consider a flat tessellated plane).
-                BoundingBox.Max.X += LeafMargin;
-                BoundingBox.Max.Y += LeafMargin;
-                BoundingBox.Max.Z += LeafMargin;
-                BoundingBox.Min.X -= LeafMargin;
-                BoundingBox.Min.Y -= LeafMargin;
-                BoundingBox.Min.Z -= LeafMargin;
+				//Having an ever-so-slight margin allows the hierarchy use a volume metric even for degenerate shapes (consider a flat tessellated plane).
+				BoundingBox.Max.X =
+BoundingBox.Max.X.Add(LeafMargin);
+				BoundingBox.Max.Y = BoundingBox.Max.Y.Add(LeafMargin);
+				BoundingBox.Max.Z = BoundingBox.Max.Z.Add(LeafMargin);
+				BoundingBox.Min.X = BoundingBox.Min.X.Sub(LeafMargin);
+				BoundingBox.Min.Y = BoundingBox.Min.Y.Sub(LeafMargin);
+				BoundingBox.Min.Z = BoundingBox.Min.Z.Sub(LeafMargin);
             }
         }
 

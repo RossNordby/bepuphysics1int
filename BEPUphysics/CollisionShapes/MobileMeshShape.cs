@@ -257,7 +257,7 @@ namespace BEPUphysics.CollisionShapes
         {
             for (int i = 0; i < hits.Count; i++)
             {
-                if (Fix64.Abs(hits.Elements[i].T - hit.T) < MeshHitUniquenessThreshold)
+                if (Fix64.Abs(hits.Elements[i].T.Sub(hit.T)) < MeshHitUniquenessThreshold)
                     return false;
             }
             hits.Add(hit);
@@ -303,7 +303,7 @@ namespace BEPUphysics.CollisionShapes
                 int minimum = 0;
                 int maximum = 0;
                 Fix64 minimumT = Fix64.MaxValue;
-                Fix64 maximumT = -1;
+                Fix64 maximumT = F64.C1.Neg();
                 for (int i = 0; i < hitList.Count; i++)
                 {
                     triangleMesh.Data.GetTriangle(hitList[i], out vA, out vB, out vC);
@@ -451,9 +451,9 @@ namespace BEPUphysics.CollisionShapes
                 Vector3 cross;
                 Vector3.Cross(ref vAvB, ref vAvC, out cross);
                 Fix64 weight = cross.Length();
-                totalWeight += weight;
+				totalWeight = totalWeight.Add(weight);
 
-                Fix64 perVertexWeight = weight * F64.OneThird;
+                Fix64 perVertexWeight = weight.Mul(F64.OneThird);
                 shapeInformation.Center += perVertexWeight * (vA + vB + vC);
 
                 //Compute the inertia contribution of this triangle.
@@ -472,7 +472,7 @@ namespace BEPUphysics.CollisionShapes
             shapeInformation.Center /= totalWeight;
 
             //The extra factor of 2 is used because the cross product length was twice the actual area.
-            Matrix3x3.Multiply(ref shapeInformation.VolumeDistribution, F64.C1 / (F64.C2 * totalWeight), out shapeInformation.VolumeDistribution);
+            Matrix3x3.Multiply(ref shapeInformation.VolumeDistribution, F64.C1.Div((F64.C2.Mul(totalWeight))), out shapeInformation.VolumeDistribution);
 
             //Move the inertia tensor into position according to the center.
             Matrix3x3 additionalInertia;
@@ -497,7 +497,7 @@ namespace BEPUphysics.CollisionShapes
             var backDirection = new Vector3(o.M13, o.M23, o.M33);
 
             int right = 0, left = 0, up = 0, down = 0, backward = 0, forward = 0;
-            Fix64 minX = Fix64.MaxValue, maxX = -Fix64.MaxValue, minY = Fix64.MaxValue, maxY = -Fix64.MaxValue, minZ = Fix64.MaxValue, maxZ = -Fix64.MaxValue;
+            Fix64 minX = Fix64.MaxValue, maxX = Fix64.MaxValue.Neg(), minY = Fix64.MaxValue, maxY = Fix64.MaxValue.Neg(), minZ = Fix64.MaxValue, maxZ = Fix64.MaxValue.Neg();
 
             for (int i = 0; i < hullVertices.Count; i++)
             {
@@ -541,9 +541,9 @@ namespace BEPUphysics.CollisionShapes
             }
 
             //Incorporate the collision margin.
-            Vector3.Multiply(ref rightDirection, meshCollisionMargin / Fix64.Sqrt(rightDirection.Length()), out rightDirection);
-            Vector3.Multiply(ref upDirection, meshCollisionMargin / Fix64.Sqrt(upDirection.Length()), out upDirection);
-            Vector3.Multiply(ref backDirection, meshCollisionMargin / Fix64.Sqrt(backDirection.Length()), out backDirection);
+            Vector3.Multiply(ref rightDirection, meshCollisionMargin.Div(Fix64.Sqrt(rightDirection.Length())), out rightDirection);
+            Vector3.Multiply(ref upDirection, meshCollisionMargin.Div(Fix64.Sqrt(upDirection.Length())), out upDirection);
+            Vector3.Multiply(ref backDirection, meshCollisionMargin.Div(Fix64.Sqrt(backDirection.Length())), out backDirection);
 
             var rightElement = hullVertices.Elements[right];
             var leftElement = hullVertices.Elements[left];
@@ -604,13 +604,13 @@ namespace BEPUphysics.CollisionShapes
             AffineTransform.Multiply(ref shapeTransform, ref transform, out transform);
 
             GetBoundingBox(ref transform.LinearTransform, out boundingBox);
-            boundingBox.Max.X += transform.Translation.X;
-            boundingBox.Max.Y += transform.Translation.Y;
-            boundingBox.Max.Z += transform.Translation.Z;
+			boundingBox.Max.X = boundingBox.Max.X.Add(transform.Translation.X);
+			boundingBox.Max.Y = boundingBox.Max.Y.Add(transform.Translation.Y);
+			boundingBox.Max.Z = boundingBox.Max.Z.Add(transform.Translation.Z);
 
-            boundingBox.Min.X += transform.Translation.X;
-            boundingBox.Min.Y += transform.Translation.Y;
-            boundingBox.Min.Z += transform.Translation.Z;
+			boundingBox.Min.X = boundingBox.Min.X.Add(transform.Translation.X);
+			boundingBox.Min.Y = boundingBox.Min.Y.Add(transform.Translation.Y);
+			boundingBox.Min.Z = boundingBox.Min.Z.Add(transform.Translation.Z);
 
         }
 

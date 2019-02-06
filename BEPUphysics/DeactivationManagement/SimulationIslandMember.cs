@@ -54,7 +54,7 @@ namespace BEPUphysics.DeactivationManagement
         public void UpdateDeactivationCandidacy(Fix64 dt)
         {
             //Get total velocity, and see if the entity is losing energy.
-            Fix64 velocity = owner.linearVelocity.LengthSquared() + owner.angularVelocity.LengthSquared();
+            Fix64 velocity = owner.linearVelocity.LengthSquared().Add(owner.angularVelocity.LengthSquared());
 
             bool isActive = IsActive;
             if (isActive)
@@ -66,7 +66,7 @@ namespace BEPUphysics.DeactivationManagement
 
                     //Update time entity's been under the low-velocity limit, or reset if it's not
                     if (velocity < DeactivationManager.velocityLowerLimitSquared)
-                        velocityTimeBelowLimit += dt;
+						velocityTimeBelowLimit = velocityTimeBelowLimit.Add(dt);
                     else
                         velocityTimeBelowLimit = F64.C0;
 
@@ -117,7 +117,7 @@ namespace BEPUphysics.DeactivationManagement
                     else
                     {
                         //If velocity is not zero, then the flag is set to 'this is active.'
-                        velocityTimeBelowLimit = -1;
+                        velocityTimeBelowLimit = F64.C1.Neg();
                     }
 
                     if (velocityTimeBelowLimit <= F64.C0)
@@ -273,7 +273,7 @@ namespace BEPUphysics.DeactivationManagement
             {
                 //"Wake up" the kinematic entity.
                 //The time is used as a flag.  If time <= 0, that means the object will be considered active until the subsequent update.
-                velocityTimeBelowLimit = -1;
+                velocityTimeBelowLimit = F64.C1.Neg();
             }
 
         }

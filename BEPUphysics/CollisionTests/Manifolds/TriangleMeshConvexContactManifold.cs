@@ -340,7 +340,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                         boundarySets.EdgeContacts.Elements[i].CorrectedNormal.Normalize();
                         Vector3.Dot(ref boundarySets.EdgeContacts.Elements[i].CorrectedNormal, ref boundarySets.EdgeContacts.Elements[i].ContactData.Normal, out dot);
                         boundarySets.EdgeContacts.Elements[i].ContactData.Normal = boundarySets.EdgeContacts.Elements[i].CorrectedNormal;
-                        boundarySets.EdgeContacts.Elements[i].ContactData.PenetrationDepth *= MathHelper.Max(F64.C0, dot); //Never cause a negative penetration depth.
+						boundarySets.EdgeContacts.Elements[i].ContactData.PenetrationDepth = boundarySets.EdgeContacts.Elements[i].ContactData.PenetrationDepth.Mul(MathHelper.Max(F64.C0, dot)); //Never cause a negative penetration depth.
                         AddLocalContact(ref boundarySets.EdgeContacts.Elements[i].ContactData, ref orientation, ref candidatesToAdd);
                     }
                     //If it's blocked AND it doesn't allow correction, ignore its existence.
@@ -368,7 +368,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                         boundarySets.VertexContacts.Elements[i].CorrectedNormal.Normalize();
                         Vector3.Dot(ref boundarySets.VertexContacts.Elements[i].CorrectedNormal, ref boundarySets.VertexContacts.Elements[i].ContactData.Normal, out dot);
                         boundarySets.VertexContacts.Elements[i].ContactData.Normal = boundarySets.VertexContacts.Elements[i].CorrectedNormal;
-                        boundarySets.VertexContacts.Elements[i].ContactData.PenetrationDepth *= MathHelper.Max(F64.C0, dot); //Never cause a negative penetration depth.
+						boundarySets.VertexContacts.Elements[i].ContactData.PenetrationDepth = boundarySets.VertexContacts.Elements[i].ContactData.PenetrationDepth.Mul(MathHelper.Max(F64.C0, dot)); //Never cause a negative penetration depth.
                         AddLocalContact(ref boundarySets.VertexContacts.Elements[i].ContactData, ref orientation, ref candidatesToAdd);
                     }
                     //If it's blocked AND it doesn't allow correction, ignore its existence.

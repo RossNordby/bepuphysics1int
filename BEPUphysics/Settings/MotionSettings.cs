@@ -32,7 +32,7 @@ namespace BEPUphysics.Settings
                 coreShapeScaling = MathHelper.Clamp(value, F64.C0, F64.C0p99);
             }
         }
-        static Fix64 coreShapeScaling = (Fix64).8m;
+        static Fix64 coreShapeScaling = (Fix64).8m.ToFix();
         /// <summary>
         /// The default position updating mode used by position updateables.
         /// Defaults to Discrete.

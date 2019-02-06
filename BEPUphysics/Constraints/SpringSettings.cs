@@ -11,9 +11,9 @@ namespace BEPUphysics.Constraints
     /// </summary>
     public class SpringAdvancedSettings
     {
-        internal Fix64 errorReductionFactor = (Fix64).1m;
+        internal Fix64 errorReductionFactor = (Fix64).1m.ToFix();
 
-        internal Fix64 softness = (Fix64).00001m;
+        internal Fix64 softness = (Fix64).00001m.ToFix();
 
         internal bool useAdvancedSettings;
 
@@ -96,16 +96,16 @@ namespace BEPUphysics.Constraints
         {
             if (advanced.useAdvancedSettings)
             {
-                errorReduction = advanced.errorReductionFactor * updateRate;
-                softness = advanced.softness * updateRate;
+                errorReduction = advanced.errorReductionFactor.Mul(updateRate);
+                softness = advanced.softness.Mul(updateRate);
             }
             else
             {
                 if (stiffness == F64.C0 && damping == F64.C0)
                     throw new InvalidOperationException("Constraints cannot have both 0 stiffness and 0 damping.");
-                Fix64 multiplier = F64.C1 / (dt * stiffness + damping);
-                errorReduction = stiffness * multiplier;
-                softness = updateRate * multiplier;
+                Fix64 multiplier = F64.C1.Div(((dt.Mul(stiffness)).Add(damping)));
+                errorReduction = stiffness.Mul(multiplier);
+                softness = updateRate.Mul(multiplier);
             }
         }
     }
