@@ -130,7 +130,7 @@ namespace BEPUphysicsDemos
                 if (horizontalErrorLength > margin.Mul(margin))
                 {
                     Vector3 previousHorizontalError = horizontalError;
-                    Vector3.Multiply(ref horizontalError, margin.Div(Fix64.Sqrt(horizontalErrorLength)), out horizontalError);
+                    Vector3.Multiply(ref horizontalError, margin.Div(Fix64Ext.Sqrt(horizontalErrorLength)), out horizontalError);
                     Camera.Position -= horizontalError - previousHorizontalError;
                 }
 				//Now that the error/camera position is known to lie within the constraining cylinder, we can perform a smooth correction.
@@ -141,7 +141,7 @@ namespace BEPUphysicsDemos
 				//Fix64 errorCorrectionFactor = .3m;
 
 				//This version is framerate independent, although it is more expensive.
-				Fix64 errorCorrectionFactor = 1.ToFix().Sub(Fix64.Pow(.000000001m.ToFix(), dt));
+				Fix64 errorCorrectionFactor = 1.ToFix().Sub(Fix64Ext.Pow(.000000001m.ToFix(), dt));
                 Camera.Position += up * (verticalError.Mul(errorCorrectionFactor));
                 Camera.Position += horizontalError * errorCorrectionFactor;
 

@@ -559,7 +559,7 @@ voxelGrid.Position.Z.Add((position.Z.ToFix().Add(F64.C0p5)).Mul(voxelGrid.Shape.
                 {
                     for (int k = 0; k < cellCountZ; ++k)
                     {
-                        cells[i, j, k] = (Fix64.Sin(((i.ToFix().Mul(0.55m.ToFix())).Add(6.ToFix())).Add(j.ToFix().Mul((-0.325m).ToFix()))).Add(Fix64.Sin(((j.ToFix().Mul(0.35m.ToFix())).Sub(0.5m.ToFix())).Add(MathHelper.PiOver2))).Add(Fix64.Sin((((k.ToFix() * 0.5m.ToFix()).Add(MathHelper.Pi)).Add(6.ToFix())).Add(j.ToFix().Mul(0.25f.ToFix()))))) > 0.ToFix();
+                        cells[i, j, k] = (Fix64Ext.Sin(((i.ToFix().Mul(0.55m.ToFix())).Add(6.ToFix())).Add(j.ToFix().Mul((-0.325m).ToFix()))).Add(Fix64Ext.Sin(((j.ToFix().Mul(0.35m.ToFix())).Sub(0.5m.ToFix())).Add(MathHelper.PiOver2))).Add(Fix64Ext.Sin((((k.ToFix().Mul(0.5m.ToFix())).Add(MathHelper.Pi)).Add(6.ToFix())).Add(j.ToFix().Mul(0.25f.ToFix()))))) > 0.ToFix();
                     }
                 }
             }
@@ -581,8 +581,8 @@ voxelGrid.Position.Z.Add((position.Z.ToFix().Add(F64.C0p5)).Mul(voxelGrid.Shape.
                     var toAdd =
                         new Box(
                             new Vector3(
-((i.ToFix().Mul(blockWidth)).Add((0.5m.ToFix()).Mul(blockWidth).Mul(((j % 2).ToFix())))).Sub((width.ToFix() * blockWidth).Mul(0.5m.ToFix())),
-blockHeight.Mul(0.5m.ToFix()).Add(j.ToFix() * (blockHeight)),
+((i.ToFix().Mul(blockWidth)).Add((0.5m.ToFix()).Mul(blockWidth).Mul(((j % 2).ToFix())))).Sub((width.ToFix().Mul(blockWidth)).Mul(0.5m.ToFix())),
+blockHeight.Mul(0.5m.ToFix()).Add(j.ToFix().Mul((blockHeight))),
 0.ToFix()),
                             blockWidth, blockHeight, blockLength, 10.ToFix());
                     Space.Add(toAdd);

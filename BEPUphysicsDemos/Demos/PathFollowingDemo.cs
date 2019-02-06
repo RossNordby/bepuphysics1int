@@ -139,14 +139,15 @@ random.NextDouble().ToFix().Mul(20.ToFix()).Sub(10.ToFix())));
 
         public override void Update(Fix64 dt)
         {
-            //Increment the time.  Note that the space's timestep is used
-            //instead of the method's dt.  This is because the demos, by
-            //default, update the space once each game update.  Using the
-            //space's update time keeps things synchronized.
-            //If the engine is using internal time stepping,
-            //the passed in dt should be used instead (or put this logic into
-            //an updateable that runs with space updates).
-            pathTime += Space.TimeStepSettings.TimeStepDuration;
+			//Increment the time.  Note that the space's timestep is used
+			//instead of the method's dt.  This is because the demos, by
+			//default, update the space once each game update.  Using the
+			//space's update time keeps things synchronized.
+			//If the engine is using internal time stepping,
+			//the passed in dt should be used instead (or put this logic into
+			//an updateable that runs with space updates).
+			pathTime =
+pathTime.Add(Space.TimeStepSettings.TimeStepDuration);
             mover.TargetPosition = positionPath.Evaluate(pathTime);
             rotator.TargetOrientation = orientationPath.Evaluate(pathTime);
 

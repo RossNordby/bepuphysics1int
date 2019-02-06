@@ -105,7 +105,7 @@ lambda.Mul(velocityToImpulse); //convert to impulse
             }
 
 
-            return Fix64.Abs(lambda);
+            return Fix64Ext.Abs(lambda);
         }
 
 
@@ -157,8 +157,8 @@ lambda.Mul(velocityToImpulse); //convert to impulse
             Fix64 relativeAngularVelocity = RelativeVelocity;
             //Set up friction and find maximum friction force
             Vector3 relativeSlidingVelocity = contactManifoldConstraint.SlidingFriction.relativeVelocity;
-            friction = Fix64.Abs(relativeAngularVelocity) > CollisionResponseSettings.StaticFrictionVelocityThreshold ||
-(Fix64.Abs(relativeSlidingVelocity.X).Add(Fix64.Abs(relativeSlidingVelocity.Y))).Add(Fix64.Abs(relativeSlidingVelocity.Z)) > CollisionResponseSettings.StaticFrictionVelocityThreshold
+            friction = Fix64Ext.Abs(relativeAngularVelocity) > CollisionResponseSettings.StaticFrictionVelocityThreshold ||
+(Fix64Ext.Abs(relativeSlidingVelocity.X).Add(Fix64Ext.Abs(relativeSlidingVelocity.Y))).Add(Fix64Ext.Abs(relativeSlidingVelocity.Z)) > CollisionResponseSettings.StaticFrictionVelocityThreshold
                            ? contactManifoldConstraint.materialInteraction.KineticFriction
                            : contactManifoldConstraint.materialInteraction.StaticFriction;
 			friction = friction.Mul(CollisionResponseSettings.TwistFrictionFactor);

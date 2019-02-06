@@ -35,8 +35,8 @@ namespace BEPUutilities
 		public static readonly Fix64 C1p5 = 1.5m.ToFix();
 		public static readonly Fix64 C1p1 = 1.1m.ToFix();
 		public static readonly Fix64 OneEighth = Fix64.One.Div(8.ToFix());
-		public static readonly Fix64 FourThirds = new Fix64(4).Div(3.ToFix());
-		public static readonly Fix64 TwoFifths = new Fix64(2).Div(5.ToFix());
+		public static readonly Fix64 FourThirds = (4.ToFix()).Div(3.ToFix());
+		public static readonly Fix64 TwoFifths = (2.ToFix()).Div(5.ToFix());
 		public static readonly Fix64 C0p2 = 0.2m.ToFix();
 		public static readonly Fix64 C0p8 = 0.8m.ToFix();
 		public static readonly Fix64 C0p01 = 0.01m.ToFix();
@@ -47,7 +47,7 @@ namespace BEPUutilities
 		public static readonly Fix64 Cm0p25 = (-0.25m).ToFix();
 		public static readonly Fix64 Cm0p9999 = (-0.9999m).ToFix();
 		public static readonly Fix64 C1m1em12 = Fix64.One.Sub(1e-12m.ToFix());
-		public static readonly Fix64 GoldenRatio = Fix64.One.Add(Fix64.Sqrt(5.ToFix()).Div(2.ToFix()));
+		public static readonly Fix64 GoldenRatio = Fix64.One.Add(Fix64Ext.Sqrt(5.ToFix()).Div(2.ToFix()));
 		public static readonly Fix64 OneTwelfth = Fix64.One.Div(12.ToFix());
 		public static readonly Fix64 C0p0833333333 = .0833333333m.ToFix();
 		public static readonly Fix64 C90000 = 90000.ToFix();

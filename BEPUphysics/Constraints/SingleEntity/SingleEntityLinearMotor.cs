@@ -186,7 +186,7 @@ namespace BEPUphysics.Constraints.SingleEntity
             if (sumImpulseLengthSquared > maxForceDtSquared)
             {
                 //max / impulse gives some value 0 < x < 1.  Basically, normalize the vector (divide by the length) and scale by the maximum.
-                accumulatedImpulse *= maxForceDt.Div(Fix64.Sqrt(sumImpulseLengthSquared));
+                accumulatedImpulse *= maxForceDt.Div(Fix64Ext.Sqrt(sumImpulseLengthSquared));
 
                 //Since the limit was exceeded by this corrective impulse, limit it so that the accumulated impulse remains constrained.
                 lambda = accumulatedImpulse - previousAccumulatedImpulse;
@@ -198,7 +198,7 @@ namespace BEPUphysics.Constraints.SingleEntity
             Vector3.Cross(ref r, ref lambda, out taImpulse);
             entity.ApplyAngularImpulse(ref taImpulse);
 
-            return ((Fix64.Abs(lambda.X).Add(Fix64.Abs(lambda.Y))).Add(Fix64.Abs(lambda.Z)));
+            return ((Fix64Ext.Abs(lambda.X).Add(Fix64Ext.Abs(lambda.Y))).Add(Fix64Ext.Abs(lambda.Z)));
         }
 
         ///<summary>
@@ -230,7 +230,7 @@ namespace BEPUphysics.Constraints.SingleEntity
                     Fix64 length = biasVelocity.LengthSquared();
                     if (length > settings.servo.maxCorrectiveVelocitySquared)
                     {
-                        Fix64 multiplier = settings.servo.maxCorrectiveVelocity.Div(Fix64.Sqrt(length));
+                        Fix64 multiplier = settings.servo.maxCorrectiveVelocity.Div(Fix64Ext.Sqrt(length));
 						biasVelocity.X = biasVelocity.X.Mul(multiplier);
 						biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
 						biasVelocity.Z = biasVelocity.Z.Mul(multiplier);

@@ -75,7 +75,7 @@ namespace BEPUik
             if (lengthSquared > Toolbox.Epsilon)
             {
                 //The error direction can be used as the first axis!
-                Vector3.Divide(ref error, Fix64.Sqrt(lengthSquared), out worldConstrainedAxis1);
+                Vector3.Divide(ref error, Fix64Ext.Sqrt(lengthSquared), out worldConstrainedAxis1);
             }
             else
             {
@@ -86,7 +86,7 @@ namespace BEPUik
                 if (lengthSquared > Toolbox.Epsilon)
                 {
                     //The up vector worked!
-                    Vector3.Divide(ref worldConstrainedAxis1, Fix64.Sqrt(lengthSquared), out worldConstrainedAxis1);
+                    Vector3.Divide(ref worldConstrainedAxis1, Fix64Ext.Sqrt(lengthSquared), out worldConstrainedAxis1);
                 }
                 else
                 {

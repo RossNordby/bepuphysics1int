@@ -273,7 +273,7 @@ lambda.Mul(velocityToImpulse);
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return Fix64.Abs(lambda);
+            return Fix64Ext.Abs(lambda);
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ lambda.Mul(velocityToImpulse);
             Fix64 y, x;
             Vector3.Dot(ref twistMeasureAxis, ref basisA.yAxis, out y);
             Vector3.Dot(ref twistMeasureAxis, ref basisA.xAxis, out x);
-            var angle = Fix64.FastAtan2(y, x);
+            var angle = Fix64Ext.FastAtan2(y, x);
 
             Fix64 distanceFromCurrent, distanceFromMaximum;
             if (IsAngleValid(angle, out distanceFromCurrent, out distanceFromMaximum))
@@ -354,7 +354,7 @@ lambda.Mul(velocityToImpulse);
 
 
             //biasVelocity = MathHelper.Clamp(-error * myCorrectionStrength / dt, -myMaxCorrectiveVelocity, myMaxCorrectiveVelocity);
-            biasVelocity = MathHelper.Min(MathHelper.Max(F64.C0, Fix64.Abs(error).Sub(margin)).Mul(errorReduction), maxCorrectiveVelocity);
+            biasVelocity = MathHelper.Min(MathHelper.Max(F64.C0, Fix64Ext.Abs(error).Sub(margin)).Mul(errorReduction), maxCorrectiveVelocity);
             if (bounciness > F64.C0)
             {
                 Fix64 relativeVelocity;

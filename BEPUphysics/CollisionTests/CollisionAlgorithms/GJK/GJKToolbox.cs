@@ -483,7 +483,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 if (hit.T > maximumLength || hit.T < F64.C0)
                     return false; //Failure showed it was too far, or behind.
 
-                radius *= MotionSettings.CoreShapeScaling;
+                radius = radius.Mul(MotionSettings.CoreShapeScaling);
                 iterations++;
                 if (iterations > 3) //Limit could be configurable.
                 {

@@ -115,9 +115,10 @@ namespace BEPUphysicsDemos.Demos
             clawHingeA.Motor.IsActive = true;
             clawHingeA.Motor.Settings.Mode = MotorMode.Servomechanism;
             clawHingeA.Motor.Settings.Servo.Goal = MathHelper.PiOver2.Neg();
-            //Weaken the claw to prevent it from crushing the boxes.
-            clawHingeA.Motor.Settings.Servo.SpringSettings.Damping /= 100.ToFix();
-            clawHingeA.Motor.Settings.Servo.SpringSettings.Stiffness /= 100.ToFix();
+			//Weaken the claw to prevent it from crushing the boxes.
+			clawHingeA.Motor.Settings.Servo.SpringSettings.Damping =
+clawHingeA.Motor.Settings.Servo.SpringSettings.Damping.Div(100.ToFix());
+			clawHingeA.Motor.Settings.Servo.SpringSettings.Stiffness = clawHingeA.Motor.Settings.Servo.SpringSettings.Stiffness.Div(100.ToFix());
 
             clawHingeA.Limit.IsActive = true;
             clawHingeA.Limit.MinimumAngle = MathHelper.PiOver2.Neg();
@@ -140,9 +141,10 @@ namespace BEPUphysicsDemos.Demos
             clawHingeB.Motor.IsActive = true;
             clawHingeB.Motor.Settings.Mode = MotorMode.Servomechanism;
             clawHingeB.Motor.Settings.Servo.Goal = MathHelper.PiOver2;
-            //Weaken the claw to prevent it from crushing the boxes.
-            clawHingeB.Motor.Settings.Servo.SpringSettings.Damping /= 100.ToFix();
-            clawHingeB.Motor.Settings.Servo.SpringSettings.Stiffness /= 100.ToFix();
+			//Weaken the claw to prevent it from crushing the boxes.
+			clawHingeB.Motor.Settings.Servo.SpringSettings.Damping =
+clawHingeB.Motor.Settings.Servo.SpringSettings.Damping.Div(100.ToFix());
+			clawHingeB.Motor.Settings.Servo.SpringSettings.Stiffness = clawHingeB.Motor.Settings.Servo.SpringSettings.Stiffness.Div(100.ToFix());
 
             clawHingeB.Limit.IsActive = true;
             clawHingeB.Limit.MinimumAngle = MathHelper.Pi.Div(6.ToFix());
@@ -162,9 +164,9 @@ namespace BEPUphysicsDemos.Demos
 
 
             //Put some boxes on the ground to try to pick up.
-            for (Fix64 k = 0.ToFix(); k < MathHelper.Pi.Mul(2.ToFix()); k += MathHelper.Pi.Div(6.ToFix()))
+            for (Fix64 k = 0.ToFix(); k < MathHelper.Pi.Mul(2.ToFix()); k = k.Add(MathHelper.Pi.Div(6.ToFix())))
             {
-                Space.Add(new Box(new Vector3(Fix64.Cos(k).Mul(5.5m.ToFix()), 2.ToFix(), Fix64.Sin(k).Mul(5.5m.ToFix())), 1.ToFix(), 1.ToFix(), 1.ToFix(), 10.ToFix()));
+                Space.Add(new Box(new Vector3(Fix64Ext.Cos(k).Mul(5.5m.ToFix()), 2.ToFix(), Fix64Ext.Sin(k).Mul(5.5m.ToFix())), 1.ToFix(), 1.ToFix(), 1.ToFix(), 10.ToFix()));
             }
 
             game.Camera.Position = new Vector3(0.ToFix(), 5.ToFix(), 13.ToFix());
@@ -207,9 +209,9 @@ namespace BEPUphysicsDemos.Demos
 
 #else
             if (Game.KeyboardInput.IsKeyDown(Keys.N))
-                groundToBaseJoint.Motor.Settings.Servo.Goal -= 1.ToFix().Mul(dt);
+				groundToBaseJoint.Motor.Settings.Servo.Goal = groundToBaseJoint.Motor.Settings.Servo.Goal.Sub(1.ToFix().Mul(dt));
             if (Game.KeyboardInput.IsKeyDown(Keys.M))
-                groundToBaseJoint.Motor.Settings.Servo.Goal += 1.ToFix().Mul(dt);
+				groundToBaseJoint.Motor.Settings.Servo.Goal = groundToBaseJoint.Motor.Settings.Servo.Goal.Add(1.ToFix().Mul(dt));
 
             if (Game.KeyboardInput.IsKeyDown(Keys.Q))
                 shoulder.Motor.Settings.Servo.Goal = MathHelper.Min(shoulder.Motor.Settings.Servo.Goal.Add(.5m.ToFix().Mul(dt)), shoulder.Limit.MaximumAngle);
@@ -222,9 +224,9 @@ namespace BEPUphysicsDemos.Demos
                 elbow.HingeMotor.Settings.Servo.Goal = MathHelper.Max(elbow.HingeMotor.Settings.Servo.Goal.Sub(1.ToFix().Mul(dt)), elbow.HingeLimit.MinimumAngle);
 
             if (Game.KeyboardInput.IsKeyDown(Keys.O))
-                elbow.TwistMotor.Settings.Servo.Goal += 1.ToFix().Mul(dt);
+				elbow.TwistMotor.Settings.Servo.Goal = elbow.TwistMotor.Settings.Servo.Goal.Add(1.ToFix().Mul(dt));
             if (Game.KeyboardInput.IsKeyDown(Keys.P))
-                elbow.TwistMotor.Settings.Servo.Goal -= 1.ToFix().Mul(dt);
+				elbow.TwistMotor.Settings.Servo.Goal = elbow.TwistMotor.Settings.Servo.Goal.Sub(1.ToFix().Mul(dt));
 
             if (Game.KeyboardInput.IsKeyDown(Keys.OemOpenBrackets))
             {

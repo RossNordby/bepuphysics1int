@@ -41,7 +41,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             Fix64 currentDistance = jacobian.LengthSquared();
             if (currentDistance > Toolbox.Epsilon)
             {
-                currentDistance = Fix64.Sqrt(currentDistance);
+                currentDistance = Fix64Ext.Sqrt(currentDistance);
                 Vector3.Divide(ref jacobian, currentDistance, out jacobian);
             }
             else
@@ -71,7 +71,8 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
 
             impulse = changeInVelocity.Mul(effectiveMass);
 
-            accumulatedImpulse += impulse;
+			accumulatedImpulse =
+accumulatedImpulse.Add(impulse);
 
         }
 

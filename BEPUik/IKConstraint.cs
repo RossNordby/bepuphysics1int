@@ -72,7 +72,7 @@ namespace BEPUik
             errorCorrectionFactor = stiffness.Mul(multiplier);
             softness = updateRate.Mul(multiplier);
             maximumImpulse = maximumForce.Mul(dt);
-            maximumImpulseSquared = Fix64.SafeMul(maximumImpulse, maximumImpulse);
+            maximumImpulseSquared = Fix64Ext.SafeMul(maximumImpulse, maximumImpulse);
 
         }
 

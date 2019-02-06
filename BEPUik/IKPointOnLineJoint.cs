@@ -71,7 +71,7 @@ namespace BEPUik
             Fix64 lengthSquared = cross.LengthSquared();
             if (lengthSquared > Toolbox.Epsilon)
             {
-                Vector3.Divide(ref cross, Fix64.Sqrt(lengthSquared), out localRestrictedAxis1);
+                Vector3.Divide(ref cross, Fix64Ext.Sqrt(lengthSquared), out localRestrictedAxis1);
             }
             else
             {

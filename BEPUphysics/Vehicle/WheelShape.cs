@@ -62,7 +62,7 @@ namespace BEPUphysics.Vehicle
         public Fix64 AirborneWheelAcceleration
         {
             get { return airborneWheelAcceleration; }
-            set { airborneWheelAcceleration = Fix64.Abs(value); }
+            set { airborneWheelAcceleration = Fix64Ext.Abs(value); }
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace BEPUphysics.Vehicle
         public Fix64 AirborneWheelDeceleration
         {
             get { return airborneWheelDeceleration; }
-            set { airborneWheelDeceleration = Fix64.Abs(value); }
+            set { airborneWheelDeceleration = Fix64Ext.Abs(value); }
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace BEPUphysics.Vehicle
         public Fix64 BrakeFreezeWheelDeceleration
         {
             get { return brakeFreezeWheelDeceleration; }
-            set { brakeFreezeWheelDeceleration = Fix64.Abs(value); }
+            set { brakeFreezeWheelDeceleration = Fix64Ext.Abs(value); }
         }
 
         /// <summary>
@@ -205,14 +205,14 @@ namespace BEPUphysics.Vehicle
 
                 spinVelocity = wheel.drivingMotor.RelativeVelocity.Div(Radius);
 
-                if (Fix64.Abs(deceleratedValue) < Fix64.Abs(spinVelocity))
+                if (Fix64Ext.Abs(deceleratedValue) < Fix64Ext.Abs(spinVelocity))
                     spinVelocity = deceleratedValue;
             }
             else if (!wheel.HasSupport && wheel.drivingMotor.TargetSpeed != F64.C0)
             {
                 //Airborne and accelerating, increase spin velocity.
-                Fix64 maxSpeed = Fix64.Abs(wheel.drivingMotor.TargetSpeed).Div(Radius);
-                spinVelocity = MathHelper.Clamp(spinVelocity.Add((Fix64.Sign(wheel.drivingMotor.TargetSpeed).Mul(airborneWheelAcceleration)).Mul(dt)), maxSpeed.Neg(), maxSpeed);
+                Fix64 maxSpeed = Fix64Ext.Abs(wheel.drivingMotor.TargetSpeed).Div(Radius);
+                spinVelocity = MathHelper.Clamp(spinVelocity.Add((Fix64Ext.Sign(wheel.drivingMotor.TargetSpeed).Mul(airborneWheelAcceleration)).Mul(dt)), maxSpeed.Neg(), maxSpeed);
             }
             else if (!wheel.HasSupport && wheel.Brake.IsBraking)
             {

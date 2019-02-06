@@ -88,7 +88,8 @@ namespace BEPUphysicsDemos.SampleCode
             Target.ApplyImpulse(worldPosition, worldDirection * dt);
 
 
-            Age += dt;
+			Age =
+Age.Add(dt);
             if (LifeSpan > 0.ToFix() && Age > LifeSpan)
             {
                 IsUpdating = false; //The thruster has finished firing.

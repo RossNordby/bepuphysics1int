@@ -67,7 +67,7 @@ namespace BEPUphysicsDemos.Demos
                     //heights[i,j] = (Fix64)Math.Pow(1.2 * Math.Sqrt(x * x + y * y), 2);
                     //heights[i,j] = -1f / (x * x + y * y);
                     //heights[i,j] = (Fix64)(x * y / 100f);
-                    heights[i,j] = 5.ToFix().Mul((Fix64.Sin(x.Div(8.ToFix())).Add(Fix64.Sin(z.Div(8.ToFix())))));
+                    heights[i,j] = 5.ToFix().Mul((Fix64Ext.Sin(x.Div(8.ToFix())).Add(Fix64Ext.Sin(z.Div(8.ToFix())))));
                     //heights[i,j] = 3 * (Fix64)Math.Sin(x * y / 100f);
                     //heights[i,j] = (x * x * x * y - y * y * y * x) / 1000f;
                 }

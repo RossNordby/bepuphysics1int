@@ -113,7 +113,7 @@ namespace BEPUphysics.Character
                 }
                 else
                 {
-                    Vector3.Multiply(ref supportData.Normal, F64.C1.Div(Fix64.Sqrt(length)), out supportData.Normal);
+                    Vector3.Multiply(ref supportData.Normal, F64.C1.Div(Fix64Ext.Sqrt(length)), out supportData.Normal);
                 }
             }
             //Now that we have the normal, cycle through all the contacts again and find the deepest projected depth.
@@ -488,7 +488,7 @@ namespace BEPUphysics.Character
                     //Don't try to continue if the support ray is stuck in something.
                     return false;
                 }
-                Vector3.Divide(ref earliestHit.Normal, Fix64.Sqrt(lengthSquared), out earliestHit.Normal);
+                Vector3.Divide(ref earliestHit.Normal, Fix64Ext.Sqrt(lengthSquared), out earliestHit.Normal);
                 //A collidable was hit!  It's a support, but does it provide traction?
                 earliestHit.Normal.Normalize();
                 Fix64 dot;

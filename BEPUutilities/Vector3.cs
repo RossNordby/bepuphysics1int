@@ -73,7 +73,7 @@ namespace BEPUutilities
         /// <returns>Length of the vector.</returns>
         public Fix64 Length()
         {
-            return Fix64.Sqrt(((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z)));
+            return Fix64Ext.Sqrt(((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z)));
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            Fix64 inverse = F64.C1.Div(Fix64.Sqrt(((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))));
+            Fix64 inverse = F64.C1.Div(Fix64Ext.Sqrt(((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))));
 			X = X.Mul(inverse);
 			Y = Y.Mul(inverse);
 			Z = Z.Mul(inverse);
@@ -382,7 +382,7 @@ namespace BEPUutilities
             Fix64 x = a.X.Sub(b.X);
             Fix64 y = a.Y.Sub(b.Y);
             Fix64 z = a.Z.Sub(b.Z);
-            distance = Fix64.Sqrt(((x.Mul(x)).Add(y.Mul(y))).Add(z.Mul(z)));
+            distance = Fix64Ext.Sqrt(((x.Mul(x)).Add(y.Mul(y))).Add(z.Mul(z)));
         }
         /// <summary>
         /// Computes the distance between two two vectors.
@@ -575,7 +575,7 @@ namespace BEPUutilities
         /// <param name="result">Normalized vector.</param>
         public static void Normalize(ref Vector3 v, out Vector3 result)
         {
-            Fix64 inverse = F64.C1.Div(Fix64.Sqrt(((v.X.Mul(v.X)).Add(v.Y.Mul(v.Y))).Add(v.Z.Mul(v.Z))));
+            Fix64 inverse = F64.C1.Div(Fix64Ext.Sqrt(((v.X.Mul(v.X)).Add(v.Y.Mul(v.Y))).Add(v.Z.Mul(v.Z))));
             result.X = v.X.Mul(inverse);
             result.Y = v.Y.Mul(inverse);
             result.Z = v.Z.Mul(inverse);

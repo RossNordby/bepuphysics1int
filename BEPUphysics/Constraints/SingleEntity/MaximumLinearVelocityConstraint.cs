@@ -116,7 +116,7 @@ namespace BEPUphysics.Constraints.SingleEntity
             Fix64 linearSpeed = entity.linearVelocity.LengthSquared();
             if (linearSpeed > maximumSpeedSquared)
             {
-                linearSpeed = Fix64.Sqrt(linearSpeed);
+                linearSpeed = Fix64Ext.Sqrt(linearSpeed);
                 Vector3 impulse;
                 //divide by linearSpeed to normalize the velocity.
                 //Multiply by linearSpeed - maximumSpeed to get the 'velocity change vector.'
@@ -138,7 +138,7 @@ namespace BEPUphysics.Constraints.SingleEntity
                 if (forceMagnitude > maxForceDtSquared)
                 {
                     //max / impulse gives some value 0 < x < 1.  Basically, normalize the vector (divide by the length) and scale by the maximum.
-                    Fix64 multiplier = maxForceDt.Div(Fix64.Sqrt(forceMagnitude));
+                    Fix64 multiplier = maxForceDt.Div(Fix64Ext.Sqrt(forceMagnitude));
 					accumulatedImpulse.X = accumulatedImpulse.X.Mul(multiplier);
 					accumulatedImpulse.Y = accumulatedImpulse.Y.Mul(multiplier);
 					accumulatedImpulse.Z = accumulatedImpulse.Z.Mul(multiplier);
@@ -152,7 +152,7 @@ namespace BEPUphysics.Constraints.SingleEntity
                 entity.ApplyLinearImpulse(ref impulse);
 
 
-                return ((Fix64.Abs(impulse.X).Add(Fix64.Abs(impulse.Y))).Add(Fix64.Abs(impulse.Z)));
+                return ((Fix64Ext.Abs(impulse.X).Add(Fix64Ext.Abs(impulse.Y))).Add(Fix64Ext.Abs(impulse.Z)));
             }
 
 

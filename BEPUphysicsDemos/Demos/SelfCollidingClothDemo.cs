@@ -42,7 +42,7 @@ namespace BEPUphysicsDemos.Demos
                         new Vector3(
 (xSpacing.Mul(i.ToFix())).Sub((((numRows - 1).ToFix()).Mul(xSpacing)).Div(2.ToFix())),
 15.58m.ToFix(),
-(2.ToFix().Add(zSpacing * j.ToFix())).Sub((((numColumns - 1).ToFix()) * zSpacing).Div(2.ToFix()))),
+(2.ToFix().Add(zSpacing.Mul(j.ToFix()))).Sub((((numColumns - 1).ToFix()).Mul(zSpacing)).Div(2.ToFix()))),
                         xSpacing, .2m.ToFix(), zSpacing, 10.ToFix());
 
                     lattice[i, j] = latticePiece;

@@ -223,7 +223,7 @@ accumulatedImpulse.Add(lambda);
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return (Fix64.Abs(lambda));
+            return (Fix64Ext.Abs(lambda));
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ accumulatedImpulse.Add(lambda);
             Vector3.Cross(ref worldHingeAxis, ref worldTwistAxis, out jacobianA);
             Fix64 length = jacobianA.LengthSquared();
             if (length > Toolbox.Epsilon)
-                Vector3.Divide(ref jacobianA, Fix64.Sqrt(length), out jacobianA);
+                Vector3.Divide(ref jacobianA, Fix64Ext.Sqrt(length), out jacobianA);
             else
                 jacobianA = new Vector3();
             jacobianB.X = jacobianA.X.Neg();

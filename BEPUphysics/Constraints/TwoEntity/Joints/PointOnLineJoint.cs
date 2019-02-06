@@ -386,7 +386,7 @@ lambda.X.Add(biasVelocity.X.Add(softness.Mul(accumulatedImpulse.X)));
                 connectionB.ApplyLinearImpulse(ref impulse);
                 connectionB.ApplyAngularImpulse(ref torque);
             }
-            return (Fix64.Abs(lambda.X).Add(Fix64.Abs(lambda.Y)));
+            return (Fix64Ext.Abs(lambda.X).Add(Fix64Ext.Abs(lambda.Y)));
         }
 
         ///<summary>
@@ -436,7 +436,7 @@ lambda.X.Add(biasVelocity.X.Add(softness.Mul(accumulatedImpulse.X)));
             Fix64 length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                Fix64 multiplier = maxCorrectiveVelocity.Div(Fix64.Sqrt(length));
+                Fix64 multiplier = maxCorrectiveVelocity.Div(Fix64Ext.Sqrt(length));
 				biasVelocity.X = biasVelocity.X.Mul(multiplier);
 				biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
             }

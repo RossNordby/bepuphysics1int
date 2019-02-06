@@ -40,7 +40,7 @@ namespace BEPUphysics.Character
                     Fix64 lengthSquared = value.LengthSquared();
                     if (lengthSquared > Toolbox.Epsilon)
                     {
-                        Vector2.Divide(ref value, Fix64.Sqrt(lengthSquared), out movementDirection);
+                        Vector2.Divide(ref value, Fix64Ext.Sqrt(lengthSquared), out movementDirection);
                     }
                     else
                     {
@@ -173,7 +173,7 @@ namespace BEPUphysics.Character
             }
             else
             {
-                Vector3.Divide(ref horizontalForwardDirection, Fix64.Sqrt(forwardLengthSquared), out horizontalForwardDirection);
+                Vector3.Divide(ref horizontalForwardDirection, Fix64Ext.Sqrt(forwardLengthSquared), out horizontalForwardDirection);
                 Vector3.Cross(ref down, ref horizontalForwardDirection, out strafeDirection);
                 //Don't need to normalize the strafe direction; it's the cross product of two normalized perpendicular vectors.
             }
@@ -358,7 +358,7 @@ namespace BEPUphysics.Character
                         }
 
                     }
-                    Vector3.Divide(ref linearJacobianA1, Fix64.Sqrt(length), out linearJacobianA1);
+                    Vector3.Divide(ref linearJacobianA1, Fix64Ext.Sqrt(length), out linearJacobianA1);
                     //Pick another perpendicular vector.  Don't need to normalize it since the normal and A1 are already normalized and perpendicular.
                     Vector3.Cross(ref linearJacobianA1, ref supportData.Normal, out linearJacobianA2);
 
@@ -583,7 +583,7 @@ x.Mul(supportForceFactor);
                 Fix64 length = accumulatedImpulse.LengthSquared();
                 if (length > maxForceDt.Mul(maxForceDt))
                 {
-                    Vector2.Multiply(ref accumulatedImpulse, maxForceDt.Div(Fix64.Sqrt(length)), out accumulatedImpulse);
+                    Vector2.Multiply(ref accumulatedImpulse, maxForceDt.Div(Fix64Ext.Sqrt(length)), out accumulatedImpulse);
                 }
                 if (isTryingToMove && accumulatedImpulse.X > maxAccelerationForceDt)
                 {
@@ -625,7 +625,7 @@ x.Mul(supportForceFactor);
                 supportEntity.ApplyAngularImpulse(ref torque);
             }
 
-            return (Fix64.Abs(lambda.X).Add(Fix64.Abs(lambda.Y)));
+            return (Fix64Ext.Abs(lambda.X).Add(Fix64Ext.Abs(lambda.Y)));
 
 
         }

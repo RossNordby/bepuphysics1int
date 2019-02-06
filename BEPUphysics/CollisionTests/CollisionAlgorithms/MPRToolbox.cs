@@ -644,7 +644,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                 Fix64 rayLengthSquared = direction.LengthSquared();
                 if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
-                    Vector3.Divide(ref direction, Fix64.Sqrt(rayLengthSquared), out normal);
+                    Vector3.Divide(ref direction, Fix64Ext.Sqrt(rayLengthSquared), out normal);
                 else
                     normal = new Vector3();
 
@@ -760,7 +760,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     Fix64 lengthSquared = n.LengthSquared();
                     if (lengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
                     {
-                        Vector3.Divide(ref n, Fix64.Sqrt(lengthSquared), out normal);
+                        Vector3.Divide(ref n, Fix64Ext.Sqrt(lengthSquared), out normal);
 
                         //The plane is very close to the surface, and the ray is known to pass through it.
                         //dot is the rate.
@@ -920,7 +920,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                 Fix64 rayLengthSquared = direction.LengthSquared();
                 if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
-                    Vector3.Divide(ref direction, Fix64.Sqrt(rayLengthSquared), out normal);
+                    Vector3.Divide(ref direction, Fix64Ext.Sqrt(rayLengthSquared), out normal);
                 else
                     normal = new Vector3();
 
@@ -1044,7 +1044,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     Fix64 lengthSquared = n.LengthSquared();
                     if (lengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
                     {
-                        Vector3.Divide(ref n, Fix64.Sqrt(lengthSquared), out normal);
+                        Vector3.Divide(ref n, Fix64Ext.Sqrt(lengthSquared), out normal);
 
                         //The plane is very close to the surface, and the ray is known to pass through it.
                         //dot is the rate.
@@ -1210,7 +1210,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Fix64 lengthSquared = penetrationAxis.LengthSquared();
                 if (lengthSquared > Toolbox.Epsilon)
                 {
-                    Vector3.Divide(ref penetrationAxis, Fix64.Sqrt(lengthSquared), out rayCastDirection);// (Vector3.Normalize(localDirection) + Vector3.Normalize(collidableB.worldTransform.Position - collidableA.worldTransform.Position)) / 2;
+                    Vector3.Divide(ref penetrationAxis, Fix64Ext.Sqrt(lengthSquared), out rayCastDirection);// (Vector3.Normalize(localDirection) + Vector3.Normalize(collidableB.worldTransform.Position - collidableA.worldTransform.Position)) / 2;
                     MPRToolbox.LocalSurfaceCast(shapeA, shapeB, ref localTransformB, ref rayCastDirection, out contact.PenetrationDepth, out contact.Normal);
                 }
                 else
@@ -1225,7 +1225,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 lengthSquared = localTransformB.Position.LengthSquared();
                 if (lengthSquared > Toolbox.Epsilon)
                 {
-                    Vector3.Divide(ref localTransformB.Position, Fix64.Sqrt(lengthSquared), out rayCastDirection);
+                    Vector3.Divide(ref localTransformB.Position, Fix64Ext.Sqrt(lengthSquared), out rayCastDirection);
                     MPRToolbox.LocalSurfaceCast(shapeA, shapeB, ref localTransformB, ref rayCastDirection, out depthCandidate, out normalCandidate);
                     if (depthCandidate < contact.PenetrationDepth)
                     {
@@ -1373,7 +1373,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 				sweepLength = sweepLength.Div(rayLengthSquared);
 				//Scale the sweep length by the margins.  Divide by the length to pull the margin into terms of the length of the ray.
 				sweepLength =
-sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64.Sqrt(rayLengthSquared)));
+sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sqrt(rayLengthSquared)));
             }
             else
             {
@@ -1468,7 +1468,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64.Sqrt(
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
 
                 if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
-                    Vector3.Divide(ref localDirection, Fix64.Sqrt(rayLengthSquared), out hit.Normal);
+                    Vector3.Divide(ref localDirection, Fix64Ext.Sqrt(rayLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
 
@@ -1594,7 +1594,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64.Sqrt(
                     Fix64 lengthSquared = n.LengthSquared();
                     if (lengthSquared > Toolbox.Epsilon.Mul(F64.C1em5))
                     {
-                        Vector3.Divide(ref n, Fix64.Sqrt(lengthSquared), out hit.Normal);
+                        Vector3.Divide(ref n, Fix64Ext.Sqrt(lengthSquared), out hit.Normal);
 
                         //The plane is very close to the surface, and the ray is known to pass through it.
                         //dot is the rate.
@@ -2305,7 +2305,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64.Sqrt(
 sweepLength.Div(rayLengthSquared);
 				//Scale the sweep length by the margins.  Divide by the length to pull the margin into terms of the length of the ray.
 				sweepLength =
-sweepLength.Add(shape.MaximumRadius.Div(Fix64.Sqrt(rayLengthSquared)));
+sweepLength.Add(shape.MaximumRadius.Div(Fix64Ext.Sqrt(rayLengthSquared)));
             }
             else
             {
@@ -2577,7 +2577,7 @@ sweepLength.Add(shape.MaximumRadius.Div(Fix64.Sqrt(rayLengthSquared)));
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
 
                 if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
-                    Vector3.Divide(ref localDirection, Fix64.Sqrt(rayLengthSquared), out hit.Normal);
+                    Vector3.Divide(ref localDirection, Fix64Ext.Sqrt(rayLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
 
@@ -2698,7 +2698,7 @@ sweepLength.Add(shape.MaximumRadius.Div(Fix64.Sqrt(rayLengthSquared)));
                     Fix64 lengthSquared = n.LengthSquared();
                     if (lengthSquared > Toolbox.Epsilon.Mul(F64.C1em5))
                     {
-                        Vector3.Divide(ref n, Fix64.Sqrt(lengthSquared), out hit.Normal);
+                        Vector3.Divide(ref n, Fix64Ext.Sqrt(lengthSquared), out hit.Normal);
 
                         //The plane is very close to the surface, and the ray is known to pass through it.
                         //dot is the rate.

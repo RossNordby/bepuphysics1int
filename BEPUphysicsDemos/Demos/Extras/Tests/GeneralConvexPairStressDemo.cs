@@ -67,7 +67,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 Vector3.Normalize(new Vector3(
 (random.NextDouble().ToFix().Mul(2.ToFix())).Sub(1.ToFix()),
 (random.NextDouble().ToFix().Mul(2.ToFix())).Sub(1.ToFix()),
-(random.NextDouble().ToFix() * 2.ToFix()).Sub(1.ToFix()))),
+(random.NextDouble().ToFix().Mul(2.ToFix())).Sub(1.ToFix()))),
 random.NextDouble().ToFix().Mul(50.ToFix()));
             Fix64 linearFactor = 0.5m.ToFix();
             entity.LinearVelocity = new Vector3(

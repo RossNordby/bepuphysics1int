@@ -258,14 +258,14 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             for (int i = 1; i < NumSamples / 2 - 1; i++)
             {
                 Fix64 phi = MathHelper.PiOver2.Sub(i.ToFix().Mul(angleChange));
-                var sinPhi = Fix64.Sin(phi);
-                var cosPhi = Fix64.Cos(phi);
+                var sinPhi = Fix64Ext.Sin(phi);
+                var cosPhi = Fix64Ext.Cos(phi);
                 for (int j = 0; j < NumSamples; j++)
                 {
                     Fix64 theta = j.ToFix().Mul(angleChange);
-                    direction.X = Fix64.Cos(theta).Mul(cosPhi);
+                    direction.X = Fix64Ext.Cos(theta).Mul(cosPhi);
                     direction.Y = sinPhi;
-                    direction.Z = Fix64.Sin(theta).Mul(cosPhi);
+                    direction.Z = Fix64Ext.Sin(theta).Mul(cosPhi);
 
 
                     MinkowskiToolbox.GetLocalMinkowskiExtremePoint(a.CollisionInformation.Shape as ConvexShape, b.CollisionInformation.Shape as ConvexShape, ref direction, ref localTransformB, out max);

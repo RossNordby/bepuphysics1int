@@ -193,7 +193,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                     longestLengthSquared = lengthCandidate;
                 }
             }
-            return Fix64.Sqrt(longestLengthSquared).Add(collisionMargin);
+            return Fix64Ext.Sqrt(longestLengthSquared).Add(collisionMargin);
         }
 
 

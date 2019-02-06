@@ -322,7 +322,7 @@ namespace BEPUutilities
             Fix64 dot;
             Vector3.Dot(ref direction, ref points.Elements[a], out dot);
             //Use the point further from the axis.
-            if (Fix64.Abs(dot.Sub(minimumDot)) > Fix64.Abs(dot.Sub(maximumDot)))
+            if (Fix64Ext.Abs(dot.Sub(minimumDot)) > Fix64Ext.Abs(dot.Sub(maximumDot)))
             {
                 //In this case, we should use the minimum index.
                 c = minimumIndex;
@@ -346,7 +346,7 @@ namespace BEPUutilities
             //Compare the location of the extreme points to the location of the plane.
             Vector3.Dot(ref direction, ref points.Elements[a], out dot);
             //Use the point further from the plane. 
-            if (Fix64.Abs(dot.Sub(minimumDot)) > Fix64.Abs(dot.Sub(maximumDot)))
+            if (Fix64Ext.Abs(dot.Sub(minimumDot)) > Fix64Ext.Abs(dot.Sub(maximumDot)))
             {
                 //In this case, we should use the minimum index.
                 d = minimumIndex;
@@ -400,7 +400,7 @@ namespace BEPUutilities
                 Fix64 volume;
                 Vector3.Dot(ref offset, ref cross, out volume);
                 //This volume/cross product could also be used to check for degeneracy, but we already tested for that.
-                if (Fix64.Abs(volume) < Toolbox.BigEpsilon)
+                if (Fix64Ext.Abs(volume) < Toolbox.BigEpsilon)
                 {
                     throw new ArgumentException("Point set is degenerate; convex hulls must have volume.");
                 }

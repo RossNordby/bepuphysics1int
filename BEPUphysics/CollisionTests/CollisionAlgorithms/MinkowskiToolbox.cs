@@ -137,7 +137,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
                 //The contribution to the minkowski sum by the margin is:
                 //direction * marginA - (-direction) * marginB.
-                Vector3.Multiply(ref direction, (marginA.Add(marginB)).Div(Fix64.Sqrt(lengthSquared)), out contribution);
+                Vector3.Multiply(ref direction, (marginA.Add(marginB)).Div(Fix64Ext.Sqrt(lengthSquared)), out contribution);
 
             }
             else
@@ -162,7 +162,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Fix64 lengthSquared = direction.LengthSquared();
             if (lengthSquared > Toolbox.Epsilon)
             {
-                lengthSquared = F64.C1.Div(Fix64.Sqrt(lengthSquared));   
+                lengthSquared = F64.C1.Div(Fix64Ext.Sqrt(lengthSquared));   
                 //The contribution to the minkowski sum by the margin is:
                 //direction * marginA - (-direction) * marginB. 
                 Vector3 contribution;

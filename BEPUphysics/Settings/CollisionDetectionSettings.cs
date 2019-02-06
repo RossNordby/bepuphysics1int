@@ -24,7 +24,7 @@ namespace BEPUphysics.Settings
         {
             get
             {
-                return Fix64.Sqrt(ContactInvalidationLengthSquared);
+                return Fix64Ext.Sqrt(ContactInvalidationLengthSquared);
             }
             set
             {
@@ -43,7 +43,7 @@ namespace BEPUphysics.Settings
         {
             get
             {
-                return Fix64.Sqrt(ContactMinimumSeparationDistanceSquared);
+                return Fix64Ext.Sqrt(ContactMinimumSeparationDistanceSquared);
             }
             set
             {
@@ -61,11 +61,11 @@ namespace BEPUphysics.Settings
         {
             get
             {
-                return Fix64.Acos(nonconvexNormalDotMinimum);
+                return Fix64Ext.Acos(nonconvexNormalDotMinimum);
             }
             set
             {
-                nonconvexNormalDotMinimum = Fix64.Cos(value);
+                nonconvexNormalDotMinimum = Fix64Ext.Cos(value);
             }
         }
 

@@ -56,7 +56,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
             game.Camera.Position = new Vector3((-10).ToFix(), 5.ToFix(), 10.ToFix());
             game.Camera.Yaw(MathHelper.Pi.ToFix().Div((-4).ToFix()));
-            game.Camera.Pitch((-MathHelper.Pi.ToFix()).Div(9.ToFix()));
+            game.Camera.Pitch(((-MathHelper.Pi).ToFix()).Div(9.ToFix()));
 
             //Starter ray.
             origin = new Vector3(10.ToFix(), 5.ToFix(), 0.ToFix());

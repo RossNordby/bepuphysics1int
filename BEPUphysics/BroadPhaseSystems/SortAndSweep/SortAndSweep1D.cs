@@ -3,6 +3,7 @@ using BEPUphysics.BroadPhaseEntries;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
 using BEPUutilities.Threading;
+using FixMath.NET;
 
 namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
 {

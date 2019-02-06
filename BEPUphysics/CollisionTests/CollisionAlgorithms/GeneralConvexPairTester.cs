@@ -167,7 +167,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Vector3.Add(ref closestA, ref contact.Position, out contact.Position); //A + t * AB.
 
                 contact.Normal = displacement;
-                Fix64 distance = Fix64.Sqrt(distanceSquared);
+                Fix64 distance = Fix64Ext.Sqrt(distanceSquared);
                 Vector3.Divide(ref contact.Normal, distance, out contact.Normal);
                 contact.PenetrationDepth = margin.Sub(distance);
                 return true;
@@ -228,7 +228,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //    Fix64 lengthSquared = localDirection.LengthSquared();
             //    if (lengthSquared > Toolbox.Epsilon)
             //    {
-            //        Vector3.Divide(ref localDirection, Fix64.Sqrt(lengthSquared), out rayCastDirection);// (Vector3.Normalize(localDirection) + Vector3.Normalize(collidableB.worldTransform.Position - collidableA.worldTransform.Position)) / 2;
+            //        Vector3.Divide(ref localDirection, Fix64Ext.Sqrt(lengthSquared), out rayCastDirection);// (Vector3.Normalize(localDirection) + Vector3.Normalize(collidableB.worldTransform.Position - collidableA.worldTransform.Position)) / 2;
             //        MPRTesting.LocalSurfaceCast(collidableA.Shape, collidableB.Shape, ref localTransformB, ref rayCastDirection, out contact.PenetrationDepth, out contact.Normal);
             //    }
             //    else
@@ -243,7 +243,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //    lengthSquared = localTransformB.Position.LengthSquared();
             //    if (lengthSquared > Toolbox.Epsilon)
             //    {
-            //        Vector3.Divide(ref localTransformB.Position, Fix64.Sqrt(lengthSquared), out rayCastDirection);
+            //        Vector3.Divide(ref localTransformB.Position, Fix64Ext.Sqrt(lengthSquared), out rayCastDirection);
             //        MPRTesting.LocalSurfaceCast(collidableA.Shape, collidableB.Shape, ref localTransformB, ref rayCastDirection, out depthCandidate, out normalCandidate);
             //        if (depthCandidate < contact.PenetrationDepth)
             //        {

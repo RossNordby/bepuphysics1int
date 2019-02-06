@@ -75,7 +75,7 @@ namespace BEPUik
             Fix64 lengthSquared = restrictedAxis.LengthSquared();
             if (lengthSquared > Toolbox.Epsilon)
             {
-                Vector3.Divide(ref restrictedAxis, Fix64.Sqrt(lengthSquared), out restrictedAxis);
+                Vector3.Divide(ref restrictedAxis, Fix64Ext.Sqrt(lengthSquared), out restrictedAxis);
             }
             else
             {
@@ -93,7 +93,7 @@ namespace BEPUik
 
             Fix64 error;
             Vector3.Dot(ref worldHingeAxis, ref worldTwistAxis, out error);
-            error = Fix64.Acos(MathHelper.Clamp(error, F64.C1.Neg(), F64.C1)).Sub(MathHelper.PiOver2);
+            error = Fix64Ext.Acos(MathHelper.Clamp(error, F64.C1.Neg(), F64.C1)).Sub(MathHelper.PiOver2);
 
             velocityBias = new Vector3(errorCorrectionFactor.Mul(error), F64.C0, F64.C0);
 

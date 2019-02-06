@@ -40,7 +40,7 @@ namespace BEPUutilities
         public bool Intersects(ref BoundingBox boundingBox, out Fix64 t)
         {
 			Fix64 tmin = F64.C0, tmax = Fix64.MaxValue;
-            if (Fix64.Abs(Direction.X) < Toolbox.Epsilon)
+            if (Fix64Ext.Abs(Direction.X) < Toolbox.Epsilon)
             {
                 if (Position.X < boundingBox.Min.X || Position.X > boundingBox.Max.X)
                 {
@@ -69,7 +69,7 @@ namespace BEPUutilities
                     return false;
                 }
             }
-            if (Fix64.Abs(Direction.Y) < Toolbox.Epsilon)
+            if (Fix64Ext.Abs(Direction.Y) < Toolbox.Epsilon)
             {
                 if (Position.Y < boundingBox.Min.Y || Position.Y > boundingBox.Max.Y)
                 {
@@ -98,7 +98,7 @@ namespace BEPUutilities
                     return false;
                 }
             }
-            if (Fix64.Abs(Direction.Z) < Toolbox.Epsilon)
+            if (Fix64Ext.Abs(Direction.Z) < Toolbox.Epsilon)
             {
                 if (Position.Z < boundingBox.Min.Z || Position.Z > boundingBox.Max.Z)
                 {
@@ -152,7 +152,7 @@ namespace BEPUutilities
         {
 			Fix64 velocity;
             Vector3.Dot(ref Direction, ref plane.Normal, out velocity);
-            if (Fix64.Abs(velocity) < Toolbox.Epsilon)
+            if (Fix64Ext.Abs(velocity) < Toolbox.Epsilon)
             {
                 t = F64.C0;
                 return false;

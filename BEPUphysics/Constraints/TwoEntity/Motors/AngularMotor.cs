@@ -190,7 +190,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
             if (sumLengthSquared > maxForceDtSquared)
             {
                 //max / impulse gives some value 0 < x < 1.  Basically, normalize the vector (divide by the length) and scale by the maximum.
-                Fix64 multiplier = maxForceDt.Div(Fix64.Sqrt(sumLengthSquared));
+                Fix64 multiplier = maxForceDt.Div(Fix64Ext.Sqrt(sumLengthSquared));
 				accumulatedImpulse.X = accumulatedImpulse.X.Mul(multiplier);
 				accumulatedImpulse.Y = accumulatedImpulse.Y.Mul(multiplier);
 				accumulatedImpulse.Z = accumulatedImpulse.Z.Mul(multiplier);
@@ -213,7 +213,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                 connectionB.ApplyAngularImpulse(ref torqueB);
             }
 
-            return ((Fix64.Abs(lambda.X).Add(Fix64.Abs(lambda.Y))).Add(Fix64.Abs(lambda.Z)));
+            return ((Fix64Ext.Abs(lambda.X).Add(Fix64Ext.Abs(lambda.Y))).Add(Fix64Ext.Abs(lambda.Z)));
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                     Fix64 length = biasVelocity.LengthSquared();
                     if (length > settings.servo.maxCorrectiveVelocitySquared)
                     {
-                        Fix64 multiplier = settings.servo.maxCorrectiveVelocity.Div(Fix64.Sqrt(length));
+                        Fix64 multiplier = settings.servo.maxCorrectiveVelocity.Div(Fix64Ext.Sqrt(length));
 						biasVelocity.X = biasVelocity.X.Mul(multiplier);
 						biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
 						biasVelocity.Z = biasVelocity.Z.Mul(multiplier);

@@ -57,7 +57,7 @@ namespace BEPUik
             if (impulseSquared > maximumImpulseSquared)
             {
                 //Oops! Clamp that down.
-                Vector3.Multiply(ref accumulatedImpulse, maximumImpulse.Div(Fix64.Sqrt(impulseSquared)), out accumulatedImpulse);
+                Vector3.Multiply(ref accumulatedImpulse, maximumImpulse.Div(Fix64Ext.Sqrt(impulseSquared)), out accumulatedImpulse);
             }
             //Update the impulse based upon the clamped accumulated impulse and the original, pre-add accumulated impulse.
             Vector3.Subtract(ref accumulatedImpulse, ref preadd, out constraintSpaceImpulse);

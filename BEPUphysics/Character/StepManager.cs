@@ -719,7 +719,7 @@ earliestHit.T.Sub(downRayLength) < (maximumStepHeight.Neg()).Sub(upStepMargin)) 
                                     Fix64 dot;
                                     hit.Normal.Normalize();
                                     Vector3.Dot(ref hit.Normal, ref down, out dot);
-                                    if (Fix64.Abs(dot) > ContactCategorizer.TractionThreshold)
+                                    if (Fix64Ext.Abs(dot) > ContactCategorizer.TractionThreshold)
                                     {
                                         //Slope is shallow enough to stand on!
                                         hintOffset = MathHelper.Min(F64.C0, Vector3.Dot(supportContact.Contact.Normal, down).Mul(((CollisionDetectionSettings.AllowedPenetration.Mul(F64.C0p5)).Sub(supportContact.Contact.PenetrationDepth))));
@@ -730,7 +730,7 @@ earliestHit.T.Sub(downRayLength) < (maximumStepHeight.Neg()).Sub(upStepMargin)) 
                                             //It hit.. almost there!
                                             hit.Normal.Normalize();
                                             Vector3.Dot(ref hit.Normal, ref down, out dot);
-                                            if (Fix64.Abs(dot) > ContactCategorizer.TractionThreshold)
+                                            if (Fix64Ext.Abs(dot) > ContactCategorizer.TractionThreshold)
                                             {
                                                 //It has traction! We can step!
                                                 return CharacterContactPositionState.Accepted;

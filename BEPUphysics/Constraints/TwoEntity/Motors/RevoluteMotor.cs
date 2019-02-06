@@ -224,17 +224,17 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                 Vector3.Cross(ref basis.primaryAxis, ref basis.xAxis, out yAxis);
                 Vector3.Dot(ref worldTestAxis, ref yAxis, out y);
                 Vector3.Dot(ref worldTestAxis, ref basis.xAxis, out x);
-                var angle = Fix64.FastAtan2(y, x);
+                var angle = Fix64Ext.FastAtan2(y, x);
 
                 //****** VELOCITY BIAS ******//
                 //Compute the correction velocity.
                 error = GetDistanceFromGoal(angle);
 
 
-                Fix64 absErrorOverDt = Fix64.Abs(error.Mul(updateRate));
+                Fix64 absErrorOverDt = Fix64Ext.Abs(error.Mul(updateRate));
                 Fix64 errorReduction;
                 settings.servo.springSettings.ComputeErrorReductionAndSoftness(dt, updateRate, out errorReduction, out usedSoftness);
-                biasVelocity = (Fix64.Sign(error).Mul(MathHelper.Min(settings.servo.baseCorrectiveSpeed, absErrorOverDt))).Add(error.Mul(errorReduction));
+                biasVelocity = (Fix64Ext.Sign(error).Mul(MathHelper.Min(settings.servo.baseCorrectiveSpeed, absErrorOverDt))).Add(error.Mul(errorReduction));
 
                 biasVelocity = MathHelper.Clamp(biasVelocity, settings.servo.maxCorrectiveVelocity.Neg(), settings.servo.maxCorrectiveVelocity);
             }
@@ -343,7 +343,7 @@ lambda.Mul(velocityToImpulse);
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return Fix64.Abs(lambda);
+            return Fix64Ext.Abs(lambda);
         }
 
 

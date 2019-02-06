@@ -720,9 +720,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 #if !WINDOWS
                 bonePosition = new Vector3();
 #endif
-                bonePosition.X = Fix64.Cos(anglePerIncrement.Mul(i.ToFix()));
+                bonePosition.X = Fix64Ext.Cos(anglePerIncrement.Mul(i.ToFix()));
                 bonePosition.Y = 0.ToFix();
-                bonePosition.Z = Fix64.Sin(anglePerIncrement.Mul(i.ToFix()));
+                bonePosition.Z = Fix64Ext.Sin(anglePerIncrement.Mul(i.ToFix()));
                 bonePosition = bonePosition * radius + position;
                 bonesList[i] = new Bone(bonePosition,
                                      Quaternion.Concatenate(Quaternion.CreateFromAxisAngle(Vector3.Right, MathHelper.PiOver2), Quaternion.CreateFromAxisAngle(Vector3.Up, anglePerIncrement.Neg().Mul(i.ToFix()))),
@@ -1069,7 +1069,7 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
                 hit.Normal = new Vector3(hit.Location.X, 0.ToFix(), hit.Location.Z);
                 Fix64 normalLengthSquared = hit.Normal.LengthSquared();
                 if (normalLengthSquared > 1e-9m.ToFix())
-                    Vector3.Divide(ref hit.Normal, Fix64.Sqrt(normalLengthSquared), out hit.Normal);
+                    Vector3.Divide(ref hit.Normal, Fix64Ext.Sqrt(normalLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
                 //Pull the hit into world space.
@@ -1119,8 +1119,8 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
 
 
             //With the squared distance, compute the distance backward along the ray from the closest point on the ray to the axis.
-            Fix64 backwardsDistance = radius.Mul(Fix64.Sqrt(1.ToFix().Sub(squaredDistance.Div((radius.Mul(radius))))));
-            Fix64 tOffset = backwardsDistance.Div(Fix64.Sqrt(planeDirectionLengthSquared));
+            Fix64 backwardsDistance = radius.Mul(Fix64Ext.Sqrt(1.ToFix().Sub(squaredDistance.Div((radius.Mul(radius))))));
+            Fix64 tOffset = backwardsDistance.Div(Fix64Ext.Sqrt(planeDirectionLengthSquared));
 
             hit.T = closestToCenterT.Sub(tOffset);
 
@@ -1135,7 +1135,7 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
                 hit.Normal = new Vector3(hit.Location.X, 0.ToFix(), hit.Location.Z);
                 Fix64 normalLengthSquared = hit.Normal.LengthSquared();
                 if (normalLengthSquared > 1e-9m.ToFix())
-                    Vector3.Divide(ref hit.Normal, Fix64.Sqrt(normalLengthSquared), out hit.Normal);
+                    Vector3.Divide(ref hit.Normal, Fix64Ext.Sqrt(normalLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
                 //Pull the hit into world space.

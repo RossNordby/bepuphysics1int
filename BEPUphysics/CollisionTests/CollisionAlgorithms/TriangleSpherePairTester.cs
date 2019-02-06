@@ -86,7 +86,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     return true;
                 }
 
-                lengthSquared = Fix64.Sqrt(lengthSquared);
+                lengthSquared = Fix64Ext.Sqrt(lengthSquared);
                 Vector3.Divide(ref closestPoint, lengthSquared, out contact.Normal);
                 contact.PenetrationDepth = marginSum.Sub(lengthSquared);
                 contact.Position = closestPoint;

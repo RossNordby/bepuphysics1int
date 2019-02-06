@@ -189,7 +189,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                         rayDirectionLength = F64.C1;
                     }
                 }
-                Vector3.Divide(ref ray.Direction, Fix64.Sqrt(rayDirectionLength), out ray.Direction);
+                Vector3.Divide(ref ray.Direction, Fix64Ext.Sqrt(rayDirectionLength), out ray.Direction);
 
 
                 RayHit hit;

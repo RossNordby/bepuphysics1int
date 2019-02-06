@@ -36,10 +36,11 @@ namespace BEPUphysicsDemos.Demos.Extras
             {
                 var levelWidth = bottomBoxCount - heightIndex;
                 Fix64 perBoxWidth = boxSize.Add(spacing);
-                //Move the origin for this level.
-                origin.X += perBoxWidth.Mul(0.5m.ToFix());
-                origin.Y += boxSize;
-                origin.Z += perBoxWidth.Mul(0.5m.ToFix());
+				//Move the origin for this level.
+				origin.X =
+origin.X.Add(perBoxWidth.Mul(0.5m.ToFix()));
+				origin.Y = origin.Y.Add(boxSize);
+				origin.Z = origin.Z.Add(perBoxWidth.Mul(0.5m.ToFix()));
 
                 for (int i = 0; i < levelWidth; ++i)
                 {

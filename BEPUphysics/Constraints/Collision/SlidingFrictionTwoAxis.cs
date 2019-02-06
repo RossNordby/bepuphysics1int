@@ -177,7 +177,7 @@ namespace BEPUphysics.Constraints.Collision
 			maximumFrictionForce = maximumFrictionForce.Mul(friction);
             if (length > maximumFrictionForce.Mul(maximumFrictionForce))
             {
-                length = maximumFrictionForce.Div(Fix64.Sqrt(length));
+                length = maximumFrictionForce.Div(Fix64Ext.Sqrt(length));
 				accumulatedImpulse.X = accumulatedImpulse.X.Mul(length);
 				accumulatedImpulse.Y = accumulatedImpulse.Y.Mul(length);
             }
@@ -231,7 +231,7 @@ namespace BEPUphysics.Constraints.Collision
             }
 
 
-            return Fix64.Abs(lambda.X).Add(Fix64.Abs(lambda.Y));
+            return Fix64Ext.Abs(lambda.X).Add(Fix64Ext.Abs(lambda.Y));
         }
 
         internal Vector3 manifoldCenter, relativeVelocity;
@@ -324,7 +324,7 @@ namespace BEPUphysics.Constraints.Collision
             Fix64 length = relativeVelocity.LengthSquared();
             if (length > Toolbox.Epsilon)
             {
-                length = Fix64.Sqrt(length);
+                length = Fix64Ext.Sqrt(length);
                 Fix64 inverseLength = F64.C1.Div(length);
                 linearA.M11 = relativeVelocity.X.Mul(inverseLength);
                 linearA.M12 = relativeVelocity.Y.Mul(inverseLength);
@@ -350,7 +350,7 @@ namespace BEPUphysics.Constraints.Collision
                     length = axis1.LengthSquared();
                     if (length > Toolbox.Epsilon)
                     {
-                        length = Fix64.Sqrt(length);
+                        length = Fix64Ext.Sqrt(length);
                         Fix64 inverseLength = F64.C1.Div(length);
                         linearA.M11 = axis1.X.Mul(inverseLength);
                         linearA.M12 = axis1.Y.Mul(inverseLength);

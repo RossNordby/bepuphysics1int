@@ -124,7 +124,7 @@ namespace BEPUphysicsDemos.SampleCode
 
             //Compute the axis and angle 
             Vector3 axis = Vector3.Cross(myWorldUpVector, Vector3.Up);
-            var angle = Fix64.Acos(Vector3.Dot(Vector3.Up, myWorldUpVector));
+            var angle = Fix64Ext.Acos(Vector3.Dot(Vector3.Up, myWorldUpVector));
 
             if (angle > MinimumAngle && angle < MaximumAngle)
             {

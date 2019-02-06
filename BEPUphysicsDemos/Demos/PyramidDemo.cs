@@ -30,7 +30,7 @@ namespace BEPUphysicsDemos.Demos
                 {
                     Space.Add(new Box(
                                   new Vector3(
-((((-boxCount).ToFix() * boxSize).Div(2.ToFix())).Add((boxSize / 2.ToFix()).Mul(i.ToFix()))).Add(j.ToFix().Mul((boxSize))),
+((((-boxCount).ToFix().Mul(boxSize)).Div(2.ToFix())).Add((boxSize.Div(2.ToFix())).Mul(i.ToFix()))).Add(j.ToFix().Mul((boxSize))),
 (boxSize.Div(2.ToFix())).Add(i.ToFix().Mul(boxSize)),
 0.ToFix()),
                                   boxSize, boxSize, boxSize, 20.ToFix()));

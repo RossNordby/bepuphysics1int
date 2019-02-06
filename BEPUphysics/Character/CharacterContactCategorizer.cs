@@ -73,16 +73,16 @@ namespace BEPUphysics.Character
         /// </summary>
         public Fix64 MaximumTractionSlope
         {
-            get { return Fix64.Acos(TractionThreshold); }
-            set { TractionThreshold = Fix64.Cos(value); }
+            get { return Fix64Ext.Acos(TractionThreshold); }
+            set { TractionThreshold = Fix64Ext.Cos(value); }
         }
         /// <summary>
         /// Gets or sets the maximum slope that a character can be supported by.
         /// </summary>
         public Fix64 MaximumSupportSlope
         {
-            get { return Fix64.Acos(SupportThreshold); }
-            set { SupportThreshold = Fix64.Cos(value); }
+            get { return Fix64Ext.Acos(SupportThreshold); }
+            set { SupportThreshold = Fix64Ext.Cos(value); }
         }
 
 		/// <summary>

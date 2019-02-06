@@ -1426,7 +1426,7 @@ namespace BEPUutilities
             Vector3 normalizedDirection;
 			Fix64 length = ray.Direction.Length();
             Vector3.Divide(ref ray.Direction, length, out normalizedDirection);
-            maximumLength *= length;
+			maximumLength = maximumLength.Mul(length);
             hit = new RayHit();
             Vector3 m;
             Vector3.Subtract(ref ray.Position, ref spherePosition, out m);
@@ -1439,7 +1439,7 @@ namespace BEPUutilities
             if (discriminant < F64.C0)
                 return false;
 
-            hit.T = (b.Neg()).Sub(Fix64.Sqrt(discriminant));
+            hit.T = (b.Neg()).Sub(Fix64Ext.Sqrt(discriminant));
             if (hit.T < F64.C0)
                 hit.T = F64.C0;
             if (hit.T > maximumLength)

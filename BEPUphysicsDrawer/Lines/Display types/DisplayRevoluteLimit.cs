@@ -1,6 +1,7 @@
 ﻿using BEPUphysics.Constraints.TwoEntity.JointLimits;
 using Microsoft.Xna.Framework;
 using ConversionHelper;
+using FixMath.NET;
 
 namespace BEPUphysicsDrawer.Lines
 {

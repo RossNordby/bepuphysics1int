@@ -38,8 +38,8 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
 
         internal static void ComputeCell(ref Vector3 v, out Int2 cell)
         {
-            cell.Y = (int)Fix64.Floor(v.Y.Mul(cellSizeInverse)).ToInt();
-            cell.Z = (int)Fix64.Floor(v.Z.Mul(cellSizeInverse)).ToInt();
+            cell.Y = (int)Fix64Ext.Floor(v.Y.Mul(cellSizeInverse)).ToInt();
+            cell.Z = (int)Fix64Ext.Floor(v.Z.Mul(cellSizeInverse)).ToInt();
         }
 
         

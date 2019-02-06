@@ -158,7 +158,7 @@ namespace BEPUutilities
 #endif
             if (trace >= F64.C0)
             {
-                var S = Fix64.Sqrt(trace.Add(F64.C1)).Mul(F64.C2); // S=4*qw 
+                var S = Fix64Ext.Sqrt(trace.Add(F64.C1)).Mul(F64.C2); // S=4*qw 
                 var inverseS = F64.C1.Div(S);
                 q.W = F64.C0p25.Mul(S);
                 q.X = (r.M23.Sub(r.M32)).Mul(inverseS);
@@ -167,7 +167,7 @@ namespace BEPUutilities
             }
             else if ((r.M11 > r.M22) & (r.M11 > r.M33))
             {
-                var S = Fix64.Sqrt(((F64.C1.Add(r.M11)).Sub(r.M22)).Sub(r.M33)).Mul(F64.C2); // S=4*qx 
+                var S = Fix64Ext.Sqrt(((F64.C1.Add(r.M11)).Sub(r.M22)).Sub(r.M33)).Mul(F64.C2); // S=4*qx 
                 var inverseS = F64.C1.Div(S);
                 q.W = (r.M23.Sub(r.M32)).Mul(inverseS);
                 q.X = F64.C0p25.Mul(S);
@@ -176,7 +176,7 @@ namespace BEPUutilities
             }
             else if (r.M22 > r.M33)
             {
-                var S = Fix64.Sqrt(((F64.C1.Add(r.M22)).Sub(r.M11)).Sub(r.M33)).Mul(F64.C2); // S=4*qy
+                var S = Fix64Ext.Sqrt(((F64.C1.Add(r.M22)).Sub(r.M11)).Sub(r.M33)).Mul(F64.C2); // S=4*qy
                 var inverseS = F64.C1.Div(S);
                 q.W = (r.M31.Sub(r.M13)).Mul(inverseS);
                 q.X = (r.M21.Add(r.M12)).Mul(inverseS);
@@ -185,7 +185,7 @@ namespace BEPUutilities
             }
             else
             {
-                var S = Fix64.Sqrt(((F64.C1.Add(r.M33)).Sub(r.M11)).Sub(r.M22)).Mul(F64.C2); // S=4*qz
+                var S = Fix64Ext.Sqrt(((F64.C1.Add(r.M33)).Sub(r.M11)).Sub(r.M22)).Mul(F64.C2); // S=4*qz
                 var inverseS = F64.C1.Div(S);
                 q.W = (r.M12.Sub(r.M21)).Mul(inverseS);
                 q.X = (r.M31.Add(r.M13)).Mul(inverseS);
@@ -250,7 +250,7 @@ namespace BEPUutilities
         /// <param name="toReturn">Normalized quaternion.</param>
         public static void Normalize(ref Quaternion quaternion, out Quaternion toReturn)
         {
-            Fix64 inverse = F64.C1.Div(Fix64.Sqrt((((quaternion.X.Mul(quaternion.X)).Add(quaternion.Y.Mul(quaternion.Y))).Add(quaternion.Z.Mul(quaternion.Z))).Add(quaternion.W.Mul(quaternion.W))));
+            Fix64 inverse = F64.C1.Div(Fix64Ext.Sqrt((((quaternion.X.Mul(quaternion.X)).Add(quaternion.Y.Mul(quaternion.Y))).Add(quaternion.Z.Mul(quaternion.Z))).Add(quaternion.W.Mul(quaternion.W))));
             toReturn.X = quaternion.X.Mul(inverse);
             toReturn.Y = quaternion.Y.Mul(inverse);
             toReturn.Z = quaternion.Z.Mul(inverse);
@@ -262,7 +262,7 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            Fix64 inverse = F64.C1.Div(Fix64.Sqrt((((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))).Add(W.Mul(W))));
+            Fix64 inverse = F64.C1.Div(Fix64Ext.Sqrt((((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))).Add(W.Mul(W))));
 			X = X.Mul(inverse);
 			Y = Y.Mul(inverse);
 			Z = Z.Mul(inverse);
@@ -284,7 +284,7 @@ namespace BEPUutilities
         /// <returns>Length of the quaternion.</returns>
         public Fix64 Length()
         {
-            return Fix64.Sqrt((((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))).Add(W.Mul(W)));
+            return Fix64Ext.Sqrt((((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))).Add(W.Mul(W)));
         }
 
 
@@ -318,11 +318,11 @@ namespace BEPUutilities
                 return;
             }
             // Calculate temporary values.
-            Fix64 halfTheta = Fix64.Acos(cosHalfTheta);
-			Fix64 sinHalfTheta = Fix64.Sqrt(F64.C1.Sub(cosHalfTheta.Mul(cosHalfTheta)));
+            Fix64 halfTheta = Fix64Ext.Acos(cosHalfTheta);
+			Fix64 sinHalfTheta = Fix64Ext.Sqrt(F64.C1.Sub(cosHalfTheta.Mul(cosHalfTheta)));
 
-			Fix64 aFraction = Fix64.Sin((F64.C1.Sub(interpolationAmount)).Mul(halfTheta)).Div(sinHalfTheta);
-			Fix64 bFraction = Fix64.Sin(interpolationAmount.Mul(halfTheta)).Div(sinHalfTheta);
+			Fix64 aFraction = Fix64Ext.Sin((F64.C1.Sub(interpolationAmount)).Mul(halfTheta)).Div(sinHalfTheta);
+			Fix64 bFraction = Fix64Ext.Sin(interpolationAmount.Mul(halfTheta)).Div(sinHalfTheta);
 
             //Blend the two quaternions to get the result!
             result.X = ((start.X.Mul(aFraction)).Add(end.X.Mul(bFraction)));
@@ -663,12 +663,12 @@ namespace BEPUutilities
         public static Quaternion CreateFromAxisAngle(Vector3 axis, Fix64 angle)
         {
 			Fix64 halfAngle = angle.Mul(F64.C0p5);
-			Fix64 s = Fix64.Sin(halfAngle);
+			Fix64 s = Fix64Ext.Sin(halfAngle);
             Quaternion q;
             q.X = axis.X.Mul(s);
             q.Y = axis.Y.Mul(s);
             q.Z = axis.Z.Mul(s);
-            q.W = Fix64.Cos(halfAngle);
+            q.W = Fix64Ext.Cos(halfAngle);
             return q;
         }
 
@@ -681,11 +681,11 @@ namespace BEPUutilities
         public static void CreateFromAxisAngle(ref Vector3 axis, Fix64 angle, out Quaternion q)
         {
 			Fix64 halfAngle = angle.Mul(F64.C0p5);
-			Fix64 s = Fix64.Sin(halfAngle);
+			Fix64 s = Fix64Ext.Sin(halfAngle);
             q.X = axis.X.Mul(s);
             q.Y = axis.Y.Mul(s);
             q.Z = axis.Z.Mul(s);
-            q.W = Fix64.Cos(halfAngle);
+            q.W = Fix64Ext.Cos(halfAngle);
         }
 
         /// <summary>
@@ -715,13 +715,13 @@ namespace BEPUutilities
 			Fix64 halfPitch = pitch.Mul(F64.C0p5);
 			Fix64 halfYaw = yaw.Mul(F64.C0p5);
 
-			Fix64 sinRoll = Fix64.Sin(halfRoll);
-			Fix64 sinPitch = Fix64.Sin(halfPitch);
-			Fix64 sinYaw = Fix64.Sin(halfYaw);
+			Fix64 sinRoll = Fix64Ext.Sin(halfRoll);
+			Fix64 sinPitch = Fix64Ext.Sin(halfPitch);
+			Fix64 sinYaw = Fix64Ext.Sin(halfYaw);
 
-			Fix64 cosRoll = Fix64.Cos(halfRoll);
-			Fix64 cosPitch = Fix64.Cos(halfPitch);
-			Fix64 cosYaw = Fix64.Cos(halfYaw);
+			Fix64 cosRoll = Fix64Ext.Cos(halfRoll);
+			Fix64 cosPitch = Fix64Ext.Cos(halfPitch);
+			Fix64 cosYaw = Fix64Ext.Cos(halfYaw);
 
 			Fix64 cosYawCosPitch = cosYaw.Mul(cosPitch);
 			Fix64 cosYawSinPitch = cosYaw.Mul(sinPitch);
@@ -742,10 +742,10 @@ namespace BEPUutilities
         /// <returns>Angle around the axis represented by the quaternion.</returns>
         public static Fix64 GetAngleFromQuaternion(ref Quaternion q)
         {
-            Fix64 qw = Fix64.Abs(q.W);
+            Fix64 qw = Fix64Ext.Abs(q.W);
             if (qw > F64.C1)
                 return F64.C0;
-            return F64.C2.Mul(Fix64.Acos(qw));
+            return F64.C2.Mul(Fix64Ext.Acos(qw));
         }
 
         /// <summary>
@@ -777,8 +777,8 @@ namespace BEPUutilities
             Fix64 lengthSquared = axis.LengthSquared();
             if (lengthSquared > F64.C1em14)
             {
-                Vector3.Divide(ref axis, Fix64.Sqrt(lengthSquared), out axis);
-                angle = F64.C2.Mul(Fix64.Acos(MathHelper.Clamp(qw, F64.C1.Neg(), F64.C1)));
+                Vector3.Divide(ref axis, Fix64Ext.Sqrt(lengthSquared), out axis);
+                angle = F64.C2.Mul(Fix64Ext.Acos(MathHelper.Clamp(qw, F64.C1.Neg(), F64.C1)));
             }
             else
             {
@@ -806,9 +806,9 @@ namespace BEPUutilities
                 //The solution is to pick an arbitrary perpendicular axis.
                 //Project onto the plane which has the lowest component magnitude.
                 //On that 2d plane, perform a 90 degree rotation.
-                Fix64 absX = Fix64.Abs(v1.X);
-                Fix64 absY = Fix64.Abs(v1.Y);
-                Fix64 absZ = Fix64.Abs(v1.Z);
+                Fix64 absX = Fix64Ext.Abs(v1.X);
+                Fix64 absY = Fix64Ext.Abs(v1.Y);
+                Fix64 absZ = Fix64Ext.Abs(v1.Z);
                 if (absX < absY && absX < absZ)
                     q = new Quaternion(F64.C0, v1.Z.Neg(), v1.Y, F64.C0);
                 else if (absY < absZ)

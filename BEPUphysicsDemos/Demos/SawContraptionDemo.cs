@@ -83,9 +83,9 @@ namespace BEPUphysicsDemos.Demos
             Space.Add(new Box(new Vector3(0.ToFix(), (-3).ToFix(), 0.ToFix()), 20.ToFix(), 1.ToFix(), 20.ToFix()));
 
             //Make some debris for the saw to chop.
-            for (Fix64 k = 0.ToFix(); k < MathHelper.Pi.Mul(2.ToFix()); k += MathHelper.Pi.Div(20.ToFix()))
+            for (Fix64 k = 0.ToFix(); k < MathHelper.Pi.Mul(2.ToFix()); k = k.Add(MathHelper.Pi.Div(20.ToFix())))
             {
-                Space.Add(new Box(new Vector3(Fix64.Cos(k).Mul(4.ToFix()), (-2).ToFix(), Fix64.Sin(k).Mul(6.5m.ToFix())), .5m.ToFix(), 1.ToFix(), .5m.ToFix(), 10.ToFix()));
+                Space.Add(new Box(new Vector3(Fix64Ext.Cos(k).Mul(4.ToFix()), (-2).ToFix(), Fix64Ext.Sin(k).Mul(6.5m.ToFix())), .5m.ToFix(), 1.ToFix(), .5m.ToFix(), 10.ToFix()));
             }
 
 

@@ -269,7 +269,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Fix64 length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                Fix64 multiplier = maxCorrectiveVelocity.Div(Fix64.Sqrt(length));
+                Fix64 multiplier = maxCorrectiveVelocity.Div(Fix64Ext.Sqrt(length));
 				biasVelocity.X = biasVelocity.X.Mul(multiplier);
 				biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
 				biasVelocity.Z = biasVelocity.Z.Mul(multiplier);
@@ -367,7 +367,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 connectionB.ApplyAngularImpulse(ref tbImpulse);
             }
 
-            return ((Fix64.Abs(lambda.X).Add(Fix64.Abs(lambda.Y))).Add(Fix64.Abs(lambda.Z)));
+            return ((Fix64Ext.Abs(lambda.X).Add(Fix64Ext.Abs(lambda.Y))).Add(Fix64Ext.Abs(lambda.Z)));
         }
     }
 }

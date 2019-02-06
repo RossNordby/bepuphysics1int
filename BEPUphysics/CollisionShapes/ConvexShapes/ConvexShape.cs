@@ -93,7 +93,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 			Fix64 directionLength = direction.LengthSquared();
             if (directionLength > Toolbox.Epsilon)
             {
-                Vector3.Multiply(ref direction, collisionMargin.Div(Fix64.Sqrt(directionLength)), out direction);
+                Vector3.Multiply(ref direction, collisionMargin.Div(Fix64Ext.Sqrt(directionLength)), out direction);
                 Vector3.Add(ref extremePoint, ref direction, out extremePoint);
             }
 
@@ -111,7 +111,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 			Fix64 directionLength = direction.LengthSquared();
             if (directionLength > Toolbox.Epsilon)
             {
-                Vector3.Multiply(ref direction, collisionMargin.Div(Fix64.Sqrt(directionLength)), out direction);
+                Vector3.Multiply(ref direction, collisionMargin.Div(Fix64Ext.Sqrt(directionLength)), out direction);
                 Vector3.Add(ref extremePoint, ref direction, out extremePoint);
             }
         }

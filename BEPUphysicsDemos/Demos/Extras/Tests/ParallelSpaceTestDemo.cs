@@ -67,7 +67,8 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 spaces[i].Update();
             });
 
-            timeSinceLastReset += dt;
+			timeSinceLastReset =
+timeSinceLastReset.Add(dt);
             if (timeSinceLastReset > 10.ToFix())
             {
                 Console.WriteLine("Resetting.  Number of resets performed: " + (++resets));

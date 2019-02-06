@@ -381,8 +381,8 @@ namespace BEPUutilities
             Fix64 xz = axis.X.Mul(axis.Z);
             Fix64 yz = axis.Y.Mul(axis.Z);
 
-            Fix64 sinAngle = Fix64.Sin(angle);
-            Fix64 oneMinusCosAngle = F64.C1.Sub(Fix64.Cos(angle));
+            Fix64 sinAngle = Fix64Ext.Sin(angle);
+            Fix64 oneMinusCosAngle = F64.C1.Sub(Fix64Ext.Cos(angle));
 
             result.M11 = F64.C1.Add(oneMinusCosAngle.Mul((xx.Sub(F64.C1))));
             result.M21 = ((axis.Z.Neg()).Mul(sinAngle)).Add(oneMinusCosAngle.Mul(xy));
@@ -985,7 +985,7 @@ namespace BEPUutilities
         /// <param name="perspective">Resulting perspective matrix.</param>
         public static void CreatePerspectiveFieldOfViewRH(Fix64 fieldOfView, Fix64 aspectRatio, Fix64 nearClip, Fix64 farClip, out Matrix perspective)
         {
-            Fix64 h = F64.C1.Div(Fix64.Tan(fieldOfView.Div(F64.C2)));
+            Fix64 h = F64.C1.Div(Fix64Ext.Tan(fieldOfView.Div(F64.C2)));
             Fix64 w = h.Div(aspectRatio);
             perspective.M11 = w;
             perspective.M12 = F64.C0;

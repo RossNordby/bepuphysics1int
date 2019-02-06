@@ -2,6 +2,8 @@
 
 using FloatMatrix3x3 = BEPUutilitiesFloat.Matrix3x3;
 using FloatMatrix = BEPUutilitiesFloat.Matrix;
+using FixMath.NET;
+
 namespace BEPUtests.util
 {
 	static class MathConverter

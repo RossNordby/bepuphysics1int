@@ -88,7 +88,7 @@ namespace BEPUik
             Fix64 lengthSquared = worldMeasurementAxisA.LengthSquared();
             if (lengthSquared > Toolbox.Epsilon)
             {
-                Vector3.Divide(ref worldMeasurementAxisA, Fix64.Sqrt(lengthSquared), out worldMeasurementAxisA);
+                Vector3.Divide(ref worldMeasurementAxisA, Fix64Ext.Sqrt(lengthSquared), out worldMeasurementAxisA);
             }
             else
             {
@@ -150,7 +150,7 @@ namespace BEPUik
             //We can now compare the angle between the twist axes.
             Fix64 error;
             Vector3.Dot(ref twistMeasureAxisA, ref twistMeasureAxisB, out error);
-            error = Fix64.Acos(MathHelper.Clamp(error, F64.C1.Neg(), F64.C1));
+            error = Fix64Ext.Acos(MathHelper.Clamp(error, F64.C1.Neg(), F64.C1));
             Vector3 cross;
             Vector3.Cross(ref twistMeasureAxisA, ref twistMeasureAxisB, out cross);
             Fix64 dot;
@@ -167,7 +167,7 @@ namespace BEPUik
             Fix64 lengthSquared = jacobian.LengthSquared();
             if (lengthSquared > Toolbox.Epsilon)
             {
-                Vector3.Divide(ref jacobian, Fix64.Sqrt(lengthSquared), out jacobian);
+                Vector3.Divide(ref jacobian, Fix64Ext.Sqrt(lengthSquared), out jacobian);
             }
             else
             {

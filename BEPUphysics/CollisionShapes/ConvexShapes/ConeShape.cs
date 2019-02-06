@@ -93,10 +93,10 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             description.EntityShapeVolume.VolumeDistribution.M22 = (F64.C0p3.Mul(radius)).Mul(radius);
             description.EntityShapeVolume.VolumeDistribution.M33 = diagValue;
 
-            description.MaximumRadius = collisionMargin.Add(MathHelper.Max(F64.C0p75.Mul(height), Fix64.Sqrt(((F64.C0p0625.Mul(height)).Mul(height)).Add(radius.Mul(radius)))));
+            description.MaximumRadius = collisionMargin.Add(MathHelper.Max(F64.C0p75.Mul(height), Fix64Ext.Sqrt(((F64.C0p0625.Mul(height)).Mul(height)).Add(radius.Mul(radius)))));
 
             Fix64 denominator = radius.Div(height);
-            denominator = denominator.Div(Fix64.Sqrt((denominator.Mul(denominator)).Add(F64.C1)));
+            denominator = denominator.Div(Fix64Ext.Sqrt((denominator.Mul(denominator)).Add(F64.C1)));
             description.MinimumRadius = collisionMargin.Add(MathHelper.Min(F64.C0p25.Mul(height), (denominator.Mul(F64.C0p75)).Mul(height)));
 
             description.CollisionMargin = collisionMargin;
@@ -123,7 +123,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             Fix64 horizontalLengthSquared = (direction.X.Mul(direction.X)).Add(direction.Z.Mul(direction.Z));
             if (horizontalLengthSquared > Toolbox.Epsilon)
             {
-                var radOverSigma = radius.Div(Fix64.Sqrt(horizontalLengthSquared));
+                var radOverSigma = radius.Div(Fix64Ext.Sqrt(horizontalLengthSquared));
                 extremePoint = new Vector3((radOverSigma.Mul(direction.X)), F64.Cm0p25.Mul(height), (radOverSigma.Mul(direction.Z)));
             }
             else // It's pointing almost straight down...

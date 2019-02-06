@@ -399,7 +399,7 @@ namespace BEPUphysics.UpdateableSystems
 						Fix64 columnVolume = submergedHeight.Mul(perColumnArea);
                         Vector3.Multiply(ref columnVolumeCenter, columnVolume, out columnVolumeCenter);
                         Vector3.Add(ref columnVolumeCenter, ref submergedCenter, out submergedCenter);
-                        submergedVolume += columnVolume;
+                        submergedVolume = submergedVolume.Add(columnVolume);
                     }
                 }
             }

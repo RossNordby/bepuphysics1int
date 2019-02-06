@@ -73,7 +73,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 
             Fix64 halfHeight = height.Mul(F64.C0p5);
             description.MinimumRadius = MathHelper.Min(radius, halfHeight);
-            description.MaximumRadius = Fix64.Sqrt((radius.Mul(radius)).Add(halfHeight.Mul(halfHeight)));
+            description.MaximumRadius = Fix64Ext.Sqrt((radius.Mul(radius)).Add(halfHeight.Mul(halfHeight)));
             description.CollisionMargin = collisionMargin;
             return description;
         }
@@ -132,12 +132,12 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             Fix64 horizontalLengthSquared = (direction.X.Mul(direction.X)).Add(direction.Z.Mul(direction.Z));
             if (horizontalLengthSquared > Toolbox.Epsilon)
             {
-                Fix64 multiplier = (radius.Sub(collisionMargin)).Div(Fix64.Sqrt(horizontalLengthSquared));
-                extremePoint = new Vector3(direction.X.Mul(multiplier), Fix64.Sign(direction.Y).Mul((halfHeight.Sub(collisionMargin))), direction.Z.Mul(multiplier));
+                Fix64 multiplier = (radius.Sub(collisionMargin)).Div(Fix64Ext.Sqrt(horizontalLengthSquared));
+                extremePoint = new Vector3(direction.X.Mul(multiplier), Fix64Ext.Sign(direction.Y).Mul((halfHeight.Sub(collisionMargin))), direction.Z.Mul(multiplier));
             }
             else
             {
-                extremePoint = new Vector3(F64.C0, Fix64.Sign(direction.Y).Mul((halfHeight.Sub(collisionMargin))), F64.C0);
+                extremePoint = new Vector3(F64.C0, Fix64Ext.Sign(direction.Y).Mul((halfHeight.Sub(collisionMargin))), F64.C0);
             }
 
         }
@@ -179,7 +179,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 hit.Normal = new Vector3(hit.Location.X, F64.C0, hit.Location.Z);
                 Fix64 normalLengthSquared = hit.Normal.LengthSquared();
                 if (normalLengthSquared > F64.C1em9)
-                    Vector3.Divide(ref hit.Normal, Fix64.Sqrt(normalLengthSquared), out hit.Normal);
+                    Vector3.Divide(ref hit.Normal, Fix64Ext.Sqrt(normalLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
                 //Pull the hit into world space.
@@ -229,8 +229,8 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 
 
             //With the squared distance, compute the distance backward along the ray from the closest point on the ray to the axis.
-            Fix64 backwardsDistance = radius.Mul(Fix64.Sqrt(F64.C1.Sub(squaredDistance.Div((radius.Mul(radius))))));
-            Fix64 tOffset = backwardsDistance.Div(Fix64.Sqrt(planeDirectionLengthSquared));
+            Fix64 backwardsDistance = radius.Mul(Fix64Ext.Sqrt(F64.C1.Sub(squaredDistance.Div((radius.Mul(radius))))));
+            Fix64 tOffset = backwardsDistance.Div(Fix64Ext.Sqrt(planeDirectionLengthSquared));
 
             hit.T = closestToCenterT.Sub(tOffset);
 
@@ -245,7 +245,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 hit.Normal = new Vector3(hit.Location.X, F64.C0, hit.Location.Z);
                 Fix64 normalLengthSquared = hit.Normal.LengthSquared();
                 if (normalLengthSquared > F64.C1em9)
-                    Vector3.Divide(ref hit.Normal, Fix64.Sqrt(normalLengthSquared), out hit.Normal);
+                    Vector3.Divide(ref hit.Normal, Fix64Ext.Sqrt(normalLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
                 //Pull the hit into world space.

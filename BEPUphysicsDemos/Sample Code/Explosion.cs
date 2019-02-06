@@ -75,7 +75,7 @@ namespace BEPUphysicsDemos.SampleCode
 						Fix64 distanceSquared = offset.LengthSquared();
                         if (distanceSquared > Toolbox.Epsilon) //Be kind to the engine and don't give it a value divided by zero.
                         {
-                            var distance = Fix64.Sqrt(distanceSquared);
+                            var distance = Fix64Ext.Sqrt(distanceSquared);
                             //This applies a force inversely proportional to the distance.
                             //Note the extra distance term in the denominator.  This normalizes the
                             //offset, resulting in a quadratic explosion falloff.

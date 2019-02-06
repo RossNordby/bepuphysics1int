@@ -240,7 +240,7 @@ lambda.Mul(velocityToImpulse);
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return Fix64.Abs(lambda);
+            return Fix64Ext.Abs(lambda);
         }
 
         /// <summary>
@@ -268,14 +268,14 @@ lambda.Mul(velocityToImpulse);
                 Fix64 y, x;
                 Vector3.Dot(ref twistMeasureAxis, ref basisA.yAxis, out y);
                 Vector3.Dot(ref twistMeasureAxis, ref basisA.xAxis, out x);
-                var angle = Fix64.FastAtan2(y, x);
+                var angle = Fix64Ext.FastAtan2(y, x);
 
                 //Compute goal velocity.
                 error = GetDistanceFromGoal(angle);
-                Fix64 absErrorOverDt = Fix64.Abs(error.Div(dt));
+                Fix64 absErrorOverDt = Fix64Ext.Abs(error.Div(dt));
                 Fix64 errorReduction;
                 settings.servo.springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReduction, out usedSoftness);
-                biasVelocity = (Fix64.Sign(error).Mul(MathHelper.Min(settings.servo.baseCorrectiveSpeed, absErrorOverDt))).Add(error.Mul(errorReduction));
+                biasVelocity = (Fix64Ext.Sign(error).Mul(MathHelper.Min(settings.servo.baseCorrectiveSpeed, absErrorOverDt))).Add(error.Mul(errorReduction));
 
                 biasVelocity = MathHelper.Clamp(biasVelocity, settings.servo.maxCorrectiveVelocity.Neg(), settings.servo.maxCorrectiveVelocity);
             }

@@ -257,7 +257,7 @@ namespace BEPUphysics.CollisionShapes
         {
             for (int i = 0; i < hits.Count; i++)
             {
-                if (Fix64.Abs(hits.Elements[i].T.Sub(hit.T)) < MeshHitUniquenessThreshold)
+                if (Fix64Ext.Abs(hits.Elements[i].T.Sub(hit.T)) < MeshHitUniquenessThreshold)
                     return false;
             }
             hits.Add(hit);
@@ -541,9 +541,9 @@ namespace BEPUphysics.CollisionShapes
             }
 
             //Incorporate the collision margin.
-            Vector3.Multiply(ref rightDirection, meshCollisionMargin.Div(Fix64.Sqrt(rightDirection.Length())), out rightDirection);
-            Vector3.Multiply(ref upDirection, meshCollisionMargin.Div(Fix64.Sqrt(upDirection.Length())), out upDirection);
-            Vector3.Multiply(ref backDirection, meshCollisionMargin.Div(Fix64.Sqrt(backDirection.Length())), out backDirection);
+            Vector3.Multiply(ref rightDirection, meshCollisionMargin.Div(Fix64Ext.Sqrt(rightDirection.Length())), out rightDirection);
+            Vector3.Multiply(ref upDirection, meshCollisionMargin.Div(Fix64Ext.Sqrt(upDirection.Length())), out upDirection);
+            Vector3.Multiply(ref backDirection, meshCollisionMargin.Div(Fix64Ext.Sqrt(backDirection.Length())), out backDirection);
 
             var rightElement = hullVertices.Elements[right];
             var leftElement = hullVertices.Elements[left];

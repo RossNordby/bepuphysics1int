@@ -150,7 +150,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                     var toAdd =
                         new Box(
                             new Vector3(
-((i.ToFix().Mul(blockWidth)).Add((.5m.ToFix() * blockWidth).Mul(((j % 2).ToFix())))).Sub((width.ToFix().Mul(blockWidth)).Mul(.5m.ToFix())),
+((i.ToFix().Mul(blockWidth)).Add((.5m.ToFix().Mul(blockWidth)).Mul(((j % 2).ToFix())))).Sub((width.ToFix().Mul(blockWidth)).Mul(.5m.ToFix())),
 (blockHeight.Mul(.5m.ToFix())).Add(j.ToFix().Mul((blockHeight))),
 0.ToFix()),
                             blockWidth, blockHeight, blockLength, 10.ToFix());

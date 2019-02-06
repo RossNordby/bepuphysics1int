@@ -277,7 +277,7 @@ inverseEffectiveMass.Add(supportForceFactor.Mul((effectiveMassContribution.Add(s
                 supportEntity.ApplyLinearImpulse(ref impulse);
                 supportEntity.ApplyAngularImpulse(ref torque);
             }
-            return Fix64.Abs(lambda);
+            return Fix64Ext.Abs(lambda);
 
 
         }

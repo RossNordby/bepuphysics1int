@@ -36,7 +36,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 {
                     Fix64 x = (i - xLength / 2).ToFix();
                     Fix64 z = (j - zLength / 2).ToFix();
-                    heights[i, j] = (10.ToFix().Mul((Fix64.Sin(x.Div(8.ToFix())).Add(Fix64.Sin(z.Div(8.ToFix()))))));
+                    heights[i, j] = (10.ToFix().Mul((Fix64Ext.Sin(x.Div(8.ToFix())).Add(Fix64Ext.Sin(z.Div(8.ToFix()))))));
                 }
             }
             //Create the terrain.

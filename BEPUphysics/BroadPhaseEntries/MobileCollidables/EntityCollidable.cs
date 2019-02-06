@@ -233,7 +233,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                         if (velocity > expansion)
                             expansion = velocity;
                     }
-                    expansion = Fix64.Sqrt(expansion).Mul(dt);
+                    expansion = Fix64Ext.Sqrt(expansion).Mul(dt);
 
 
 					boundingBox.Min.X =

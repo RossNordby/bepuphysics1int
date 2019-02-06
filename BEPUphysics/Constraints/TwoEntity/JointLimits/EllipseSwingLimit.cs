@@ -447,7 +447,7 @@ lambda.Mul(velocityToImpulse);
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return (Fix64.Abs(lambda));
+            return (Fix64Ext.Abs(lambda));
         }
 
     }

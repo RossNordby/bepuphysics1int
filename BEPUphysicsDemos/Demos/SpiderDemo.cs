@@ -52,7 +52,7 @@ namespace BEPUphysicsDemos.Demos
                     Fix64 x = (i - xLength / 2).ToFix();
                     Fix64 z = (j - zLength / 2).ToFix();
                     //heights[i,j] = (Fix64)(x * y / 1000f);
-                    heights[i, j] = 10.ToFix().Mul((Fix64.Sin(x.Div(8.ToFix())).Add(Fix64.Sin(z.Div(8.ToFix())))));
+                    heights[i, j] = 10.ToFix().Mul((Fix64Ext.Sin(x.Div(8.ToFix())).Add(Fix64Ext.Sin(z.Div(8.ToFix())))));
                     //heights[i,j] = 3 * (Fix64)Math.Sin(x * y / 100f);
                     //heights[i,j] = (x * x * x * y - y * y * y * x) / 1000f;
                 }
@@ -119,9 +119,10 @@ namespace BEPUphysicsDemos.Demos
             bodyToUpper.Motor.LocalTestAxis = Vector3.Left;
             bodyToUpper.Motor.Basis.SetWorldAxes(legTransform.OrientationMatrix.Forward, legTransform.OrientationMatrix.Left);
             bodyToUpper.Motor.Settings.Mode = MotorMode.Servomechanism;
-            //Weaken the spring to prevent it from launching too much.
-            bodyToUpper.Motor.Settings.Servo.SpringSettings.Stiffness *= .01m.ToFix();
-            bodyToUpper.Motor.Settings.Servo.SpringSettings.Damping *= .01m.ToFix();
+			//Weaken the spring to prevent it from launching too much.
+			bodyToUpper.Motor.Settings.Servo.SpringSettings.Stiffness =
+bodyToUpper.Motor.Settings.Servo.SpringSettings.Stiffness.Mul(.01m.ToFix());
+			bodyToUpper.Motor.Settings.Servo.SpringSettings.Damping = bodyToUpper.Motor.Settings.Servo.SpringSettings.Damping.Mul(.01m.ToFix());
             Space.Add(bodyToUpper);
 
             //Connect the upper leg to the lower leg.
@@ -138,9 +139,10 @@ namespace BEPUphysicsDemos.Demos
             upperToLower.Motor.LocalTestAxis = Vector3.Down;
             upperToLower.Motor.Basis.SetWorldAxes(legTransform.OrientationMatrix.Forward, legTransform.OrientationMatrix.Down);
             upperToLower.Motor.Settings.Mode = MotorMode.Servomechanism;
-            //Weaken the spring to prevent it from launching too much.
-            upperToLower.Motor.Settings.Servo.SpringSettings.Stiffness *= .01m.ToFix();
-            upperToLower.Motor.Settings.Servo.SpringSettings.Damping *= .01m.ToFix();
+			//Weaken the spring to prevent it from launching too much.
+			upperToLower.Motor.Settings.Servo.SpringSettings.Stiffness =
+upperToLower.Motor.Settings.Servo.SpringSettings.Stiffness.Mul(.01m.ToFix());
+			upperToLower.Motor.Settings.Servo.SpringSettings.Damping = upperToLower.Motor.Settings.Servo.SpringSettings.Damping.Mul(.01m.ToFix());
             Space.Add(upperToLower);
 
             legJoints.Add(upperToLower);

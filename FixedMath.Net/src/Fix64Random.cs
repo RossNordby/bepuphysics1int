@@ -14,7 +14,7 @@ namespace FixMath.NET
         public Fix64 Next()
         {
             Fix64 result = new Fix64();
-            result.RawValue = (uint)random.Next(int.MinValue, int.MaxValue);
+            result = (Fix64)(uint)random.Next(int.MinValue, int.MaxValue);
             return result;
         }
 

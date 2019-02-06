@@ -226,7 +226,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 Vector3.Multiply(ref entry.LocalTransform.Position, entry.Weight, out weightedCenter);
                 Vector3.Add(ref weightedCenter, ref distributionInfoA.Center, out distributionInfoA.Center);
 				distributionInfoA.Volume = distributionInfoA.Volume.Add(entry.Shape.Volume);
-                weightA += entry.Weight;
+                weightA = weightA.Add(entry.Weight);
             }
             for (int i = b.children.Count - 1; i >= 0; i--)
             {
@@ -236,7 +236,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 Vector3.Multiply(ref entry.LocalTransform.Position, entry.Weight, out weightedCenter);
                 Vector3.Add(ref weightedCenter, ref distributionInfoB.Center, out distributionInfoB.Center);
 				distributionInfoB.Volume = distributionInfoB.Volume.Add(entry.Shape.Volume);
-                weightB += entry.Weight;
+                weightB = weightB.Add(entry.Weight);
             }
 
             //Average the center out.
@@ -400,7 +400,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 {
                     removalOccurred = true;
                     var entry = child.Entry;
-                    removedWeight += entry.Weight;
+                    removedWeight = removedWeight.Add(entry.Weight);
                     Vector3 toAdd;
                     Vector3.Multiply(ref entry.LocalTransform.Position, entry.Weight, out toAdd);
                     Vector3.Add(ref removedCenter, ref toAdd, out removedCenter);
@@ -434,7 +434,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 Vector3.Multiply(ref contribution.Center, child.Entry.Weight, out contribution.Center);
                 Vector3.Add(ref contribution.Center, ref distributionInfo.Center, out distributionInfo.Center);
 				distributionInfo.Volume = distributionInfo.Volume.Add(contribution.Volume);
-                weight += entry.Weight;
+                weight = weight.Add(entry.Weight);
             }
             //Average the center out.
             Vector3.Divide(ref distributionInfo.Center, weight, out distributionInfo.Center);

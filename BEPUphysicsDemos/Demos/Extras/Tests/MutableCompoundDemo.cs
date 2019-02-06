@@ -28,7 +28,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
 
             Fix64 weight = density.Mul(2.ToFix());
-            totalWeight += weight;
+			totalWeight = totalWeight.Add(weight);
             for (int i = 0; i < 4; i++)
             {
                 shapes.Add(new CompoundShapeEntry(
@@ -85,7 +85,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                         for (int k = 0; k < length; k++)
                         {
                             weight = ((density.Mul(blockWidth)).Mul(blockLength)).Mul(blockHeight);
-                            totalWeight += weight;
+							totalWeight = totalWeight.Add(weight);
                             shapes.Add(new CompoundShapeEntry(
                                 new BoxShape(blockWidth, blockHeight, blockLength),
                                 new RigidTransform(

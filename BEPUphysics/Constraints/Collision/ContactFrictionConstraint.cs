@@ -169,7 +169,7 @@ namespace BEPUphysics.Constraints.Collision
                 entityB.ApplyAngularImpulse(ref angular);
             }
 
-            return Fix64.Abs(lambda);
+            return Fix64Ext.Abs(lambda);
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace BEPUphysics.Constraints.Collision
             Fix64 length = relativeVelocity.LengthSquared();
             if (length > Toolbox.Epsilon)
             {
-                length = Fix64.Sqrt(length);
+                length = Fix64Ext.Sqrt(length);
                 linearAX = relativeVelocity.X.Div(length);
                 linearAY = relativeVelocity.Y.Div(length);
                 linearAZ = relativeVelocity.Z.Div(length);

@@ -26,7 +26,7 @@ namespace BEPUutilities
     /// <summary>
     /// Approximate value of Pi divided by four.
     /// </summary>
-    public static readonly Fix64 PiOver4 = Fix64.Pi.Div(new Fix64(4));
+    public static readonly Fix64 PiOver4 = Fix64.Pi.Div((4.ToFix()));
 
     /// <summary>
     /// Calculate remainder of of Fix64 division using same algorithm
@@ -37,7 +37,7 @@ namespace BEPUutilities
     /// <returns>Remainder</returns>
     public static Fix64 IEEERemainder(Fix64 dividend, Fix64 divisor)
     {
-		return dividend.Sub((divisor.Mul(Fix64.Round(dividend.Div(divisor)))));
+		return dividend.Sub((divisor.Mul(Fix64Ext.Round(dividend.Div(divisor)))));
     }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace BEPUutilities
             angle = IEEERemainder(angle, TwoPi);
             if (angle < Pi.Neg())
             {
-                angle += TwoPi;
+                angle = angle.Add(TwoPi);
                 return angle;
             }
             if (angle >= Pi)

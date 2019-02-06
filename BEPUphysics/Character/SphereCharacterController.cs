@@ -66,7 +66,7 @@ namespace BEPUphysics.Character
                 Fix64 lengthSquared = value.LengthSquared();
                 if (lengthSquared < Toolbox.Epsilon)
                     return; //Silently fail. Assuming here that a dynamic process is setting this property; don't need to make a stink about it.
-                Vector3.Divide(ref value, Fix64.Sqrt(lengthSquared), out value);
+                Vector3.Divide(ref value, Fix64Ext.Sqrt(lengthSquared), out value);
                 down = value;
             }
         }

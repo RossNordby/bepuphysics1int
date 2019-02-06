@@ -50,7 +50,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Colliding.
             if (offsetLength > Toolbox.Epsilon)
             {
-                offsetLength = Fix64.Sqrt(offsetLength);
+                offsetLength = Fix64Ext.Sqrt(offsetLength);
                 //Outside of the box.
                 Vector3.Divide(ref offset, offsetLength, out contact.Normal);
                 contact.PenetrationDepth = sphere.collisionMargin.Sub(offsetLength);

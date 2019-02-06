@@ -920,7 +920,7 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
                 Fix64 energy = linearVelocity.LengthSquared().Add(angularVelocity.LengthSquared());
                 if (energy < activityInformation.DeactivationManager.velocityLowerLimitSquared)
                 {
-                    Fix64 boost = F64.C1.Sub(Fix64.Sqrt(energy).Div((F64.C2.Mul(activityInformation.DeactivationManager.velocityLowerLimit))));
+                    Fix64 boost = F64.C1.Sub(Fix64Ext.Sqrt(energy).Div((F64.C2.Mul(activityInformation.DeactivationManager.velocityLowerLimit))));
                     ModifyAngularDamping(boost);
                     ModifyLinearDamping(boost);
                 }
@@ -930,16 +930,16 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
             Fix64 linear = LinearDamping.Add(linearDampingBoost);
             if (linear > F64.C0)
             {
-                Vector3.Multiply(ref linearVelocity, Fix64.Pow(MathHelper.Clamp(F64.C1.Sub(linear), F64.C0, F64.C1), dt), out linearVelocity);
+                Vector3.Multiply(ref linearVelocity, Fix64Ext.Pow(MathHelper.Clamp(F64.C1.Sub(linear), F64.C0, F64.C1), dt), out linearVelocity);
             }
             //When applying angular damping, the momentum or velocity is damped depending on the conservation setting.
             Fix64 angular = AngularDamping.Add(angularDampingBoost);
             if (angular > F64.C0)
             {
 #if CONSERVE
-                Vector3.Multiply(ref angularMomentum, Fix64.Pow(MathHelper.Clamp(1 - angular, 0, 1), dt), out angularMomentum);
+                Vector3.Multiply(ref angularMomentum, Fix64Ext.Pow(MathHelper.Clamp(1 - angular, 0, 1), dt), out angularMomentum);
 #else
-				Vector3.Multiply(ref angularVelocity, Fix64.Pow(MathHelper.Clamp(F64.C1.Sub(angular), F64.C0, F64.C1), dt), out angularVelocity);
+				Vector3.Multiply(ref angularVelocity, Fix64Ext.Pow(MathHelper.Clamp(F64.C1.Sub(angular), F64.C0, F64.C1), dt), out angularVelocity);
 #endif
             }
 

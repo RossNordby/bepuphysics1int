@@ -127,8 +127,9 @@ namespace BEPUphysicsDemos.Demos
         {
             var position = offset + tankBody.Position;
             Body = new Cylinder(position, 0.7m.ToFix(), 0.8m.ToFix(), 8.ToFix());
-            //Position the center of the arm a bit further forward since it will be laying down.
-            position.Z -= 2.ToFix();
+			//Position the center of the arm a bit further forward since it will be laying down.
+			position.Z =
+position.Z.Sub(2.ToFix());
             Barrel = new Cylinder(position, 3.ToFix(), 0.2m.ToFix(), 3.ToFix());
             //Rotate the arm so that it points straight forward (that is, along {0, 0, -1}).
             Barrel.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1.ToFix(), 0.ToFix(), 0.ToFix()), MathHelper.PiOver2);
@@ -250,14 +251,16 @@ namespace BEPUphysicsDemos.Demos
         {
             Segments = new List<TreadSegment>();
             Vector3 nextSegmentPosition = tankBody.Position + offsetToFrontOfTread;
-            //The front of the tread includes the radius of the first segment.
-            nextSegmentPosition.Z += treadSegmentDescription.Radius.Mul(0.5m.ToFix());
+			//The front of the tread includes the radius of the first segment.
+			nextSegmentPosition.Z =
+nextSegmentPosition.Z.Add(treadSegmentDescription.Radius.Mul(0.5m.ToFix()));
             for (int i = 0; i < segmentCount; ++i)
             {
                 Segments.Add(new TreadSegment(nextSegmentPosition, tankBody, treadSegmentDescription));
 
-                //The tread offset starts at the front of the vehicle and moves backward.
-                nextSegmentPosition.Z += spacing;
+				//The tread offset starts at the front of the vehicle and moves backward.
+				nextSegmentPosition.Z =
+nextSegmentPosition.Z.Add(spacing);
             }
 
 
@@ -391,10 +394,11 @@ namespace BEPUphysicsDemos.Demos
             SuspensionSpring.Settings.Servo.SpringSettings.Damping = treadSegmentDescription.SuspensionDamping;
 
             SuspensionAngularJoint = new RevoluteAngularJoint(body, Entity, Vector3.Right);
-            //Make the joint extremely rigid.  There are going to be extreme conditions when the wheels get up to speed;
-            //we don't want the forces involved to torque the wheel off the frame!
-            SuspensionAngularJoint.SpringSettings.Damping *= Entity.Mass.Mul(50.ToFix());
-            SuspensionAngularJoint.SpringSettings.Stiffness *= Entity.Mass.Mul(50.ToFix());
+			//Make the joint extremely rigid.  There are going to be extreme conditions when the wheels get up to speed;
+			//we don't want the forces involved to torque the wheel off the frame!
+			SuspensionAngularJoint.SpringSettings.Damping =
+SuspensionAngularJoint.SpringSettings.Damping.Mul(Entity.Mass.Mul(50.ToFix()));
+			SuspensionAngularJoint.SpringSettings.Stiffness = SuspensionAngularJoint.SpringSettings.Stiffness.Mul(Entity.Mass.Mul(50.ToFix()));
             //Motorize the wheel.
             Motor = new RevoluteMotor(body, Entity, Vector3.Left);
             Motor.Settings.VelocityMotor.Softness = treadSegmentDescription.MotorSoftness;
@@ -481,7 +485,7 @@ namespace BEPUphysicsDemos.Demos
 					Fix64 x = (i - xLength / 2).ToFix();
 					Fix64 z = (j - zLength / 2).ToFix();
                     //heights[i,j] = (Fix64)(x * y / 1000f);
-                    heights[i, j] = 20.ToFix().Mul((Fix64.Sin(x.Div(8.ToFix())).Add(Fix64.Sin(z.Div(8.ToFix())))));
+                    heights[i, j] = 20.ToFix().Mul((Fix64Ext.Sin(x.Div(8.ToFix())).Add(Fix64Ext.Sin(z.Div(8.ToFix())))));
                     //heights[i,j] = 3 * (Fix64)Math.Sin(x * y / 100f);
                     //heights[i,j] = (x * x * x * y - y * y * y * x) / 1000f;
                 }
@@ -579,13 +583,13 @@ namespace BEPUphysicsDemos.Demos
 
             //Control the turret
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad8))
-                playerTank.Turret.PitchGoal += (1.5m.ToFix()).Mul(dt);
+				playerTank.Turret.PitchGoal = playerTank.Turret.PitchGoal.Add((1.5m.ToFix()).Mul(dt));
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad5))
-                playerTank.Turret.PitchGoal -= (1.5m.ToFix()).Mul(dt);
+				playerTank.Turret.PitchGoal = playerTank.Turret.PitchGoal.Sub((1.5m.ToFix()).Mul(dt));
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad4))
-                playerTank.Turret.YawGoal += (1.5m.ToFix()).Mul(dt);
+				playerTank.Turret.YawGoal = playerTank.Turret.YawGoal.Add((1.5m.ToFix()).Mul(dt));
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad6))
-                playerTank.Turret.YawGoal -= (1.5m.ToFix()).Mul(dt);
+				playerTank.Turret.YawGoal = playerTank.Turret.YawGoal.Sub((1.5m.ToFix()).Mul(dt));
 
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad0))
             {
@@ -643,14 +647,14 @@ namespace BEPUphysicsDemos.Demos
                 //Now aim the turret.
                 var random = aiRandom.Next(0, 100);
                 if (random >= 98)
-                    autoTank.Turret.YawGoal += 0.2m.ToFix();
+					autoTank.Turret.YawGoal = autoTank.Turret.YawGoal.Add(0.2m.ToFix());
                 if (random <= 2)
-                    autoTank.Turret.YawGoal -= 0.2m.ToFix();
+					autoTank.Turret.YawGoal = autoTank.Turret.YawGoal.Sub(0.2m.ToFix());
                 random = aiRandom.Next(0, 100);
                 if (random >= 98)
-                    autoTank.Turret.PitchGoal += 0.1m.ToFix();
+					autoTank.Turret.PitchGoal = autoTank.Turret.PitchGoal.Add(0.1m.ToFix());
                 if (random <= 2)
-                    autoTank.Turret.PitchGoal -= 0.1m.ToFix();
+					autoTank.Turret.PitchGoal = autoTank.Turret.PitchGoal.Sub(0.1m.ToFix());
                 if (aiRandom.Next(0, 100) == 0)
                 {
                     Sphere firedShell;

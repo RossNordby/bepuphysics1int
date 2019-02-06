@@ -226,7 +226,7 @@ accumulatedImpulse.Add(lambda);
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return (Fix64.Abs(lambda));
+            return (Fix64Ext.Abs(lambda));
         }
 
         /// <summary>
@@ -254,7 +254,7 @@ accumulatedImpulse.Add(lambda);
             Fix64 y, x;
             Vector3.Dot(ref twistMeasureAxis, ref aAxisZ, out y);
             Vector3.Dot(ref twistMeasureAxis, ref aAxisY, out x);
-            error = Fix64.FastAtan2(y, x);
+            error = Fix64Ext.FastAtan2(y, x);
 
             //Debug.WriteLine("Angle: " + angle);
 

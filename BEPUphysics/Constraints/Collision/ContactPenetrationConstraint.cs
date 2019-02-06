@@ -315,7 +315,7 @@ namespace BEPUphysics.Constraints.Collision
                 entityB.ApplyAngularImpulse(ref angular);
             }
 
-            return Fix64.Abs(lambda);
+            return Fix64Ext.Abs(lambda);
         }
 
         protected internal override void CollectInvolvedEntities(RawList<Entity> outputInvolvedEntities)

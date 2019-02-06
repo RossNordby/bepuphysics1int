@@ -252,7 +252,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                     boundarySets.EdgeContacts.Elements[0].CorrectedNormal.Normalize();
                     Fix64 dot;
                     Vector3.Dot(ref firstNormal, ref boundarySets.EdgeContacts.Elements[0].CorrectedNormal, out dot);
-                    if (Fix64.Abs(dot) > F64.C0p01)
+                    if (Fix64Ext.Abs(dot) > F64.C0p01)
                     {
                         //Go ahead and test the first contact separately, since we're using its contact normal to determine coplanarity.
                         allNormalsInSamePlane = false;
@@ -272,7 +272,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                             //Check to see if the normal is outside the plane.
                             Vector3.Dot(ref boundarySets.EdgeContacts.Elements[i].ContactData.Normal, ref boundarySets.EdgeContacts.Elements[0].CorrectedNormal, out dot);
 
-                            if (Fix64.Abs(dot) > F64.C0p01)
+                            if (Fix64Ext.Abs(dot) > F64.C0p01)
                             {
 
                                 //We are not stuck!
@@ -628,7 +628,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                     //This is a nonconvex manifold.  There will be times where a an object will be shoved into a corner such that
                     //a single position will have two reasonable normals.  If the normals aren't mostly aligned, they should NOT be considered equivalent.
                     Vector3.Dot(ref contacts.Elements[i].Normal, ref contactCandidate.Normal, out distanceSquared);
-                    if (Fix64.Abs(distanceSquared) >= CollisionDetectionSettings.nonconvexNormalDotMinimum)
+                    if (Fix64Ext.Abs(distanceSquared) >= CollisionDetectionSettings.nonconvexNormalDotMinimum)
                     {
                         //Update the existing 'redundant' contact with the new information.
                         //This works out because the new contact is the deepest contact according to the previous collision detection iteration.
@@ -650,7 +650,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                     //This is a nonconvex manifold.  There will be times where a an object will be shoved into a corner such that
                     //a single position will have two reasonable normals.  If the normals aren't mostly aligned, they should NOT be considered equivalent.
                     Vector3.Dot(ref candidatesToAdd.Elements[i].Normal, ref contactCandidate.Normal, out distanceSquared);
-                    if (Fix64.Abs(distanceSquared) >= CollisionDetectionSettings.nonconvexNormalDotMinimum)
+                    if (Fix64Ext.Abs(distanceSquared) >= CollisionDetectionSettings.nonconvexNormalDotMinimum)
                         return false;
                 }
             }

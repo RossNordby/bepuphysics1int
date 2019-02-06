@@ -1344,8 +1344,8 @@ namespace BEPUutilities
             Fix64 xz = axis.X.Mul(axis.Z);
             Fix64 yz = axis.Y.Mul(axis.Z);
 
-            Fix64 sinAngle = Fix64.Sin(angle);
-            Fix64 oneMinusCosAngle = F64.C1.Sub(Fix64.Cos(angle));
+            Fix64 sinAngle = Fix64Ext.Sin(angle);
+            Fix64 oneMinusCosAngle = F64.C1.Sub(Fix64Ext.Cos(angle));
 
             result.M11 = F64.C1.Add(oneMinusCosAngle.Mul((xx.Sub(F64.C1))));
             result.M21 = ((axis.Z.Neg()).Mul(sinAngle)).Add(oneMinusCosAngle.Mul(xy));

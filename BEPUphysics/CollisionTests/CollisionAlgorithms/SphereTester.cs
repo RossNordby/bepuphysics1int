@@ -39,7 +39,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 else contact.Position = new Vector3();
                 Vector3.Add(ref contact.Position, ref positionA, out contact.Position);
 
-                centerDistance = Fix64.Sqrt(centerDistance);
+                centerDistance = Fix64Ext.Sqrt(centerDistance);
                 if (centerDistance > Toolbox.BigEpsilon)
                 {
                     Vector3.Divide(ref centerDifference, centerDistance, out contact.Normal);

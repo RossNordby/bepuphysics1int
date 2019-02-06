@@ -43,7 +43,7 @@ namespace BEPUutilities
         /// <returns>Length of the vector.</returns>
         public Fix64 Length()
         {
-            return Fix64.Sqrt((X.Mul(X)).Add(Y.Mul(Y)));
+            return Fix64Ext.Sqrt((X.Mul(X)).Add(Y.Mul(Y)));
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace BEPUutilities
         /// <param name="result">Normalized vector.</param>
         public static void Normalize(ref Vector2 v, out Vector2 result)
         {
-            Fix64 inverse = F64.C1.Div(Fix64.Sqrt((v.X.Mul(v.X)).Add(v.Y.Mul(v.Y))));
+            Fix64 inverse = F64.C1.Div(Fix64Ext.Sqrt((v.X.Mul(v.X)).Add(v.Y.Mul(v.Y))));
             result.X = v.X.Mul(inverse);
             result.Y = v.Y.Mul(inverse);
         }
@@ -286,7 +286,7 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            Fix64 inverse = F64.C1.Div(Fix64.Sqrt((X.Mul(X)).Add(Y.Mul(Y))));
+            Fix64 inverse = F64.C1.Div(Fix64Ext.Sqrt((X.Mul(X)).Add(Y.Mul(Y))));
 			X = X.Mul(inverse);
 			Y = Y.Mul(inverse);
         }

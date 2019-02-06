@@ -77,7 +77,7 @@ namespace BEPUphysics.Character
                 if (lengthSquared < Toolbox.Epsilon)
                     value = Body.OrientationMatrix.Down; //Silently fail. Assuming here that a dynamic process is setting this property; don't need to make a stink about it.
                 else
-                    Vector3.Divide(ref value, Fix64.Sqrt(lengthSquared), out value);
+                    Vector3.Divide(ref value, Fix64Ext.Sqrt(lengthSquared), out value);
                 Quaternion.GetQuaternionBetweenNormalizedVectors(ref Toolbox.DownVector, ref value, out orientation);
                 Body.Orientation = orientation;
             }
@@ -101,7 +101,7 @@ namespace BEPUphysics.Character
                 Fix64 lengthSquared = value.LengthSquared();
                 if (lengthSquared > F64.C1em7)
                 {
-                    Vector3.Divide(ref value, Fix64.Sqrt(lengthSquared), out viewDirection);
+                    Vector3.Divide(ref value, Fix64Ext.Sqrt(lengthSquared), out viewDirection);
                 }
                 else
                 {
@@ -109,7 +109,7 @@ namespace BEPUphysics.Character
                     lengthSquared = value.LengthSquared();
                     if (lengthSquared > F64.C1em7)
                     {
-                        Vector3.Divide(ref value, Fix64.Sqrt(lengthSquared), out viewDirection);
+                        Vector3.Divide(ref value, Fix64Ext.Sqrt(lengthSquared), out viewDirection);
                     }
                     else
                     {
@@ -521,9 +521,9 @@ namespace BEPUphysics.Character
                 //Expand the bounding box up and down using the step height.
                 Vector3 expansion;
                 Vector3.Multiply(ref down, StepManager.MaximumStepHeight, out expansion);
-                expansion.X = Fix64.Abs(expansion.X);
-                expansion.Y = Fix64.Abs(expansion.Y);
-                expansion.Z = Fix64.Abs(expansion.Z);
+                expansion.X = Fix64Ext.Abs(expansion.X);
+                expansion.Y = Fix64Ext.Abs(expansion.Y);
+                expansion.Z = Fix64Ext.Abs(expansion.Z);
 
                 //When the character climbs a step, it teleports horizontally a little to gain support. Expand the bounding box to accommodate the margin.
                 //Compute the expansion caused by the extra radius along each axis.
@@ -546,9 +546,9 @@ namespace BEPUphysics.Character
                 squaredDown.X = down.X.Mul(down.X);
                 squaredDown.Y = down.Y.Mul(down.Y);
                 squaredDown.Z = down.Z.Mul(down.Z);
-				expansion.X = expansion.X.Add(horizontalExpansionAmount.Mul(Fix64.Sqrt(squaredDown.Y.Add(squaredDown.Z))));
-				expansion.Y = expansion.Y.Add(horizontalExpansionAmount.Mul(Fix64.Sqrt(squaredDown.X.Add(squaredDown.Z))));
-				expansion.Z = expansion.Z.Add(horizontalExpansionAmount.Mul(Fix64.Sqrt(squaredDown.X.Add(squaredDown.Y))));
+				expansion.X = expansion.X.Add(horizontalExpansionAmount.Mul(Fix64Ext.Sqrt(squaredDown.Y.Add(squaredDown.Z))));
+				expansion.Y = expansion.Y.Add(horizontalExpansionAmount.Mul(Fix64Ext.Sqrt(squaredDown.X.Add(squaredDown.Z))));
+				expansion.Z = expansion.Z.Add(horizontalExpansionAmount.Mul(Fix64Ext.Sqrt(squaredDown.X.Add(squaredDown.Y))));
 
                 Vector3.Add(ref expansion, ref boundingBox.Max, out boundingBox.Max);
                 Vector3.Subtract(ref boundingBox.Min, ref expansion, out boundingBox.Min);
@@ -773,7 +773,7 @@ namespace BEPUphysics.Character
                         if (length > coreRadiusSquared)
                         {
                             //It's beyond the edge of the cylinder; clamp it.
-                            Vector3.Multiply(ref horizontalOffset, coreRadius.Div(Fix64.Sqrt(length)), out horizontalOffset);
+                            Vector3.Multiply(ref horizontalOffset, coreRadius.Div(Fix64Ext.Sqrt(length)), out horizontalOffset);
                         }
                         //It's on the bottom, so add the bottom height.
                         Vector3 closestPointOnCylinder;
@@ -788,7 +788,7 @@ namespace BEPUphysics.Character
                         if (length > Toolbox.Epsilon)
                         {
                             //Normalize the offset.
-                            Vector3.Divide(ref offsetDirection, Fix64.Sqrt(length), out offsetDirection);
+                            Vector3.Divide(ref offsetDirection, Fix64Ext.Sqrt(length), out offsetDirection);
                         }
                         else
                             continue; //If there's no offset, it's really deep and correcting this contact might be a bad idea.
@@ -796,7 +796,7 @@ namespace BEPUphysics.Character
                         Vector3.Dot(ref offsetDirection, ref downDirection, out dot);
                         Fix64 dotOriginal;
                         Vector3.Dot(ref contact.Normal, ref downDirection, out dotOriginal);
-                        if (dot > Fix64.Abs(dotOriginal)) //if the new offsetDirection normal is less steep than the original slope...
+                        if (dot > Fix64Ext.Abs(dotOriginal)) //if the new offsetDirection normal is less steep than the original slope...
                         {
                             //Then use it!
                             Vector3.Dot(ref offsetDirection, ref contact.Normal, out dot);

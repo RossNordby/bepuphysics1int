@@ -104,7 +104,7 @@ baseHeight.Mul(scale), (0.5m.ToFix().Mul(baseWidth)).Mul(scale),  15.ToFix());
 
             game.Camera.Position = scale * new Vector3(0.ToFix(), 4.ToFix(), 10.ToFix());
             originalCameraSpeed = freeCameraControlScheme.Speed;
-            freeCameraControlScheme.Speed *= scale;
+			freeCameraControlScheme.Speed = freeCameraControlScheme.Speed.Mul(scale);
 
 
         }

@@ -340,7 +340,7 @@ lambda.Mul(massMatrix);
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return (Fix64.Abs(lambda));
+            return (Fix64Ext.Abs(lambda));
         }
 
         ///<summary>

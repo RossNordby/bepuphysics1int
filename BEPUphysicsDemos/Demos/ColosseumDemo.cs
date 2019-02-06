@@ -34,14 +34,14 @@ namespace BEPUphysicsDemos.Demos
                     if (i % 2 == 0)
                     {
                         angle = k.ToFix().Mul(increment);
-                        toAdd = new Box(new Vector3(Fix64.Cos(angle).Neg().Mul(radius), i.ToFix().Mul(blockHeight), Fix64.Sin(angle).Mul(radius)), blockWidth, blockHeight, blockLength, 20.ToFix());
+                        toAdd = new Box(new Vector3(Fix64Ext.Cos(angle).Neg().Mul(radius), i.ToFix().Mul(blockHeight), Fix64Ext.Sin(angle).Mul(radius)), blockWidth, blockHeight, blockLength, 20.ToFix());
                         toAdd.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Up, angle);
                         Space.Add(toAdd);
                     }
                     else
                     {
                         angle = ((k + .5m).ToFix()).Mul(increment);
-                        toAdd = new Box(new Vector3(Fix64.Cos(angle).Neg().Mul(radius), i.ToFix().Mul(blockHeight), Fix64.Sin(angle).Mul(radius)), blockWidth, blockHeight, blockLength, 20.ToFix());
+                        toAdd = new Box(new Vector3(Fix64Ext.Cos(angle).Neg().Mul(radius), i.ToFix().Mul(blockHeight), Fix64Ext.Sin(angle).Mul(radius)), blockWidth, blockHeight, blockLength, 20.ToFix());
                         toAdd.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Up, angle);
                         Space.Add(toAdd);
                     }

@@ -131,7 +131,7 @@ namespace BEPUphysics.Vehicle
         public Fix64 StaticFrictionVelocityThreshold
         {
             get { return staticFrictionVelocityThreshold; }
-            set { staticFrictionVelocityThreshold = Fix64.Abs(value); }
+            set { staticFrictionVelocityThreshold = Fix64Ext.Abs(value); }
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace BEPUphysics.Vehicle
 
             //Compute friction.
             //Which coefficient? Check velocity.
-            if (Fix64.Abs(RelativeVelocity) < staticFrictionVelocityThreshold)
+            if (Fix64Ext.Abs(RelativeVelocity) < staticFrictionVelocityThreshold)
                 blendedCoefficient = frictionBlender(staticCoefficient, wheel.supportMaterial.staticFriction, false, wheel);
             else
                 blendedCoefficient = frictionBlender(kineticCoefficient, wheel.supportMaterial.kineticFriction, true, wheel);

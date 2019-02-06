@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BEPUutilities.DataStructures
 {
@@ -8,7 +9,7 @@ namespace BEPUutilities.DataStructures
     /// Stores a maximum of 8 entries.
     /// </summary>
     /// <typeparam name="T">Struct type to use.</typeparam>
-    public struct TinyList<T> where T : IEquatable<T>
+    public struct TinyList<T>
     {
         private T entry1;
         private T entry2;
@@ -179,22 +180,24 @@ namespace BEPUutilities.DataStructures
         /// <returns>Index of the item, if present.  -1 otherwise.</returns>
         public int IndexOf(T item)
         {
-            //This isn't a super fast operation.
-            if (entry1.Equals(item))
+			//This isn't a super fast operation.
+			var comparer = EqualityComparer<T>.Default;
+
+			if (comparer.Equals(item, entry1))
                 return 0;
-            else if (entry2.Equals(item))
+            else if (comparer.Equals(item, entry2))
                 return 1;
-            else if (entry3.Equals(item))
+            else if (comparer.Equals(item, entry3))
                 return 2;
-            else if (entry4.Equals(item))
+            else if (comparer.Equals(item, entry4))
                 return 3;
-            else if (entry5.Equals(item))
+            else if (comparer.Equals(item, entry5))
                 return 4;
-            else if (entry6.Equals(item))
+            else if (comparer.Equals(item, entry6))
                 return 5;
-            else if (entry7.Equals(item))
+            else if (comparer.Equals(item, entry7))
                 return 6;
-            else if (entry8.Equals(item))
+            else if (comparer.Equals(item, entry8))
                 return 7;
             return -1;
         }

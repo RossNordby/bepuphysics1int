@@ -144,7 +144,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 			//Create the regular icosahedron vertices.
 			//Vector3[] vertices = new Vector3[12];
 			var goldenRatio = F64.GoldenRatio;
-			Fix64 length = Fix64.Sqrt(F64.C1.Add(goldenRatio.Mul(goldenRatio)));
+			Fix64 length = Fix64Ext.Sqrt(F64.C1.Add(goldenRatio.Mul(goldenRatio)));
 			Fix64 x = F64.C1.Div(length);
 			Fix64 y = goldenRatio.Div(length);
             vertices[0] = new Vector3(F64.C0, x, y);
@@ -548,7 +548,7 @@ a.Add(scaledTetrahedronVolume.Mul(((((((((((((v2.Y.Mul(v2.Y)).Add(v2.Y.Mul(v3.Y)
                 //Watch out: this could very easily be a degenerate triangle; the sampling approach tends to create them.
                 Fix64 lengthSquared = normal.LengthSquared();
                 if (lengthSquared > F64.C1em10)
-                    Vector3.Divide(ref normal, Fix64.Sqrt(lengthSquared), out normal);
+                    Vector3.Divide(ref normal, Fix64Ext.Sqrt(lengthSquared), out normal);
                 else
                     continue;
 

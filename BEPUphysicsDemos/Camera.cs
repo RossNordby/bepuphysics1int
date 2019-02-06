@@ -50,12 +50,12 @@ namespace BEPUphysicsDemos
                 Fix64 lengthSquared = value.LengthSquared();
                 if (lengthSquared > Toolbox.Epsilon)
                 {
-                    Vector3.Divide(ref value, Fix64.Sqrt(lengthSquared), out value);
+                    Vector3.Divide(ref value, Fix64Ext.Sqrt(lengthSquared), out value);
 					//Validate the input. A temporary violation of the maximum pitch is permitted as it will be fixed as the user looks around.
 					//However, we cannot allow a view direction parallel to the locked up direction.
 					Fix64 dot;
                     Vector3.Dot(ref value, ref lockedUp, out dot);
-                    if (Fix64.Abs(dot) > 1.ToFix().Sub(Toolbox.BigEpsilon))
+                    if (Fix64Ext.Abs(dot) > 1.ToFix().Sub(Toolbox.BigEpsilon))
                     {
                         //The view direction must not be aligned with the locked up direction.
                         //Silently fail without changing the view direction.
@@ -96,7 +96,7 @@ namespace BEPUphysicsDemos
 				Fix64 lengthSquared = value.LengthSquared();
                 if (lengthSquared > Toolbox.Epsilon)
                 {
-                    Vector3.Divide(ref value, Fix64.Sqrt(lengthSquared), out lockedUp);
+                    Vector3.Divide(ref value, Fix64Ext.Sqrt(lengthSquared), out lockedUp);
                     //Move the view direction with the transform. This helps guarantee that the view direction won't end up aligned with the up vector.
                     Quaternion rotation;
                     Quaternion.GetQuaternionBetweenNormalizedVectors(ref oldUp, ref lockedUp, out rotation);
@@ -179,7 +179,7 @@ namespace BEPUphysicsDemos
 
             //While this could be rephrased in terms of dot products alone, converting to actual angles can be more intuitive.
             //Consider +Pi/2 to be up, and -Pi/2 to be down.
-            Fix64 currentPitch = Fix64.Acos(MathHelper.Clamp(dot.Neg(), (-1).ToFix(), 1.ToFix())).Sub(MathHelper.PiOver2);
+            Fix64 currentPitch = Fix64Ext.Acos(MathHelper.Clamp(dot.Neg(), (-1).ToFix(), 1.ToFix())).Sub(MathHelper.PiOver2);
             //Compute our new pitch by clamping the current + change.
             Fix64 newPitch = MathHelper.Clamp(currentPitch.Add(radians), maximumPitch.Neg(), maximumPitch);
             Fix64 allowedChange = newPitch.Sub(currentPitch);

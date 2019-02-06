@@ -104,7 +104,7 @@ namespace BEPUbenchmark
 		private void Fix64IntoByteArray(Fix64 value, int offset, byte[] destination)
 		{
 			offset *= sizeof(long);
-			long raw = value.RawValue;
+			long raw = (long)value;
 			destination[offset++] = (byte)(raw & 0xFF);
 			destination[offset++] = (byte)((raw >> 8) & 0xFF);
 			destination[offset++] = (byte)((raw >> 16) & 0xFF);

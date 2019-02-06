@@ -55,8 +55,8 @@ namespace BEPUphysicsDrawer.Lines
 				Fix64 currentAngle = i.ToFix().Mul(angleIncrement);
 
                 //Using the parametric equation for an ellipse, compute the axis of rotation and angle.
-                Vector3 rotationAxis = MathConverter.Convert(LineObject.Basis.XAxis * LineObject.MaximumAngleX * Fix64.Cos(currentAngle) +
-                                                             LineObject.Basis.YAxis * LineObject.MaximumAngleY * Fix64.Sin(currentAngle));
+                Vector3 rotationAxis = MathConverter.Convert(LineObject.Basis.XAxis * LineObject.MaximumAngleX * Fix64Ext.Cos(currentAngle) +
+                                                             LineObject.Basis.YAxis * LineObject.MaximumAngleY * Fix64Ext.Sin(currentAngle));
                 float angle = rotationAxis.Length();
                 rotationAxis /= angle;
 

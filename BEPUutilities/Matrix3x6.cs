@@ -13,11 +13,11 @@ namespace BEPUutilities
 			// Perform Gauss-Jordan elimination
 			for (int k = 0; k < m; k++)
 			{
-				Fix64 maxValue = Fix64.Abs(M[k, k]);
+				Fix64 maxValue = Fix64Ext.Abs(M[k, k]);
 				int iMax = k;
 				for (int i = k+1; i < m; i++)
 				{
-					Fix64 value = Fix64.Abs(M[i, k]);
+					Fix64 value = Fix64Ext.Abs(M[i, k]);
 					if (value >= maxValue)
 					{
 						maxValue = value;
@@ -43,7 +43,7 @@ namespace BEPUutilities
 				M[k, k] = F64.C1;
 				for (int j = k + 1; j < n; j++)
 				{
-					M[k, j] *= pivotInverse;
+					M[k, j] = M[k, j].Mul(pivotInverse);
 				}
 
 				// Subtract row k from other rows

@@ -233,8 +233,8 @@ namespace BEPUphysics.CollisionShapes
             volume = F64.C0;
             for (int i = 0; i < entries.Count; i++)
             {
-                center += entries[i].LocalTransform.Position * entries[i].Weight;
-                volume += entries[i].Shape.Volume;
+                center = center + (entries[i].LocalTransform.Position * entries[i].Weight);
+                volume = volume.Add(entries[i].Shape.Volume);
 				totalWeight = totalWeight.Add(entries[i].Weight);
             }
             if (totalWeight <= F64.C0)

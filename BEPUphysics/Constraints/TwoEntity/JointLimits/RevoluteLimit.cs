@@ -319,7 +319,7 @@ lambda.Mul(velocityToImpulse.X);
                 }
 
 				lambdaTotal =
-lambdaTotal.Add(Fix64.Abs(lambda));
+lambdaTotal.Add(Fix64Ext.Abs(lambda));
             }
             if (maxIsActive)
             {
@@ -352,7 +352,7 @@ lambda.Mul(velocityToImpulse.Y);
                 }
 
 				lambdaTotal =
-lambdaTotal.Add(Fix64.Abs(lambda));
+lambdaTotal.Add(Fix64Ext.Abs(lambda));
             }
             return lambdaTotal;
         }

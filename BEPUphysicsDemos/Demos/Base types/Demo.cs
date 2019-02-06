@@ -95,12 +95,12 @@ namespace BEPUphysicsDemos.Demos
 
 
             long endTime = Stopwatch.GetTimestamp();
-            accumulatedPhysicsTime += ((endTime - startTime).ToFix()).Div(Stopwatch.Frequency.ToFix());
+			accumulatedPhysicsTime = accumulatedPhysicsTime.Add(((endTime - startTime).ToFix()).Div(Stopwatch.Frequency.ToFix()));
             accumulatedPhysicsFrames++;
-            previousTimeMeasurement += dt;
+			previousTimeMeasurement = previousTimeMeasurement.Add(dt);
             if (previousTimeMeasurement > .3m.ToFix())
             {
-                previousTimeMeasurement -= .3m.ToFix();
+				previousTimeMeasurement = previousTimeMeasurement.Sub(.3m.ToFix());
                 PhysicsTime = accumulatedPhysicsTime.Div(accumulatedPhysicsFrames.ToFix());
                 accumulatedPhysicsTime = 0.ToFix();
                 accumulatedPhysicsFrames = 0;

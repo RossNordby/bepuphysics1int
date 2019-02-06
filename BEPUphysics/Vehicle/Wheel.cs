@@ -369,7 +369,7 @@ namespace BEPUphysics.Vehicle
             if (suspension.isActive)
             {
                 if (++suspension.solverSettings.currentIterations <= suspension.solverSettings.maximumIterationCount)
-                    if (Fix64.Abs(suspension.ApplyImpulse()) < suspension.solverSettings.minimumImpulse)
+                    if (Fix64Ext.Abs(suspension.ApplyImpulse()) < suspension.solverSettings.minimumImpulse)
                     {
                         suspension.numIterationsAtZeroImpulse++;
                         if (suspension.numIterationsAtZeroImpulse > suspension.solverSettings.minimumIterationCount)
@@ -391,7 +391,7 @@ namespace BEPUphysics.Vehicle
             if (slidingFriction.isActive)
             {
                 if (++slidingFriction.solverSettings.currentIterations <= suspension.solverSettings.maximumIterationCount)
-                    if (Fix64.Abs(slidingFriction.ApplyImpulse()) < slidingFriction.solverSettings.minimumImpulse)
+                    if (Fix64Ext.Abs(slidingFriction.ApplyImpulse()) < slidingFriction.solverSettings.minimumImpulse)
                     {
                         slidingFriction.numIterationsAtZeroImpulse++;
                         if (slidingFriction.numIterationsAtZeroImpulse > slidingFriction.solverSettings.minimumIterationCount)
@@ -413,7 +413,7 @@ namespace BEPUphysics.Vehicle
             if (drivingMotor.isActive)
             {
                 if (++drivingMotor.solverSettings.currentIterations <= suspension.solverSettings.maximumIterationCount)
-                    if (Fix64.Abs(drivingMotor.ApplyImpulse()) < drivingMotor.solverSettings.minimumImpulse)
+                    if (Fix64Ext.Abs(drivingMotor.ApplyImpulse()) < drivingMotor.solverSettings.minimumImpulse)
                     {
                         drivingMotor.numIterationsAtZeroImpulse++;
                         if (drivingMotor.numIterationsAtZeroImpulse > drivingMotor.solverSettings.minimumIterationCount)
@@ -435,7 +435,7 @@ namespace BEPUphysics.Vehicle
             if (brake.isActive)
             {
                 if (++brake.solverSettings.currentIterations <= suspension.solverSettings.maximumIterationCount)
-                    if (Fix64.Abs(brake.ApplyImpulse()) < brake.solverSettings.minimumImpulse)
+                    if (Fix64Ext.Abs(brake.ApplyImpulse()) < brake.solverSettings.minimumImpulse)
                     {
                         brake.numIterationsAtZeroImpulse++;
                         if (brake.numIterationsAtZeroImpulse > brake.solverSettings.minimumIterationCount)
