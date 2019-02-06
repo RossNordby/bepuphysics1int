@@ -41,6 +41,7 @@
     <Reference Include="System.Security" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleTestOutputHelper.cs" />
     <Compile Include="CrossPlatformDeterminismExpectedHashes.cs" />
     <Compile Include="MatrixTests.cs" />
     <Compile Include="Matrix3x3Tests.cs" />
@@ -62,13 +63,9 @@
       <Name>BEPUutilities</Name>
       <Aliases>global</Aliases>
     </ProjectReference>
-    <ProjectReference Include="..\FixedMath.Net\src\FixedMath.NET.csproj">
-      <Project>{d46c606e-5826-465f-9983-251e3d3b2f1c}</Project>
-      <Name>FixedMath.NET</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FixedMath.Net\tests\Fix64tests.csproj">
-      <Project>{123f94b1-65a5-4bcd-8e1e-7f8b95337444}</Project>
-      <Name>Fix64tests</Name>
+    <ProjectReference Include="..\Fix32Lib\Fix32Lib.csproj">
+      <Project>{f0c0a8c3-016d-46e4-bc13-940f89085213}</Project>
+      <Name>Fix32Lib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

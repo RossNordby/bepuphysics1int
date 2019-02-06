@@ -74,7 +74,7 @@ public class Fix32Tests {
 	}
 
 	[Test]
-	public void T001_IntToFix64AndBack() {
+	public void T001_IntToFix32AndBack() {
 		List<int> sources = new List<int>() {
 			int.MinValue,
 			-1000000,
@@ -110,7 +110,7 @@ public class Fix32Tests {
 	}
 
 	[Test]
-	public void T002_DoubleToFix64AndBack() {
+	public void T002_DoubleToFix32AndBack() {
 		List<double> sources = new List<double>() {
 			-int.MaxValue * 100d,
 			-int.MaxValue * 2d,
@@ -946,47 +946,47 @@ public class Fix32Tests {
 	public void Atan() {
 		var deltas = new List<decimal>();
 
-		Assert.AreEqual(Fix64.Zero, Fix64.Atan(Fix64.Zero));
+		Assert.AreEqual(Fix32.Zero, Fix32.Atan(Fix32.Zero));
 
 		// Precision
 		for (var x = -1.0; x < 1.0; x += 0.0001) {
-			var xf = (Fix64) x;
-			var actual = (decimal) Fix64.Atan(xf);
+			var xf = (Fix32) x;
+			var actual = (decimal) Fix32.Atan(xf);
 			var expected = (decimal) Math.Atan((double) xf);
 			var delta = Math.Abs(actual - expected);
 			deltas.Add(delta);
-			Assert.LessOrEqual(delta, 10 * Fix64.Precision, string.Format("Precision: Atan({0}): expected {1} but got {2}", xf, expected, actual));
+			Assert.LessOrEqual(delta, 10 * Fix32.Precision, string.Format("Precision: Atan({0}): expected {1} but got {2}", xf, expected, actual));
 		}
 
 		// Scalability and edge cases
 		foreach (var x in TestCases) {
-			var xf = Fix64.FromRaw(x);
-			var actual = (decimal) Fix64.Atan(xf);
+			var xf = Fix32.FromRaw(x);
+			var actual = (decimal) Fix32.Atan(xf);
 			var expected = (decimal) Math.Atan((double) xf);
 			var delta = Math.Abs(actual - expected);
 			deltas.Add(delta);
-			Assert.LessOrEqual(delta, 10 * Fix64.Precision, string.Format("Scalability: Atan({0}): expected {1} but got {2}", xf, expected, actual));
+			Assert.LessOrEqual(delta, 10 * Fix32.Precision, string.Format("Scalability: Atan({0}): expected {1} but got {2}", xf, expected, actual));
 		}
-		Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix64.Precision);
-		Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix64.Precision);
+		Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix32.Precision);
+		Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix32.Precision);
 	}
 	
 	[Test]
 	public void Atan2() {
 		var deltas = new List<decimal>();
 		// Identities
-		Assert.AreEqual(Fix64.Atan2(Fix64.Zero, -Fix64.One), Fix64.Pi);
-		Assert.AreEqual(Fix64.Atan2(Fix64.Zero, Fix64.Zero), Fix64.Zero);
-		Assert.AreEqual(Fix64.Atan2(Fix64.Zero, Fix64.One), Fix64.Zero);
-		Assert.AreEqual(Fix64.Atan2(Fix64.One, Fix64.Zero), Fix64.PiOver2);
-		Assert.AreEqual(Fix64.Atan2(-Fix64.One, Fix64.Zero), -Fix64.PiOver2);
+		Assert.AreEqual(Fix32.Atan2(Fix32.Zero, -Fix32.One), Fix32.Pi);
+		Assert.AreEqual(Fix32.Atan2(Fix32.Zero, Fix32.Zero), Fix32.Zero);
+		Assert.AreEqual(Fix32.Atan2(Fix32.Zero, Fix32.One), Fix32.Zero);
+		Assert.AreEqual(Fix32.Atan2(Fix32.One, Fix32.Zero), Fix32.PiOver2);
+		Assert.AreEqual(Fix32.Atan2(-Fix32.One, Fix32.Zero), -Fix32.PiOver2);
 
 		// Precision
 		for (var y = -1.0; y < 1.0; y += 0.01) {
 			for (var x = -1.0; x < 1.0; x += 0.01) {
-				var yf = (Fix64) y;
-				var xf = (Fix64) x;
-				var actual = (double) Fix64.Atan2(yf, xf);
+				var yf = (Fix32) y;
+				var xf = (Fix32) x;
+				var actual = (double) Fix32.Atan2(yf, xf);
 				var expected = (double) Math.Atan2((double) yf, (double) xf);
 				var delta = Math.Abs(actual - expected);
 				deltas.Add((decimal) delta);
@@ -997,17 +997,17 @@ public class Fix32Tests {
 		// Scalability and edge cases
 		foreach (var y in TestCases) {
 			foreach (var x in TestCases) {
-				var yf = Fix64.FromRaw(y);
-				var xf = Fix64.FromRaw(x);
-				var actual = (double) Fix64.Atan2(yf, xf);
+				var yf = Fix32.FromRaw(y);
+				var xf = Fix32.FromRaw(x);
+				var actual = (double) Fix32.Atan2(yf, xf);
 				var expected = (double) Math.Atan2((double) yf, (double) xf);
 				var delta = Math.Abs(actual - expected);
 				deltas.Add((decimal) delta);
 				Assert.AreEqual(expected, actual, (double) 0.005, string.Format("Scalability: Atan2({0}, {1}): expected {2} but got {3}", yf, xf, expected, actual));
 			}
 		}
-		Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix64.Precision);
-		Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix64.Precision);
+		Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix32.Precision);
+		Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix32.Precision);
 	}
 
 	/*
@@ -1015,14 +1015,14 @@ public class Fix32Tests {
 	public void Acos() {
 		var deltas = new List<decimal>();
 
-		Assert.AreEqual(Fix64.Zero, Fix64.Acos(Fix64.One));
-		Assert.AreEqual(Fix64.PiOver2, Fix64.Acos(Fix64.Zero));
-		Assert.AreEqual(Fix64.Pi, Fix64.Acos(-Fix64.One));
+		Assert.AreEqual(Fix32.Zero, Fix32.Acos(Fix32.One));
+		Assert.AreEqual(Fix32.PiOver2, Fix32.Acos(Fix32.Zero));
+		Assert.AreEqual(Fix32.Pi, Fix32.Acos(-Fix32.One));
 
 		// Precision
 		for (var x = -1.0; x < 1.0; x += 0.001) {
-			var xf = (Fix64) x;
-			var actual = (double) Fix64.Acos(xf);
+			var xf = (Fix32) x;
+			var actual = (double) Fix32.Acos(xf);
 			var expected = Math.Acos((double) xf);
 			var delta = Math.Abs(actual - expected);
 			deltas.Add((decimal) delta);
@@ -1030,21 +1030,21 @@ public class Fix32Tests {
 		}
 
 		for (int i = 0; i < TestCases.Count; ++i) {
-			var b = Fix64.FromRaw(TestCases[i]);
+			var b = Fix32.FromRaw(TestCases[i]);
 
-			if (b < -Fix64.One || b > Fix64.One) {
-				Assert.Throws<ArgumentOutOfRangeException>(() => Fix64.Acos(b));
+			if (b < -Fix32.One || b > Fix32.One) {
+				Assert.Throws<ArgumentOutOfRangeException>(() => Fix32.Acos(b));
 			}
 			else {
 				var expected = Math.Acos((double) b);
-				var actual = (double) Fix64.Acos(b);
+				var actual = (double) Fix32.Acos(b);
 				var delta = Math.Abs(expected - actual);
 				deltas.Add((decimal) delta);
 				Assert.AreEqual(expected, actual, 16 * (double) Fix32Ext.Precision, string.Format("Acos({0}) = expected {1} but got {2}", b, expected, actual));
 			}
 		}
-		Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix64.Precision);
-		Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix64.Precision);
+		Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix32.Precision);
+		Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix32.Precision);
 	}
 
 	*/

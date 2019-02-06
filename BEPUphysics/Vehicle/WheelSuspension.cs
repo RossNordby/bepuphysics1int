@@ -16,7 +16,7 @@ namespace BEPUphysics.Vehicle
 
         internal Fix32 accumulatedImpulse;
 
-        //Fix64 linearBX, linearBY, linearBZ;
+        //Fix32 linearBX, linearBY, linearBZ;
         private Fix32 angularAX, angularAY, angularAZ;
         private Fix32 angularBX, angularBY, angularBZ;
         private Fix32 bias;

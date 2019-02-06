@@ -214,7 +214,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                     D = new Vector3();
 
                     ////Test for degeneracy.
-                    //Fix64 edgeLengthAB;
+                    //Fix32 edgeLengthAB;
                     //Vector3.DistanceSquared(ref A, ref B, out edgeLengthAB);
                     //if (edgeLengthAB < Toolbox.Epsilon)
                     //    State = SimplexState.Point;
@@ -268,7 +268,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                     //Vector3.Subtract(ref C, ref A, out AC);
                     //Vector3.Subtract(ref D, ref A, out AD);
                     //Vector3.Cross(ref AB, ref AC, out cross);
-                    //Fix64 volume;
+                    //Fix32 volume;
                     //Vector3.Dot(ref cross, ref AD, out volume);
 
                     ////Volume is small compared to partial 'perimeter.'
@@ -501,7 +501,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             }
 
             //Check if it's outside AC.            
-            //Fix64 AdotAB, AdotAC;
+            //Fix32 AdotAB, AdotAC;
             //Vector3.Dot(ref ab, ref A, out AdotAB);
             //Vector3.Dot(ref ac, ref A, out AdotAC);
             //AdotAB = -AdotAB;
@@ -522,7 +522,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             }
 
             //Check if it's outside BC.
-            //Fix64 BdotAB, BdotAC;
+            //Fix32 BdotAB, BdotAC;
             //Vector3.Dot(ref ab, ref B, out BdotAB);
             //Vector3.Dot(ref ac, ref B, out BdotAC);
             //BdotAB = -BdotAB;
@@ -762,7 +762,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 }
 
                 //Check if it's outside AC.            
-                //Fix64 AdotAB, AdotAC;
+                //Fix32 AdotAB, AdotAC;
                 //Vector3.Dot(ref ab, ref A, out AdotAB);
                 //Vector3.Dot(ref ac, ref A, out AdotAC);
                 //AdotAB = -AdotAB;
@@ -785,7 +785,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 }
 
                 //Check if it's outside BC.
-                //Fix64 BdotAB, BdotAC;
+                //Fix32 BdotAB, BdotAC;
                 //Vector3.Dot(ref ab, ref B, out BdotAB);
                 //Vector3.Dot(ref ac, ref B, out BdotAC);
                 //BdotAB = -BdotAB;

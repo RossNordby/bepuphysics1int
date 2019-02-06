@@ -212,7 +212,7 @@ namespace BEPUphysics.CollisionShapes
         /// Tests to see if a ray's origin is contained within the mesh.
         /// If it is, the hit location is found.
         /// If it isn't, the hit location is still valid if a hit occurred.
-        /// If the origin isn't inside and there was no hit, the hit has a T value of Fix64.MaxValue.
+        /// If the origin isn't inside and there was no hit, the hit has a T value of Fix32.MaxValue.
         /// </summary>
         /// <param name="ray">Ray in the local space of the shape to test.</param>
         /// <param name="hit">The first hit against the mesh, if any.</param>

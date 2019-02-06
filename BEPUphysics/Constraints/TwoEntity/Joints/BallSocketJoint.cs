@@ -205,7 +205,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 
         /// <summary>
         /// Calculates necessary information for velocity solving.
-        /// Called by preStep(Fix64 dt)
+        /// Called by preStep(Fix32 dt)
         /// </summary>
         /// <param name="dt">Time in seconds since the last update.</param>
         public override void Update(Fix32 dt)

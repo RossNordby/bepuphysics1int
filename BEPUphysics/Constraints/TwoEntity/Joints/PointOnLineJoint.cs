@@ -318,7 +318,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 #else
             Vector2 lambda;
 #endif
-            //Fix64 va1, va2, wa1, wa2, vb1, vb2, wb1, wb2;
+            //Fix32 va1, va2, wa1, wa2, vb1, vb2, wb1, wb2;
             //Vector3.Dot(ref worldAxis1, ref myParentA.myInternalLinearVelocity, out va1);
             //Vector3.Dot(ref worldAxis2, ref myParentA.myInternalLinearVelocity, out va2);
             //wa1 = prAT.M11 * myParentA.myInternalAngularVelocity.X + prAT.M12 * myParentA.myInternalAngularVelocity.Y + prAT.M13 * myParentA.myInternalAngularVelocity.Z;

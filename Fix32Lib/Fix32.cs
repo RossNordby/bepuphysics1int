@@ -151,12 +151,12 @@ public static partial class Fix32Ext {
 #if USE_DOUBLES
 		return (-x.ToDouble()).ToFix32();
 #endif
-		//return new Fix64(-x.RawValue);
+		//return new Fix32(-x.RawValue);
 		return (Fix32) ((int) x == MIN_VALUE ? MAX_VALUE : -(int) x);
 	}
 
 	/// <summary>
-	/// Returns a number indicating the sign of a Fix64 number.
+	/// Returns a number indicating the sign of a Fix32 number.
 	/// Returns 1 if the value is positive, 0 if is 0, and -1 if it is negative.
 	/// </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -166,7 +166,7 @@ public static partial class Fix32Ext {
 	}
 
 	/// <summary>
-	/// Returns a number indicating the sign of a Fix64 number.
+	/// Returns a number indicating the sign of a Fix32 number.
 	/// Returns 1 if the value is positive, 0 if is 0, and -1 if it is negative.
 	/// </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -177,8 +177,8 @@ public static partial class Fix32Ext {
 
 
 	/// <summary>
-	/// Returns the absolute value of a Fix64 number.
-	/// Note: Abs(Fix64.MinValue) == Fix64.MaxValue.
+	/// Returns the absolute value of a Fix32 number.
+	/// Note: Abs(Fix32.MinValue) == Fix32.MaxValue.
 	/// </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 Abs(this Fix32 x) {
@@ -195,8 +195,8 @@ public static partial class Fix32Ext {
 	}
 
 	/// <summary>
-	/// Returns the absolute value of a Fix64 number.
-	/// FastAbs(Fix64.MinValue) is undefined.
+	/// Returns the absolute value of a Fix32 number.
+	/// FastAbs(Fix32.MinValue) is undefined.
 	/// </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 AbsFast(this Fix32 x) {
@@ -254,7 +254,7 @@ public static partial class Fix32Ext {
 	/// <summary>
 	/// Rounds a value to the nearest integral value.
 	/// If the value is halfway between an even and an uneven value, returns the even value.
-	/// FastRount(Fix64.MaxValue) is undefined
+	/// FastRount(Fix32.MaxValue) is undefined
 	/// </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 RoundFast(this Fix32 x) {
@@ -634,7 +634,7 @@ public static partial class Fix32Ext {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 Sin(this Fix32 x) {
 #if USE_DOUBLES
-        return (Fix64) Math.Sin((double) x);
+        return (Fix32) Math.Sin((double) x);
 #endif
 		return (Fix32) Fixed32.Sin((int) x);
 	}
@@ -810,7 +810,7 @@ public static partial class Fix32Ext {
 	/// </summary>
 	public static Fix32 Acos(this Fix32 x) {
 #if USE_DOUBLES
-        return (Fix64) Math.Acos((double) x);
+        return (Fix32) Math.Acos((double) x);
 #endif
 		if ((int) x < -(int) Fix32.One || (int) x > (int) Fix32.One)
 			throw new ArgumentOutOfRangeException(nameof(x));

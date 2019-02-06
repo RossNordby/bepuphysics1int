@@ -399,7 +399,7 @@ namespace BEPUphysics.Character
 		/// <param name="slidingJumpSpeed">Speed at which the character leaves the ground when it jumps without traction</param>
 		/// <param name="maximumGlueForce">Maximum force the vertical motion constraint is allowed to apply in an attempt to keep the character on the ground.</param>
 		public CharacterController(
-			// Fix64 cannot be used for default parameters. As a workaround, make all parameters nullable and assign default values inside the constructor
+			// Fix32 cannot be used for default parameters. As a workaround, make all parameters nullable and assign default values inside the constructor
 			Vector3 position = new Vector3(),
 			Fix32? height = null, Fix32? crouchingHeight = null, Fix32? proneHeight = null, Fix32? radius = null, Fix32? margin = null, Fix32? mass = null,
             Fix32? maximumTractionSlope = null, Fix32? maximumSupportSlope = null,

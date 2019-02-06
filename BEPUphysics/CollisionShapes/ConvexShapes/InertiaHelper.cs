@@ -111,9 +111,9 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             vertices = new Vector3[GetExpectedVertexCount(subdivisionCount)];
 
 			////Create the regular tetrahedron vertices.
-			//Fix64 x = (Fix64)(1 / Math.Sqrt(3));
-			//Fix64 z = (Fix64)(-1 / (2 * Math.Sqrt(6)));
-			//vertices[0] = Vector3.Normalize(new Vector3(0, 0, (Fix64)(Math.Sqrt(2.0 / 3.0) + z)));
+			//Fix32 x = (Fix32)(1 / Math.Sqrt(3));
+			//Fix32 z = (Fix32)(-1 / (2 * Math.Sqrt(6)));
+			//vertices[0] = Vector3.Normalize(new Vector3(0, 0, (Fix32)(Math.Sqrt(2.0 / 3.0) + z)));
 			//vertices[1] = Vector3.Normalize(new Vector3(-0.5f * x, -0.5f, z));
 			//vertices[2] = Vector3.Normalize(new Vector3(-0.5f * x, 0.5f, z));
 			//vertices[3] = Vector3.Normalize(new Vector3(x, 0, z));
@@ -497,7 +497,7 @@ a.Add(scaledTetrahedronVolume.Mul(((((((((((((v2.Y.Mul(v2.Y)).Add(v2.Y.Mul(v3.Y)
 
         }
 
-        //public static void GetInertiaOffset(Vector3 offset, Fix64 mass, out Matrix3x3 additionalInertia)
+        //public static void GetInertiaOffset(Vector3 offset, Fix32 mass, out Matrix3x3 additionalInertia)
         //{
         //    additionalInertia.M11 = mass * (offset.Y * offset.Y + offset.Z * offset.Z);
         //    additionalInertia.M12 = -mass * offset.X * offset.Y;

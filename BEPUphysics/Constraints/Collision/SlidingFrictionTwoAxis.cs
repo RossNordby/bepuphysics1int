@@ -107,13 +107,13 @@ namespace BEPUphysics.Constraints.Collision
 					dvz = dvz.Add(((entityB.linearVelocity.Z.Neg()).Sub((entityB.angularVelocity.X.Mul(rb.Y)))).Add((entityB.angularVelocity.Y.Mul(rb.X))));
                 }
 
-                //Fix64 dvx = entityA.linearVelocity.X + (entityA.angularVelocity.Y * ra.Z) - (entityA.angularVelocity.Z * ra.Y)
+                //Fix32 dvx = entityA.linearVelocity.X + (entityA.angularVelocity.Y * ra.Z) - (entityA.angularVelocity.Z * ra.Y)
                 //            - entityB.linearVelocity.X - (entityB.angularVelocity.Y * rb.Z) + (entityB.angularVelocity.Z * rb.Y);
 
-                //Fix64 dvy = entityA.linearVelocity.Y + (entityA.angularVelocity.Z * ra.X) - (entityA.angularVelocity.X * ra.Z)
+                //Fix32 dvy = entityA.linearVelocity.Y + (entityA.angularVelocity.Z * ra.X) - (entityA.angularVelocity.X * ra.Z)
                 //            - entityB.linearVelocity.Y - (entityB.angularVelocity.Z * rb.X) + (entityB.angularVelocity.X * rb.Z);
 
-                //Fix64 dvz = entityA.linearVelocity.Z + (entityA.angularVelocity.X * ra.Y) - (entityA.angularVelocity.Y * ra.X)
+                //Fix32 dvz = entityA.linearVelocity.Z + (entityA.angularVelocity.X * ra.Y) - (entityA.angularVelocity.Y * ra.X)
                 //            - entityB.linearVelocity.Z - (entityB.angularVelocity.X * rb.Y) + (entityB.angularVelocity.Y * rb.X);
 
 #if !WINDOWS
@@ -130,7 +130,7 @@ namespace BEPUphysics.Constraints.Collision
                 //Vector3.Cross(ref parentA.myInternalAngularVelocity, ref Ra, out wara);
                 //Vector3.Cross(ref parentB.myInternalAngularVelocity, ref Rb, out wbrb);
 
-                //Fix64 dvx, dvy, dvz;
+                //Fix32 dvx, dvy, dvz;
                 //dvx = wara.X + parentA.myInternalLinearVelocity.X - wbrb.X - parentB.myInternalLinearVelocity.X;
                 //dvy = wara.Y + parentA.myInternalLinearVelocity.Y - wbrb.Y - parentB.myInternalLinearVelocity.Y;
                 //dvz = wara.Z + parentA.myInternalLinearVelocity.Z - wbrb.Z - parentB.myInternalLinearVelocity.Z;
@@ -184,13 +184,13 @@ namespace BEPUphysics.Constraints.Collision
             lambda.X = accumulatedImpulse.X.Sub(previousAccumulatedImpulse.X);
             lambda.Y = accumulatedImpulse.Y.Sub(previousAccumulatedImpulse.Y);
             //Single Axis clamp
-            //Fix64 maximumFrictionForce = 0;
+            //Fix32 maximumFrictionForce = 0;
             //for (int i = 0; i < contactCount; i++)
             //{
             //    maximumFrictionForce += pair.contacts[i].penetrationConstraint.accumulatedImpulse;
             //}
             //maximumFrictionForce *= friction;
-            //Fix64 previousAccumulatedImpulse = accumulatedImpulse.X;
+            //Fix32 previousAccumulatedImpulse = accumulatedImpulse.X;
             //accumulatedImpulse.X = MathHelper.Clamp(accumulatedImpulse.X + lambda.X, -maximumFrictionForce, maximumFrictionForce);
             //lambda.X = accumulatedImpulse.X - previousAccumulatedImpulse;
             //previousAccumulatedImpulse = accumulatedImpulse.Y;

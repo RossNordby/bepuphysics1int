@@ -90,12 +90,12 @@ namespace BEPUphysics.Paths
 
         //    int index = getPreviousIndex(time);
         //    int nextIndex = Math.Min(index + 1, maxIndex); 
-        //    Fix64 denominator = controlPoints[nextIndex].time - controlPoints[index].time;
-        //    Fix64 intervalTime;
+        //    Fix32 denominator = controlPoints[nextIndex].time - controlPoints[index].time;
+        //    Fix32 intervalTime;
         //    if (denominator < Toolbox.epsilon)
         //        intervalTime = 0;
         //    else
-        //        intervalTime = (Fix64)(time - controlPoints[index].time) / denominator;
+        //        intervalTime = (Fix32)(time - controlPoints[index].time) / denominator;
 
 
         //    value = Vector3.Lerp(controlPoints[index].value, controlPoints[nextIndex].value, intervalTime); 

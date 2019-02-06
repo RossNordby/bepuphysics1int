@@ -476,13 +476,13 @@ distance.Add(timeToZ);
             //the result is then:
             //Vector3.Cross(bottomToTop, leftToRight);
             //Which is:
-            //Fix64 resultX = bottomToTop.Y * leftToRight.Z - bottomToTop.Z * leftToRight.Y;
-            //Fix64 resultY = bottomToTop.Z * leftToRight.X - bottomToTop.X * leftToRight.Z;
-            //Fix64 resultZ = bottomToTop.X * leftToRight.Y - bottomToTop.Y * leftToRight.X;
+            //Fix32 resultX = bottomToTop.Y * leftToRight.Z - bottomToTop.Z * leftToRight.Y;
+            //Fix32 resultY = bottomToTop.Z * leftToRight.X - bottomToTop.X * leftToRight.Z;
+            //Fix32 resultZ = bottomToTop.X * leftToRight.Y - bottomToTop.Y * leftToRight.X;
             //Which becomes:
-            //Fix64 resultX = bottomToTop.Y * 0 - 2 * leftToRight.Y;
-            //Fix64 resultY = 2 * 2 - 0 * 0;
-            //Fix64 resultZ = 0 * leftToRight.Y - bottomToTop.Y * 2;
+            //Fix32 resultX = bottomToTop.Y * 0 - 2 * leftToRight.Y;
+            //Fix32 resultY = 2 * 2 - 0 * 0;
+            //Fix32 resultZ = 0 * leftToRight.Y - bottomToTop.Y * 2;
             //Which becomes:
             normal.X = rightHeight.Sub(leftHeight);
             normal.Y = F64.C2;

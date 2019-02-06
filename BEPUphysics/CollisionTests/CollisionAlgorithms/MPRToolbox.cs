@@ -752,7 +752,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 if (supportDot.Sub(dot) < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
                 {
                     //normal = n;
-                    //Fix64 normalLengthInverse = 1 / normal.Length();
+                    //Fix32 normalLengthInverse = 1 / normal.Length();
                     //Vector3.Multiply(ref normal, normalLengthInverse, out normal);
                     ////Find the distance from the origin to the plane.
                     //t = dot * normalLengthInverse;
@@ -1036,7 +1036,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 if (supportDot.Sub(dot) < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
                 {
                     //normal = n;
-                    //Fix64 normalLengthInverse = 1 / normal.Length();
+                    //Fix32 normalLengthInverse = 1 / normal.Length();
                     //Vector3.Multiply(ref normal, normalLengthInverse, out normal);
                     ////Find the distance from the origin to the plane.
                     //t = dot * normalLengthInverse;
@@ -1624,7 +1624,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix32Ext.Sq
 
                     //Compute the barycentric coordinates of the ray hit location.
                     //Vector3 mdHitLocation = t * localDirection;
-                    //Fix64 v1Weight, v2Weight, v3Weight;
+                    //Fix32 v1Weight, v2Weight, v3Weight;
                     //Toolbox.GetBarycentricCoordinates(ref mdHitLocation, ref v1, ref v2, ref v3, out v1Weight, out v2Weight, out v3Weight);
                     //hit.Location = v1Weight * v1A + v2Weight * v2A + v3Weight * v3A;
                     //hit.Location += sweepA * hit.T;
@@ -1850,28 +1850,28 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix32Ext.Sq
 
                 //    Vector3 cross;
                 //    Vector3.Cross(ref temp1, ref temp2, out cross);
-                //    Fix64 v0v1v2v3volume;
+                //    Fix32 v0v1v2v3volume;
                 //    Vector3.Dot(ref cross, ref temp3, out v0v1v2v3volume);
 
                 //    Vector3.Cross(ref v1, ref v2, out cross);
-                //    Fix64 ov1v2v3volume;
+                //    Fix32 ov1v2v3volume;
                 //    Vector3.Dot(ref cross, ref v3, out ov1v2v3volume);
 
                 //    Vector3.Cross(ref rayDirection, ref temp2, out cross);
-                //    Fix64 v0ov2v3volume;
+                //    Fix32 v0ov2v3volume;
                 //    Vector3.Dot(ref cross, ref temp3, out v0ov2v3volume);
 
                 //    Vector3.Cross(ref temp1, ref rayDirection, out cross);
-                //    Fix64 v0v1ov3volume;
+                //    Fix32 v0v1ov3volume;
                 //    Vector3.Dot(ref cross, ref temp3, out v0v1ov3volume);
 
                 //    if (v0v1v2v3volume > Toolbox.Epsilon * .01f)
                 //    {
-                //        Fix64 inverseTotalVolume = 1 / v0v1v2v3volume;
-                //        Fix64 v0Weight = ov1v2v3volume * inverseTotalVolume;
-                //        Fix64 v1Weight = v0ov2v3volume * inverseTotalVolume;
-                //        Fix64 v2Weight = v0v1ov3volume * inverseTotalVolume;
-                //        Fix64 v3Weight = 1 - v0Weight - v1Weight - v2Weight;
+                //        Fix32 inverseTotalVolume = 1 / v0v1v2v3volume;
+                //        Fix32 v0Weight = ov1v2v3volume * inverseTotalVolume;
+                //        Fix32 v1Weight = v0ov2v3volume * inverseTotalVolume;
+                //        Fix32 v2Weight = v0v1ov3volume * inverseTotalVolume;
+                //        Fix32 v3Weight = 1 - v0Weight - v1Weight - v2Weight;
                 //        position = v1Weight * v1A + v2Weight * v2A + v3Weight * v3A;
                 //    }
                 //    else

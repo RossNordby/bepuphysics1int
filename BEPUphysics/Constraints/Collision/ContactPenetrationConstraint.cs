@@ -20,7 +20,7 @@ namespace BEPUphysics.Constraints.Collision
         ///</summary>
         public Contact Contact { get { return contact; } }
         internal Fix32 accumulatedImpulse;
-        //Fix64 linearBX, linearBY, linearBZ;
+        //Fix32 linearBX, linearBY, linearBZ;
         internal Fix32 angularAX, angularAY, angularAZ;
         internal Fix32 angularBX, angularBY, angularBZ;
 
@@ -221,7 +221,7 @@ namespace BEPUphysics.Constraints.Collision
                 //    //Target a velocity which includes a portion of the incident velocity.
                 //    //The contact isn't colliding currently, but go ahead and target the post-bounce velocity.
                 //    //The bias is added to the bounce velocity to simulate the object continuing to the surface and then bouncing off.
-                //    Fix64 relativeVelocity = -RelativeVelocity;
+                //    Fix32 relativeVelocity = -RelativeVelocity;
                 //    if (relativeVelocity > CollisionResponseSettings.BouncinessVelocityThreshold)
                 //        bias = relativeVelocity * contactManifoldConstraint.materialInteraction.Bounciness + bias;
                 //}

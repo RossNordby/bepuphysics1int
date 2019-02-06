@@ -110,7 +110,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                     }
                     else
                     {
-                        //The hit was too far away, or there was no hit (in which case T would be Fix64.MaxValue).
+                        //The hit was too far away, or there was no hit (in which case T would be Fix32.MaxValue).
                         return false;
                     }
                     return true;

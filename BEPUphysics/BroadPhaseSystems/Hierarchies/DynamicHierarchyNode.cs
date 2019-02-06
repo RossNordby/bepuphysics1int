@@ -293,7 +293,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
             childA.Refit();
             childB.Refit();
             BoundingBox.CreateMerged(ref childA.BoundingBox, ref childB.BoundingBox, out BoundingBox);
-            //Fix64 DEBUGlastVolume = currentVolume;
+            //Fix32 DEBUGlastVolume = currentVolume;
             currentVolume = Fix32Ext.MulSafe(Fix32Ext.MulSafe(BoundingBox.Max.X.Sub(BoundingBox.Min.X), BoundingBox.Max.Y.Sub(BoundingBox.Min.Y)), BoundingBox.Max.Z.Sub(BoundingBox.Min.Z));
             //if (Math.Abs(currentVolume - DEBUGlastVolume) > .000001 * (DEBUGlastVolume + currentVolume))
             //    Debug.WriteLine(":Break>:)");

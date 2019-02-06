@@ -1,4 +1,4 @@
-﻿using FixMath.NET;
+﻿
 using Xunit;
 using Xunit.Abstractions;
 using System.Collections.Generic;
@@ -31,7 +31,7 @@ namespace BEPUtests
 		public MatrixTests(ITestOutputHelper output)
 		{
 			if (output == null)
-				output = new FixMath.NET.ConsoleTestOutputHelper();
+				output = new ConsoleTestOutputHelper();
 			this.output = output;
 		}
 
@@ -66,8 +66,8 @@ namespace BEPUtests
 				}
 				Assert.True(success, string.Format("Precision: Matrix3x3Invert({0}): Expected {1} Actual {2}", testCase, expected, actual));
 			}
-			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix64Ext.Precision);
-			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix64Ext.Precision);
+			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
+			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
 		}
 
 		[Fact]
@@ -102,9 +102,9 @@ namespace BEPUtests
 						deltas.Add(delta);
 				}
 			}
-			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix64Ext.Precision);
-			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix64Ext.Precision);
-			output.WriteLine("Fix64.Invert time = {0}ms, float.Invert time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
+			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
+			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
+			output.WriteLine("Fix32.Invert time = {0}ms, float.Invert time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
 		}		
 
 		decimal[] GetDeltas(FloatMatrix expected, Matrix actual)

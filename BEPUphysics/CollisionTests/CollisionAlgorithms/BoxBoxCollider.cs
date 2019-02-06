@@ -1420,7 +1420,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 #if ALLOWUNSAFE
         public static bool AreBoxesColliding(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB, out Fix32 distance, out Vector3 axis, out BoxContactDataCache contactData)
 #else
-        public static bool AreBoxesColliding(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB, out Fix64 distance, out Vector3 axis, out TinyStructList<BoxContactData> contactData)
+        public static bool AreBoxesColliding(BoxShape a, BoxShape b, ref RigidTransform transformA, ref RigidTransform transformB, out Fix32 distance, out Vector3 axis, out TinyStructList<BoxContactData> contactData)
 #endif
         {
             Fix32 aX = a.HalfWidth;
@@ -2251,7 +2251,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 GetEdgeEdgeContact(a, b, ref transformA.Position, ref aO, ref transformB.Position, ref bO, minimumDistance, ref minimumAxis, out contactData);
 
                 //Vector3 position;
-                //Fix64 depth;
+                //Fix32 depth;
                 //int id;
                 //                GetEdgeEdgeContact(a, b, ref transformA.Position, ref aO, ref transformB.Position, ref bO, ref minimumAxis, out position, out id);
                 //#if ALLOWUNSAFE
@@ -2282,7 +2282,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 #if ALLOWUNSAFE
         internal static void GetEdgeEdgeContact(BoxShape a, BoxShape b, ref Vector3 positionA, ref Matrix3x3 orientationA, ref Vector3 positionB, ref Matrix3x3 orientationB, Fix32 depth, ref Vector3 mtd, out BoxContactDataCache contactData)
 #else
-        internal static void GetEdgeEdgeContact(BoxShape a, BoxShape b, ref Vector3 positionA, ref Matrix3x3 orientationA, ref Vector3 positionB, ref Matrix3x3 orientationB, Fix64 depth, ref Vector3 mtd, out TinyStructList<BoxContactData> contactData)
+        internal static void GetEdgeEdgeContact(BoxShape a, BoxShape b, ref Vector3 positionA, ref Matrix3x3 orientationA, ref Vector3 positionB, ref Matrix3x3 orientationB, Fix32 depth, ref Vector3 mtd, out TinyStructList<BoxContactData> contactData)
 #endif
         {
             //Edge-edge contacts conceptually can only create one contact in perfectly rigid collisions.
@@ -2882,7 +2882,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             return true;
         }
 
-        //        internal static void GetEdgeEdgeContact(BoxShape a, BoxShape b, ref Vector3 positionA, ref Matrix3X3 orientationA, ref Vector3 positionB, ref Matrix3X3 orientationB, Fix64 depth, ref Vector3 mtd, out TinyStructList<BoxContactData> contactData)
+        //        internal static void GetEdgeEdgeContact(BoxShape a, BoxShape b, ref Vector3 positionA, ref Matrix3X3 orientationA, ref Vector3 positionB, ref Matrix3X3 orientationB, Fix32 depth, ref Vector3 mtd, out TinyStructList<BoxContactData> contactData)
         //        {
         //            //Put the minimum translation direction into the local space of each object.
         //            Vector3 mtdA, mtdB;
@@ -2899,13 +2899,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //            Vector3 edgeA1, edgeA2;
         //            Vector3 edgeB1, edgeB2;
         //#endif
-        //            Fix64 aHalfWidth = a.halfWidth;
-        //            Fix64 aHalfHeight = a.halfHeight;
-        //            Fix64 aHalfLength = a.halfLength;
+        //            Fix32 aHalfWidth = a.halfWidth;
+        //            Fix32 aHalfHeight = a.halfHeight;
+        //            Fix32 aHalfLength = a.halfLength;
 
-        //            Fix64 bHalfWidth = b.halfWidth;
-        //            Fix64 bHalfHeight = b.halfHeight;
-        //            Fix64 bHalfLength = b.halfLength;
+        //            Fix32 bHalfWidth = b.halfWidth;
+        //            Fix32 bHalfHeight = b.halfHeight;
+        //            Fix32 bHalfLength = b.halfLength;
 
         //            int edgeA1Id, edgeA2Id;
         //            int edgeB1Id, edgeB2Id;
@@ -2916,7 +2916,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
         //            #region Edge A
 
-        //            if (Fix64Ext.Abs(mtdA.X) < Toolbox.Epsilon)
+        //            if (Fix32Ext.Abs(mtdA.X) < Toolbox.Epsilon)
         //            {
         //                //mtd is in the Y-Z plane.
         //                if (mtdA.Y > 0)
@@ -2982,7 +2982,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //                    }
         //                }
         //            }
-        //            else if (Fix64Ext.Abs(mtdA.Y) < Toolbox.Epsilon)
+        //            else if (Fix32Ext.Abs(mtdA.Y) < Toolbox.Epsilon)
         //            {
         //                //mtd is in the X-Z plane
         //                if (mtdA.X > 0)
@@ -3119,7 +3119,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
         //            #region Edge B
 
-        //            if (Fix64Ext.Abs(mtdB.X) < Toolbox.Epsilon)
+        //            if (Fix32Ext.Abs(mtdB.X) < Toolbox.Epsilon)
         //            {
         //                //mtd is in the Y-Z plane.
         //                if (mtdB.Y > 0)
@@ -3185,7 +3185,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //                    }
         //                }
         //            }
-        //            else if (Fix64Ext.Abs(mtdB.Y) < Toolbox.Epsilon)
+        //            else if (Fix32Ext.Abs(mtdB.Y) < Toolbox.Epsilon)
         //            {
         //                //mtd is in the X-Z plane
         //                if (mtdB.X > 0)
@@ -3334,7 +3334,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //            Vector3.Add(ref edgeB1, ref positionB, out edgeB1);
         //            Vector3.Add(ref edgeB2, ref positionB, out edgeB2);
 
-        //            Fix64 s, t;
+        //            Fix32 s, t;
         //            Vector3 onA, onB;
         //            Toolbox.GetClosestPointsBetweenSegments(ref edgeA1, ref edgeA2, ref edgeB1, ref edgeB2, out s, out t, out onA, out onB);
         //            //Vector3.Add(ref onA, ref onB, out point);
@@ -3453,8 +3453,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Vector3 v;
             //var maximumOffset = new Vector3();
             //int maxIndexA = -1, maxIndexB = -1;
-            //Fix64 temp;
-            //Fix64 maximumDistanceSquared = -Fix64.MaxValue;
+            //Fix32 temp;
+            //Fix32 maximumDistanceSquared = -Fix32.MaxValue;
             //for (int i = 0; i < count; i++)
             //{
             //    for (int j = i + 1; j < count; j++)
@@ -3474,7 +3474,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Vector3 otherDirection;
             //Vector3.Cross(ref mtd, ref maximumOffset, out otherDirection);
             //int minimumIndex = -1, maximumIndex = -1;
-            //Fix64 minimumDistance = Fix64.MaxValue, maximumDistance = -Fix64.MaxValue;
+            //Fix32 minimumDistance = Fix32.MaxValue, maximumDistance = -Fix32.MaxValue;
 
             //for (int i = 0; i < count; i++)
             //{
@@ -3520,12 +3520,12 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Identify the furthest point away from the deepest index.
             BoxContactData furthestData;
             input.Get(0, out furthestData);
-            Fix64 furthestDistance;
+            Fix32 furthestDistance;
             Vector3.DistanceSquared(ref deepestData.Position, ref furthestData.Position, out furthestDistance);
             for (int i = 1; i < count; i++)
             {
                 input.Get(i, out data);
-                Fix64 distance;
+                Fix32 distance;
                 Vector3.DistanceSquared(ref deepestData.Position, ref data.Position, out distance);
                 if (distance > furthestDistance)
                 {
@@ -3541,8 +3541,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 yAxis;
             Vector3.Cross(ref mtd, ref xAxis, out yAxis);
 
-            Fix64 minY;
-            Fix64 maxY;
+            Fix32 minY;
+            Fix32 maxY;
             BoxContactData minData, maxData;
             input.Get(0, out minData);
             maxData = minData;
@@ -3552,7 +3552,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             for (int i = 1; i < count; i++)
             {
                 input.Get(i, out data);
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref yAxis, ref data.Position, out dot);
                 if (dot < minY)
                 {
@@ -3577,8 +3577,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Vector3 v;
             //var maximumOffset = new Vector3();
             //int maxIndexA = -1, maxIndexB = -1;
-            //Fix64 temp;
-            //Fix64 maximumDistanceSquared = -Fix64.MaxValue;
+            //Fix32 temp;
+            //Fix32 maximumDistanceSquared = -Fix32.MaxValue;
             //BoxContactData itemA, itemB;
             //for (int i = 0; i < count; i++)
             //{
@@ -3601,7 +3601,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Vector3 otherDirection;
             //Vector3.Cross(ref mtd, ref maximumOffset, out otherDirection);
             //int minimumIndex = -1, maximumIndex = -1;
-            //Fix64 minimumDistance = Fix64.MaxValue, maximumDistance = -Fix64.MaxValue;
+            //Fix32 minimumDistance = Fix32.MaxValue, maximumDistance = -Fix32.MaxValue;
 
             //for (int i = 0; i < count; i++)
             //{
@@ -3693,11 +3693,11 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //To test bounds, recall that clipX is the length of the X edge.
             //Going from the center to the max or min goes half of the length of X edge, or +/- 0.5.
             //Bias could be added here.
-            //const Fix64 extent = .5f; //.5f is the default, extra could be added for robustness or speed.
+            //const Fix32 extent = .5f; //.5f is the default, extra could be added for robustness or speed.
             Fix32 extentX = F64.C0p5.Add(F64.C0p01.Mul(inverseClipWidth));
             Fix32 extentY = F64.C0p5.Add(F64.C0p01.Mul(inverseClipHeight));
-            //Fix64 extentX = .5f + .01f * inverseClipXLength;
-            //Fix64 extentY = .5f + .01f * inverseClipYLength;
+            //Fix32 extentX = .5f + .01f * inverseClipXLength;
+            //Fix32 extentY = .5f + .01f * inverseClipYLength;
             Fix32 clipCenterMaxX = clipCenterX.Add(extentX);
             Fix32 clipCenterMaxY = clipCenterY.Add(extentY);
             Fix32 clipCenterMinX = clipCenterX.Sub(extentX);
@@ -3921,7 +3921,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             //Once we get here there can only be 3 contacts or less.
             //Once 4 possible contacts have been added, switch to using safe increments.
-            //Fix64 dot;
+            //Fix32 dot;
 
         #region CLIP EDGE: v1 v2
 
@@ -4415,13 +4415,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 clipX, clipY;
             Vector3.Subtract(ref clipFace.V4, ref clipFace.V3, out clipX);
             Vector3.Subtract(ref clipFace.V2, ref clipFace.V3, out clipY);
-            Fix64 inverseClipWidth = 1 / clipFace.Width;
-            Fix64 inverseClipHeight = 1 / clipFace.Height;
-            Fix64 inverseClipWidthSquared = inverseClipWidth * inverseClipWidth;
+            Fix32 inverseClipWidth = 1 / clipFace.Width;
+            Fix32 inverseClipHeight = 1 / clipFace.Height;
+            Fix32 inverseClipWidthSquared = inverseClipWidth * inverseClipWidth;
             clipX.X *= inverseClipWidthSquared;
             clipX.Y *= inverseClipWidthSquared;
             clipX.Z *= inverseClipWidthSquared;
-            Fix64 inverseClipHeightSquared = inverseClipHeight * inverseClipHeight;
+            Fix32 inverseClipHeightSquared = inverseClipHeight * inverseClipHeight;
             clipY.X *= inverseClipHeightSquared;
             clipY.Y *= inverseClipHeightSquared;
             clipY.Z *= inverseClipHeightSquared;
@@ -4430,13 +4430,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 faceX, faceY;
             Vector3.Subtract(ref face.V4, ref face.V3, out faceX);
             Vector3.Subtract(ref face.V2, ref face.V3, out faceY);
-            Fix64 inverseFaceWidth = 1 / face.Width;
-            Fix64 inverseFaceHeight = 1 / face.Height;
-            Fix64 inverseFaceWidthSquared = inverseFaceWidth * inverseFaceWidth;
+            Fix32 inverseFaceWidth = 1 / face.Width;
+            Fix32 inverseFaceHeight = 1 / face.Height;
+            Fix32 inverseFaceWidthSquared = inverseFaceWidth * inverseFaceWidth;
             faceX.X *= inverseFaceWidthSquared;
             faceX.Y *= inverseFaceWidthSquared;
             faceX.Z *= inverseFaceWidthSquared;
-            Fix64 inverseFaceHeightSquared = inverseFaceHeight * inverseFaceHeight;
+            Fix32 inverseFaceHeightSquared = inverseFaceHeight * inverseFaceHeight;
             faceY.X *= inverseFaceHeightSquared;
             faceY.Y *= inverseFaceHeightSquared;
             faceY.Z *= inverseFaceHeightSquared;
@@ -4444,7 +4444,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 clipCenter;
             Vector3.Add(ref clipFace.V1, ref clipFace.V3, out clipCenter);
             //Defer division until after dot product (2 multiplies instead of 3)
-            Fix64 clipCenterX, clipCenterY;
+            Fix32 clipCenterX, clipCenterY;
             Vector3.Dot(ref clipCenter, ref clipX, out clipCenterX);
             Vector3.Dot(ref clipCenter, ref clipY, out clipCenterY);
             clipCenterX *= .5f;
@@ -4453,7 +4453,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 faceCenter;
             Vector3.Add(ref face.V1, ref face.V3, out faceCenter);
             //Defer division until after dot product (2 multiplies instead of 3)
-            Fix64 faceCenterX, faceCenterY;
+            Fix32 faceCenterX, faceCenterY;
             Vector3.Dot(ref faceCenter, ref faceX, out faceCenterX);
             Vector3.Dot(ref faceCenter, ref faceY, out faceCenterY);
             faceCenterX *= .5f;
@@ -4462,27 +4462,27 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //To test bounds, recall that clipX is the length of the X edge.
             //Going from the center to the max or min goes half of the length of X edge, or +/- 0.5.
             //Bias could be added here.
-            //const Fix64 extent = .5f; //.5f is the default, extra could be added for robustness or speed.
-            Fix64 extentX = .5f + .01f * inverseClipWidth;
-            Fix64 extentY = .5f + .01f * inverseClipHeight;
-            //Fix64 extentX = .5f + .01f * inverseClipXLength;
-            //Fix64 extentY = .5f + .01f * inverseClipYLength;
-            Fix64 clipCenterMaxX = clipCenterX + extentX;
-            Fix64 clipCenterMaxY = clipCenterY + extentY;
-            Fix64 clipCenterMinX = clipCenterX - extentX;
-            Fix64 clipCenterMinY = clipCenterY - extentY;
+            //const Fix32 extent = .5f; //.5f is the default, extra could be added for robustness or speed.
+            Fix32 extentX = .5f + .01f * inverseClipWidth;
+            Fix32 extentY = .5f + .01f * inverseClipHeight;
+            //Fix32 extentX = .5f + .01f * inverseClipXLength;
+            //Fix32 extentY = .5f + .01f * inverseClipYLength;
+            Fix32 clipCenterMaxX = clipCenterX + extentX;
+            Fix32 clipCenterMaxY = clipCenterY + extentY;
+            Fix32 clipCenterMinX = clipCenterX - extentX;
+            Fix32 clipCenterMinY = clipCenterY - extentY;
 
             extentX = .5f + .01f * inverseFaceWidth;
             extentY = .5f + .01f * inverseFaceHeight;
             //extentX = .5f + .01f * inverseFaceXLength;
             //extentY = .5f + .01f * inverseFaceYLength;
-            Fix64 faceCenterMaxX = faceCenterX + extentX;
-            Fix64 faceCenterMaxY = faceCenterY + extentY;
-            Fix64 faceCenterMinX = faceCenterX - extentX;
-            Fix64 faceCenterMinY = faceCenterY - extentY;
+            Fix32 faceCenterMaxX = faceCenterX + extentX;
+            Fix32 faceCenterMaxY = faceCenterY + extentY;
+            Fix32 faceCenterMinX = faceCenterX - extentX;
+            Fix32 faceCenterMinY = faceCenterY - extentY;
 
             //Find out where the opposing face is.
-            Fix64 dotX, dotY;
+            Fix32 dotX, dotY;
 
             //The four edges can be thought of as minX, maxX, minY and maxY.
 
@@ -4586,7 +4586,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Compute depths.
             TinyStructList<BoxContactData> tempData = contactData;
             contactData.Clear();
-            Fix64 clipFaceDot, faceDot;
+            Fix32 clipFaceDot, faceDot;
             Vector3.Dot(ref clipFace.V1, ref mtd, out clipFaceDot);
             for (int i = 0; i < tempData.Count; i++)
             {
@@ -4608,7 +4608,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             #region Clip face vertices
 
             Vector3 v;
-            Fix64 a, b;
+            Fix32 a, b;
             Vector3.Dot(ref face.V1, ref face.Normal, out b);
             //CLIP FACE
             if (clipv1MinXInside && clipv1MaxXInside && clipv1MinYInside && clipv1MaxYInside)
@@ -4685,7 +4685,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             //Once we get here there can only be 3 contacts or less.
             //Once 4 possible contacts have been added, switch to using safe increments.
-            //Fix64 dot;
+            //Fix32 dot;
 
             #region CLIP EDGE: v1 v2
 
@@ -5179,7 +5179,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //    Vector3 clipX, clipY;
         //    Vector3.Subtract(ref clipFace.V4, ref clipFace.V3, out clipX);
         //    Vector3.Subtract(ref clipFace.V2, ref clipFace.V3, out clipY);
-        //    Fix64 inverse = 1 / clipX.LengthSquared();
+        //    Fix32 inverse = 1 / clipX.LengthSquared();
         //    clipX.X *= inverse;
         //    clipX.Y *= inverse;
         //    clipX.Z *= inverse;
@@ -5204,7 +5204,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //    Vector3 clipCenter;
         //    Vector3.Add(ref clipFace.V1, ref clipFace.V3, out clipCenter);
         //    //Defer division until after dot product (2 multiplies instead of 3)
-        //    Fix64 clipCenterX, clipCenterY;
+        //    Fix32 clipCenterX, clipCenterY;
         //    Vector3.Dot(ref clipCenter, ref clipX, out clipCenterX);
         //    Vector3.Dot(ref clipCenter, ref clipY, out clipCenterY);
         //    clipCenterX *= .5f;
@@ -5213,7 +5213,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //    Vector3 faceCenter;
         //    Vector3.Add(ref face.V1, ref face.V3, out faceCenter);
         //    //Defer division until after dot product (2 multiplies instead of 3)
-        //    Fix64 faceCenterX, faceCenterY;
+        //    Fix32 faceCenterX, faceCenterY;
         //    Vector3.Dot(ref faceCenter, ref faceX, out faceCenterX);
         //    Vector3.Dot(ref faceCenter, ref faceY, out faceCenterY);
         //    faceCenterX *= .5f;
@@ -5222,19 +5222,19 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //    //To test bounds, recall that clipX is the length of the X edge.
         //    //Going from the center to the max or min goes half of the length of X edge, or +/- 0.5.
         //    //Bias could be added here.
-        //    Fix64 extent = .5f; //.5f is the default, extra could be added for robustness or speed.
-        //    Fix64 clipCenterMaxX = clipCenterX + extent;
-        //    Fix64 clipCenterMaxY = clipCenterY + extent;
-        //    Fix64 clipCenterMinX = clipCenterX - extent;
-        //    Fix64 clipCenterMinY = clipCenterY - extent;
+        //    Fix32 extent = .5f; //.5f is the default, extra could be added for robustness or speed.
+        //    Fix32 clipCenterMaxX = clipCenterX + extent;
+        //    Fix32 clipCenterMaxY = clipCenterY + extent;
+        //    Fix32 clipCenterMinX = clipCenterX - extent;
+        //    Fix32 clipCenterMinY = clipCenterY - extent;
 
-        //    Fix64 faceCenterMaxX = faceCenterX + extent;
-        //    Fix64 faceCenterMaxY = faceCenterY + extent;
-        //    Fix64 faceCenterMinX = faceCenterX - extent;
-        //    Fix64 faceCenterMinY = faceCenterY - extent;
+        //    Fix32 faceCenterMaxX = faceCenterX + extent;
+        //    Fix32 faceCenterMaxY = faceCenterY + extent;
+        //    Fix32 faceCenterMinX = faceCenterX - extent;
+        //    Fix32 faceCenterMinY = faceCenterY - extent;
 
         //    //Find out where the opposing face is.
-        //    Fix64 dotX, dotY;
+        //    Fix32 dotX, dotY;
 
         //    //The four edges can be thought of as minX, maxX, minY and maxY.
 
@@ -5340,7 +5340,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //    //Compute depths.
         //    TinyStructList<BoxContactData> tempData = contactData;
         //    contactData.Clear();
-        //    Fix64 clipFaceDot, faceDot;
+        //    Fix32 clipFaceDot, faceDot;
         //    Vector3.Dot(ref clipFace.V1, ref mtd, out clipFaceDot);
         //    for (int i = 0; i < tempData.Count; i++)
         //    {
@@ -5369,7 +5369,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         //    //faceNormal.Z *= inverse;
         //    faceNormal.Normalize();
         //    Vector3 v;
-        //    Fix64 a, b;
+        //    Fix32 a, b;
         //    Vector3.Dot(ref face.V1, ref faceNormal, out b);
         //    //CLIP FACE
         //    if (clipv1MinXInside && clipv1MaxXInside && clipv1MinYInside && clipv1MaxYInside)
@@ -5447,7 +5447,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
         //    //Once we get here there can only be 3 contacts or less.
         //    //Once 4 possible contacts have been added, switch to using safe increments.
-        //    Fix64 dot;
+        //    Fix32 dot;
 
         //    #region CLIP EDGE: v1 v2
 

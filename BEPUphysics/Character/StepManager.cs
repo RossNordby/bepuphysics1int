@@ -392,7 +392,7 @@ namespace BEPUphysics.Character
             //That puts it just far enough to have traction on the new surface.
             //In practice, the current contact refreshing approach used for many pair types causes contacts to persist horizontally a bit,
             //which can cause side effects for the character.
-            Fix32 horizontalOffsetAmount = characterBody.CollisionInformation.Shape.CollisionMargin;// (Fix64)((1 - character.SupportFinder.sinMaximumSlope) * character.Body.CollisionInformation.Shape.CollisionMargin + 0);
+            Fix32 horizontalOffsetAmount = characterBody.CollisionInformation.Shape.CollisionMargin;// (Fix32)((1 - character.SupportFinder.sinMaximumSlope) * character.Body.CollisionInformation.Shape.CollisionMargin + 0);
             Fix32 length = characterBody.Radius.Add(horizontalOffsetAmount);// -contact.PenetrationDepth;
 
 
@@ -446,7 +446,7 @@ earliestHit.T.Sub(downRayLength) < (maximumStepHeight.Neg()).Sub(upStepMargin)) 
             Vector3.Negate(ref down, out ray.Direction);
             //Find the earliest hit, if any.
             //RayHit earliestHitUp = new RayHit();
-            //earliestHitUp.T = Fix64.MaxValue;
+            //earliestHitUp.T = Fix32.MaxValue;
             Fix32 upLength = characterBody.Height.Sub(earliestHit.T);
 
             //If the sum of the up and down distances is less than the height, the character can't fit.

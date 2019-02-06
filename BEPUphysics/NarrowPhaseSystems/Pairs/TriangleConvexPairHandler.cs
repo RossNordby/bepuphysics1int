@@ -186,7 +186,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                 //    {
                 //        if (triangle.Shape.sidedness != TriangleSidedness.DoubleSided)
                 //        {
-                //            Fix64 dot;
+                //            Fix32 dot;
                 //            Vector3.Dot(ref rayHit.Normal, ref normal, out dot);
                 //            if (dot > 0)
                 //            {

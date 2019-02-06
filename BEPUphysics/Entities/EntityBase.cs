@@ -386,7 +386,7 @@ namespace BEPUphysics.Entities
             set
             {
 				// Removed IsNan, Infinity check
-                // if (value <= 0 || F64.IsNaN(value) || Fix64.IsInfinity(value))
+                // if (value <= 0 || F64.IsNaN(value) || Fix32.IsInfinity(value))
 				if (value <= F64.C0)
 					BecomeKinematic();
                 else
@@ -865,7 +865,7 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
         /// <param name="localInertiaTensor">Inertia tensor to use for the entity.</param>
         public void BecomeDynamic(Fix32 mass, Matrix3x3 localInertiaTensor)
         {
-			// if (mass <= 0) || Fix64.IsInfinity(mass) || Fix64.IsNaN(mass))
+			// if (mass <= 0) || Fix32.IsInfinity(mass) || Fix32.IsNaN(mass))
 			if (mass <= F64.C0)
                 throw new InvalidOperationException("Cannot use a mass of " + mass + " for a dynamic entity.  Consider using a kinematic entity instead.");
             bool previousState = isDynamic;
@@ -937,7 +937,7 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
             if (angular > F64.C0)
             {
 #if CONSERVE
-                Vector3.Multiply(ref angularMomentum, Fix64Ext.Pow(MathHelper.Clamp(1 - angular, 0, 1), dt), out angularMomentum);
+                Vector3.Multiply(ref angularMomentum, Fix32Ext.Pow(MathHelper.Clamp(1 - angular, 0, 1), dt), out angularMomentum);
 #else
 				Vector3.Multiply(ref angularVelocity, Fix32Ext.Pow(MathHelper.Clamp(F64.C1.Sub(angular), F64.C0, F64.C1), dt), out angularVelocity);
 #endif

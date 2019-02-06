@@ -33,7 +33,7 @@ namespace BEPUphysics.Character
             get { return movementDirection; }
             set
             {
-                if (movementDirection.X != value.X || movementDirection.Y != value.Y) //Fix64ing point comparison is perfectly fine here. Any bitwise variation should go through.
+                if (movementDirection.X != value.X || movementDirection.Y != value.Y) //Fix32ing point comparison is perfectly fine here. Any bitwise variation should go through.
                 {
                     characterBody.ActivityInformation.Activate();
 
@@ -387,7 +387,7 @@ namespace BEPUphysics.Character
             }
             else
             {
-                //If the character is Fix64ing, then the jacobians are simply the 3d movement direction and the perpendicular direction on the character's horizontal plane.
+                //If the character is Fix32ing, then the jacobians are simply the 3d movement direction and the perpendicular direction on the character's horizontal plane.
                 linearJacobianA1 = movementDirection3d;
                 linearJacobianA2 = Vector3.Cross(linearJacobianA1, characterBody.orientationMatrix.Down);
 
@@ -569,7 +569,7 @@ x.Mul(supportForceFactor);
             Vector2 previousAccumulatedImpulse = accumulatedImpulse;
             if (MovementMode == MovementMode.Floating)
             {
-                //If it's Fix64ing, clamping rules are different.
+                //If it's Fix32ing, clamping rules are different.
                 //The constraint is not permitted to slow down the character; only speed it up.
                 //This offers a hole for an exploit; by jumping and curving just right,
                 //the character can accelerate beyond its maximum speed.  A bit like an HL2 speed run.

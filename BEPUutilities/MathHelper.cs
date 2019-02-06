@@ -29,7 +29,7 @@ namespace BEPUutilities
     public static readonly Fix32 PiOver4 = Fix32.Pi.Div((4.ToFix()));
 
     /// <summary>
-    /// Calculate remainder of of Fix64 division using same algorithm
+    /// Calculate remainder of of Fix32 division using same algorithm
     /// as Math.IEEERemainder
     /// </summary>
     /// <param name="dividend">Dividend</param>

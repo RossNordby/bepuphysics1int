@@ -5,7 +5,7 @@ using BEPUphysics.Constraints.TwoEntity.Motors;
 using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 using System.Collections.Generic;
 
 namespace BEPUbenchmark.Benchmarks
@@ -49,7 +49,7 @@ namespace BEPUbenchmark.Benchmarks
 
 			solver.ActiveSet.UseAutomass = true;
 			solver.AutoscaleControlImpulses = true;
-			solver.AutoscaleControlMaximumForce = Fix64.MaxValue;
+			solver.AutoscaleControlMaximumForce = Fix32.MaxValue;
 			solver.TimeStepDuration = .1m.ToFix();
 			solver.ControlIterationCount = 100;
 			solver.FixerIterationCount = 10;

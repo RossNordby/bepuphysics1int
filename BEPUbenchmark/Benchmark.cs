@@ -2,7 +2,6 @@
 using BEPUphysics.Entities;
 using BEPUutilities;
 using BEPUutilities.Threading;
-using FixMath.NET;
 using System;
 using System.Security.Cryptography;
 using System.Text;
@@ -22,7 +21,7 @@ namespace BEPUbenchmark
 		public void Initialize()
 		{
 			Space = new Space();
-			Space.ForceUpdater.Gravity = new Vector3(0.ToFix(), (Fix64)(-9.81m).ToFix(), 0.ToFix());
+			Space.ForceUpdater.Gravity = new Vector3(0.ToFix(), (Fix32)(-9.81m).ToFix(), 0.ToFix());
 			Space.TimeStepSettings.TimeStepDuration = (1 / 60m).ToFix();
 
 			InitializeSpace();
@@ -78,18 +77,18 @@ namespace BEPUbenchmark
 			int offset = 0;
 			foreach (Entity e in Space.Entities)
 			{
-				Fix64IntoByteArray(e.Position.X, offset++, state);
-				Fix64IntoByteArray(e.Position.Y, offset++, state);
-				Fix64IntoByteArray(e.Position.Z, offset++, state);
+				Fix32IntoByteArray(e.Position.X, offset++, state);
+				Fix32IntoByteArray(e.Position.Y, offset++, state);
+				Fix32IntoByteArray(e.Position.Z, offset++, state);
 
-				Fix64IntoByteArray(e.Orientation.X, offset++, state);
-				Fix64IntoByteArray(e.Orientation.Y, offset++, state);
-				Fix64IntoByteArray(e.Orientation.Z, offset++, state);
-				Fix64IntoByteArray(e.Orientation.W, offset++, state);
+				Fix32IntoByteArray(e.Orientation.X, offset++, state);
+				Fix32IntoByteArray(e.Orientation.Y, offset++, state);
+				Fix32IntoByteArray(e.Orientation.Z, offset++, state);
+				Fix32IntoByteArray(e.Orientation.W, offset++, state);
 
-				Fix64IntoByteArray(e.LinearVelocity.X, offset++, state);
-				Fix64IntoByteArray(e.LinearVelocity.Y, offset++, state);
-				Fix64IntoByteArray(e.LinearVelocity.Z, offset++, state);
+				Fix32IntoByteArray(e.LinearVelocity.X, offset++, state);
+				Fix32IntoByteArray(e.LinearVelocity.Y, offset++, state);
+				Fix32IntoByteArray(e.LinearVelocity.Z, offset++, state);
 			}
 			HashAlgorithm md5 = MD5.Create();
 			byte[] hash = md5.ComputeHash(state);
@@ -101,7 +100,7 @@ namespace BEPUbenchmark
 			return hex.ToString();
 		}
 
-		private void Fix64IntoByteArray(Fix64 value, int offset, byte[] destination)
+		private void Fix32IntoByteArray(Fix32 value, int offset, byte[] destination)
 		{
 			offset *= sizeof(long);
 			long raw = (long)value;

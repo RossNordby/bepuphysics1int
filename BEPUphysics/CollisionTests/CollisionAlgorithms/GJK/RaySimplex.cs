@@ -189,7 +189,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             }
 
             //Check if it's outside AC.            
-            //Fix64 AdotAB, AdotAC;
+            //Fix32 AdotAB, AdotAC;
             //Vector3.Dot(ref ab, ref A, out AdotAB);
             //Vector3.Dot(ref ac, ref A, out AdotAC);
             //AdotAB = -AdotAB;
@@ -207,7 +207,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             }
 
             //Check if it's outside BC.
-            //Fix64 BdotAB, BdotAC;
+            //Fix32 BdotAB, BdotAC;
             //Vector3.Dot(ref ab, ref B, out BdotAB);
             //Vector3.Dot(ref ac, ref B, out BdotAC);
             //BdotAB = -BdotAB;
@@ -417,7 +417,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 }
 
                 //Check if it's outside AC.            
-                //Fix64 AdotAB, AdotAC;
+                //Fix32 AdotAB, AdotAC;
                 //Vector3.Dot(ref ab, ref A, out AdotAB);
                 //Vector3.Dot(ref ac, ref A, out AdotAC);
                 //AdotAB = -AdotAB;
@@ -435,7 +435,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 }
 
                 //Check if it's outside BC.
-                //Fix64 BdotAB, BdotAC;
+                //Fix32 BdotAB, BdotAC;
                 //Vector3.Dot(ref ab, ref B, out BdotAB);
                 //Vector3.Dot(ref ac, ref B, out BdotAC);
                 //BdotAB = -BdotAB;

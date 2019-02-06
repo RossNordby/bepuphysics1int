@@ -46,7 +46,7 @@ namespace BEPUphysics.UpdateableSystems
 
         /// <summary>
         /// Gets or sets the dictionary storing density multipliers for the fluid volume.  If a value is specified for an entity, the density of the object is effectively scaled to match.
-        /// Higher values make entities sink more, lower values make entities Fix64 more.
+        /// Higher values make entities sink more, lower values make entities Fix32 more.
         /// </summary>
         public Dictionary<Entity, Fix32> DensityMultipliers { get; set; }
 
@@ -102,12 +102,12 @@ namespace BEPUphysics.UpdateableSystems
         }
 
         /// <summary>
-        /// Fraction by which to reduce the linear momentum of Fix64ing objects each update.
+        /// Fraction by which to reduce the linear momentum of Fix32ing objects each update.
         /// </summary>
         public Fix32 LinearDamping { get; set; }
 
         /// <summary>
-        /// Fraction by which to reduce the angular momentum of Fix64ing objects each update.
+        /// Fraction by which to reduce the angular momentum of Fix32ing objects each update.
         /// </summary>
         public Fix32 AngularDamping { get; set; }
 
@@ -224,8 +224,8 @@ namespace BEPUphysics.UpdateableSystems
         /// <param name="surfaceTriangles">List of triangles composing the surface of the fluid.  Set up as a list of length 3 arrays of Vector3's.</param>
         /// <param name="depth">Depth of the fluid back along the surface normal.</param>
         /// <param name="fluidDensity">Density of the fluid represented in the volume.</param>
-        /// <param name="linearDamping">Fraction by which to reduce the linear momentum of Fix64ing objects each update, in addition to any of the body's own damping.</param>
-        /// <param name="angularDamping">Fraction by which to reduce the angular momentum of Fix64ing objects each update, in addition to any of the body's own damping.</param>
+        /// <param name="linearDamping">Fraction by which to reduce the linear momentum of Fix32ing objects each update, in addition to any of the body's own damping.</param>
+        /// <param name="angularDamping">Fraction by which to reduce the angular momentum of Fix32ing objects each update, in addition to any of the body's own damping.</param>
         public FluidVolume(Vector3 upVector, Fix32 gravity, List<Vector3[]> surfaceTriangles, Fix32 depth, Fix32 fluidDensity, Fix32 linearDamping, Fix32 angularDamping)
         {
             Gravity = gravity;
@@ -412,9 +412,9 @@ namespace BEPUphysics.UpdateableSystems
         void GetSamplingOrigin(ref BoundingBox entityBoundingBox, out Vector3 xSpacing, out Vector3 zSpacing, out Fix32 perColumnArea, out Vector3 origin)
         {
 			//Compute spacing and increment informaiton.
-			Fix32 samplePointsPerDimensionFix64 = samplePointsPerDimension.ToFix();
-			Fix32 widthIncrement = (entityBoundingBox.Max.X.Sub(entityBoundingBox.Min.X)).Div(samplePointsPerDimensionFix64);
-			Fix32 lengthIncrement = (entityBoundingBox.Max.Z.Sub(entityBoundingBox.Min.Z)).Div(samplePointsPerDimensionFix64);
+			Fix32 samplePointsPerDimensionFix32 = samplePointsPerDimension.ToFix();
+			Fix32 widthIncrement = (entityBoundingBox.Max.X.Sub(entityBoundingBox.Min.X)).Div(samplePointsPerDimensionFix32);
+			Fix32 lengthIncrement = (entityBoundingBox.Max.Z.Sub(entityBoundingBox.Min.Z)).Div(samplePointsPerDimensionFix32);
             xSpacing = new Vector3(widthIncrement, F64.C0, F64.C0);
             zSpacing = new Vector3(F64.C0, F64.C0, lengthIncrement);
             Quaternion.Transform(ref xSpacing, ref surfaceTransform.Orientation, out xSpacing);
@@ -444,7 +444,7 @@ namespace BEPUphysics.UpdateableSystems
             //    convexInfo.Shape.GetExtremePoint(dir, ref convexInfo.worldTransform, out extremePoint);
             //    //Use extreme point to snap to grid.
             //    Vector3.Subtract(ref extremePoint, ref origin, out offset);
-            //    Fix64 offsetX, offsetZ;
+            //    Fix32 offsetX, offsetZ;
             //    Vector3.Dot(ref offset, ref right, out offsetX);
             //    Vector3.Dot(ref offset, ref backward, out offsetZ);
             //    offsetX %= widthIncrement;

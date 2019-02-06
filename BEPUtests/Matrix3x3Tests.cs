@@ -1,4 +1,4 @@
-﻿using FixMath.NET;
+﻿
 using Xunit;
 using Xunit.Abstractions;
 using System.Collections.Generic;
@@ -66,8 +66,8 @@ namespace BEPUtests
 				}
 				Assert.True(success, string.Format("Precision: Matrix3x3Invert({0}): Expected {1} Actual {2}", testCase, expected, actual));
 			}
-			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix64Ext.Precision);
-			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix64Ext.Precision);
+			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
+			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
 		}
 
 		[Fact]
@@ -102,9 +102,9 @@ namespace BEPUtests
 						deltas.Add(delta);
 				}
 			}
-			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix64Ext.Precision);
-			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix64Ext.Precision);
-			output.WriteLine("Fix64.Invert time = {0}ms, float.Invert time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
+			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
+			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
+			output.WriteLine("Fix32.Invert time = {0}ms, float.Invert time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
 		}
 
 		[Fact]
@@ -135,8 +135,8 @@ namespace BEPUtests
 				}
 				Assert.True(success, string.Format("Precision: Matrix3x3Invert({0}): Expected {1} Actual {2}", testCase, expected, actual));
 			}
-			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix64Ext.Precision);
-			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix64Ext.Precision);
+			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
+			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
 		}
 
 		[Fact]
@@ -169,9 +169,9 @@ namespace BEPUtests
 						deltas.Add(delta);
 				}
 			}
-			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / Fix64Ext.Precision);
-			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / Fix64Ext.Precision);
-			output.WriteLine("Fix64.AdaptiveInvert time = {0}ms, float.AdaptiveInvert time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
+			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
+			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
+			output.WriteLine("Fix32.AdaptiveInvert time = {0}ms, float.AdaptiveInvert time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
 		}
 
 		decimal[] GetDeltas(FloatMatrix3x3 expected, Matrix3x3 actual)

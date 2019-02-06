@@ -4,7 +4,7 @@ using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUphysics.NarrowPhaseSystems;
 using BEPUutilities;
-using FixMath.NET;
+
 using System.Linq;
 
 namespace BEPUbenchmark.Benchmarks
@@ -25,8 +25,8 @@ namespace BEPUbenchmark.Benchmarks
 
 			int numColumns = 40;
 			int numRows = 40;
-			Fix64 xSpacing = 1.0m.ToFix();
-			Fix64 zSpacing = 1.0m.ToFix();
+			Fix32 xSpacing = 1.0m.ToFix();
+			Fix32 zSpacing = 1.0m.ToFix();
 			var lattice = new Entity[numRows, numColumns];
 			for (int i = 0; i < numRows; i++)
 				for (int j = 0; j < numColumns; j++)
@@ -49,8 +49,8 @@ namespace BEPUbenchmark.Benchmarks
 			//rest of the solving load (collisions).
 			Space.Solver.IterationLimit = 10;
 
-			Fix64 damping = 20000.ToFix(), stiffness = 20000.ToFix();
-			Fix64 starchDamping = 5000.ToFix(), starchStiffness = 500.ToFix();
+			Fix32 damping = 20000.ToFix(), stiffness = 20000.ToFix();
+			Fix32 starchDamping = 5000.ToFix(), starchStiffness = 500.ToFix();
 
 			//Loop through the grid and set up the joints.
 			for (int i = 0; i < numRows; i++)

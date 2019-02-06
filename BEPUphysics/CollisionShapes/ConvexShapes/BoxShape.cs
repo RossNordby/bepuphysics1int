@@ -213,7 +213,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             if (Fix32Ext.Abs(localDirection.X) < Toolbox.Epsilon && (localOrigin.X < halfWidth.Neg() || localOrigin.X > halfWidth))
                 return false;
             Fix32 inverseDirection = F64.C1.Div(localDirection.X);
-			// inverseDirection might be Infinity (Fix64.MaxValue), so use SafeMul here to handle overflow
+			// inverseDirection might be Infinity (Fix32.MaxValue), so use SafeMul here to handle overflow
             Fix32 t1 = Fix32Ext.MulSafe(((halfWidth.Neg()).Sub(localOrigin.X)), inverseDirection);
             Fix32 t2 = Fix32Ext.MulSafe((halfWidth.Sub(localOrigin.X)), inverseDirection);
             var tempNormal = new Vector3(F64.C1.Neg(), F64.C0, F64.C0);

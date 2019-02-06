@@ -1,7 +1,7 @@
 ﻿using BEPUphysics.Entities.Prefabs;
 using BEPUphysics.PositionUpdating;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUbenchmark.Benchmarks
 {

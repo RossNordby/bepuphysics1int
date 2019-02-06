@@ -135,7 +135,7 @@ namespace BEPUphysics.Paths
             {
                 //Somehow the index is the very last index, so next index would be invalid.
                 //Just 'clamp' it.
-                //This generally implies a bug, but it might also just be some very close Fix64ing point issue.
+                //This generally implies a bug, but it might also just be some very close Fix32ing point issue.
                 value = ControlPoints[maxIndex].Value;
             }
             else

@@ -225,25 +225,25 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             //    //First, try to use the heuristically found direction.  This comes from either the GJK shallow contact separating axis or from the relative velocity.
             //    Vector3 rayCastDirection;
-            //    Fix64 lengthSquared = localDirection.LengthSquared();
+            //    Fix32 lengthSquared = localDirection.LengthSquared();
             //    if (lengthSquared > Toolbox.Epsilon)
             //    {
-            //        Vector3.Divide(ref localDirection, Fix64Ext.Sqrt(lengthSquared), out rayCastDirection);// (Vector3.Normalize(localDirection) + Vector3.Normalize(collidableB.worldTransform.Position - collidableA.worldTransform.Position)) / 2;
+            //        Vector3.Divide(ref localDirection, Fix32Ext.Sqrt(lengthSquared), out rayCastDirection);// (Vector3.Normalize(localDirection) + Vector3.Normalize(collidableB.worldTransform.Position - collidableA.worldTransform.Position)) / 2;
             //        MPRTesting.LocalSurfaceCast(collidableA.Shape, collidableB.Shape, ref localTransformB, ref rayCastDirection, out contact.PenetrationDepth, out contact.Normal);
             //    }
             //    else
             //    {
-            //        contact.PenetrationDepth = Fix64.MaxValue;
+            //        contact.PenetrationDepth = Fix32.MaxValue;
             //        contact.Normal = Toolbox.UpVector;
             //    }
             //    //Try the offset between the origins as a second option.  Sometimes this is a better choice than the relative velocity.
             //    //TODO: Could use the position-finding MPR iteration to find the A-B direction hit by continuing even after the origin has been found (optimization).
             //    Vector3 normalCandidate;
-            //    Fix64 depthCandidate;
+            //    Fix32 depthCandidate;
             //    lengthSquared = localTransformB.Position.LengthSquared();
             //    if (lengthSquared > Toolbox.Epsilon)
             //    {
-            //        Vector3.Divide(ref localTransformB.Position, Fix64Ext.Sqrt(lengthSquared), out rayCastDirection);
+            //        Vector3.Divide(ref localTransformB.Position, Fix32Ext.Sqrt(lengthSquared), out rayCastDirection);
             //        MPRTesting.LocalSurfaceCast(collidableA.Shape, collidableB.Shape, ref localTransformB, ref rayCastDirection, out depthCandidate, out normalCandidate);
             //        if (depthCandidate < contact.PenetrationDepth)
             //        {
