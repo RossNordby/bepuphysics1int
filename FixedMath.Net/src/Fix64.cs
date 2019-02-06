@@ -437,6 +437,10 @@ namespace FixMath.NET
 #endif
 		}
 
+		public Fix64 Neg() {
+			return RawValue == MIN_VALUE ? MaxValue : new Fix64(-RawValue);
+		}
+
 		public static Fix64 SafeMul(Fix64 x, Fix64 y)
 		{
 			var xl = x.RawValue;
@@ -590,7 +594,7 @@ namespace FixMath.NET
         }
 
         public static Fix64 operator -(Fix64 x) {
-            return x.RawValue == MIN_VALUE ? MaxValue : new Fix64(-x.RawValue);
+			return x.Neg();
         }
 
         public static bool operator ==(Fix64 x, Fix64 y) {
