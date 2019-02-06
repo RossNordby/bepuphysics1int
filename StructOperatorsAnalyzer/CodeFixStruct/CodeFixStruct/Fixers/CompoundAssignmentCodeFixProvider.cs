@@ -22,7 +22,6 @@ namespace CodeFixStruct {
 		}
 
 		public sealed override FixAllProvider GetFixAllProvider() {
-			// See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/FixAllProvider.md for more information on Fix All Providers
 			//return WellKnownFixAllProviders.BatchFixer; // Breaks parenthesis
 			return CustomBatchFixAllProvider.Instance;
 		}

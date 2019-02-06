@@ -2,8 +2,8 @@ using AsyncUsageAnalyzers.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
-using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Operations;
 using System.Collections.Immutable;
 using System.Composition;
@@ -11,12 +11,12 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace CodeFixStruct {
-	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CompoundAssignmentCodeFixProvider)), Shared]
-	public class UnaryOperatorCodeFixProvider : CodeFixProvider {
-		private const string title = "Replace unary operator with function";
+	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CastFromFixFixProvider)), Shared]
+	public class CastFromFixFixProvider : CodeFixProvider {
+		private const string title = "Replace cast with function";
 
 		public sealed override ImmutableArray<string> FixableDiagnosticIds {
-			get { return ImmutableArray.Create(UnaryOperatorAnalyzer.DiagnosticId); }
+			get { return ImmutableArray.Create(CastFromFixAnalyzer.DiagnosticId); }
 		}
 
 		public sealed override FixAllProvider GetFixAllProvider() {
@@ -46,28 +46,38 @@ namespace CodeFixStruct {
 			var generator = editor.Generator;
 
 			var operationA = semanticModel.GetOperation(nodeToFix, cancellationToken);
-			if (operationA.Kind == OperationKind.UnaryOperator) {
-				var unOp = (IUnaryOperation)operationA;
-				UnaryOperatorKind operatorKind = unOp.OperatorKind;
-				SyntaxNode rightSyntaxNode = unOp.Operand.Syntax;
+			if (operationA.Kind == OperationKind.Conversion) {
+				string castMethod;
+				var binOp = (IConversionOperation)operationA;
+				switch (binOp.Type.SpecialType) {
+					case SpecialType.System_Int32:
+						castMethod = "ToInt";
+						break;
+					case SpecialType.System_Int64:
+						castMethod = "ToLong";
+						break;
+					case SpecialType.System_Single:
+						castMethod = "ToFloat";
+						break;
+					case SpecialType.System_Double:
+						castMethod = "ToDouble";
+						break;
+					case SpecialType.System_Decimal:
+						castMethod = "ToDecimal";
+						break;
+					default:
+						return document;
+				}
 
-				if (!GetFunctionForOperator(operatorKind, out string op))
-					return document;
+				CastExpressionSyntax bes = nodeToFix as CastExpressionSyntax;
+				var replacement = generator.InvocationExpression(
+					generator.MemberAccessExpression(bes.Expression.WithoutTrivia(), castMethod));
 
-				var newExpression = generator.InvocationExpression(
-					generator.MemberAccessExpression(rightSyntaxNode, op));
-
-				editor.ReplaceNode(nodeToFix, newExpression.WithAdditionalAnnotations(Formatter.Annotation));
+				editor.ReplaceNode(nodeToFix, replacement);
 				return editor.GetChangedDocument();
 			}
-			else return document;
-		}
 
-
-		static bool GetFunctionForOperator(UnaryOperatorKind binOp, out string functionName) {
-			if (binOp == UnaryOperatorKind.Minus) { functionName = "Neg"; return true; }
-			functionName = null;
-			return false;
+			return document;
 		}
 	}
 }

@@ -5,10 +5,8 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Operations;
-using System;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,7 +20,6 @@ namespace CodeFixStruct {
 		}
 
 		public sealed override FixAllProvider GetFixAllProvider() {
-			// See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/FixAllProvider.md for more information on Fix All Providers
 			//return WellKnownFixAllProviders.BatchFixer; // Breaks parenthesis
 			return CustomBatchFixAllProvider.Instance;
 		}
@@ -66,8 +63,6 @@ namespace CodeFixStruct {
 					bes.Right.WithoutTrivia());
 
 				editor.ReplaceNode(nodeToFix, replacement);
-				Debug.WriteLine(nodeToFix.ToFullString() + " ===> " + replacement.ToFullString());
-				Console.WriteLine(nodeToFix.ToFullString() + " ===> " + replacement.ToFullString());
 				return editor.GetChangedDocument();
 			}
 

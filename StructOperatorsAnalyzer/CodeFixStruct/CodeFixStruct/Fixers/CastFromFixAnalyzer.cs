@@ -5,12 +5,12 @@ using System.Collections.Immutable;
 
 namespace CodeFixStruct {
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
-	public class CastToFixAnalyzer : DiagnosticAnalyzer {
-		public const string DiagnosticId = "CastToFix";
-		public const string Title = "Cast to Fix not supported";
+	public class CastFromFixAnalyzer : DiagnosticAnalyzer {
+		public const string DiagnosticId = "CastFromFix";
+		public const string Title = "Cast from Fix not supported";
 		public const string MessageFormat = "Replace cast with function";
-		public const string Category = "Errors"; // Explicit cast to make constants is intended, but when transitioning from structs isn't
-		public const DiagnosticSeverity Severity = DiagnosticSeverity.Error;
+		public const string Category = "Warnings"; // Explicit cast to make constants is intended, but when transitioning from structs isn't
+		public const DiagnosticSeverity Severity = DiagnosticSeverity.Warning;
 
 		internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, Severity, true);
 
@@ -26,7 +26,7 @@ namespace CodeFixStruct {
 
 		private void AnalyzeNode(OperationAnalysisContext context) {
 			var operation = (IConversionOperation) context.Operation;
-			if (operation.Type.Name.StartsWith(StructStartName)) {
+			if (operation.Operand.Type.Name.StartsWith(StructStartName)) {
 				context.ReportDiagnostic(Diagnostic.Create(Rule, operation.Syntax.GetLocation()));
 			}
 		}
