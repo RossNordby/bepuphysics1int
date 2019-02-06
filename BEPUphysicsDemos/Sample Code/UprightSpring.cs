@@ -86,7 +86,7 @@ namespace BEPUphysicsDemos.SampleCode
             get { return myMinimumAngle; }
             set
             {
-                myMinimumAngle = MathHelper.Clamp(value, 0, MathHelper.Pi);
+                myMinimumAngle = MathHelper.Clamp(value, 0.ToFix(), MathHelper.Pi);
                 if (myMinimumAngle > myMaximumAngle)
                     MaximumAngle = myMinimumAngle;
             }
@@ -101,7 +101,7 @@ namespace BEPUphysicsDemos.SampleCode
             get { return myMaximumAngle; }
             set
             {
-                myMaximumAngle = MathHelper.Clamp(value, 0, MathHelper.Pi);
+                myMaximumAngle = MathHelper.Clamp(value, 0.ToFix(), MathHelper.Pi);
                 if (myMaximumAngle < myMinimumAngle)
                     MinimumAngle = myMaximumAngle;
             }
@@ -128,9 +128,9 @@ namespace BEPUphysicsDemos.SampleCode
 
             if (angle > MinimumAngle && angle < MaximumAngle)
             {
-                angle = angle - MinimumAngle;
+                angle = angle.Sub(MinimumAngle);
                 axis.Normalize();
-                Entity.AngularMomentum += (axis * (angle * CorrectionFactor * dt));
+                Entity.AngularMomentum += (axis * ((angle.Mul(CorrectionFactor)).Mul(dt)));
             }
         }
     }

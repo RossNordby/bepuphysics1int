@@ -54,8 +54,8 @@ namespace BEPUphysicsDemos.SampleCode
             Fix64 length = r.Length();
             if (length > Toolbox.BigEpsilon)
             {
-                Fix64 force = dt * e.Mass * MathHelper.Min(MaxAcceleration, Multiplier / (length * length));
-                impulse = -(force / length) * r; //Extra division by length normalizes the direction.
+                Fix64 force = (dt.Mul(e.Mass)).Mul(MathHelper.Min(MaxAcceleration, Multiplier.Div((length.Mul(length)))));
+                impulse = (force.Div(length)).Neg() * r; //Extra division by length normalizes the direction.
             }
             else
                 impulse = new Vector3();

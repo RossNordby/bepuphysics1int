@@ -67,7 +67,7 @@ namespace BEPUphysics.Character
         Fix64 maxForceDt;
         Fix64 maxAccelerationForceDt;
 
-        private Fix64 timeUntilPositionAnchor = (Fix64).2m.ToFix();
+        private Fix64 timeUntilPositionAnchor = .2m.ToFix();
 
         /// <summary>
         /// <para>Gets or sets the time it takes for the character to achieve stable footing after trying to stop moving.

@@ -33,22 +33,22 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             int numColumns = 3;
             int numRows = 3;
             int numHigh = 30;
-            Fix64 xSpacing = 1.01m;
-            Fix64 ySpacing = 1.01m;
-            Fix64 zSpacing = 1.01m;
+            Fix64 xSpacing = 1.01m.ToFix();
+            Fix64 ySpacing = 1.01m.ToFix();
+            Fix64 zSpacing = 1.01m.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
                     {
                         Space.Add(new Box(new Vector3(
-                                                 xSpacing * i - (numRows - 1) * xSpacing / 2,
-                                                 1 + k * (ySpacing),
-                                                 zSpacing * j - (numColumns - 1) * zSpacing / 2),
-                                             .5m, .5m, .5m, 5));
+(xSpacing.Mul(i.ToFix())).Sub((((numRows - 1).ToFix()).Mul(xSpacing)).Div(2.ToFix())),
+1.ToFix().Add(k.ToFix().Mul((ySpacing))),
+(zSpacing.Mul(j.ToFix())).Sub((((numColumns - 1).ToFix()).Mul(zSpacing)).Div(2.ToFix()))),
+.5m.ToFix(), .5m.ToFix(), .5m.ToFix(), 5.ToFix()));
                     }
 
-            Space.Add(new Box(new Vector3(0, 0, 0), 20, 1, 20));
-            game.Camera.Position = new Vector3(0, 3, 10);
+            Space.Add(new Box(new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()), 20.ToFix(), 1.ToFix(), 20.ToFix()));
+            game.Camera.Position = new Vector3(0.ToFix(), 3.ToFix(), 10.ToFix());
         }
 
         public override void Update(Fix64 dt)

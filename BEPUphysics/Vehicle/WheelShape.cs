@@ -17,11 +17,11 @@ namespace BEPUphysics.Vehicle
     /// </summary>
     public abstract class WheelShape : ICollisionRulesOwner
     {
-        private Fix64 airborneWheelAcceleration = (Fix64)40.ToFix();
+        private Fix64 airborneWheelAcceleration = 40.ToFix();
 
 
-        private Fix64 airborneWheelDeceleration = (Fix64)4.ToFix();
-        private Fix64 brakeFreezeWheelDeceleration = (Fix64)40.ToFix();
+        private Fix64 airborneWheelDeceleration = 4.ToFix();
+        private Fix64 brakeFreezeWheelDeceleration = 40.ToFix();
 
         /// <summary>
         /// Collects collision pairs from the environment.

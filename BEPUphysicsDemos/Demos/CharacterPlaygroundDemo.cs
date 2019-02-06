@@ -27,8 +27,8 @@ namespace BEPUphysicsDemos.Demos
             : base(game)
         {
 
-            game.Camera.Position = new Vector3(-10, 7, 5);
-            game.Camera.ViewDirection = new Vector3(0, 0, 1);
+            game.Camera.Position = new Vector3((-10).ToFix(), 7.ToFix(), 5.ToFix());
+            game.Camera.ViewDirection = new Vector3(0.ToFix(), 0.ToFix(), 1.ToFix());
             //Since this is the character playground, turn on the character by default.
             character.Activate();
             //Having the character body visible would be a bit distracting.
@@ -43,7 +43,7 @@ namespace BEPUphysicsDemos.Demos
             //This is a little convenience method used to extract vertices and indices from a model.
             //It doesn't do anything special; any approach that gets valid vertices and indices will work.
             ModelDataExtractor.GetVerticesAndIndicesFromModel(playgroundModel, out staticTriangleVertices, out staticTriangleIndices);
-            var staticMesh = new StaticMesh(staticTriangleVertices, staticTriangleIndices, new AffineTransform(new Vector3(0.01m, 0.01m, 0.01m), Quaternion.Identity, new Vector3(0, 0, 0)));
+            var staticMesh = new StaticMesh(staticTriangleVertices, staticTriangleIndices, new AffineTransform(new Vector3(0.01m.ToFix(), 0.01m.ToFix(), 0.01m.ToFix()), Quaternion.Identity, new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix())));
             staticMesh.Sidedness = TriangleSidedness.Counterclockwise;
 
             Space.Add(staticMesh);
@@ -52,55 +52,55 @@ namespace BEPUphysicsDemos.Demos
 
 
             //Add a spinning blade for the character to ram itself into.
-            var fanBase = new Cylinder(new Vector3(-13, .5m, 50), 1.1m, 1);
-            var fanBlade = new Box(fanBase.Position + new Vector3(0, .8m, 0), 5, .1m, 1m, 5);
-            var fanJoint = new RevoluteJoint(fanBase, fanBlade, (fanBase.Position + fanBlade.Position) * .5m, Vector3.Up);
+            var fanBase = new Cylinder(new Vector3((-13).ToFix(), .5m.ToFix(), 50.ToFix()), 1.1m.ToFix(), 1.ToFix());
+            var fanBlade = new Box(fanBase.Position + new Vector3(0.ToFix(), .8m.ToFix(), 0.ToFix()), 5.ToFix(), .1m.ToFix(), 1m.ToFix(), 5.ToFix());
+            var fanJoint = new RevoluteJoint(fanBase, fanBlade, (fanBase.Position + fanBlade.Position) * .5m.ToFix(), Vector3.Up);
             fanJoint.Motor.IsActive = true;
-            fanJoint.Motor.Settings.VelocityMotor.GoalVelocity = 30;
-            fanJoint.Motor.Settings.MaximumForce = 300;
+            fanJoint.Motor.Settings.VelocityMotor.GoalVelocity = 30.ToFix();
+            fanJoint.Motor.Settings.MaximumForce = 300.ToFix();
             Space.Add(fanBase);
             Space.Add(fanBlade);
             Space.Add(fanJoint);
 
             //Add a bridge connecting the two towers.
-            Vector3 startPosition = new Vector3(-19.3m, 10.5m - .25m, 23 - .85m);
-            var startPlatform = new Box(startPosition - new Vector3(0, 0, 2.2m), 4, .5m, 6);
+            Vector3 startPosition = new Vector3((-19.3m).ToFix(), (10.5m - .25m).ToFix(), (23 - .85m).ToFix());
+            var startPlatform = new Box(startPosition - new Vector3(0.ToFix(), 0.ToFix(), 2.2m.ToFix()), 4.ToFix(), .5m.ToFix(), 6.ToFix());
             Space.Add(startPlatform);
-            Vector3 offset = new Vector3(0, 0, 1.7m);
+            Vector3 offset = new Vector3(0.ToFix(), 0.ToFix(), 1.7m.ToFix());
             Box previousLink = startPlatform;
             Vector3 position = new Vector3();
             for (int i = 1; i <= 7; i++)
             {
-                position = startPosition + offset * i;
-                Box link = new Box(position, 3, .3m, 1.5m, 50);
+                position = startPosition + offset * i.ToFix();
+                Box link = new Box(position, 3.ToFix(), .3m.ToFix(), 1.5m.ToFix(), 50.ToFix());
                 Space.Add(link);
-                Space.Add(new RevoluteJoint(previousLink, link, position - offset * .5m, Vector3.Right));
+                Space.Add(new RevoluteJoint(previousLink, link, position - offset * .5m.ToFix(), Vector3.Right));
 
                 previousLink = link;
             }
-            var endPlatform = new Box(position - new Vector3(0, 0, -3.8m), 4, .5m, 6);
+            var endPlatform = new Box(position - new Vector3(0.ToFix(), 0.ToFix(), (-3.8m).ToFix()), 4.ToFix(), .5m.ToFix(), 6.ToFix());
             Space.Add(endPlatform);
 
-            Space.Add(new RevoluteJoint(previousLink, endPlatform, position + offset * .5m, Vector3.Right));
+            Space.Add(new RevoluteJoint(previousLink, endPlatform, position + offset * .5m.ToFix(), Vector3.Right));
 
 
             //Add in a floating platform controlled by a curve to serve as an elevator.
-            Entity movingEntity = new Box(new Vector3(-10, 0, -10), 3, 1, 3);
+            Entity movingEntity = new Box(new Vector3((-10).ToFix(), 0.ToFix(), (-10).ToFix()), 3.ToFix(), 1.ToFix(), 3.ToFix());
 
             var positionCurve = new CardinalSpline3D();
 
             positionCurve.PreLoop = CurveEndpointBehavior.Mirror;
             positionCurve.PostLoop = CurveEndpointBehavior.Mirror;
 
-            positionCurve.ControlPoints.Add(-1, new Vector3(-19.3m, 0, 43));
-            positionCurve.ControlPoints.Add(0, new Vector3(-19.3m, 0, 43));
-            positionCurve.ControlPoints.Add(2, new Vector3(-19.3m, 0, 43));
-            positionCurve.ControlPoints.Add(3, new Vector3(-19.3m, 0, 43));
-            positionCurve.ControlPoints.Add(4, new Vector3(-19.3m, 5, 43));
-            positionCurve.ControlPoints.Add(5, new Vector3(-19.3m, 10, 43));
-            positionCurve.ControlPoints.Add(6, new Vector3(-19.3m, 10, 43));
-            positionCurve.ControlPoints.Add(8, new Vector3(-19.3m, 10, 43));
-            positionCurve.ControlPoints.Add(9, new Vector3(-19.3m, 10, 43));
+            positionCurve.ControlPoints.Add((-1).ToFix(), new Vector3((-19.3m).ToFix(), 0.ToFix(), 43.ToFix()));
+            positionCurve.ControlPoints.Add(0.ToFix(), new Vector3((-19.3m).ToFix(), 0.ToFix(), 43.ToFix()));
+            positionCurve.ControlPoints.Add(2.ToFix(), new Vector3((-19.3m).ToFix(), 0.ToFix(), 43.ToFix()));
+            positionCurve.ControlPoints.Add(3.ToFix(), new Vector3((-19.3m).ToFix(), 0.ToFix(), 43.ToFix()));
+            positionCurve.ControlPoints.Add(4.ToFix(), new Vector3((-19.3m).ToFix(), 5.ToFix(), 43.ToFix()));
+            positionCurve.ControlPoints.Add(5.ToFix(), new Vector3((-19.3m).ToFix(), 10.ToFix(), 43.ToFix()));
+            positionCurve.ControlPoints.Add(6.ToFix(), new Vector3((-19.3m).ToFix(), 10.ToFix(), 43.ToFix()));
+            positionCurve.ControlPoints.Add(8.ToFix(), new Vector3((-19.3m).ToFix(), 10.ToFix(), 43.ToFix()));
+            positionCurve.ControlPoints.Add(9.ToFix(), new Vector3((-19.3m).ToFix(), 10.ToFix(), 43.ToFix()));
 
             elevatorMover = new EntityMover(movingEntity);
             Space.Add(elevatorMover);
@@ -109,31 +109,31 @@ namespace BEPUphysicsDemos.Demos
             elevatorPath = positionCurve;
 
             //Add in another floating platform controlled by a curve for horizontal transport.
-            movingEntity = new Box(new Vector3(-10, 0, -10), 2.5m, .5m, 2.5m);
+            movingEntity = new Box(new Vector3((-10).ToFix(), 0.ToFix(), (-10).ToFix()), 2.5m.ToFix(), .5m.ToFix(), 2.5m.ToFix());
 
             var platformCurve = new LinearInterpolationCurve3D();
 
             platformCurve.PreLoop = CurveEndpointBehavior.Mirror;
             platformCurve.PostLoop = CurveEndpointBehavior.Mirror;
 
-            platformCurve.ControlPoints.Add(0, new Vector3(-1.75m, 10, 21.5m));
-            platformCurve.ControlPoints.Add(2, new Vector3(-1.75m, 10, 21.5m));
-            platformCurve.ControlPoints.Add(5, new Vector3(-1.75m, 10, 15.5m));
-            platformCurve.ControlPoints.Add(10, new Vector3(-19.3m, 10, 15.5m));
-            platformCurve.ControlPoints.Add(12, new Vector3(-19.3m, 10, 15.5m));
-            platformCurve.ControlPoints.Add(15, new Vector3(-25, 10, 15.5m));
-            platformCurve.ControlPoints.Add(22, new Vector3(-25, 10, 38));
-            platformCurve.ControlPoints.Add(23, new Vector3(-22.75m, 10, 38));
-            platformCurve.ControlPoints.Add(25, new Vector3(-22.75m, 10, 38));
+            platformCurve.ControlPoints.Add(0.ToFix(), new Vector3((-1.75m).ToFix(), 10.ToFix(), 21.5m.ToFix()));
+            platformCurve.ControlPoints.Add(2.ToFix(), new Vector3((-1.75m).ToFix(), 10.ToFix(), 21.5m.ToFix()));
+            platformCurve.ControlPoints.Add(5.ToFix(), new Vector3((-1.75m).ToFix(), 10.ToFix(), 15.5m.ToFix()));
+            platformCurve.ControlPoints.Add(10.ToFix(), new Vector3((-19.3m).ToFix(), 10.ToFix(), 15.5m.ToFix()));
+            platformCurve.ControlPoints.Add(12.ToFix(), new Vector3((-19.3m).ToFix(), 10.ToFix(), 15.5m.ToFix()));
+            platformCurve.ControlPoints.Add(15.ToFix(), new Vector3((-25).ToFix(), 10.ToFix(), 15.5m.ToFix()));
+            platformCurve.ControlPoints.Add(22.ToFix(), new Vector3((-25).ToFix(), 10.ToFix(), 38.ToFix()));
+            platformCurve.ControlPoints.Add(23.ToFix(), new Vector3((-22.75m).ToFix(), 10.ToFix(), 38.ToFix()));
+            platformCurve.ControlPoints.Add(25.ToFix(), new Vector3((-22.75m).ToFix(), 10.ToFix(), 38.ToFix()));
 
             //Make it spin too.  That'll be fun.  Or something.
             var platformRotationCurve = new QuaternionSlerpCurve();
             platformRotationCurve.PreLoop = CurveEndpointBehavior.Mirror;
             platformRotationCurve.PostLoop = CurveEndpointBehavior.Mirror;
-            platformRotationCurve.ControlPoints.Add(0, Quaternion.Identity);
-            platformRotationCurve.ControlPoints.Add(15, Quaternion.Identity);
-            platformRotationCurve.ControlPoints.Add(22, Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver2));
-            platformRotationCurve.ControlPoints.Add(25, Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver2));
+            platformRotationCurve.ControlPoints.Add(0.ToFix(), Quaternion.Identity);
+            platformRotationCurve.ControlPoints.Add(15.ToFix(), Quaternion.Identity);
+            platformRotationCurve.ControlPoints.Add(22.ToFix(), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver2));
+            platformRotationCurve.ControlPoints.Add(25.ToFix(), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver2));
 
             platformMover = new EntityMover(movingEntity);
             platformRotator = new EntityRotator(movingEntity);
@@ -146,14 +146,14 @@ namespace BEPUphysicsDemos.Demos
 
             //Add in a diving board.
 
-            Box divingBoardBase = new Box(new Vector3(-9, 10, 39.3m), 5, 1, 3);
-            Box divingBoard = new Box(divingBoardBase.Position + new Vector3(-2, 0, 3.5m), 1, .3m, 3, 5);
-            var divingBoardJoint = new RevoluteJoint(divingBoardBase, divingBoard, divingBoard.Position + new Vector3(0, 0, -1.5m), Vector3.Right);
+            Box divingBoardBase = new Box(new Vector3((-9).ToFix(), 10.ToFix(), 39.3m.ToFix()), 5.ToFix(), 1.ToFix(), 3.ToFix());
+            Box divingBoard = new Box(divingBoardBase.Position + new Vector3((-2).ToFix(), 0.ToFix(), 3.5m.ToFix()), 1.ToFix(), .3m.ToFix(), 3.ToFix(), 5.ToFix());
+            var divingBoardJoint = new RevoluteJoint(divingBoardBase, divingBoard, divingBoard.Position + new Vector3(0.ToFix(), 0.ToFix(), (-1.5m).ToFix()), Vector3.Right);
             divingBoardJoint.Motor.IsActive = true;
             divingBoardJoint.Motor.Settings.Mode = MotorMode.Servomechanism;
-            divingBoardJoint.Motor.Settings.Servo.Goal = 0;
-            divingBoardJoint.Motor.Settings.Servo.SpringSettings.Stiffness = 5000;
-            divingBoardJoint.Motor.Settings.Servo.SpringSettings.Damping = 0;
+            divingBoardJoint.Motor.Settings.Servo.Goal = 0.ToFix();
+            divingBoardJoint.Motor.Settings.Servo.SpringSettings.Stiffness = 5000.ToFix();
+            divingBoardJoint.Motor.Settings.Servo.SpringSettings.Damping = 0.ToFix();
 
             Space.Add(divingBoardBase);
             Space.Add(divingBoard);
@@ -162,44 +162,44 @@ namespace BEPUphysicsDemos.Demos
 
             //Add a second diving board for comparison.
 
-            Box divingBoard2 = new Box(divingBoardBase.Position + new Vector3(2, 0, 5m), 1, .3m, 6, 5);
-            var divingBoardJoint2 = new RevoluteJoint(divingBoardBase, divingBoard2, divingBoard2.Position + new Vector3(0, 0, -3), Vector3.Right);
+            Box divingBoard2 = new Box(divingBoardBase.Position + new Vector3(2.ToFix(), 0.ToFix(), 5m.ToFix()), 1.ToFix(), .3m.ToFix(), 6.ToFix(), 5.ToFix());
+            var divingBoardJoint2 = new RevoluteJoint(divingBoardBase, divingBoard2, divingBoard2.Position + new Vector3(0.ToFix(), 0.ToFix(), (-3).ToFix()), Vector3.Right);
             divingBoardJoint2.Motor.IsActive = true;
             divingBoardJoint2.Motor.Settings.Mode = MotorMode.Servomechanism;
-            divingBoardJoint2.Motor.Settings.Servo.Goal = 0;
-            divingBoardJoint2.Motor.Settings.Servo.SpringSettings.Stiffness = 10000;
-            divingBoardJoint2.Motor.Settings.Servo.SpringSettings.Damping = 0;
+            divingBoardJoint2.Motor.Settings.Servo.Goal = 0.ToFix();
+            divingBoardJoint2.Motor.Settings.Servo.SpringSettings.Stiffness = 10000.ToFix();
+            divingBoardJoint2.Motor.Settings.Servo.SpringSettings.Damping = 0.ToFix();
 
             Space.Add(divingBoard2);
             Space.Add(divingBoardJoint2);
 
             //Add a seesaw for people to jump on.
-            Box seesawBase = new Box(new Vector3(-7, .45m, 52), 1, .9m, .3m);
-            Box seesawPlank = new Box(seesawBase.Position + new Vector3(0, .65m, 0), 1.2m, .2m, 6, 3);
+            Box seesawBase = new Box(new Vector3((-7).ToFix(), .45m.ToFix(), 52.ToFix()), 1.ToFix(), .9m.ToFix(), .3m.ToFix());
+            Box seesawPlank = new Box(seesawBase.Position + new Vector3(0.ToFix(), .65m.ToFix(), 0.ToFix()), 1.2m.ToFix(), .2m.ToFix(), 6.ToFix(), 3.ToFix());
             RevoluteJoint seesawJoint = new RevoluteJoint(seesawBase, seesawPlank, seesawPlank.Position, Vector3.Right);
             Space.Add(seesawJoint);
             Space.Add(seesawBase);
             Space.Add(seesawPlank);
 
-            Space.Add(new Box(seesawPlank.Position + new Vector3(0, 1.3m, 2), 1, 1, 1, 5));
+            Space.Add(new Box(seesawPlank.Position + new Vector3(0.ToFix(), 1.3m.ToFix(), 2.ToFix()), 1.ToFix(), 1.ToFix(), 1.ToFix(), 5.ToFix()));
 
 
             //Add in some boxes to bump and jump on.
             int numColumns = 3;
             int numRows = 3;
             int numHigh = 3;
-            Fix64 xSpacing = 1.01m;
-			Fix64 ySpacing = 1.01m;
-			Fix64 zSpacing = 1.01m;
+            Fix64 xSpacing = 1.01m.ToFix();
+			Fix64 ySpacing = 1.01m.ToFix();
+			Fix64 zSpacing = 1.01m.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
                     {
                         Space.Add(new Box(new Vector3(
-                                                 5 + xSpacing * i - (numRows - 1) * xSpacing / 2m,
-                                                 1.58m + k * (ySpacing),
-                                                 45 + zSpacing * j - (numColumns - 1) * zSpacing / 2m),
-                                             .5m, .5m, .5m, 5));
+(5.ToFix().Add(xSpacing.Mul(i.ToFix()))).Sub((((numRows - 1).ToFix()).Mul(xSpacing)).Div(2m.ToFix())),
+1.58m.ToFix().Add(k.ToFix().Mul((ySpacing))),
+(45.ToFix().Add(zSpacing.Mul(j.ToFix()))).Sub((((numColumns - 1).ToFix()).Mul(zSpacing)).Div(2m.ToFix()))),
+.5m.ToFix(), .5m.ToFix(), .5m.ToFix(), 5.ToFix()));
                     }
 
 
@@ -208,18 +208,18 @@ namespace BEPUphysicsDemos.Demos
             //Make it a compound so some boxes can be added to let the player know it's actually spinning.
             CompoundBody log = new CompoundBody(new List<CompoundShapeEntry>()
             {
-                new CompoundShapeEntry(new CylinderShape(4, 1.8m), Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.PiOver2), 20),
-                new CompoundShapeEntry(new BoxShape(.5m, .5m, 3.7m),  new Vector3(1.75m, 0,0), 0),
-                new CompoundShapeEntry(new BoxShape(.5m, 3.7m, .5m), new Vector3(1.75m, 0,0), 0),
-                new CompoundShapeEntry(new BoxShape(.5m, .5m, 3.7m),  new Vector3(-1.75m, 0,0), 0),
-                new CompoundShapeEntry(new BoxShape(.5m, 3.7m, .5m), new Vector3(-1.75m, 0,0), 0)
-            }, 50);
-            log.Position = new Vector3(-14.5m, 10, 41);
-            log.AngularDamping = 0;
+                new CompoundShapeEntry(new CylinderShape(4.ToFix(), 1.8m.ToFix()), Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.PiOver2), 20.ToFix()),
+                new CompoundShapeEntry(new BoxShape(.5m.ToFix(), .5m.ToFix(), 3.7m.ToFix()),  new Vector3(1.75m.ToFix(), 0.ToFix(),0.ToFix()), 0.ToFix()),
+                new CompoundShapeEntry(new BoxShape(.5m.ToFix(), 3.7m.ToFix(), .5m.ToFix()), new Vector3(1.75m.ToFix(), 0.ToFix(),0.ToFix()), 0.ToFix()),
+                new CompoundShapeEntry(new BoxShape(.5m.ToFix(), .5m.ToFix(), 3.7m.ToFix()),  new Vector3((-1.75m).ToFix(), 0.ToFix(),0.ToFix()), 0.ToFix()),
+                new CompoundShapeEntry(new BoxShape(.5m.ToFix(), 3.7m.ToFix(), .5m.ToFix()), new Vector3((-1.75m).ToFix(), 0.ToFix(),0.ToFix()), 0.ToFix())
+            }, 50.ToFix());
+            log.Position = new Vector3((-14.5m).ToFix(), 10.ToFix(), 41.ToFix());
+            log.AngularDamping = 0.ToFix();
 
 
-            RevoluteJoint logJointA = new RevoluteJoint(divingBoardBase, log, log.Position + new Vector3(2.5m, 0, 0), Vector3.Right);
-            RevoluteJoint logJointB = new RevoluteJoint(endPlatform, log, log.Position + new Vector3(-2.5m, 0, 0), Vector3.Right);
+            RevoluteJoint logJointA = new RevoluteJoint(divingBoardBase, log, log.Position + new Vector3(2.5m.ToFix(), 0.ToFix(), 0.ToFix()), Vector3.Right);
+            RevoluteJoint logJointB = new RevoluteJoint(endPlatform, log, log.Position + new Vector3((-2.5m).ToFix(), 0.ToFix(), 0.ToFix()), Vector3.Right);
             Space.Add(logJointA);
             Space.Add(logJointB);
 
@@ -230,12 +230,12 @@ namespace BEPUphysicsDemos.Demos
             int numPads = 10;
             for (int i = 0; i < numPads; i++)
             {
-                offset = new Vector3(0, 0, 4);
-                Box a = new Box(new Vector3(i * 1.5m + 3.5m, 10, 24), 1.5m, 1, 4);
-                Box b = new Box(new Vector3(i * 1.5m + 3.5m, 10, 24), 1.5m, 1, 4);
-                Fix64 angle = -i * MathHelper.PiOver2 / numPads;
+                offset = new Vector3(0.ToFix(), 0.ToFix(), 4.ToFix());
+                Box a = new Box(new Vector3((i * 1.5m + 3.5m).ToFix(), 10.ToFix(), 24.ToFix()), 1.5m.ToFix(), 1.ToFix(), 4.ToFix());
+                Box b = new Box(new Vector3((i * 1.5m + 3.5m).ToFix(), 10.ToFix(), 24.ToFix()), 1.5m.ToFix(), 1.ToFix(), 4.ToFix());
+                Fix64 angle = ((-i).ToFix().Mul(MathHelper.PiOver2)).Div(numPads.ToFix());
                 b.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Right, angle);
-                b.Position += offset * .5m + Quaternion.Transform(offset * .5m, b.Orientation);
+                b.Position += offset * .5m.ToFix() + Quaternion.Transform(offset * .5m.ToFix(), b.Orientation);
 
                 Space.Add(a);
                 Space.Add(b);
@@ -254,14 +254,14 @@ namespace BEPUphysicsDemos.Demos
 
         public override void Update(Fix64 dt)
         {
-            //Increment the time.  Note that the space's timestep is used
-            //instead of the method's dt.  This is because the demos, by
-            //default, update the space once each game update.  Using the
-            //space's update time keeps things synchronized.
-            //If the engine is using internal time stepping,
-            //the passed in dt should be used instead (or put this logic into
-            //an updateable that runs with space updates).
-            pathTime += Space.TimeStepSettings.TimeStepDuration;
+			//Increment the time.  Note that the space's timestep is used
+			//instead of the method's dt.  This is because the demos, by
+			//default, update the space once each game update.  Using the
+			//space's update time keeps things synchronized.
+			//If the engine is using internal time stepping,
+			//the passed in dt should be used instead (or put this logic into
+			//an updateable that runs with space updates).
+			pathTime = pathTime.Add(Space.TimeStepSettings.TimeStepDuration);
             elevatorMover.TargetPosition = elevatorPath.Evaluate(pathTime);
             platformMover.TargetPosition = platformPath.Evaluate(pathTime);
             platformRotator.TargetOrientation = platformOrientationPath.Evaluate(pathTime);

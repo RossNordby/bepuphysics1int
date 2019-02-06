@@ -3,6 +3,7 @@ using BEPUphysics.Constraints.TwoEntity.Joints;
 using BEPUphysics.Constraints.TwoEntity.Motors;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
+using FixMath.NET;
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -19,10 +20,10 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             : base(game)
         {
 
-            Box boxA = new Box(new Vector3(0, 5, 0), 1, 2, 1, 10);
-            Box boxB = new Box(new Vector3(0, 8, 0), 1, 2, 1, 10);
-            boxA.Orientation = Quaternion.CreateFromYawPitchRoll(0, MathHelper.PiOver4, 0);
-            boxB.Orientation = Quaternion.CreateFromYawPitchRoll(MathHelper.PiOver4, 0, 0);
+            Box boxA = new Box(new Vector3(0.ToFix(), 5.ToFix(), 0.ToFix()), 1.ToFix(), 2.ToFix(), 1.ToFix(), 10.ToFix());
+            Box boxB = new Box(new Vector3(0.ToFix(), 8.ToFix(), 0.ToFix()), 1.ToFix(), 2.ToFix(), 1.ToFix(), 10.ToFix());
+            boxA.Orientation = Quaternion.CreateFromYawPitchRoll(0.ToFix(), MathHelper.PiOver4, 0.ToFix());
+            boxB.Orientation = Quaternion.CreateFromYawPitchRoll(MathHelper.PiOver4, 0.ToFix(), 0.ToFix());
 
             WeldJoint weld = new WeldJoint(boxA, boxB);
 
@@ -31,12 +32,12 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             Space.Add(weld);
 
 
-            boxA = new Box(new Vector3(3, 5, 0), 1, 2, 1, 10);
-            boxB = new Box(new Vector3(3, 8, 0), 1, 2, 1, 10);
-            boxA.Orientation = Quaternion.CreateFromYawPitchRoll(0, MathHelper.PiOver4, 0);
-            boxB.Orientation = Quaternion.CreateFromYawPitchRoll(MathHelper.PiOver4, 0, 0);
+            boxA = new Box(new Vector3(3.ToFix(), 5.ToFix(), 0.ToFix()), 1.ToFix(), 2.ToFix(), 1.ToFix(), 10.ToFix());
+            boxB = new Box(new Vector3(3.ToFix(), 8.ToFix(), 0.ToFix()), 1.ToFix(), 2.ToFix(), 1.ToFix(), 10.ToFix());
+            boxA.Orientation = Quaternion.CreateFromYawPitchRoll(0.ToFix(), MathHelper.PiOver4, 0.ToFix());
+            boxB.Orientation = Quaternion.CreateFromYawPitchRoll(MathHelper.PiOver4, 0.ToFix(), 0.ToFix());
 
-            BallSocketJoint ballSocket = new BallSocketJoint(boxA, boxB, (boxA.Position + boxB.Position) / 2);
+            BallSocketJoint ballSocket = new BallSocketJoint(boxA, boxB, (boxA.Position + boxB.Position) / 2.ToFix());
             AngularMotor angularMotor = new AngularMotor(boxA, boxB);
             angularMotor.Settings.Mode = MotorMode.Servomechanism;
 
@@ -47,11 +48,11 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             Space.Add(angularMotor);
 
 
-            Box ground = new Box(new Vector3(0, 0, 0), 10, 1, 10);
+            Box ground = new Box(new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()), 10.ToFix(), 1.ToFix(), 10.ToFix());
 
             Space.Add(ground);
 
-            game.Camera.Position = new Vector3(0, 6, 15);
+            game.Camera.Position = new Vector3(0.ToFix(), 6.ToFix(), 15.ToFix());
         }
 
         /// <summary>

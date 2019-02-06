@@ -30,7 +30,7 @@ namespace BEPUphysicsDemos
         {
             Entity = entity;
             UseCameraSmoothing = true;
-            CameraOffset = new Vector3(0, 0.7m, 0);
+            CameraOffset = new Vector3(0.ToFix(), 0.7m.ToFix(), 0.ToFix());
         }
 
         public override void Update(Fix64 dt)

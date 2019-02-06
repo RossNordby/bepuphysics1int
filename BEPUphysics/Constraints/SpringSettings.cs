@@ -11,9 +11,9 @@ namespace BEPUphysics.Constraints
     /// </summary>
     public class SpringAdvancedSettings
     {
-        internal Fix64 errorReductionFactor = (Fix64).1m.ToFix();
+        internal Fix64 errorReductionFactor = .1m.ToFix();
 
-        internal Fix64 softness = (Fix64).00001m.ToFix();
+        internal Fix64 softness = .00001m.ToFix();
 
         internal bool useAdvancedSettings;
 

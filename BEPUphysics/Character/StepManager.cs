@@ -36,7 +36,7 @@ namespace BEPUphysics.Character
                 maximumStepHeight = value;
             }
         }
-        Fix64 minimumDownStepHeight = (Fix64).1m.ToFix();
+        Fix64 minimumDownStepHeight = .1m.ToFix();
         /// <summary>
         /// Gets or sets the minimum down step height.  Down steps which are smaller than this are simply ignored by the step system; instead, the character falls.
         /// If the new step location has traction, the intermediate falling will not remove traction from the character.  The only difference is that the character isn't

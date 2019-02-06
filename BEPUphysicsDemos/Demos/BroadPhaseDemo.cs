@@ -20,7 +20,7 @@ namespace BEPUphysicsDemos.Demos
         {
             //Make a fatter kapow sphere.
             Space.Remove(kapow);
-            kapow = new Sphere(new Vector3(11000, 0, 0), (Fix64)1.5m, 1000);
+            kapow = new Sphere(new Vector3(11000.ToFix(), 0.ToFix(), 0.ToFix()), 1.5m.ToFix(), 1000.ToFix());
             Space.Add(kapow);
             Space.Solver.IterationLimit = 1; //Essentially no sustained contacts, so don't need to worry about accuracy.
             Space.ForceUpdater.Gravity = Vector3.Zero;
@@ -28,7 +28,7 @@ namespace BEPUphysicsDemos.Demos
             int numColumns = 15;
             int numRows = 15;
             int numHigh = 15;
-			Fix64 separation = 3;
+			Fix64 separation = 3.ToFix();
 
             Entity toAdd;
 
@@ -36,15 +36,15 @@ namespace BEPUphysicsDemos.Demos
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
                     {
-                        toAdd = new Box(new Vector3(separation * i, k * separation, separation * j), 1, 1, 1, 1);
-                        toAdd.Material.Bounciness = 1; //Superbouncy boxes help propagate shock waves.
-                        toAdd.LinearDamping = 0;
-                        toAdd.AngularDamping = 0;
+                        toAdd = new Box(new Vector3(separation.Mul(i.ToFix()), k.ToFix().Mul(separation), separation.Mul(j.ToFix())), 1.ToFix(), 1.ToFix(), 1.ToFix(), 1.ToFix());
+                        toAdd.Material.Bounciness = 1.ToFix(); //Superbouncy boxes help propagate shock waves.
+                        toAdd.LinearDamping = 0.ToFix();
+                        toAdd.AngularDamping = 0.ToFix();
                         Space.Add(toAdd);
                     }
 
-            game.Camera.Position = new Vector3(0, 3, -10);
-            game.Camera.ViewDirection = new Vector3(0, 0, 1);
+            game.Camera.Position = new Vector3(0.ToFix(), 3.ToFix(), (-10).ToFix());
+            game.Camera.ViewDirection = new Vector3(0.ToFix(), 0.ToFix(), 1.ToFix());
         }
 
         /// <summary>

@@ -18,26 +18,26 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         {
             kapow.PositionUpdateMode = BEPUphysics.PositionUpdating.PositionUpdateMode.Continuous;
             int height = 50;
-            Fix64 blockWidth = 3;
-            Fix64 blockHeight = 1;
-            Fix64 blockLength = 3;
+            Fix64 blockWidth = 3.ToFix();
+            Fix64 blockHeight = 1.ToFix();
+            Fix64 blockLength = 3.ToFix();
 
             for (int i = 0; i < height; i++)
             {
                     var toAdd =
                         new Box(
                             new Vector3(
-                                0,
-                                blockHeight * .5m + i * (blockHeight),
-                                0),
-                            blockWidth, blockHeight, blockLength, 10);
+0.ToFix(),
+(blockHeight.Mul(.5m.ToFix())).Add(i.ToFix().Mul((blockHeight))),
+0.ToFix()),
+                            blockWidth, blockHeight, blockLength, 10.ToFix());
                     Space.Add(toAdd);
             }
 
-            Box ground = new Box(new Vector3(0, -.5m, 0), 50, 1, 50);
+            Box ground = new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), 50.ToFix(), 1.ToFix(), 50.ToFix());
             Space.Add(ground);
 
-            game.Camera.Position = new Vector3(0, 6, 15);
+            game.Camera.Position = new Vector3(0.ToFix(), 6.ToFix(), 15.ToFix());
         }
 
         /// <summary>

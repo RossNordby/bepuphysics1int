@@ -31,18 +31,18 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         public MPRTestDemo(DemosGame game)
             : base(game)
         {
-            var shapeA = new BoxShape(1, 1, 1);
-            shapeA.CollisionMargin = 0;
-            var shapeB = new BoxShape(1, 1, 1);
-            shapeB.CollisionMargin = 0;
+            var shapeA = new BoxShape(1.ToFix(), 1.ToFix(), 1.ToFix());
+            shapeA.CollisionMargin = 0.ToFix();
+            var shapeB = new BoxShape(1.ToFix(), 1.ToFix(), 1.ToFix());
+            shapeB.CollisionMargin = 0.ToFix();
 
-            var transformA = new RigidTransform(new Vector3(0, 0, 0));
-            var transformB = new RigidTransform(new Vector3(.5m, .5m, 0));
+            var transformA = new RigidTransform(new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()));
+            var transformB = new RigidTransform(new Vector3(.5m.ToFix(), .5m.ToFix(), 0.ToFix()));
             Vector3 overlap;
             bool overlapped = MPRToolbox.GetLocalOverlapPosition(shapeA, shapeB, ref transformB, out overlap);
             Vector3 normal;
             Fix64 depth;
-            Vector3 direction = new Vector3(0, -1, 0);
+            Vector3 direction = new Vector3(0.ToFix(), (-1).ToFix(), 0.ToFix());
             MPRToolbox.LocalSurfaceCast(shapeA, shapeB, ref transformB, ref direction, out depth, out normal);
 
             ContactData contactData;
@@ -77,20 +77,20 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             //}
             
             //Do these tests with rotationally immobile objects.
-            CollisionDetectionSettings.DefaultMargin = 0;
-            groundWidth = 10;
-            groundHeight = .1m;
-            groundLength = 10;
+            CollisionDetectionSettings.DefaultMargin = 0.ToFix();
+            groundWidth = 10.ToFix();
+            groundHeight = .1m.ToFix();
+            groundLength = 10.ToFix();
             //a = new Box(new Vector3(0, -5, 0), groundWidth, groundHeight, groundLength, 1);
             //a = new TransformableEntity(new Vector3(0,0,0), new TriangleShape(new Vector3(-5, -5, -5), new Vector3(5, -5, -5), new Vector3(-5, -5, 5)), Matrix3x3.Identity);         
-            a = new Triangle(new Vector3(0, -5, 0), new Vector3(5, -5, 0), new Vector3(5, -5, 5), 1);
+            a = new Triangle(new Vector3(0.ToFix(), (-5).ToFix(), 0.ToFix()), new Vector3(5.ToFix(), (-5).ToFix(), 0.ToFix()), new Vector3(5.ToFix(), (-5).ToFix(), 5.ToFix()), 1.ToFix());
             Space.Add(a);
             
             Space.ForceUpdater.Gravity = new Vector3();
-            boxWidth = .25m;
-            boxHeight = .05m;
-            boxLength = 1;
-            b = new TransformableEntity(new Vector3(0, 2, 0), new BoxShape(boxWidth, boxHeight, boxLength), Matrix3x3.Identity, 1);
+            boxWidth = .25m.ToFix();
+            boxHeight = .05m.ToFix();
+            boxLength = 1.ToFix();
+            b = new TransformableEntity(new Vector3(0.ToFix(), 2.ToFix(), 0.ToFix()), new BoxShape(boxWidth, boxHeight, boxLength), Matrix3x3.Identity, 1.ToFix());
             //b = new Cone(new Vector3(0, 2, 0), .2m, .1m, 1);
             //b = new Capsule(new Vector3(0, 2, 0), 1, .5m, 1);
             //b = new Capsule(new Vector3(0, 2, 0), 1, .5m, 1);
@@ -123,13 +123,13 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         {
 
             if (Game.KeyboardInput.IsKeyDown(Keys.Left))
-                rayCastDirection = Matrix3x3.Transform(rayCastDirection, Matrix3x3.CreateFromAxisAngle(Vector3.Forward, .01m));
+                rayCastDirection = Matrix3x3.Transform(rayCastDirection, Matrix3x3.CreateFromAxisAngle(Vector3.Forward, .01m.ToFix()));
             if (Game.KeyboardInput.IsKeyDown(Keys.Right))
-                rayCastDirection = Matrix3x3.Transform(rayCastDirection, Matrix3x3.CreateFromAxisAngle(Vector3.Forward, -.01m));
+                rayCastDirection = Matrix3x3.Transform(rayCastDirection, Matrix3x3.CreateFromAxisAngle(Vector3.Forward, (-.01m).ToFix()));
             if (Game.KeyboardInput.IsKeyDown(Keys.Down))
-                rayCastDirection = Matrix3x3.Transform(rayCastDirection, Matrix3x3.CreateFromAxisAngle(Vector3.Right, .01m));
+                rayCastDirection = Matrix3x3.Transform(rayCastDirection, Matrix3x3.CreateFromAxisAngle(Vector3.Right, .01m.ToFix()));
             if (Game.KeyboardInput.IsKeyDown(Keys.Up))
-                rayCastDirection = Matrix3x3.Transform(rayCastDirection, Matrix3x3.CreateFromAxisAngle(Vector3.Right, -.01m));
+                rayCastDirection = Matrix3x3.Transform(rayCastDirection, Matrix3x3.CreateFromAxisAngle(Vector3.Right, (-.01m).ToFix()));
 
 
             if (Game.KeyboardInput.IsKeyDown(Keys.P))
@@ -253,19 +253,19 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             Vector3 max;
             var direction = new Vector3();
             int NumSamples = 16;
-            Fix64 angleChange = MathHelper.TwoPi / NumSamples;
+            Fix64 angleChange = MathHelper.TwoPi.Div(NumSamples.ToFix());
 
             for (int i = 1; i < NumSamples / 2 - 1; i++)
             {
-                Fix64 phi = MathHelper.PiOver2 - i * angleChange;
+                Fix64 phi = MathHelper.PiOver2.Sub(i.ToFix().Mul(angleChange));
                 var sinPhi = Fix64.Sin(phi);
                 var cosPhi = Fix64.Cos(phi);
                 for (int j = 0; j < NumSamples; j++)
                 {
-                    Fix64 theta = j * angleChange;
-                    direction.X = Fix64.Cos(theta) * cosPhi;
+                    Fix64 theta = j.ToFix().Mul(angleChange);
+                    direction.X = Fix64.Cos(theta).Mul(cosPhi);
                     direction.Y = sinPhi;
-                    direction.Z = Fix64.Sin(theta) * cosPhi;
+                    direction.Z = Fix64.Sin(theta).Mul(cosPhi);
 
 
                     MinkowskiToolbox.GetLocalMinkowskiExtremePoint(a.CollisionInformation.Shape as ConvexShape, b.CollisionInformation.Shape as ConvexShape, ref direction, ref localTransformB, out max);

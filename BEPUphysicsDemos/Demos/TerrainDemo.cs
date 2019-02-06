@@ -25,26 +25,26 @@ namespace BEPUphysicsDemos.Demos
             int xLength = 180;
             int zLength = 180;
 
-            Fix64 xSpacing = 8;
-            Fix64 zSpacing = 8;
+            Fix64 xSpacing = 8.ToFix();
+            Fix64 zSpacing = 8.ToFix();
             var heights = new Fix64[xLength, zLength];
             for (int i = 0; i < xLength; i++)
             {
                 for (int j = 0; j < zLength; j++)
                 {
-                    Fix64 x = i - xLength / 2;
-                    Fix64 z = j - zLength / 2;
+                    Fix64 x = (i - xLength / 2).ToFix();
+                    Fix64 z = (j - zLength / 2).ToFix();
                     //heights[i,j] = (Fix64)(x * y / 1000f);
-                    heights[i, j] = 10 * (Fix64.Sin(x / 8) + Fix64.Sin(z / 8));
+                    heights[i, j] = 10.ToFix().Mul((Fix64.Sin(x.Div(8.ToFix())).Add(Fix64.Sin(z.Div(8.ToFix())))));
                     //heights[i,j] = 3 * (Fix64)Math.Sin(x * y / 100f);
                     //heights[i,j] = (x * x * x * y - y * y * y * x) / 1000f;
                 }
             }
             //Create the terrain.
             var terrain = new Terrain(heights, new AffineTransform(
-                    new Vector3(xSpacing, 1, zSpacing),
+                    new Vector3(xSpacing, 1.ToFix(), zSpacing),
                     Quaternion.Identity,
-                    new Vector3(-xLength * xSpacing / 2, 0, -zLength * zSpacing / 2)));
+                    new Vector3((xLength.ToFix().Neg().Mul(xSpacing)).Div(2.ToFix()), 0.ToFix(), (zLength.ToFix().Neg().Mul(zSpacing)).Div(2.ToFix()))));
             terrain.Shape.QuadTriangleOrganization = BEPUphysics.CollisionShapes.QuadTriangleOrganization.BottomRightUpperLeft;
 
             //terrain.Thickness = 5; //Uncomment this and shoot some things at the bottom of the terrain! They'll be sucked up through the ground.
@@ -58,11 +58,11 @@ namespace BEPUphysicsDemos.Demos
                     for (int k = 0; k < 5; k++)
                     {
                         Space.Add(new Box(
-                            new Vector3(0 + i * 4, 100 - j * 10, 0 + k * 4),
-                            2 + i * j * k,
-                            2 + i * j * k,
-                            2 + i * j * k,
-                            4 + 20 * i * j * k));
+                            new Vector3((0 + i * 4).ToFix(), (100 - j * 10).ToFix(), (0 + k * 4).ToFix()),
+                            (2 + i * j * k).ToFix(),
+                            (2 + i * j * k).ToFix(),
+                            (2 + i * j * k).ToFix(),
+                            (4 + 20 * i * j * k).ToFix()));
                     }
                 }
             }
@@ -71,7 +71,7 @@ namespace BEPUphysicsDemos.Demos
 
             game.ModelDrawer.Add(terrain);
 
-            game.Camera.Position = new Vector3(0, 30, 20);
+            game.Camera.Position = new Vector3(0.ToFix(), 30.ToFix(), 20.ToFix());
 
         }
 

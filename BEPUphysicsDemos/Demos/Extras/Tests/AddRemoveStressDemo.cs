@@ -21,14 +21,14 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         private Vector3 GetRandomPosition(Random random)
         {
             return new Vector3(
-                       (Fix64)(random.NextDouble() - 0.5) * width,
-                       (Fix64)(random.NextDouble() - 0.5) * height,
-                       (Fix64)(random.NextDouble() - 0.5) * length);
+((random.NextDouble() - 0.5).ToFix()).Mul(width),
+((random.NextDouble() - 0.5).ToFix()).Mul(height),
+((random.NextDouble() - 0.5).ToFix()).Mul(length));
         }
 
-        Fix64 width = 15;
-        Fix64 height = 15;
-        Fix64 length = 15;
+        Fix64 width = 15.ToFix();
+        Fix64 height = 15.ToFix();
+        Fix64 length = 15.ToFix();
         /// <summary>
         /// Constructs a new demo.
         /// </summary>
@@ -40,30 +40,30 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
             var compoundShape = new CompoundShape(new List<CompoundShapeEntry>
                 {
-                    new CompoundShapeEntry(new BoxShape(1, 1, 1), new Vector3(0, 1, 0), 1),
-                    new CompoundShapeEntry(new BoxShape(2, 1, 2), new Vector3(), 1),
-                    new CompoundShapeEntry(new BoxShape(1, 1, 1), new Vector3(0, -1, 0), 1)
+                    new CompoundShapeEntry(new BoxShape(1.ToFix(), 1.ToFix(), 1.ToFix()), new Vector3(0.ToFix(), 1.ToFix(), 0.ToFix()), 1.ToFix()),
+                    new CompoundShapeEntry(new BoxShape(2.ToFix(), 1.ToFix(), 2.ToFix()), new Vector3(), 1.ToFix()),
+                    new CompoundShapeEntry(new BoxShape(1.ToFix(), 1.ToFix(), 1.ToFix()), new Vector3(0.ToFix(), (-1).ToFix(), 0.ToFix()), 1.ToFix())
                 });
             for (int i = 0; i < 300; ++i)
             {
-                var toAdd = new Entity(compoundShape, 10);
+                var toAdd = new Entity(compoundShape, 10.ToFix());
                 addedEntities.Add(toAdd);
             }
 
-            var boxShape = new BoxShape(1, 1, 1);
+            var boxShape = new BoxShape(1.ToFix(), 1.ToFix(), 1.ToFix());
             for (int i = 0; i < 300; ++i)
             {
-                var toAdd = new Entity(boxShape, 10);
+                var toAdd = new Entity(boxShape, 10.ToFix());
                 addedEntities.Add(toAdd);
             }
 
             Vector3[] vertices;
             int[] indices;
             ModelDataExtractor.GetVerticesAndIndicesFromModel(game.Content.Load<Model>("cube"), out vertices, out indices);
-            var mobileMeshShape = new MobileMeshShape(vertices, indices, new AffineTransform(Matrix3x3.CreateScale(1, 2, 1), new Vector3()), MobileMeshSolidity.Counterclockwise);
+            var mobileMeshShape = new MobileMeshShape(vertices, indices, new AffineTransform(Matrix3x3.CreateScale(1.ToFix(), 2.ToFix(), 1.ToFix()), new Vector3()), MobileMeshSolidity.Counterclockwise);
             for (int i = 0; i < 300; ++i)
             {
-                var toAdd = new Entity(mobileMeshShape, 10);
+                var toAdd = new Entity(mobileMeshShape, 10.ToFix());
                 addedEntities.Add(toAdd);
             }
 
@@ -72,20 +72,20 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 var entity = addedEntities[i];
                 entity.Gravity = new Vector3();
                 entity.Position = GetRandomPosition(random);
-                entity.LinearVelocity = 3 * Vector3.Normalize(entity.Position);
+                entity.LinearVelocity = 3.ToFix() * Vector3.Normalize(entity.Position);
                 Space.Add(entity);
             }
 
 
             var playgroundModel = game.Content.Load<Model>("playground");
             ModelDataExtractor.GetVerticesAndIndicesFromModel(playgroundModel, out vertices, out indices);
-            var staticMesh = new StaticMesh(vertices, indices, new AffineTransform(Matrix3x3.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), new Vector3(0, -30, 0)));
+            var staticMesh = new StaticMesh(vertices, indices, new AffineTransform(Matrix3x3.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), new Vector3(0.ToFix(), (-30).ToFix(), 0.ToFix())));
             staticMesh.Sidedness = TriangleSidedness.Counterclockwise;
 
             Space.Add(staticMesh);
             game.ModelDrawer.Add(staticMesh);
 
-            game.Camera.Position = new Vector3(0, 6, 15);
+            game.Camera.Position = new Vector3(0.ToFix(), 6.ToFix(), 15.ToFix());
         }
 
         Random random = new Random(5);
@@ -121,9 +121,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 {
                     var entity = addedEntities[random.Next(addedEntities.Count)];
                     entity.Position = new Vector3(
-						((Fix64)random.NextDouble() - 0.5m) * width,
-						((Fix64)random.NextDouble() - 0.5m) * height,
-						((Fix64)random.NextDouble() - 0.5m) * length);
+(random.NextDouble().ToFix().Sub(0.5m.ToFix())).Mul(width),
+(random.NextDouble().ToFix().Sub(0.5m.ToFix())).Mul(height),
+(random.NextDouble().ToFix().Sub(0.5m.ToFix())).Mul(length));
                 }
             }
             base.Update(dt);

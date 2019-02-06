@@ -31,15 +31,15 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         public RayCastTestDemo(DemosGame game)
             : base(game)
         {
-            Space.Add(new Box(new Vector3(0, -0.5m, 0), 50, 1, 50));
+            Space.Add(new Box(new Vector3(0.ToFix(), (-0.5m).ToFix(), 0.ToFix()), 50.ToFix(), 1.ToFix(), 50.ToFix()));
 
             //Put whatever you'd like to ray cast here.
-            var capsule = new Capsule(new Vector3(0, 1.2m, 0), 1, 0.6m);
-            capsule.AngularVelocity = new Vector3(1, 1, 1);
+            var capsule = new Capsule(new Vector3(0.ToFix(), 1.2m.ToFix(), 0.ToFix()), 1.ToFix(), 0.6m.ToFix());
+            capsule.AngularVelocity = new Vector3(1.ToFix(), 1.ToFix(), 1.ToFix());
             Space.Add(capsule);
 
-            var cylinder = new Cylinder(new Vector3(0, 5, 0), 2, .5m);
-            cylinder.AngularVelocity = new Vector3(1, -1, 1);
+            var cylinder = new Cylinder(new Vector3(0.ToFix(), 5.ToFix(), 0.ToFix()), 2.ToFix(), .5m.ToFix());
+            cylinder.AngularVelocity = new Vector3(1.ToFix(), (-1).ToFix(), 1.ToFix());
             Space.Add(cylinder);
 
             var points = new List<Vector3>();
@@ -47,20 +47,20 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             var random = new Random(0);
             for (int k = 0; k < 40; k++)
             {
-                points.Add(new Vector3(1 * (Fix64)random.NextDouble(), 3 * (Fix64)random.NextDouble(), 2 * (Fix64)random.NextDouble()));
+                points.Add(new Vector3(1.ToFix().Mul(random.NextDouble().ToFix()), 3.ToFix().Mul(random.NextDouble().ToFix()), 2.ToFix().Mul(random.NextDouble().ToFix())));
             }
-            var convexHull = new ConvexHull(new Vector3(0, 10, 0), points);
-            convexHull.AngularVelocity = new Vector3(-1, 1, 1);
+            var convexHull = new ConvexHull(new Vector3(0.ToFix(), 10.ToFix(), 0.ToFix()), points);
+            convexHull.AngularVelocity = new Vector3((-1).ToFix(), 1.ToFix(), 1.ToFix());
             Space.Add(convexHull);
 
 
-            game.Camera.Position = new Vector3(-10, 5, 10);
-            game.Camera.Yaw((Fix64)MathHelper.Pi / -4);
-            game.Camera.Pitch(-(Fix64)MathHelper.Pi / 9);
+            game.Camera.Position = new Vector3((-10).ToFix(), 5.ToFix(), 10.ToFix());
+            game.Camera.Yaw(MathHelper.Pi.ToFix().Div((-4).ToFix()));
+            game.Camera.Pitch((-MathHelper.Pi.ToFix()).Div(9.ToFix()));
 
             //Starter ray.
-            origin = new Vector3(10, 5, 0);
-            direction = new Vector3(-3, -1, 0);
+            origin = new Vector3(10.ToFix(), 5.ToFix(), 0.ToFix());
+            direction = new Vector3((-3).ToFix(), (-1).ToFix(), 0.ToFix());
 
         }
 
@@ -85,7 +85,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 direction = Game.Camera.WorldMatrix.Forward;
             }
 #endif
-            hitAnything = Space.RayCast(new Ray(origin, direction * 3), 10000, out result);
+            hitAnything = Space.RayCast(new Ray(origin, direction * 3.ToFix()), 10000.ToFix(), out result);
 
         }
 
@@ -97,7 +97,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             if (!hitAnything)
             {
                 //If we didn't hit anything, just point out into something approximating infinity.
-                result.HitData.Location = origin + direction * 10000;
+                result.HitData.Location = origin + direction * 10000.ToFix();
             }
             Game.LineDrawer.LightingEnabled = false;
             Game.LineDrawer.VertexColorEnabled = true;

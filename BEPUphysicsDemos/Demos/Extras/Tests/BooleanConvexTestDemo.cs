@@ -29,13 +29,13 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             int numberOfTestsPerConfiguration = 10000;
 
 
-            Fix64 size = 2;
-            var aPositionBounds = new BoundingBox(new Vector3(-size, -size, -size), new Vector3(size, size, size));
-            var bPositionBounds = new BoundingBox(new Vector3(-size, -size, -size), new Vector3(size, size, size));
+            Fix64 size = 2.ToFix();
+            var aPositionBounds = new BoundingBox(new Vector3(size.Neg(), size.Neg(), size.Neg()), new Vector3(size, size, size));
+            var bPositionBounds = new BoundingBox(new Vector3(size.Neg(), size.Neg(), size.Neg()), new Vector3(size, size, size));
 
-            size = 1;
-            var aShapeBounds = new BoundingBox(new Vector3(-size, -size, -size), new Vector3(size, size, size));
-            var bShapeBounds = new BoundingBox(new Vector3(-size, -size, -size), new Vector3(size, size, size));
+            size = 1.ToFix();
+            var aShapeBounds = new BoundingBox(new Vector3(size.Neg(), size.Neg(), size.Neg()), new Vector3(size, size, size));
+            var bShapeBounds = new BoundingBox(new Vector3(size.Neg(), size.Neg(), size.Neg()), new Vector3(size, size, size));
             int pointsInA = 10;
             int pointsInB = 10;
 
@@ -70,14 +70,14 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
                 //Generate some random tranforms for the shapes.
                 RigidTransform aTransform;
-                var axis = Vector3.Normalize(new Vector3(((Fix64)random.NextDouble() - .5m) * 2, ((Fix64)random.NextDouble() - .5m) * 2, ((Fix64)random.NextDouble() - .5m) * 2));
-                var angle = (Fix64)random.NextDouble() * MathHelper.TwoPi;
+                var axis = Vector3.Normalize(new Vector3((random.NextDouble().ToFix().Sub(.5m.ToFix())).Mul(2.ToFix()), (random.NextDouble().ToFix().Sub(.5m.ToFix())).Mul(2.ToFix()), (random.NextDouble().ToFix().Sub(.5m.ToFix())).Mul(2.ToFix())));
+                var angle = (random.NextDouble().ToFix()).Mul(MathHelper.TwoPi);
                 Quaternion.CreateFromAxisAngle(ref axis, angle, out aTransform.Orientation);
                 GetRandomPointInBoundingBox(random, ref aPositionBounds, out aTransform.Position);
 
                 RigidTransform bTransform;
-                axis = Vector3.Normalize(new Vector3(((Fix64)random.NextDouble() - .5m) * 2, ((Fix64)random.NextDouble() - .5m) * 2, ((Fix64)random.NextDouble() - .5m) * 2));
-                angle = (Fix64)random.NextDouble() * MathHelper.TwoPi;
+                axis = Vector3.Normalize(new Vector3((random.NextDouble().ToFix().Sub(.5m.ToFix())).Mul(2.ToFix()), (random.NextDouble().ToFix().Sub(.5m.ToFix())).Mul(2.ToFix()), (random.NextDouble().ToFix().Sub(.5m.ToFix())).Mul(2.ToFix())));
+                angle = (random.NextDouble().ToFix()).Mul(MathHelper.TwoPi);
                 Quaternion.CreateFromAxisAngle(ref axis, angle, out bTransform.Orientation);
                 GetRandomPointInBoundingBox(random, ref bPositionBounds, out bTransform.Position);
 
@@ -132,9 +132,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 #if XBOX360
             point = new Vector3();
 #endif
-            point.X = (Fix64)random.NextDouble() * (box.Max.X - box.Min.X) + box.Min.X;
-			point.Y = (Fix64)random.NextDouble() * (box.Max.Y - box.Min.Y) + box.Min.Y;
-            point.Z = (Fix64)random.NextDouble() * (box.Max.Z - box.Min.Z) + box.Min.Z;
+            point.X = (random.NextDouble().ToFix()).Mul((box.Max.X.Sub(box.Min.X))).Add(box.Min.X);
+			point.Y = (random.NextDouble().ToFix()).Mul((box.Max.Y.Sub(box.Min.Y))).Add(box.Min.Y);
+            point.Z = (random.NextDouble().ToFix()).Mul((box.Max.Z.Sub(box.Min.Z))).Add(box.Min.Z);
         }
 
 
@@ -153,9 +153,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             Game.DataTextDrawer.Draw("GJK Time (ns): ", timeGJK * 1e9, 0, new Microsoft.Xna.Framework.Vector2(40, 70));
             Game.DataTextDrawer.Draw("GJK Separating Axis Time (ns): ", timeGJKSeparatingAxis * 1e9, 0, new Microsoft.Xna.Framework.Vector2(40, 100));
 
-            Game.DataTextDrawer.Draw("MPR overlaps: ", (Fix64)overlapsMPR, new Microsoft.Xna.Framework.Vector2(40, 150));
-            Game.DataTextDrawer.Draw("GJK overlaps: ", (Fix64)overlapsGJK, new Microsoft.Xna.Framework.Vector2(40, 180));
-            Game.DataTextDrawer.Draw("GJK Separating Axis overlaps: ", (Fix64)overlapsGJKSeparatingAxis, new Microsoft.Xna.Framework.Vector2(40, 210));
+            Game.DataTextDrawer.Draw("MPR overlaps: ", overlapsMPR.ToFix(), new Microsoft.Xna.Framework.Vector2(40, 150));
+            Game.DataTextDrawer.Draw("GJK overlaps: ", overlapsGJK.ToFix(), new Microsoft.Xna.Framework.Vector2(40, 180));
+            Game.DataTextDrawer.Draw("GJK Separating Axis overlaps: ", overlapsGJKSeparatingAxis.ToFix(), new Microsoft.Xna.Framework.Vector2(40, 210));
             base.DrawUI();
         }
 

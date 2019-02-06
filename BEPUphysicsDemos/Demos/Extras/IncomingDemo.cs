@@ -1,6 +1,7 @@
 ﻿using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
+using FixMath.NET;
 
 namespace BEPUphysicsDemos.Demos.Extras
 {
@@ -22,25 +23,25 @@ namespace BEPUphysicsDemos.Demos.Extras
             {
                 if (k % 2 == 1)
                 {
-                    toAdd = new Box(new Vector3(-3, k, 0), 1, 1, 7, 10);
+                    toAdd = new Box(new Vector3((-3).ToFix(), k.ToFix(), 0.ToFix()), 1.ToFix(), 1.ToFix(), 7.ToFix(), 10.ToFix());
                     Space.Add(toAdd);
-                    toAdd = new Box(new Vector3(3, k, 0), 1, 1, 7, 10);
+                    toAdd = new Box(new Vector3(3.ToFix(), k.ToFix(), 0.ToFix()), 1.ToFix(), 1.ToFix(), 7.ToFix(), 10.ToFix());
                     Space.Add(toAdd);
                 }
                 else
                 {
-                    toAdd = new Box(new Vector3(0, k, -3), 7, 1, 1, 10);
+                    toAdd = new Box(new Vector3(0.ToFix(), k.ToFix(), (-3).ToFix()), 7.ToFix(), 1.ToFix(), 1.ToFix(), 10.ToFix());
                     Space.Add(toAdd);
-                    toAdd = new Box(new Vector3(0, k, 3), 7, 1, 1, 10);
+                    toAdd = new Box(new Vector3(0.ToFix(), k.ToFix(), 3.ToFix()), 7.ToFix(), 1.ToFix(), 1.ToFix(), 10.ToFix());
                     Space.Add(toAdd);
                 }
             }
             //And then smash it!
-            toAdd = new Sphere(new Vector3(0, 150, 0), 3, 100);
+            toAdd = new Sphere(new Vector3(0.ToFix(), 150.ToFix(), 0.ToFix()), 3.ToFix(), 100.ToFix());
 
             Space.Add(toAdd);
-            Space.Add(new Box(new Vector3(0, 0, 0), 10, 1m, 10));
-            game.Camera.Position = new Vector3(0, 6, 30);
+            Space.Add(new Box(new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()), 10.ToFix(), 1m.ToFix(), 10.ToFix()));
+            game.Camera.Position = new Vector3(0.ToFix(), 6.ToFix(), 30.ToFix());
         }
 
         /// <summary>

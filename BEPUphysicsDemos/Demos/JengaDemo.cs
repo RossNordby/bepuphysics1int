@@ -21,12 +21,12 @@ namespace BEPUphysicsDemos.Demos
 
             Space.Remove(kapow);
             //Have to shrink the ball a little to make it fit between jenga tower blocks.
-            kapow = new Sphere(new Vector3(-11000, 0, 0), .2m, 20);
+            kapow = new Sphere(new Vector3((-11000).ToFix(), 0.ToFix(), 0.ToFix()), .2m.ToFix(), 20.ToFix());
             kapow.PositionUpdateMode = PositionUpdateMode.Continuous; //The ball's really tiny! It will work better if it's handled continuously.
             Space.Add(kapow);
             int numBlocksTall = 18; //How many 'stories' tall.
-            Fix64 blockWidth = 3; //Total width/length of the tower.
-            Fix64 blockHeight = 1 / (Fix64)2;
+            Fix64 blockWidth = 3.ToFix(); //Total width/length of the tower.
+            Fix64 blockHeight = 1.ToFix().Div(2.ToFix());
             Entity toAdd;
 
 
@@ -37,10 +37,10 @@ namespace BEPUphysicsDemos.Demos
                     for (int j = 0; j < 3; j++)
                     {
                         toAdd = new Box(new Vector3(
-                                            j * (blockWidth / 3) - blockWidth / 3,
-                                            blockHeight / 2 + i * (blockHeight),
-                                            0),
-                                        blockWidth / 3, blockHeight, blockWidth, 10);
+(j.ToFix().Mul((blockWidth.Div(3.ToFix())))).Sub(blockWidth.Div(3.ToFix())),
+(blockHeight.Div(2.ToFix())).Add(i.ToFix().Mul((blockHeight))),
+0.ToFix()),
+blockWidth.Div(3.ToFix()), blockHeight, blockWidth, 10.ToFix());
                         Space.Add(toAdd);
                     }
                 }
@@ -49,17 +49,17 @@ namespace BEPUphysicsDemos.Demos
                     for (int j = 0; j < 3; j++)
                     {
                         toAdd = new Box(new Vector3(
-                                            0,
-                                            blockHeight / 2 + (i) * (blockHeight),
-                                            j * (blockWidth / 3) - blockWidth / 3),
-                                        blockWidth, blockHeight, blockWidth / 3, 10);
+0.ToFix(),
+(blockHeight.Div(2.ToFix())).Add((i.ToFix()).Mul((blockHeight))),
+(j.ToFix().Mul((blockWidth.Div(3.ToFix())))).Sub(blockWidth.Div(3.ToFix()))),
+                                        blockWidth, blockHeight, blockWidth.Div(3.ToFix()), 10.ToFix());
                         Space.Add(toAdd);
 
                     }
                 }
             }
-            Space.Add(new Box(new Vector3(0, -.5m, 0), 40, 1, 40));
-            game.Camera.Position = new Vector3(0, 5, 15);
+            Space.Add(new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), 40.ToFix(), 1.ToFix(), 40.ToFix()));
+            game.Camera.Position = new Vector3(0.ToFix(), 5.ToFix(), 15.ToFix());
 
         }
 

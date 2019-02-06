@@ -68,7 +68,7 @@ namespace BEPUphysicsDemos.SampleCode
             set
             {
                 lifeSpan = value;
-                if (lifeSpan > Age || lifeSpan == 0)
+                if (lifeSpan > Age || lifeSpan == 0.ToFix())
                     IsUpdating = true; //Wake the thruster up if it's young again.
             }
         }
@@ -89,7 +89,7 @@ namespace BEPUphysicsDemos.SampleCode
 
 
             Age += dt;
-            if (LifeSpan > 0 && Age > LifeSpan)
+            if (LifeSpan > 0.ToFix() && Age > LifeSpan)
             {
                 IsUpdating = false; //The thruster has finished firing.
             }

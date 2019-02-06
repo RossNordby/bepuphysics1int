@@ -118,7 +118,7 @@ namespace BEPUphysicsDemos
 
             Graphics.PreferredBackBufferWidth = 1280;
             Graphics.PreferredBackBufferHeight = 720;
-            Camera = new Camera(BEPUutilities.Vector3.Zero, 0, 0, BEPUutilities.Matrix.CreatePerspectiveFieldOfViewRH((Fix64)MathHelper.PiOver4, Graphics.PreferredBackBufferWidth / (Fix64)Graphics.PreferredBackBufferHeight, .1m, 10000));
+            Camera = new Camera(BEPUutilities.Vector3.Zero, 0.ToFix(), 0.ToFix(), BEPUutilities.Matrix.CreatePerspectiveFieldOfViewRH(MathHelper.PiOver4.ToFix(), Graphics.PreferredBackBufferWidth.ToFix().Div(Graphics.PreferredBackBufferHeight.ToFix()), .1m.ToFix(), 10000.ToFix()));
 
             Exiting += DemosGameExiting;
         }
@@ -254,7 +254,7 @@ namespace BEPUphysicsDemos
         {
             PreviousKeyboardInput = KeyboardInput;
             KeyboardInput = Keyboard.GetState();
-            var dt = (Fix64)gameTime.ElapsedGameTime.TotalSeconds;
+            var dt = gameTime.ElapsedGameTime.TotalSeconds.ToFix();
 #if WINDOWS
             PreviousMouseInput = MouseInput;
             MouseInput = Mouse.GetState();
@@ -437,7 +437,7 @@ namespace BEPUphysicsDemos
                     double avg = FPStotalSinceLast / FPStotalFramesSinceLast;
                     FPSlastTime = gameTime.TotalGameTime.TotalSeconds;
                     FPStoDisplay = Math.Round(1 / avg, 1);
-                    averagePhysicsTime = Math.Round(1000 * (float)currentSimulation.PhysicsTime, 1);
+                    averagePhysicsTime = Math.Round(1000 * currentSimulation.PhysicsTime.ToFloat(), 1);
                     FPStotalSinceLast = 0;
                     FPStotalFramesSinceLast = 0;
                 }

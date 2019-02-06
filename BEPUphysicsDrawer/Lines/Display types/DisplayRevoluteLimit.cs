@@ -50,11 +50,11 @@ namespace BEPUphysicsDrawer.Lines
             Vector3 left = MathConverter.Convert(LineObject.ConnectionB.Position - LineObject.Basis.PrimaryAxis);
             Vector3 right = MathConverter.Convert(LineObject.ConnectionB.Position + LineObject.Basis.PrimaryAxis);
 
-            Vector3 upwardsOffset = Vector3.TransformNormal(MathConverter.Convert(LineObject.Basis.XAxis), Matrix.CreateFromAxisAngle(MathConverter.Convert(LineObject.Basis.PrimaryAxis), (float)LineObject.MaximumAngle));
+            Vector3 upwardsOffset = Vector3.TransformNormal(MathConverter.Convert(LineObject.Basis.XAxis), Matrix.CreateFromAxisAngle(MathConverter.Convert(LineObject.Basis.PrimaryAxis), (float)LineObject.MaximumAngle.ToFloat()));
             Vector3 topRightPosition = right + upwardsOffset;
             Vector3 topLeftPosition = left + upwardsOffset;
 
-            Vector3 downwardsOffset = Vector3.TransformNormal(MathConverter.Convert(LineObject.Basis.XAxis), Matrix.CreateFromAxisAngle(MathConverter.Convert(LineObject.Basis.PrimaryAxis), (float)LineObject.MinimumAngle));
+            Vector3 downwardsOffset = Vector3.TransformNormal(MathConverter.Convert(LineObject.Basis.XAxis), Matrix.CreateFromAxisAngle(MathConverter.Convert(LineObject.Basis.PrimaryAxis), (float)LineObject.MinimumAngle.ToFloat()));
             Vector3 bottomRightPosition = right + downwardsOffset;
             Vector3 bottomLeftPosition = left + downwardsOffset;
 

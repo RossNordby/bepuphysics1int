@@ -1151,8 +1151,8 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
 
 
         Fix64 linearDampingBoost, angularDampingBoost;
-        Fix64 angularDamping = (Fix64).15m.ToFix();
-        Fix64 linearDamping = (Fix64).03m.ToFix();
+        Fix64 angularDamping = .15m.ToFix();
+        Fix64 linearDamping = .03m.ToFix();
         ///<summary>
         /// Gets or sets the angular damping of the entity.
         /// Values range from 0 to 1, corresponding to a fraction of angular momentum removed

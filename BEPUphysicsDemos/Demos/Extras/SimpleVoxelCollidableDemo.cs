@@ -64,7 +64,7 @@ namespace BEPUphysicsDemos.Demos.Extras
 
         public void GetBoundingBox(ref Vector3 position, out BoundingBox boundingBox)
         {
-            var size = new Vector3(CellWidth * Cells.GetLength(0), CellWidth * Cells.GetLength(1), CellWidth * Cells.GetLength(2));
+            var size = new Vector3(CellWidth.Mul(Cells.GetLength(0).ToFix()), CellWidth.Mul(Cells.GetLength(1).ToFix()), CellWidth.Mul(Cells.GetLength(2).ToFix()));
             boundingBox.Min = position;
             Vector3.Add(ref size, ref position, out boundingBox.Max);
         }
@@ -79,18 +79,18 @@ namespace BEPUphysicsDemos.Demos.Extras
         {
             Vector3.Subtract(ref boundingBox.Min, ref gridPosition, out boundingBox.Min);
             Vector3.Subtract(ref boundingBox.Max, ref gridPosition, out boundingBox.Max);
-            var inverseWidth = 1 / CellWidth;
+            var inverseWidth = 1.ToFix().Div(CellWidth);
             var min = new Int3
             {
-                X = Math.Max(0, (int)(boundingBox.Min.X * inverseWidth)),
-                Y = Math.Max(0, (int)(boundingBox.Min.Y * inverseWidth)),
-                Z = Math.Max(0, (int)(boundingBox.Min.Z * inverseWidth))
+                X = Math.Max(0, (boundingBox.Min.X.Mul(inverseWidth)).ToInt()),
+                Y = Math.Max(0, (boundingBox.Min.Y.Mul(inverseWidth)).ToInt()),
+                Z = Math.Max(0, (boundingBox.Min.Z.Mul(inverseWidth)).ToInt())
             };
             var max = new Int3
             {
-                X = Math.Min(Cells.GetLength(0) - 1, (int)(boundingBox.Max.X * inverseWidth)),
-                Y = Math.Min(Cells.GetLength(1) - 1, (int)(boundingBox.Max.Y * inverseWidth)),
-                Z = Math.Min(Cells.GetLength(2) - 1, (int)(boundingBox.Max.Z * inverseWidth))
+                X = Math.Min(Cells.GetLength(0) - 1, (boundingBox.Max.X.Mul(inverseWidth)).ToInt()),
+                Y = Math.Min(Cells.GetLength(1) - 1, (boundingBox.Max.Y.Mul(inverseWidth)).ToInt()),
+                Z = Math.Min(Cells.GetLength(2) - 1, (boundingBox.Max.Z.Mul(inverseWidth)).ToInt())
             };
 
             for (int i = min.X; i <= max.X; ++i)
@@ -176,7 +176,7 @@ namespace BEPUphysicsDemos.Demos.Extras
     public class ReusableBoxCollidable : ConvexCollidable<BoxShape>
     {
         public ReusableBoxCollidable()
-            : base(new BoxShape(1, 1, 1))
+            : base(new BoxShape(1.ToFix(), 1.ToFix(), 1.ToFix()))
         {
         }
 
@@ -224,9 +224,9 @@ namespace BEPUphysicsDemos.Demos.Extras
             boxCollidable.Shape.Length = voxelGrid.Shape.CellWidth;
             pair.Initialize(convex, boxCollidable);
             boxCollidable.WorldTransform = new RigidTransform(new Vector3(
-                voxelGrid.Position.X + (position.X + F64.C0p5) * voxelGrid.Shape.CellWidth,
-                voxelGrid.Position.Y + (position.Y + F64.C0p5) * voxelGrid.Shape.CellWidth,
-                voxelGrid.Position.Z + (position.Z + F64.C0p5) * voxelGrid.Shape.CellWidth));
+voxelGrid.Position.X.Add((position.X.ToFix().Add(F64.C0p5)).Mul(voxelGrid.Shape.CellWidth)),
+voxelGrid.Position.Y.Add((position.Y.ToFix().Add(F64.C0p5)).Mul(voxelGrid.Shape.CellWidth)),
+voxelGrid.Position.Z.Add((position.Z.ToFix().Add(F64.C0p5)).Mul(voxelGrid.Shape.CellWidth))));
             return pair;
         }
 
@@ -426,9 +426,9 @@ namespace BEPUphysicsDemos.Demos.Extras
                 Vector3 velocity = convex.Entity.LinearVelocity * dt;
                 Fix64 velocitySquared = velocity.LengthSquared();
 
-                var minimumRadius = convex.Shape.MinimumRadius * MotionSettings.CoreShapeScaling;
-                timeOfImpact = 1;
-                if (minimumRadius * minimumRadius < velocitySquared)
+                var minimumRadius = convex.Shape.MinimumRadius.Mul(MotionSettings.CoreShapeScaling);
+                timeOfImpact = 1.ToFix();
+                if (minimumRadius.Mul(minimumRadius) < velocitySquared)
                 {
                     for (int i = 0; i < contactManifold.ActivePairs.Count; ++i)
                     {
@@ -451,8 +451,8 @@ namespace BEPUphysicsDemos.Demos.Extras
         {
             info.Contact = contactManifold.Contacts[index];
             //Find the contact's normal and friction forces.
-            info.FrictionImpulse = 0;
-            info.NormalImpulse = 0;
+            info.FrictionImpulse = 0.ToFix();
+            info.NormalImpulse = 0.ToFix();
 
             for (int i = 0; i < constraint.ContactFrictionConstraints.Count; i++)
             {
@@ -559,20 +559,20 @@ namespace BEPUphysicsDemos.Demos.Extras
                 {
                     for (int k = 0; k < cellCountZ; ++k)
                     {
-                        cells[i, j, k] = (Fix64.Sin(i * (Fix64)0.55m + 6 + j * (Fix64)(-0.325m)) + Fix64.Sin(j * (Fix64)0.35m - (Fix64)0.5m + MathHelper.PiOver2) + Fix64.Sin(k * (Fix64)0.5m + MathHelper.Pi + 6 + j * (Fix64)0.25f)) > 0;
+                        cells[i, j, k] = (Fix64.Sin(((i.ToFix().Mul(0.55m.ToFix())).Add(6.ToFix())).Add(j.ToFix().Mul((-0.325m).ToFix()))).Add(Fix64.Sin(((j.ToFix().Mul(0.35m.ToFix())).Sub(0.5m.ToFix())).Add(MathHelper.PiOver2))).Add(Fix64.Sin((((k.ToFix() * 0.5m.ToFix()).Add(MathHelper.Pi)).Add(6.ToFix())).Add(j.ToFix().Mul(0.25f.ToFix()))))) > 0.ToFix();
                     }
                 }
             }
             var cellWidth = 1;
-            var shape = new VoxelGridShape(cells, cellWidth);
-            var grid = new VoxelGrid(shape, new Vector3(-cellCountX * cellWidth * (Fix64)0.5m, -cellCountY * cellWidth, -cellCountZ * cellWidth * (Fix64)0.5m));
+            var shape = new VoxelGridShape(cells, cellWidth.ToFix());
+            var grid = new VoxelGrid(shape, new Vector3((-cellCountX * cellWidth).ToFix().Mul(0.5m.ToFix()), (-cellCountY * cellWidth).ToFix(), (-cellCountZ * cellWidth).ToFix().Mul(0.5m.ToFix())));
             Space.Add(grid);
 
             int width = 10;
             int height = 10;
-            Fix64 blockWidth = 2;
-            Fix64 blockHeight = 1;
-            Fix64 blockLength = 1;
+            Fix64 blockWidth = 2.ToFix();
+            Fix64 blockHeight = 1.ToFix();
+            Fix64 blockLength = 1.ToFix();
 
             for (int i = 0; i < width; i++)
             {
@@ -581,15 +581,15 @@ namespace BEPUphysicsDemos.Demos.Extras
                     var toAdd =
                         new Box(
                             new Vector3(
-                                i * blockWidth + (Fix64)0.5m * blockWidth * (j % 2) - width * blockWidth * (Fix64)0.5m,
-                                blockHeight * (Fix64)0.5m + j * (blockHeight),
-                                0),
-                            blockWidth, blockHeight, blockLength, 10);
+((i.ToFix().Mul(blockWidth)).Add((0.5m.ToFix()).Mul(blockWidth).Mul(((j % 2).ToFix())))).Sub((width.ToFix() * blockWidth).Mul(0.5m.ToFix())),
+blockHeight.Mul(0.5m.ToFix()).Add(j.ToFix() * (blockHeight)),
+0.ToFix()),
+                            blockWidth, blockHeight, blockLength, 10.ToFix());
                     Space.Add(toAdd);
                 }
             }
 
-            game.Camera.Position = new Vector3(0, 0, 25);
+            game.Camera.Position = new Vector3(0.ToFix(), 0.ToFix(), 25.ToFix());
 
             for (int i = 0; i < cellCountX; ++i)
             {
@@ -602,7 +602,7 @@ namespace BEPUphysicsDemos.Demos.Extras
                             //This is a turbo-inefficient way to render things, but good enough for now. If you want to visualize a larger amount... you'll probably have to write your own.
                             game.ModelDrawer.Add(new DisplayModel(game.Content.Load<Model>("cube"), game.ModelDrawer)
                                 {
-                                    WorldTransform = Matrix.CreateWorldRH(grid.Position + new Vector3((i + (Fix64)0.5m) * cellWidth, (j + (Fix64)0.5m) * cellWidth, (k + (Fix64)0.5m) * cellWidth), Vector3.Forward, Vector3.Up)
+                                    WorldTransform = Matrix.CreateWorldRH(grid.Position + new Vector3((i.ToFix().Add(0.5m.ToFix())).Mul(cellWidth.ToFix()), (j.ToFix().Add(0.5m.ToFix())).Mul(cellWidth.ToFix()), (k.ToFix().Add(0.5m.ToFix())).Mul(cellWidth.ToFix())), Vector3.Forward, Vector3.Up)
                                 });
                         }
                     }

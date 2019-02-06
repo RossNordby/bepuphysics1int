@@ -20,7 +20,7 @@ namespace BEPUphysicsDemos.Demos.Extras
         {
             //Pick a scale!
             //Beware: If you go too far (particularly 0.01 and lower) issues could start to crop up.
-            Fix64 scale = 1;
+            Fix64 scale = 1.ToFix();
 
             //Load in mesh data and create the collision mesh.
             //The 'mesh' will be a supergiant triangle.
@@ -29,9 +29,9 @@ namespace BEPUphysicsDemos.Demos.Extras
             //For our simulation, the edges will be too far away to worry about!
             Vector3[] vertices;
             int[] indices;
-            vertices = new Vector3[] { new Vector3(-10000, 0, -10000), new Vector3(-10000, 0, 20000), new Vector3(20000, 0, -10000) };
+            vertices = new Vector3[] { new Vector3((-10000).ToFix(), 0.ToFix(), (-10000).ToFix()), new Vector3((-10000).ToFix(), 0.ToFix(), 20000.ToFix()), new Vector3(20000.ToFix(), 0.ToFix(), (-10000).ToFix()) };
             indices = new int[] { 2, 1, 0 };
-            var staticMesh = new StaticMesh(vertices, indices, new AffineTransform(Matrix3x3.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), new Vector3(0, 0, 0)));
+            var staticMesh = new StaticMesh(vertices, indices, new AffineTransform(Matrix3x3.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix())));
             staticMesh.Sidedness = TriangleSidedness.Counterclockwise;
 
             Space.Add(staticMesh);
@@ -60,10 +60,10 @@ namespace BEPUphysicsDemos.Demos.Extras
             int numColumns = 8;
             int numRows = 8;
             int numHigh = 1;
-            Fix64 separation = 2 * scale;
-            Fix64 baseWidth = 0.5m;
-            Fix64 baseHeight = 1;
-            Fix64 baseLength = 1.5m;
+            Fix64 separation = 2.ToFix().Mul(scale);
+            Fix64 baseWidth = 0.5m.ToFix();
+            Fix64 baseHeight = 1.ToFix();
+            Fix64 baseLength = 1.5m.ToFix();
             Entity toAdd;
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
@@ -71,10 +71,10 @@ namespace BEPUphysicsDemos.Demos.Extras
                     {
                         toAdd = new Box(
                             new Vector3(
-                            separation * i - numRows * separation / 2,
-                            2 * scale + k * separation,
-                            separation * j - numColumns * separation / 2),
-                            baseWidth * scale, baseHeight * scale, baseLength * scale, 15);
+(separation.Mul(i.ToFix())).Sub((numRows.ToFix().Mul(separation)).Div(2.ToFix())),
+(2.ToFix().Mul(scale)).Add(k.ToFix().Mul(separation)),
+(separation.Mul(j.ToFix())).Sub((numColumns.ToFix().Mul(separation)).Div(2.ToFix()))),
+baseWidth.Mul(scale), baseHeight.Mul(scale), baseLength.Mul(scale), 15.ToFix());
 
                         Space.Add(toAdd);
                     }
@@ -83,26 +83,26 @@ namespace BEPUphysicsDemos.Demos.Extras
             numColumns = 3;
             numRows = 3;
             numHigh = 4;
-            separation = 2 * scale;
-            baseWidth = 1;
-            baseHeight = 1;
+            separation = 2.ToFix().Mul(scale);
+            baseWidth = 1.ToFix();
+            baseHeight = 1.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
                     {
                         toAdd = new Cylinder(
                             new Vector3(
-                            separation * i - numRows * separation / 2,
-                            8 * scale + k * separation,
-                            separation * j - numColumns * separation / 2),
-                            baseHeight * scale, 0.5m * baseWidth * scale,  15);
+(separation.Mul(i.ToFix())).Sub((numRows.ToFix().Mul(separation)).Div(2.ToFix())),
+(8.ToFix().Mul(scale)).Add(k.ToFix().Mul(separation)),
+(separation.Mul(j.ToFix())).Sub((numColumns.ToFix().Mul(separation)).Div(2.ToFix()))),
+baseHeight.Mul(scale), (0.5m.ToFix().Mul(baseWidth)).Mul(scale),  15.ToFix());
 
                         Space.Add(toAdd);
                     }
 
 
 
-            game.Camera.Position = scale * new Vector3(0, 4, 10);
+            game.Camera.Position = scale * new Vector3(0.ToFix(), 4.ToFix(), 10.ToFix());
             originalCameraSpeed = freeCameraControlScheme.Speed;
             freeCameraControlScheme.Speed *= scale;
 

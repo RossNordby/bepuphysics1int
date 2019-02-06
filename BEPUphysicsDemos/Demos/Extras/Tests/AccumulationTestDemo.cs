@@ -27,23 +27,23 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             int xLength = 256;
             int zLength = 256;
 
-            Fix64 xSpacing = .5m;
-            Fix64 zSpacing = .5m;
+            Fix64 xSpacing = .5m.ToFix();
+            Fix64 zSpacing = .5m.ToFix();
             var heights = new Fix64[xLength, zLength];
             for (int i = 0; i < xLength; i++)
             {
                 for (int j = 0; j < zLength; j++)
                 {
-                    Fix64 x = i - xLength / 2;
-                    Fix64 z = j - zLength / 2;
-                    heights[i, j] = (Fix64)(10 * (Fix64.Sin(x / 8) + Fix64.Sin(z / 8)));
+                    Fix64 x = (i - xLength / 2).ToFix();
+                    Fix64 z = (j - zLength / 2).ToFix();
+                    heights[i, j] = (10.ToFix().Mul((Fix64.Sin(x.Div(8.ToFix())).Add(Fix64.Sin(z.Div(8.ToFix()))))));
                 }
             }
             //Create the terrain.
             var terrain = new Terrain(heights, new AffineTransform(
-                    new Vector3(xSpacing, 1, zSpacing),
+                    new Vector3(xSpacing, 1.ToFix(), zSpacing),
                     Quaternion.Identity,
-                    new Vector3(-xLength * xSpacing / 2, 0, -zLength * zSpacing / 2)));
+                    new Vector3(((-xLength).ToFix().Mul(xSpacing)).Div(2.ToFix()), 0.ToFix(), ((-zLength).ToFix().Mul(zSpacing)).Div(2.ToFix()))));
 
             Space.Add(terrain);
             game.ModelDrawer.Add(terrain);
@@ -65,7 +65,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 }
             };
 
-            game.Camera.Position = new Vector3(0, 30, 20);
+            game.Camera.Position = new Vector3(0.ToFix(), 30.ToFix(), 20.ToFix());
 
         }
 
@@ -73,9 +73,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
         void Launch()
         {
-            Sphere sphere = new Sphere(Game.Camera.Position, 1, 10);
+            Sphere sphere = new Sphere(Game.Camera.Position, 1.ToFix(), 10.ToFix());
             sphere.CollisionInformation.Events.InitialCollisionDetected += eventHandler;
-            sphere.LinearVelocity = Game.Camera.WorldMatrix.Forward * 30;
+            sphere.LinearVelocity = Game.Camera.WorldMatrix.Forward * 30.ToFix();
             Space.Add(sphere);
             Game.ModelDrawer.Add(sphere);
         }

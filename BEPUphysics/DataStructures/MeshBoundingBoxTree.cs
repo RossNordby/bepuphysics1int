@@ -396,7 +396,7 @@ namespace BEPUphysics.DataStructures
         /// <summary>
         /// The tiny extra margin added to leaf bounding boxes that allow the volume cost metric to function properly even in degenerate cases.
         /// </summary>
-        public static Fix64 LeafMargin = (Fix64).001m.ToFix();
+        public static Fix64 LeafMargin = .001m.ToFix();
         sealed class LeafNode : Node
         {
             int LeafIndex;

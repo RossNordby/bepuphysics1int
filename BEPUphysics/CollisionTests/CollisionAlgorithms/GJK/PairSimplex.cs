@@ -95,12 +95,12 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
         /// The baseline amount that a GJK iteration must progress through to avoid exiting.
         /// Defaults to 1e-8f.
         ///</summary>
-        public static Fix64 ProgressionEpsilon = (Fix64)1e-8m.ToFix();
+        public static Fix64 ProgressionEpsilon = 1e-8m.ToFix();
         /// <summary>
         /// The baseline amount that an iteration must converge with its distance to avoid exiting.
         /// Defaults to 1e-7f.
         /// </summary>
-        public static Fix64 DistanceConvergenceEpsilon = (Fix64)1e-7m.ToFix();
+        public static Fix64 DistanceConvergenceEpsilon = 1e-7m.ToFix();
 
         ///<summary>
         /// Simplex as viewed from the local space of A.

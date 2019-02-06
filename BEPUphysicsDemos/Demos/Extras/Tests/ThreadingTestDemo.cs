@@ -47,9 +47,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
             int width = 15;
             int height = 15;
-            Fix64 blockWidth = 2;
-            Fix64 blockHeight = 1;
-            Fix64 blockLength = 1;
+            Fix64 blockWidth = 2.ToFix();
+            Fix64 blockHeight = 1.ToFix();
+            Fix64 blockLength = 1.ToFix();
 
 
 
@@ -60,15 +60,15 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                     var toAdd =
                         new Box(
                             new Vector3(
-                                i * blockWidth + .5m * blockWidth * (j % 2) - width * blockWidth * .5m,
-                                blockHeight * .5m + j * (blockHeight),
-                                0),
-                            blockWidth, blockHeight, blockLength, 10);
+((i.ToFix().Mul(blockWidth)).Add((.5m.ToFix() * blockWidth).Mul(((j % 2).ToFix())))).Sub((width.ToFix().Mul(blockWidth)).Mul(.5m.ToFix())),
+(blockHeight.Mul(.5m.ToFix())).Add(j.ToFix().Mul((blockHeight))),
+0.ToFix()),
+                            blockWidth, blockHeight, blockLength, 10.ToFix());
                     toAdd.ActivityInformation.IsAlwaysActive = true;
                     Space.Add(toAdd);
                 }
             }
-            Box ground = new Box(new Vector3(0, -.5m, 0), 50, 1, 50);
+            Box ground = new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), 50.ToFix(), 1.ToFix(), 50.ToFix());
             Space.Add(ground);
 
             GC.Collect();

@@ -2,6 +2,7 @@
 using BEPUphysics.Entities.Prefabs;
 using BEPUphysics.CollisionRuleManagement;
 using BEPUutilities;
+using FixMath.NET;
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -18,7 +19,7 @@ namespace BEPUphysicsDemos.Demos
             : base(game)
         {
             Entity toAdd;
-            toAdd = new Box(new Vector3(0, -.5m, 0), 50, 1, 50);
+            toAdd = new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), 50.ToFix(), 1.ToFix(), 50.ToFix());
             Space.Add(toAdd);
 
             //Set up two stacks which go through each other
@@ -31,22 +32,22 @@ namespace BEPUphysicsDemos.Demos
             for (int k = 0; k < 10; k++)
             {
                 toAdd = new Box(
-                    new Vector3(-4 + .12m * k, .5m + k, 0), 1, 1, 1,
-                    10);
+                    new Vector3((-4 + .12m * k).ToFix(), (.5m + k).ToFix(), 0.ToFix()), 1.ToFix(), 1.ToFix(), 1.ToFix(),
+10.ToFix());
                 toAdd.CollisionInformation.CollisionRules.Group = firstStackGroup;
                 Space.Add(toAdd);
-                toAdd = new Box(new Vector3(4 - .12m * k, .5m + k, 0),
-                                1, 1, 1, 10);
+                toAdd = new Box(new Vector3((4 - .12m * k).ToFix(), (.5m + k).ToFix(), 0.ToFix()),
+1.ToFix(), 1.ToFix(), 1.ToFix(), 10.ToFix());
                 toAdd.CollisionInformation.CollisionRules.Group = secondStackGroup;
                 Space.Add(toAdd);
             }
             //Add another two boxes which ignore each other using the specific entities method; they will still collide with the stacks since they will have the default dynamic collision group.
-            toAdd = new Box(new Vector3(1, 3, 0), 1, 4, 2, 10);
-            var toAdd2 = new Box(new Vector3(-1, 3, 0), 1, 4, 2, 15);
+            toAdd = new Box(new Vector3(1.ToFix(), 3.ToFix(), 0.ToFix()), 1.ToFix(), 4.ToFix(), 2.ToFix(), 10.ToFix());
+            var toAdd2 = new Box(new Vector3((-1).ToFix(), 3.ToFix(), 0.ToFix()), 1.ToFix(), 4.ToFix(), 2.ToFix(), 15.ToFix());
             CollisionRules.AddRule(toAdd, toAdd2, CollisionRule.NoBroadPhase);
             Space.Add(toAdd);
             Space.Add(toAdd2);
-            game.Camera.Position = new Vector3(0, 6, 20);
+            game.Camera.Position = new Vector3(0.ToFix(), 6.ToFix(), 20.ToFix());
         }
 
         /// <summary>

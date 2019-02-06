@@ -20,7 +20,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             : base(game)
         {
 
-            Space.Add(new Box(new Vector3(0, 0, 0), 1000, 10, 1000));
+            Space.Add(new Box(new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()), 1000.ToFix(), 10.ToFix(), 1000.ToFix()));
             //MotionSettings.DefaultPositionUpdateMode = BEPUphysics.PositionUpdating.PositionUpdateMode.Continuous;
 
             NarrowPhaseHelper.Factories.SphereSphere.EnsureCount(35000);
@@ -51,20 +51,20 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             //    Space.Add(sphere);
             //}
 
-            Fix64 width = 10;
-            Fix64 height = 50;
-            Fix64 length = 10;
-            for (int i = 0; i < width; i++)
+            Fix64 width = 10.ToFix();
+            Fix64 height = 50.ToFix();
+            Fix64 length = 10.ToFix();
+            for (int i = 0; i.ToFix() < width; i++)
             {
-                for (int j = 0; j < height; j++)
+                for (int j = 0; j.ToFix() < height; j++)
                 {
-                    for (int k = 0; k < length; k++)
+                    for (int k = 0; k.ToFix() < length; k++)
                     {
                         Vector3 position =
-                            new Vector3(i * 3 + j * .2m,
-                                20 + j * 3,
-                                k * 3 + j * .2m);
-                        var e = new Sphere(position, 1, 1);// { Tag = "noDisplayObject" };
+                            new Vector3((i * 3 + j * .2m).ToFix(),
+(20 + j * 3).ToFix(),
+(k * 3 + j * .2m).ToFix());
+                        var e = new Sphere(position, 1.ToFix(), 1.ToFix());// { Tag = "noDisplayObject" };
                         //var e = new Box(position, 1, 1, 1, 1) { Tag = "noDisplayObject" };
                         e.ActivityInformation.IsAlwaysActive = true;
                         Space.Add(e);
@@ -76,7 +76,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
 
 
-            game.Camera.Position = new Vector3(0, 30, 20);
+            game.Camera.Position = new Vector3(0.ToFix(), 30.ToFix(), 20.ToFix());
 
             //Pre-simulate.
             for (int i = 0; i < 30; i++)

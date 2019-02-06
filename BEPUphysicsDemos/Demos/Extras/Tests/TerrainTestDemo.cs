@@ -2,6 +2,7 @@
 using BEPUphysics.CollisionShapes;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
+using FixMath.NET;
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -47,7 +48,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Space.Add(new Box(new Vector3(i * 50, -50, j * 50), 50, 20, 50));
+                    Space.Add(new Box(new Vector3((i * 50).ToFix(), (-50).ToFix(), (j * 50).ToFix()), 50.ToFix(), 20.ToFix(), 50.ToFix()));
                 }
             }
 
@@ -58,15 +59,15 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 {
                     CompoundBody cb = new CompoundBody(new CompoundShapeEntry[] 
                         {
-                            new CompoundShapeEntry(new CapsuleShape(2, 1), new Vector3(0, 0,0)),
-                            new CompoundShapeEntry(new CapsuleShape(2, 1), new Vector3(2, 0,0)),
-                            new CompoundShapeEntry(new CapsuleShape(2, 1), new Vector3(4, 0,0)),
-                            new CompoundShapeEntry(new CapsuleShape(2, 1), new Vector3(6, 0,0)),
-                            new CompoundShapeEntry(new CapsuleShape(2, 1), new Vector3(8, 0,0)),
-                            new CompoundShapeEntry(new CapsuleShape(2, 1), new Vector3(10, 0,0)),
-                            new CompoundShapeEntry(new CapsuleShape(2, 1), new Vector3(12, 0,0)),
-                        }, 10);
-                    cb.Position = new Vector3(i * 15, 20, j * 5);
+                            new CompoundShapeEntry(new CapsuleShape(2.ToFix(), 1.ToFix()), new Vector3(0.ToFix(), 0.ToFix(),0.ToFix())),
+                            new CompoundShapeEntry(new CapsuleShape(2.ToFix(), 1.ToFix()), new Vector3(2.ToFix(), 0.ToFix(),0.ToFix())),
+                            new CompoundShapeEntry(new CapsuleShape(2.ToFix(), 1.ToFix()), new Vector3(4.ToFix(), 0.ToFix(),0.ToFix())),
+                            new CompoundShapeEntry(new CapsuleShape(2.ToFix(), 1.ToFix()), new Vector3(6.ToFix(), 0.ToFix(),0.ToFix())),
+                            new CompoundShapeEntry(new CapsuleShape(2.ToFix(), 1.ToFix()), new Vector3(8.ToFix(), 0.ToFix(),0.ToFix())),
+                            new CompoundShapeEntry(new CapsuleShape(2.ToFix(), 1.ToFix()), new Vector3(10.ToFix(), 0.ToFix(),0.ToFix())),
+                            new CompoundShapeEntry(new CapsuleShape(2.ToFix(), 1.ToFix()), new Vector3(12.ToFix(), 0.ToFix(),0.ToFix())),
+                        }, 10.ToFix());
+                    cb.Position = new Vector3((i * 15).ToFix(), 20.ToFix(), (j * 5).ToFix());
 
                     //CompoundBody cb = new CompoundBody(new CompoundShapeEntry[] 
                     //{
@@ -93,7 +94,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                     //cb.Position = new Vector3(i * 15, 20, j * 5);
 
                     cb.ActivityInformation.IsAlwaysActive = true;
-                    cb.AngularVelocity = new Vector3(.01m, 0, 0);
+                    cb.AngularVelocity = new Vector3(.01m.ToFix(), 0.ToFix(), 0.ToFix());
 
                     Space.Add(cb);
                 }
@@ -101,7 +102,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
 
 
-            game.Camera.Position = new Vector3(0, 30, 20);
+            game.Camera.Position = new Vector3(0.ToFix(), 30.ToFix(), 20.ToFix());
 
         }
 

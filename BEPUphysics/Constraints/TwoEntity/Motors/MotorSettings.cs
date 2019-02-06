@@ -379,7 +379,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Must be greater than zero.
         /// Sometimes, if a joint system is unstable, increasing the softness of the involved constraints will make it settle down.
         /// </summary>
-        internal Fix64 softness = (Fix64).0001m.ToFix();
+        internal Fix64 softness = .0001m.ToFix();
 
         internal VelocityMotorSettings(MotorSettings motorSettings)
         {

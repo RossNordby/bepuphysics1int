@@ -325,10 +325,10 @@ namespace BEPUutilities
 			Fix64 bFraction = Fix64.Sin(interpolationAmount.Mul(halfTheta)).Div(sinHalfTheta);
 
             //Blend the two quaternions to get the result!
-            result.X = (Fix64)((start.X.Mul(aFraction)).Add(end.X.Mul(bFraction)));
-            result.Y = (Fix64)((start.Y.Mul(aFraction)).Add(end.Y.Mul(bFraction)));
-            result.Z = (Fix64)((start.Z.Mul(aFraction)).Add(end.Z.Mul(bFraction)));
-            result.W = (Fix64)((start.W.Mul(aFraction)).Add(end.W.Mul(bFraction)));
+            result.X = ((start.X.Mul(aFraction)).Add(end.X.Mul(bFraction)));
+            result.Y = ((start.Y.Mul(aFraction)).Add(end.Y.Mul(bFraction)));
+            result.Z = ((start.Z.Mul(aFraction)).Add(end.Z.Mul(bFraction)));
+            result.W = ((start.W.Mul(aFraction)).Add(end.W.Mul(bFraction)));
 
 
 

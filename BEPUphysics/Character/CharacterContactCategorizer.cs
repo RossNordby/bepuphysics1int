@@ -96,7 +96,7 @@ namespace BEPUphysics.Character
 		{
 			MaximumTractionSlope = maximumTractionSlope;
 			MaximumSupportSlope = maximumSupportSlope;
-			HeadThreshold = (Fix64)(-.01m).ToFix();
+			HeadThreshold = (-.01m).ToFix();
 			Debug.Assert(SupportThreshold <= TractionThreshold, "The character's support threshold should be no higher than the traction threshold for the traction threshold to be meaningful.");
 		}
 

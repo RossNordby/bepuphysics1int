@@ -24,26 +24,26 @@ namespace BEPUphysics.Settings
         /// Fraction of position error to convert into corrective momentum.
         /// Defaults to 0.2.
         /// </summary>
-        public static Fix64 PenetrationRecoveryStiffness = (Fix64)0.2m.ToFix();
+        public static Fix64 PenetrationRecoveryStiffness = 0.2m.ToFix();
 
         /// <summary>
         /// Magnitude of relative velocity at a contact point below which staticFriction is used.
         /// dynamicFriction is used when velocity exceeds this threshold.
         /// Defaults to 0.2.
         /// </summary>
-        public static Fix64 StaticFrictionVelocityThreshold = (Fix64)0.2m.ToFix();
+        public static Fix64 StaticFrictionVelocityThreshold = 0.2m.ToFix();
 
         /// <summary>
         /// Value by which a collision pair's friction coefficient will be multiplied to get the twist friction coefficient.
         /// Defaults to 1.
         /// </summary>
-        public static Fix64 TwistFrictionFactor = (Fix64)1m.ToFix();
+        public static Fix64 TwistFrictionFactor = 1m.ToFix();
 
         /// <summary>
         /// <para>Softness multiplier used by collision penetration constraints. Higher softness values allow more velocity error and make things look 'squishier'. Defaults to 0.001.</para>
         /// <para>Note that this value is not used directly by constraints; it is first scaled by the raw inverse effective mass. This allows consistent behavior across objects with different masses.</para>
         /// </summary>
-        public static Fix64 Softness = (Fix64).001m.ToFix();
+        public static Fix64 Softness = .001m.ToFix();
 
 
     }

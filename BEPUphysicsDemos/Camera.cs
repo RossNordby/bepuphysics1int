@@ -55,7 +55,7 @@ namespace BEPUphysicsDemos
 					//However, we cannot allow a view direction parallel to the locked up direction.
 					Fix64 dot;
                     Vector3.Dot(ref value, ref lockedUp, out dot);
-                    if (Fix64.Abs(dot) > 1 - Toolbox.BigEpsilon)
+                    if (Fix64.Abs(dot) > 1.ToFix().Sub(Toolbox.BigEpsilon))
                     {
                         //The view direction must not be aligned with the locked up direction.
                         //Silently fail without changing the view direction.
@@ -66,7 +66,7 @@ namespace BEPUphysicsDemos
             }
         }
 
-        private Fix64 maximumPitch = MathHelper.PiOver2 * (Fix64)0.99m;
+        private Fix64 maximumPitch = MathHelper.PiOver2.Mul(0.99m.ToFix());
         /// <summary>
         /// Gets or sets how far the camera can look up or down in radians.
         /// </summary>
@@ -75,7 +75,7 @@ namespace BEPUphysicsDemos
             get { return maximumPitch; }
             set
             {
-                if (value < 0)
+                if (value < 0.ToFix())
                     throw new ArgumentException("Maximum pitch corresponds to pitch magnitude; must be positive.");
                 if (value >= MathHelper.PiOver2)
                     throw new ArgumentException("Maximum pitch must be less than Pi/2.");
@@ -148,7 +148,7 @@ namespace BEPUphysicsDemos
         /// <param name="distance">Distance to move.</param>
         public void MoveUp(Fix64 distance)
         {
-            Position += new Vector3(0, distance, 0);
+            Position += new Vector3(0.ToFix(), distance, 0.ToFix());
         }
 
 
@@ -179,10 +179,10 @@ namespace BEPUphysicsDemos
 
             //While this could be rephrased in terms of dot products alone, converting to actual angles can be more intuitive.
             //Consider +Pi/2 to be up, and -Pi/2 to be down.
-            Fix64 currentPitch = Fix64.Acos(MathHelper.Clamp(-dot, -1, 1)) - MathHelper.PiOver2;
+            Fix64 currentPitch = Fix64.Acos(MathHelper.Clamp(dot.Neg(), (-1).ToFix(), 1.ToFix())).Sub(MathHelper.PiOver2);
             //Compute our new pitch by clamping the current + change.
-            Fix64 newPitch = MathHelper.Clamp(currentPitch + radians, -maximumPitch, maximumPitch);
-            Fix64 allowedChange = newPitch - currentPitch;
+            Fix64 newPitch = MathHelper.Clamp(currentPitch.Add(radians), maximumPitch.Neg(), maximumPitch);
+            Fix64 allowedChange = newPitch.Sub(currentPitch);
 
             //Compute and apply the rotation.
             Vector3 pitchAxis;

@@ -35,7 +35,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             Space.Solver.IterationLimit = 0;
             Entity toAdd;
             //BoundingBox box = new BoundingBox(new Vector3(-5, 1, 1), new Vector3(5, 7, 7));
-            BoundingBox box = new BoundingBox(new Vector3(-50, -50, -50), new Vector3(50, 50, 50));
+            BoundingBox box = new BoundingBox(new Vector3((-50).ToFix(), (-50).ToFix(), (-50).ToFix()), new Vector3(50.ToFix(), 50.ToFix(), 50.ToFix()));
 
             //DynamicHierarchyOld dhOld = new DynamicHierarchyOld(Space.ThreadManager);
             DynamicHierarchy dh = new DynamicHierarchy(Space.ParallelLooper);
@@ -53,12 +53,12 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             RawList<Entity> entities = new RawList<Entity>();
             for (int k = 0; k < 100; k++)
             {
-                Vector3 position = new Vector3((Fix64)rand.NextDouble() * (box.Max.X - box.Min.X) + box.Min.X,
-                                               (Fix64)rand.NextDouble() * (box.Max.Y - box.Min.Y) + box.Min.Y,
-                                               (Fix64)rand.NextDouble() * (box.Max.Z - box.Min.Z) + box.Min.Z);
-                toAdd = new Box(position, 1, 1, 1, 1);
+                Vector3 position = new Vector3((rand.NextDouble().ToFix()).Mul((box.Max.X.Sub(box.Min.X))).Add(box.Min.X),
+(rand.NextDouble().ToFix()).Mul((box.Max.Y.Sub(box.Min.Y))).Add(box.Min.Y),
+(rand.NextDouble().ToFix()).Mul((box.Max.Z.Sub(box.Min.Z))).Add(box.Min.Z));
+                toAdd = new Box(position, 1.ToFix(), 1.ToFix(), 1.ToFix(), 1.ToFix());
                 toAdd.CollisionInformation.CollisionRules.Personal = CollisionRule.NoNarrowPhasePair;
-                toAdd.CollisionInformation.UpdateBoundingBox(0);
+                toAdd.CollisionInformation.UpdateBoundingBox(0.ToFix());
                 //Space.Add(toAdd);
                 //dhOld.Add(toAdd.CollisionInformation);
                 dh.Add(toAdd.CollisionInformation);
@@ -157,16 +157,16 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 #endregion
                 #region Ray cast timing
                 case Test.RayCast:
-					Fix64 rayLength = 100;
+					Fix64 rayLength = 100.ToFix();
                     RawList<Ray> rays = new RawList<Ray>();
                     for (int i = 0; i < numRuns; i++)
                     {
                         rays.Add(new Ray()
                         {
-                            Position = new Vector3((Fix64)rand.NextDouble() * (box.Max.X - box.Min.X) + box.Min.X,
-                                               (Fix64)rand.NextDouble() * (box.Max.Y - box.Min.Y) + box.Min.Y,
-                                               (Fix64)rand.NextDouble() * (box.Max.Z - box.Min.Z) + box.Min.Z),
-                            Direction = Vector3.Normalize(new Vector3((Fix64)(rand.NextDouble() - .5), (Fix64)(rand.NextDouble() - .5), (Fix64)(rand.NextDouble() - .5)))
+                            Position = new Vector3((rand.NextDouble().ToFix()).Mul((box.Max.X.Sub(box.Min.X))).Add(box.Min.X),
+(rand.NextDouble().ToFix()).Mul((box.Max.Y.Sub(box.Min.Y))).Add(box.Min.Y),
+(rand.NextDouble().ToFix()).Mul((box.Max.Z.Sub(box.Min.Z))).Add(box.Min.Z)),
+                            Direction = Vector3.Normalize(new Vector3((rand.NextDouble() - .5).ToFix(), (rand.NextDouble() - .5).ToFix(), (rand.NextDouble() - .5).ToFix()))
                         });
                     }
                     RawList<BroadPhaseEntry> outputIntersections = new RawList<BroadPhaseEntry>();
@@ -207,14 +207,14 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 #endregion
                 #region Bounding box query timing
                 case Test.BoundingBoxQuery:
-                    Fix64 boundingBoxSize = 10;
+                    Fix64 boundingBoxSize = 10.ToFix();
                     var boundingBoxes = new RawList<BoundingBox>();
-                    Vector3 offset = new Vector3(boundingBoxSize / 2, boundingBoxSize / 2, boundingBoxSize / 2);
+                    Vector3 offset = new Vector3(boundingBoxSize.Div(2.ToFix()), boundingBoxSize.Div(2.ToFix()), boundingBoxSize.Div(2.ToFix()));
                     for (int i = 0; i < numRuns; i++)
                     {
-                        Vector3 center = new Vector3((Fix64)rand.NextDouble() * (box.Max.X - box.Min.X) + box.Min.X,
-                                                     (Fix64)rand.NextDouble() * (box.Max.Y - box.Min.Y) + box.Min.Y,
-                                                     (Fix64)rand.NextDouble() * (box.Max.Z - box.Min.Z) + box.Min.Z);
+                        Vector3 center = new Vector3((rand.NextDouble().ToFix()).Mul((box.Max.X.Sub(box.Min.X))).Add(box.Min.X),
+(rand.NextDouble().ToFix()).Mul((box.Max.Y.Sub(box.Min.Y))).Add(box.Min.Y),
+(rand.NextDouble().ToFix()).Mul((box.Max.Z.Sub(box.Min.Z))).Add(box.Min.Z));
                         boundingBoxes.Add(new BoundingBox()
                         {
                             Min = center - offset,
@@ -274,10 +274,10 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         {
             for (int i = 0; i < entities.Count; i++)
             {
-				Fix64 speed = (Fix64).1m;
+				Fix64 speed = .1m.ToFix();
                 //entities[i].Position += new Vector3((Fix64)rand.NextDouble() * speed - speed * .5m, (Fix64)rand.NextDouble() * speed - speed * .5m, (Fix64)rand.NextDouble() * speed - speed * .5m);
-                entities[i].Position += new Vector3(0, speed, 0);
-                entities[i].CollisionInformation.UpdateBoundingBox(0);
+                entities[i].Position += new Vector3(0.ToFix(), speed, 0.ToFix());
+                entities[i].CollisionInformation.UpdateBoundingBox(0.ToFix());
             }
         }
 

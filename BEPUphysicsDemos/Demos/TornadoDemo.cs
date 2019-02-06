@@ -24,9 +24,9 @@ namespace BEPUphysicsDemos.Demos
         public TornadoDemo(DemosGame game)
             : base(game)
         {
-            shape = new BoundingBoxForceFieldShape(new BoundingBox(new Vector3(-100, -20, -40), new Vector3(-20, 120, 40)));
-            tornado = new Tornado(shape, (shape.BoundingBox.Min + shape.BoundingBox.Max) / 2, new Vector3(0, 1, 0),
-                                  150, false, 50, 10, 200, 200, 80, 2000, 40, 10);
+            shape = new BoundingBoxForceFieldShape(new BoundingBox(new Vector3((-100).ToFix(), (-20).ToFix(), (-40).ToFix()), new Vector3((-20).ToFix(), 120.ToFix(), 40.ToFix())));
+            tornado = new Tornado(shape, (shape.BoundingBox.Min + shape.BoundingBox.Max) / 2.ToFix(), new Vector3(0.ToFix(), 1.ToFix(), 0.ToFix()),
+150.ToFix(), false, 50.ToFix(), 10.ToFix(), 200.ToFix(), 200.ToFix(), 80.ToFix(), 2000.ToFix(), 40.ToFix(), 10.ToFix());
             tornado.ForceWakeUp = true; //The tornado will be moving, so it should wake up things that it comes into contact with.
             Space.Add(tornado);
 
@@ -34,17 +34,17 @@ namespace BEPUphysicsDemos.Demos
             int numColumns = 10;
             int numRows = 10;
             int numHigh = 1;
-			Fix64 separation = 1.5m;
+			Fix64 separation = 1.5m.ToFix();
             Entity toAdd;
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
                     {
                         toAdd = new Box(new Vector3(
-                                            separation * i - numRows * separation / 2,
-                                            5 + k * separation,
-                                            separation * j - numColumns * separation / 2),
-                                        1, 1, 1, 10);
+(separation.Mul(i.ToFix())).Sub((numRows.ToFix().Mul(separation)).Div(2.ToFix())),
+5.ToFix().Add(k.ToFix().Mul(separation)),
+(separation.Mul(j.ToFix())).Sub((numColumns.ToFix().Mul(separation)).Div(2.ToFix()))),
+1.ToFix(), 1.ToFix(), 1.ToFix(), 10.ToFix());
                         Space.Add(toAdd);
                     }
 
@@ -55,19 +55,19 @@ namespace BEPUphysicsDemos.Demos
             int xLength = 180;
             int zLength = 180;
 
-			Fix64 xSpacing = 8;
-			Fix64 zSpacing = 8;
+			Fix64 xSpacing = 8.ToFix();
+			Fix64 zSpacing = 8.ToFix();
             var heights = new Fix64[xLength,zLength];
             for (int i = 0; i < xLength; i++)
             {
                 for (int j = 0; j < zLength; j++)
                 {
-					Fix64 x = i - xLength / 2;
-					Fix64 z = j - zLength / 2;
+					Fix64 x = (i - xLength / 2).ToFix();
+					Fix64 z = (j - zLength / 2).ToFix();
                     //heights[i,j] = (Fix64)Math.Pow(1.2 * Math.Sqrt(x * x + y * y), 2);
                     //heights[i,j] = -1f / (x * x + y * y);
                     //heights[i,j] = (Fix64)(x * y / 100f);
-                    heights[i,j] = 5 * (Fix64.Sin(x / 8) + Fix64.Sin(z / 8));
+                    heights[i,j] = 5.ToFix().Mul((Fix64.Sin(x.Div(8.ToFix())).Add(Fix64.Sin(z.Div(8.ToFix())))));
                     //heights[i,j] = 3 * (Fix64)Math.Sin(x * y / 100f);
                     //heights[i,j] = (x * x * x * y - y * y * y * x) / 1000f;
                 }
@@ -75,12 +75,12 @@ namespace BEPUphysicsDemos.Demos
 
             //Create the terrain.
             var terrain = new Terrain(heights, new AffineTransform(
-                new Vector3(xSpacing, 1, zSpacing), 
+                new Vector3(xSpacing, 1.ToFix(), zSpacing), 
                 Quaternion.Identity, 
-                new Vector3(-xLength * xSpacing / 2, 0, -zLength * zSpacing / 2)));
+                new Vector3(((-xLength).ToFix().Mul(xSpacing)).Div(2.ToFix()), 0.ToFix(), ((-zLength).ToFix().Mul(zSpacing)).Div(2.ToFix()))));
             Space.Add(terrain);
             game.ModelDrawer.Add(terrain);
-            game.Camera.Position = new Vector3(0, 5, 60);
+            game.Camera.Position = new Vector3(0.ToFix(), 5.ToFix(), 60.ToFix());
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace BEPUphysicsDemos.Demos
         public override void Update(Fix64 dt)
         {
             //Move the origin of the force of the tornado,
-            Vector3 increment = new Vector3(10, 0, 0) * dt;
+            Vector3 increment = new Vector3(10.ToFix(), 0.ToFix(), 0.ToFix()) * dt;
             //Move the detection shape as well.
             shape.BoundingBox = new BoundingBox(shape.BoundingBox.Min + increment, shape.BoundingBox.Max + increment);
             tornado.Position += increment;

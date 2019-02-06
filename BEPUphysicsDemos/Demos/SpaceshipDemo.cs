@@ -7,6 +7,7 @@ using BEPUphysics.CollisionShapes;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using System.Collections.Generic;
 using BEPUutilities;
+using FixMath.NET;
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -23,10 +24,10 @@ namespace BEPUphysicsDemos.Demos
             : base(game)
         {
             //Build the ship
-            var shipFuselage = new CompoundShapeEntry(new CylinderShape(3, .7m), new Vector3(0, 5, 0), 4);
-            var shipNose = new CompoundShapeEntry(new ConeShape(2, .7m), new Vector3(0, 7, 0), 2);
-            var shipWing = new CompoundShapeEntry(new BoxShape(5, 2, .2m), new Vector3(0, 5, 0), 3);
-            var shipThrusters = new CompoundShapeEntry(new ConeShape(1, .5m), new Vector3(0, 3.25m, 0), 1);
+            var shipFuselage = new CompoundShapeEntry(new CylinderShape(3.ToFix(), .7m.ToFix()), new Vector3(0.ToFix(), 5.ToFix(), 0.ToFix()), 4.ToFix());
+            var shipNose = new CompoundShapeEntry(new ConeShape(2.ToFix(), .7m.ToFix()), new Vector3(0.ToFix(), 7.ToFix(), 0.ToFix()), 2.ToFix());
+            var shipWing = new CompoundShapeEntry(new BoxShape(5.ToFix(), 2.ToFix(), .2m.ToFix()), new Vector3(0.ToFix(), 5.ToFix(), 0.ToFix()), 3.ToFix());
+            var shipThrusters = new CompoundShapeEntry(new ConeShape(1.ToFix(), .5m.ToFix()), new Vector3(0.ToFix(), 3.25m.ToFix(), 0.ToFix()), 1.ToFix());
 
             var bodies = new List<CompoundShapeEntry>();
             bodies.Add(shipFuselage);
@@ -34,33 +35,33 @@ namespace BEPUphysicsDemos.Demos
             bodies.Add(shipWing);
             bodies.Add(shipThrusters);
 
-            var ship = new CompoundBody(bodies, 10);
+            var ship = new CompoundBody(bodies, 10.ToFix());
 
             //Setup the launch pad and ramp
-            Entity toAdd = new Box(new Vector3(10, 4, 0), 26, 1, 6);
+            Entity toAdd = new Box(new Vector3(10.ToFix(), 4.ToFix(), 0.ToFix()), 26.ToFix(), 1.ToFix(), 6.ToFix());
             Space.Add(toAdd);
-            toAdd = new Box(new Vector3(32, 7.8m, 0), 20, 1, 6);
-            toAdd.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Forward, -MathHelper.Pi / 8);
+            toAdd = new Box(new Vector3(32.ToFix(), 7.8m.ToFix(), 0.ToFix()), 20.ToFix(), 1.ToFix(), 6.ToFix());
+            toAdd.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.Pi.Neg().Div(8.ToFix()));
             Space.Add(toAdd);
-            toAdd = new Box(new Vector3(32, 8.8m, -3.5m), 20, 1, 1);
-            toAdd.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Forward, -MathHelper.Pi / 8);
+            toAdd = new Box(new Vector3(32.ToFix(), 8.8m.ToFix(), (-3.5m).ToFix()), 20.ToFix(), 1.ToFix(), 1.ToFix());
+            toAdd.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.Pi.Neg().Div(8.ToFix()));
             Space.Add(toAdd);
-            toAdd = new Box(new Vector3(32, 8.8m, 3.5m), 20, 1, 1);
-            toAdd.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Forward, -MathHelper.Pi / 8);
+            toAdd = new Box(new Vector3(32.ToFix(), 8.8m.ToFix(), 3.5m.ToFix()), 20.ToFix(), 1.ToFix(), 1.ToFix());
+            toAdd.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Forward, (MathHelper.Pi.Neg()).Div(8.ToFix()));
             Space.Add(toAdd);
-            toAdd = new Box(new Vector3(-2.75m, 5.5m, 0), .5m, 2, 3);
+            toAdd = new Box(new Vector3((-2.75m).ToFix(), 5.5m.ToFix(), 0.ToFix()), .5m.ToFix(), 2.ToFix(), 3.ToFix());
             Space.Add(toAdd);
 
             //Blast-off!
-            ship.AngularDamping = .4m; //Helps keep the rocket on track for a little while longer :D
-            var thruster = new Thruster(ship, new Vector3(0, -2, 0), new Vector3(0, 300, 0), 0);
+            ship.AngularDamping = .4m.ToFix(); //Helps keep the rocket on track for a little while longer :D
+            var thruster = new Thruster(ship, new Vector3(0.ToFix(), (-2).ToFix(), 0.ToFix()), new Vector3(0.ToFix(), 300.ToFix(), 0.ToFix()), 0.ToFix());
             Space.Add(thruster);
-            ship.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Right, MathHelper.Pi / 2) * Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.Pi / 2);
+            ship.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Right, MathHelper.Pi.Div(2.ToFix())) * Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.Pi.Div(2.ToFix()));
             Space.Add(ship);
 
 
-            game.Camera.Position = new Vector3(-14, 12, 25);
-            game.Camera.Yaw(MathHelper.Pi / -4);
+            game.Camera.Position = new Vector3((-14).ToFix(), 12.ToFix(), 25.ToFix());
+            game.Camera.Yaw(MathHelper.Pi.Div((-4).ToFix()));
         }
 
         /// <summary>

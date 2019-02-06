@@ -121,15 +121,15 @@ namespace BEPUphysicsDemos.SampleCode
             Vector3 position = Position; //Referenced a lot, and passed using ref parameter.
             Vector3 entityPosition = e.Position;
 
-            Fix64 entityHeight = Vector3.Dot(Axis, entityPosition - position + Axis * (Height / 2));
-            if (entityHeight < 0 || entityHeight > Height)
+            Fix64 entityHeight = Vector3.Dot(Axis, entityPosition - position + Axis * (Height.Div(2.ToFix())));
+            if (entityHeight < 0.ToFix() || entityHeight > Height)
                 impulse = Toolbox.ZeroVector;
             else
             {
-                Fix64 tornadoRadius = BottomRadius * (1 - entityHeight / Height) + TopRadius * (entityHeight / Height);
+                Fix64 tornadoRadius = (BottomRadius.Mul((1.ToFix().Sub(entityHeight.Div(Height))))).Add(TopRadius.Mul((entityHeight.Div(Height))));
                 Vector3 closestPoint;
-                Vector3 endpointA = position + Axis * Height / 2;
-                Vector3 endpointB = position - Axis * Height / 2;
+                Vector3 endpointA = position + Axis * Height / 2.ToFix();
+                Vector3 endpointB = position - Axis * Height / 2.ToFix();
                 Toolbox.GetClosestPointOnSegmentToPoint(ref endpointA, ref endpointB, ref entityPosition, out closestPoint);
                 Fix64 entityDistanceFromTornado;
                 Vector3.Distance(ref entityPosition, ref closestPoint, out entityDistanceFromTornado);
@@ -139,13 +139,13 @@ namespace BEPUphysicsDemos.SampleCode
                 if (entityDistanceFromTornado > tornadoRadius)
                 {
                     //outside tornado
-                    forceMultiplier = tornadoRadius / entityDistanceFromTornado;
+                    forceMultiplier = tornadoRadius.Div(entityDistanceFromTornado);
                     posClosest = (closestPoint - entityPosition) / entityDistanceFromTornado;
                 }
                 else if (entityDistanceFromTornado > Toolbox.Epsilon)
                 {
                     //inside tornado
-                    forceMultiplier = F64.C0p5 + F64.C0p5 * entityDistanceFromTornado / tornadoRadius;
+                    forceMultiplier = F64.C0p5.Add((F64.C0p5.Mul(entityDistanceFromTornado)).Div(tornadoRadius));
                     posClosest = (closestPoint - entityPosition) / entityDistanceFromTornado;
                 }
                 else
@@ -167,22 +167,22 @@ namespace BEPUphysicsDemos.SampleCode
                 //Current velocity along the tangent direction.
                 Fix64 dot = Vector3.Dot(e.LinearVelocity, tangentDirection);
                 //Compute the velocity difference between the current and the maximum
-                dot = HorizontalWindSpeed - dot;
+                dot = HorizontalWindSpeed.Sub(dot);
                 //Compute the force needed to reach the maximum, but clamp it to the amount of force that the tornado can apply
-                dot = MathHelper.Clamp(dot * e.Mass, 0, HorizontalForce * dt);
+                dot = MathHelper.Clamp(dot.Mul(e.Mass), 0.ToFix(), HorizontalForce.Mul(dt));
                 Vector3.Multiply(ref tangentDirection, dot, out tangentialForceVector);
 
                 //Do a similar process for the other tornado force axes.
                 Vector3 upwardForceVector;
                 dot = Vector3.Dot(e.LinearVelocity, Axis);
-                dot = UpwardSuctionSpeed - dot;
-                dot = MathHelper.Clamp(dot * e.Mass, 0, UpwardForce * dt);
+                dot = UpwardSuctionSpeed.Sub(dot);
+                dot = MathHelper.Clamp(dot.Mul(e.Mass), 0.ToFix(), UpwardForce.Mul(dt));
                 Vector3.Multiply(ref Axis, dot, out upwardForceVector);
 
                 Vector3 inwardForceVector;
                 dot = Vector3.Dot(e.LinearVelocity, posClosest);
-                dot = InwardSuctionSpeed - dot;
-                dot = MathHelper.Clamp(dot * e.Mass, 0, InwardForce * dt);
+                dot = InwardSuctionSpeed.Sub(dot);
+                dot = MathHelper.Clamp(dot.Mul(e.Mass), 0.ToFix(), InwardForce.Mul(dt));
                 Vector3.Multiply(ref posClosest, dot, out inwardForceVector);
 
                 //if (posClosest.X > 0)

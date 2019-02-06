@@ -55,7 +55,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             var wholeStartTime = Stopwatch.GetTimestamp();
 
             this.dt = dt;
-            inverseDt = 1 / dt;
+            inverseDt = 1.ToFix().Div(dt);
 
 
             ApplyGravity(dt);
@@ -100,7 +100,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         {
             var wholeStartTime = Stopwatch.GetTimestamp();
             this.dt = dt;
-            inverseDt = 1 / dt;
+            inverseDt = 1.ToFix().Div(dt);
 
 
             ApplyGravity(dt, looper);

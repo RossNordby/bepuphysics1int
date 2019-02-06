@@ -4,6 +4,7 @@ using BEPUphysics.Constraints.TwoEntity.Joints;
 using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
+using FixMath.NET;
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -19,37 +20,37 @@ namespace BEPUphysicsDemos.Demos
         public DogbotDemo(DemosGame game)
             : base(game)
         {
-            Entity body = new Box(new Vector3(0, 0, 0), 4, 2, 2, 20);
+            Entity body = new Box(new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()), 4.ToFix(), 2.ToFix(), 2.ToFix(), 20.ToFix());
             Space.Add(body);
 
-            Entity head = new Cone(body.Position + new Vector3(3.2m, .3m, 0), 1.5m, .7m, 4);
+            Entity head = new Cone(body.Position + new Vector3(3.2m.ToFix(), .3m.ToFix(), 0.ToFix()), 1.5m.ToFix(), .7m.ToFix(), 4.ToFix());
             head.OrientationMatrix = Matrix3x3.CreateFromAxisAngle(Vector3.Forward, MathHelper.PiOver2);
             Space.Add(head);
 
             //Attach the head to the body
-            var universalJoint = new UniversalJoint(body, head, head.Position + new Vector3(-.8m, 0, 0));
+            var universalJoint = new UniversalJoint(body, head, head.Position + new Vector3((-.8m).ToFix(), 0.ToFix(), 0.ToFix()));
             Space.Add(universalJoint);
             //Keep the head from swinging around too much.
             var angleLimit = new SwingLimit(body, head, Vector3.Right, Vector3.Right, MathHelper.PiOver4);
             Space.Add(angleLimit);
 
-            var tail = new Box(body.Position + new Vector3(-3m, 1m, 0), 1.6m, .1m, .1m, 4);
+            var tail = new Box(body.Position + new Vector3((-3m).ToFix(), 1m.ToFix(), 0.ToFix()), 1.6m.ToFix(), .1m.ToFix(), .1m.ToFix(), 4.ToFix());
             Space.Add(tail);
             //Keep the tail from twisting itself off.
-            universalJoint = new UniversalJoint(body, tail, tail.Position + new Vector3(.8m, 0, 0));
+            universalJoint = new UniversalJoint(body, tail, tail.Position + new Vector3(.8m.ToFix(), 0.ToFix(), 0.ToFix()));
             Space.Add(universalJoint);
 
             //Give 'em some floppy ears.
-            var ear = new Box(head.Position + new Vector3(-.2m, 0, -.65m), .01m, .7m, .2m, 1);
+            var ear = new Box(head.Position + new Vector3((-.2m).ToFix(), 0.ToFix(), (-.65m).ToFix()), .01m.ToFix(), .7m.ToFix(), .2m.ToFix(), 1.ToFix());
             Space.Add(ear);
 
-            var ballSocketJoint = new BallSocketJoint(head, ear, head.Position + new Vector3(-.2m, .35m, -.65m));
+            var ballSocketJoint = new BallSocketJoint(head, ear, head.Position + new Vector3((-.2m).ToFix(), .35m.ToFix(), (-.65m).ToFix()));
             Space.Add(ballSocketJoint);
 
-            ear = new Box(head.Position + new Vector3(-.2m, 0, .65m), .01m, .7m, .3m, 1);
+            ear = new Box(head.Position + new Vector3((-.2m).ToFix(), 0.ToFix(), .65m.ToFix()), .01m.ToFix(), .7m.ToFix(), .3m.ToFix(), 1.ToFix());
             Space.Add(ear);
 
-            ballSocketJoint = new BallSocketJoint(head, ear, head.Position + new Vector3(-.2m, .35m, .65m));
+            ballSocketJoint = new BallSocketJoint(head, ear, head.Position + new Vector3((-.2m).ToFix(), .35m.ToFix(), .65m.ToFix()));
             Space.Add(ballSocketJoint);
 
 
@@ -58,10 +59,10 @@ namespace BEPUphysicsDemos.Demos
             PointOnLineJoint pointOnLineJoint;
 
             //*************  First Arm   *************//
-            arm = new Box(body.Position + new Vector3(-1.8m, -.5m, 1.5m), .5m, 3, .2m, 20);
+            arm = new Box(body.Position + new Vector3((-1.8m).ToFix(), (-.5m).ToFix(), 1.5m.ToFix()), .5m.ToFix(), 3.ToFix(), .2m.ToFix(), 20.ToFix());
             Space.Add(arm);
 
-            shoulder = new Cylinder(body.Position + new Vector3(-1.8m, .3m, 1.25m), .1m, .7m, 10);
+            shoulder = new Cylinder(body.Position + new Vector3((-1.8m).ToFix(), .3m.ToFix(), 1.25m.ToFix()), .1m.ToFix(), .7m.ToFix(), 10.ToFix());
             shoulder.OrientationMatrix = Matrix3x3.CreateFromAxisAngle(Vector3.Right, MathHelper.PiOver2);
             Space.Add(shoulder);
 
@@ -70,26 +71,26 @@ namespace BEPUphysicsDemos.Demos
 
             //Motorize the connection.
             axisJoint.Motor.IsActive = true;
-            axisJoint.Motor.Settings.VelocityMotor.GoalVelocity = 1;
+            axisJoint.Motor.Settings.VelocityMotor.GoalVelocity = 1.ToFix();
 
             Space.Add(axisJoint);
 
             //Connect the arm to the shoulder.
-            axisJoint = new RevoluteJoint(shoulder, arm, shoulder.Position + new Vector3(0, .6m, 0), Vector3.Forward);
+            axisJoint = new RevoluteJoint(shoulder, arm, shoulder.Position + new Vector3(0.ToFix(), .6m.ToFix(), 0.ToFix()), Vector3.Forward);
             Space.Add(axisJoint);
 
             //Connect the arm to the body.
-            pointOnLineJoint = new PointOnLineJoint(arm, body, arm.Position, Vector3.Up, arm.Position + new Vector3(0, -.4m, 0));
+            pointOnLineJoint = new PointOnLineJoint(arm, body, arm.Position, Vector3.Up, arm.Position + new Vector3(0.ToFix(), (-.4m).ToFix(), 0.ToFix()));
             Space.Add(pointOnLineJoint);
 
 
             shoulder.OrientationMatrix *= Matrix3x3.CreateFromAxisAngle(Vector3.Forward, MathHelper.Pi); //Force the walker's legs out of phase.
 
             //*************  Second Arm   *************//
-            arm = new Box(body.Position + new Vector3(1.8m, -.5m, 1.5m), .5m, 3, .2m, 20);
+            arm = new Box(body.Position + new Vector3(1.8m.ToFix(), (-.5m).ToFix(), 1.5m.ToFix()), .5m.ToFix(), 3.ToFix(), .2m.ToFix(), 20.ToFix());
             Space.Add(arm);
 
-            shoulder = new Cylinder(body.Position + new Vector3(1.8m, .3m, 1.25m), .1m, .7m, 10);
+            shoulder = new Cylinder(body.Position + new Vector3(1.8m.ToFix(), .3m.ToFix(), 1.25m.ToFix()), .1m.ToFix(), .7m.ToFix(), 10.ToFix());
             shoulder.OrientationMatrix = Matrix3x3.CreateFromAxisAngle(Vector3.Right, MathHelper.PiOver2);
             Space.Add(shoulder);
 
@@ -98,24 +99,24 @@ namespace BEPUphysicsDemos.Demos
 
             //Motorize the connection.
             axisJoint.Motor.IsActive = true;
-            axisJoint.Motor.Settings.VelocityMotor.GoalVelocity = 1;
+            axisJoint.Motor.Settings.VelocityMotor.GoalVelocity = 1.ToFix();
 
             Space.Add(axisJoint);
 
             //Connect the arm to the shoulder.
-            axisJoint = new RevoluteJoint(shoulder, arm, shoulder.Position + new Vector3(0, .6m, 0), Vector3.Forward);
+            axisJoint = new RevoluteJoint(shoulder, arm, shoulder.Position + new Vector3(0.ToFix(), .6m.ToFix(), 0.ToFix()), Vector3.Forward);
             Space.Add(axisJoint);
 
 
             //Connect the arm to the body.
-            pointOnLineJoint = new PointOnLineJoint(arm, body, arm.Position, Vector3.Up, arm.Position + new Vector3(0, -.4m, 0));
+            pointOnLineJoint = new PointOnLineJoint(arm, body, arm.Position, Vector3.Up, arm.Position + new Vector3(0.ToFix(), (-.4m).ToFix(), 0.ToFix()));
             Space.Add(pointOnLineJoint);
 
             //*************  Third Arm   *************//
-            arm = new Box(body.Position + new Vector3(-1.8m, -.5m, -1.5m), .5m, 3, .2m, 20);
+            arm = new Box(body.Position + new Vector3((-1.8m).ToFix(), (-.5m).ToFix(), (-1.5m).ToFix()), .5m.ToFix(), 3.ToFix(), .2m.ToFix(), 20.ToFix());
             Space.Add(arm);
 
-            shoulder = new Cylinder(body.Position + new Vector3(-1.8m, .3m, -1.25m), .1m, .7m, 10);
+            shoulder = new Cylinder(body.Position + new Vector3((-1.8m).ToFix(), .3m.ToFix(), (-1.25m).ToFix()), .1m.ToFix(), .7m.ToFix(), 10.ToFix());
             shoulder.OrientationMatrix = Matrix3x3.CreateFromAxisAngle(Vector3.Right, MathHelper.PiOver2);
             Space.Add(shoulder);
 
@@ -124,26 +125,26 @@ namespace BEPUphysicsDemos.Demos
 
             //Motorize the connection.
             axisJoint.Motor.IsActive = true;
-            axisJoint.Motor.Settings.VelocityMotor.GoalVelocity = 1;
+            axisJoint.Motor.Settings.VelocityMotor.GoalVelocity = 1.ToFix();
 
             Space.Add(axisJoint);
 
             //Connect the arm to the shoulder.
-            axisJoint = new RevoluteJoint(shoulder, arm, shoulder.Position + new Vector3(0, .6m, 0), Vector3.Forward);
+            axisJoint = new RevoluteJoint(shoulder, arm, shoulder.Position + new Vector3(0.ToFix(), .6m.ToFix(), 0.ToFix()), Vector3.Forward);
             Space.Add(axisJoint);
 
             //Connect the arm to the body.
-            pointOnLineJoint = new PointOnLineJoint(arm, body, arm.Position, Vector3.Up, arm.Position + new Vector3(0, -.4m, 0));
+            pointOnLineJoint = new PointOnLineJoint(arm, body, arm.Position, Vector3.Up, arm.Position + new Vector3(0.ToFix(), (-.4m).ToFix(), 0.ToFix()));
             Space.Add(pointOnLineJoint);
 
 
             shoulder.OrientationMatrix *= Matrix3x3.CreateFromAxisAngle(Vector3.Forward, MathHelper.Pi); //Force the walker's legs out of phase.
 
             //*************  Fourth Arm   *************//
-            arm = new Box(body.Position + new Vector3(1.8m, -.5m, -1.5m), .5m, 3, .2m, 20);
+            arm = new Box(body.Position + new Vector3(1.8m.ToFix(), (-.5m).ToFix(), (-1.5m).ToFix()), .5m.ToFix(), 3.ToFix(), .2m.ToFix(), 20.ToFix());
             Space.Add(arm);
 
-            shoulder = new Cylinder(body.Position + new Vector3(1.8m, .3m, -1.25m), .1m, .7m, 10);
+            shoulder = new Cylinder(body.Position + new Vector3(1.8m.ToFix(), .3m.ToFix(), (-1.25m).ToFix()), .1m.ToFix(), .7m.ToFix(), 10.ToFix());
             shoulder.OrientationMatrix = Matrix3x3.CreateFromAxisAngle(Vector3.Right, MathHelper.PiOver2);
             Space.Add(shoulder);
 
@@ -152,22 +153,22 @@ namespace BEPUphysicsDemos.Demos
 
             //Motorize the connection.
             axisJoint.Motor.IsActive = true;
-            axisJoint.Motor.Settings.VelocityMotor.GoalVelocity = 1;
+            axisJoint.Motor.Settings.VelocityMotor.GoalVelocity = 1.ToFix();
 
             Space.Add(axisJoint);
 
             //Connect the arm to the shoulder.
-            axisJoint = new RevoluteJoint(shoulder, arm, shoulder.Position + new Vector3(0, .6m, 0), Vector3.Forward);
+            axisJoint = new RevoluteJoint(shoulder, arm, shoulder.Position + new Vector3(0.ToFix(), .6m.ToFix(), 0.ToFix()), Vector3.Forward);
             Space.Add(axisJoint);
 
             //Connect the arm to the body.
-            pointOnLineJoint = new PointOnLineJoint(arm, body, arm.Position, Vector3.Up, arm.Position + new Vector3(0, -.4m, 0));
+            pointOnLineJoint = new PointOnLineJoint(arm, body, arm.Position, Vector3.Up, arm.Position + new Vector3(0.ToFix(), (-.4m).ToFix(), 0.ToFix()));
             Space.Add(pointOnLineJoint);
 
             //Add some ground.
-            Space.Add(new Box(new Vector3(0, -3.5m, 0), 20m, 1, 20m));
+            Space.Add(new Box(new Vector3(0.ToFix(), (-3.5m).ToFix(), 0.ToFix()), 20m.ToFix(), 1.ToFix(), 20m.ToFix()));
 
-            game.Camera.Position = new Vector3(0, 2, 20);
+            game.Camera.Position = new Vector3(0.ToFix(), 2.ToFix(), 20.ToFix());
         }
 
         /// <summary>

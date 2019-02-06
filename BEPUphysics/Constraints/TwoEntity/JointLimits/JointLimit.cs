@@ -25,7 +25,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// <summary>
         /// Small area that the constraint can be violated without applying position correction.  Helps avoid jitter.
         /// </summary>
-        protected Fix64 margin = (Fix64)0.005m.ToFix();
+        protected Fix64 margin = 0.005m.ToFix();
 
         /// <summary>
         /// Gets or sets the minimum velocity necessary for a bounce to occur at a joint limit.

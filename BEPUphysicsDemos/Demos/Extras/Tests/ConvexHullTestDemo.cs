@@ -28,30 +28,30 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 List<Vector3> points = new List<Vector3>();
                 for (int k = 0; k < random.Next(8, 60); k++)
                 {
-                    points.Add(new Vector3(-100 + 30 * (Fix64)random.NextDouble(), 100 + 500 * (Fix64)random.NextDouble(), 100 + 30 * (Fix64)random.NextDouble()));
+                    points.Add(new Vector3((-100).ToFix().Add(30.ToFix().Mul(random.NextDouble().ToFix())), 100.ToFix().Add(500.ToFix().Mul(random.NextDouble().ToFix())), 100.ToFix().Add(30.ToFix().Mul(random.NextDouble().ToFix()))));
                 }
-                var convexHull = new ConvexHull(new Vector3(0, 7, 0), points, 10);
+                var convexHull = new ConvexHull(new Vector3(0.ToFix(), 7.ToFix(), 0.ToFix()), points, 10.ToFix());
                 Console.WriteLine(convexHull.CollisionInformation.Shape.Vertices.Count);
             }
             
             var vertices = new[] 
             { 
-                new Vector3(0, -1.750886E-9m, -1.5m),
-                new Vector3(1, 1, 0.5m), 
-                new Vector3(1, -1, 0.5m),
-                new Vector3(-1, 1, 0.5m), 
-                new Vector3(-1, -1, 0.5m), 
+                new Vector3(0.ToFix(), (-1.750886E-9m).ToFix(), (-1.5m).ToFix()),
+                new Vector3(1.ToFix(), 1.ToFix(), 0.5m.ToFix()), 
+                new Vector3(1.ToFix(), (-1).ToFix(), 0.5m.ToFix()),
+                new Vector3((-1).ToFix(), 1.ToFix(), 0.5m.ToFix()), 
+                new Vector3((-1).ToFix(), (-1).ToFix(), 0.5m.ToFix()), 
             };
 
             var hullVertices = new RawList<Vector3>();
             ConvexHullHelper.GetConvexHull(vertices, hullVertices);
 
-            ConvexHull hull = new ConvexHull(vertices, 5);
+            ConvexHull hull = new ConvexHull(vertices, 5.ToFix());
             Space.Add(hull);
 
-            Box ground = new Box(new Vector3(0, -.5m, 0), 50, 1, 50);
+            Box ground = new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), 50.ToFix(), 1.ToFix(), 50.ToFix());
             Space.Add(ground);
-            game.Camera.Position = new Vector3(0, 6, 15);
+            game.Camera.Position = new Vector3(0.ToFix(), 6.ToFix(), 15.ToFix());
         }
 
         /// <summary>

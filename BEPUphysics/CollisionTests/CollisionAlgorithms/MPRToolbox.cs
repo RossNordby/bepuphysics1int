@@ -28,7 +28,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         /// </summary>
         public static int OuterIterationLimit = 15;
 
-        private static Fix64 surfaceEpsilon = (Fix64)1e-7m.ToFix();
+        private static Fix64 surfaceEpsilon = 1e-7m.ToFix();
         /// <summary>
         /// Gets or sets how close surface-finding based MPR methods have to get before exiting.
         /// Defaults to 1e-7.
@@ -48,7 +48,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
         }
 
-        private static Fix64 depthRefinementEpsilon = (Fix64)1e-4m.ToFix();
+        private static Fix64 depthRefinementEpsilon = 1e-4m.ToFix();
         /// <summary>
         /// Gets or sets how close the penetration depth refinement system should converge before quitting.
         /// Making this smaller can help more precisely find a local minimum at the cost of performance.
@@ -70,7 +70,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
         }
 
-        private static Fix64 rayCastSurfaceEpsilon = (Fix64)1e-9m.ToFix();
+        private static Fix64 rayCastSurfaceEpsilon = 1e-9m.ToFix();
         /// <summary>
         /// Gets or sets how close surface-finding ray casts have to get before exiting.
         /// Defaults to 1e-9.

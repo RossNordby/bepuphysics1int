@@ -6,6 +6,7 @@ using BEPUphysics.NarrowPhaseSystems.Pairs;
 using BEPUphysicsDrawer.Models;
 using Microsoft.Xna.Framework.Graphics;
 using BEPUutilities;
+using FixMath.NET;
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -37,7 +38,7 @@ namespace BEPUphysicsDemos.Demos
 
             //The detector volume works on all of the entity types:
             //Convexes!
-            testEntity = new Box(new Vector3(0, -10, 0), 1, 1, 1);
+            testEntity = new Box(new Vector3(0.ToFix(), (-10).ToFix(), 0.ToFix()), 1.ToFix(), 1.ToFix(), 1.ToFix());
 
             //Compounds!
             //var bodies = new List<CompoundShapeEntry>
@@ -57,7 +58,7 @@ namespace BEPUphysicsDemos.Demos
             displayBox = game.ModelDrawer.Add(testEntity);
             SetColor(0);
             game.ModelDrawer.IsWireframe = true;
-            testEntity.LinearVelocity = new Vector3(0, 1, 0);
+            testEntity.LinearVelocity = new Vector3(0.ToFix(), 1.ToFix(), 0.ToFix());
             Space.Add(testEntity);
 
             //The color of the entity will change based upon events.
@@ -67,7 +68,7 @@ namespace BEPUphysicsDemos.Demos
             detectorVolume.VolumeBeganContainingEntity += BeganContaining;
             detectorVolume.VolumeStoppedContainingEntity += StoppedContaining;
 
-            game.Camera.Position = new Vector3(0, 0, 22);
+            game.Camera.Position = new Vector3(0.ToFix(), 0.ToFix(), 22.ToFix());
             Space.ForceUpdater.Gravity = new Vector3();
         }
 

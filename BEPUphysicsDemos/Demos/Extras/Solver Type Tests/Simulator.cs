@@ -21,7 +21,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         }
 
         public int IterationCount = 10;
-        public Vector3 Gravity = new Vector3(0, -10, 0);
+        public Vector3 Gravity = new Vector3(0.ToFix(), (-10).ToFix(), 0.ToFix());
 
         public void Add(LinearDynamic dynamic)
         {

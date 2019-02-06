@@ -3,6 +3,7 @@ using BEPUphysics.Entities.Prefabs;
 using BEPUphysicsDrawer.Models;
 using BEPUutilities;
 using ConversionHelper;
+using FixMath.NET;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace BEPUphysicsDemos.Demos.Extras
@@ -32,7 +33,7 @@ namespace BEPUphysicsDemos.Demos.Extras
             ModelDataExtractor.GetVerticesAndIndicesFromModel(model, out vertices, out indices);
 
             //Create an entity based on the model.
-            ConvexHull hull = new ConvexHull(vertices, 10);
+            ConvexHull hull = new ConvexHull(vertices, 10.ToFix());
             Space.Add(hull);
             //Create a graphic for the hull.  The BEPUphysicsDrawer will also automatically receive a visualization of the convex hull which we can compare our graphic against.
             //The graphic will be offset from the collision shape because we have not attempted to offset it to match the collision shape's origin.
@@ -41,7 +42,7 @@ namespace BEPUphysicsDemos.Demos.Extras
 
 
             //Now let's create another entity from the same vertices.
-            hull = new ConvexHull(vertices, 10);
+            hull = new ConvexHull(vertices, 10.ToFix());
             Space.Add(hull);
 
             //Note that the prefab entity type ConvexHull uses the ConvexHullShape constructor internally, which outputs the computed center of the shape
@@ -66,9 +67,9 @@ namespace BEPUphysicsDemos.Demos.Extras
             //This graphic is perfectly aligned with the collision shape!  Hooray!
 
 
-            Box ground = new Box(new Vector3(0, -1.5m, 0), 50, 1, 50);
+            Box ground = new Box(new Vector3(0.ToFix(), (-1.5m).ToFix(), 0.ToFix()), 50.ToFix(), 1.ToFix(), 50.ToFix());
             Space.Add(ground);
-            game.Camera.Position = new Vector3(0, 6, 15);
+            game.Camera.Position = new Vector3(0.ToFix(), 6.ToFix(), 15.ToFix());
         }
 
         /// <summary>

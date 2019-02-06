@@ -3,6 +3,7 @@ using BEPUphysics.Constraints.TwoEntity.Motors;
 using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
+using FixMath.NET;
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -21,106 +22,106 @@ namespace BEPUphysicsDemos.Demos
             //Make a simple, poseable action figure.  This isn't a full featured 'ragdoll' really;
             //ragdolls usually have specific joint limits and appropriate kinds of joints rather than all
             //ball socket joints.  This demo could be modified into a 'proper' ragdoll.
-            Entity body = new Box(new Vector3(0, 5, 0), 1.5m, 2, 1, 10);
+            Entity body = new Box(new Vector3(0.ToFix(), 5.ToFix(), 0.ToFix()), 1.5m.ToFix(), 2.ToFix(), 1.ToFix(), 10.ToFix());
             Space.Add(body);
 
-            Entity head = new Sphere(body.Position + new Vector3(0, 2, 0), .5m, 5);
+            Entity head = new Sphere(body.Position + new Vector3(0.ToFix(), 2.ToFix(), 0.ToFix()), .5m.ToFix(), 5.ToFix());
             Space.Add(head);
 
             //Connect the head to the body.
-            Space.Add(new BallSocketJoint(body, head, head.Position + new Vector3(0, -.9m, 0)));
+            Space.Add(new BallSocketJoint(body, head, head.Position + new Vector3(0.ToFix(), (-.9m).ToFix(), 0.ToFix())));
             //Angular motors can be used to simulate friction when their goal velocity is 0.
             var angularMotor = new AngularMotor(body, head);
-            angularMotor.Settings.MaximumForce = 150; //The maximum force of 'friction' in this joint.
+            angularMotor.Settings.MaximumForce = 150.ToFix(); //The maximum force of 'friction' in this joint.
             Space.Add(angularMotor);
 
             //Make the first arm.
-            var upperLimb = new Box(body.Position + new Vector3(-1.6m, .8m, 0), 1, .5m, .5m, 5);
+            var upperLimb = new Box(body.Position + new Vector3((-1.6m).ToFix(), .8m.ToFix(), 0.ToFix()), 1.ToFix(), .5m.ToFix(), .5m.ToFix(), 5.ToFix());
             Space.Add(upperLimb);
 
-            var lowerLimb = new Box(upperLimb.Position + new Vector3(-1.4m, 0, 0), 1, .5m, .5m, 5);
+            var lowerLimb = new Box(upperLimb.Position + new Vector3((-1.4m).ToFix(), 0.ToFix(), 0.ToFix()), 1.ToFix(), .5m.ToFix(), .5m.ToFix(), 5.ToFix());
             Space.Add(lowerLimb);
 
             //Connect the body to the upper arm.
-            Space.Add(new BallSocketJoint(body, upperLimb, upperLimb.Position + new Vector3(.7m, 0, 0)));
+            Space.Add(new BallSocketJoint(body, upperLimb, upperLimb.Position + new Vector3(.7m.ToFix(), 0.ToFix(), 0.ToFix())));
             angularMotor = new AngularMotor(body, upperLimb);
-            angularMotor.Settings.MaximumForce = 250;
+            angularMotor.Settings.MaximumForce = 250.ToFix();
             Space.Add(angularMotor);
 
 
             //Connect the upper arm to the lower arm.
-            Space.Add(new BallSocketJoint(upperLimb, lowerLimb, upperLimb.Position + new Vector3(-.7m, 0, 0)));
+            Space.Add(new BallSocketJoint(upperLimb, lowerLimb, upperLimb.Position + new Vector3((-.7m).ToFix(), 0.ToFix(), 0.ToFix())));
             angularMotor = new AngularMotor(upperLimb, lowerLimb);
-            angularMotor.Settings.MaximumForce = 150;
+            angularMotor.Settings.MaximumForce = 150.ToFix();
             Space.Add(angularMotor);
 
             //Make the second arm.
-            upperLimb = new Box(body.Position + new Vector3(1.6m, .8m, 0), 1, .5m, .5m, 5);
+            upperLimb = new Box(body.Position + new Vector3(1.6m.ToFix(), .8m.ToFix(), 0.ToFix()), 1.ToFix(), .5m.ToFix(), .5m.ToFix(), 5.ToFix());
             Space.Add(upperLimb);
 
-            lowerLimb = new Box(upperLimb.Position + new Vector3(1.4m, 0, 0), 1, .5m, .5m, 5);
+            lowerLimb = new Box(upperLimb.Position + new Vector3(1.4m.ToFix(), 0.ToFix(), 0.ToFix()), 1.ToFix(), .5m.ToFix(), .5m.ToFix(), 5.ToFix());
             Space.Add(lowerLimb);
 
             //Connect the body to the upper arm.
-            Space.Add(new BallSocketJoint(body, upperLimb, upperLimb.Position + new Vector3(-.7m, 0, 0)));
+            Space.Add(new BallSocketJoint(body, upperLimb, upperLimb.Position + new Vector3((-.7m).ToFix(), 0.ToFix(), 0.ToFix())));
             //Angular motors can be used to simulate friction when their goal velocity is 0.
             angularMotor = new AngularMotor(body, upperLimb);
-            angularMotor.Settings.MaximumForce = 250; //The maximum force of 'friction' in this joint.
+            angularMotor.Settings.MaximumForce = 250.ToFix(); //The maximum force of 'friction' in this joint.
             Space.Add(angularMotor);
 
 
             //Connect the upper arm to the lower arm.
-            Space.Add(new BallSocketJoint(upperLimb, lowerLimb, upperLimb.Position + new Vector3(.7m, 0, 0)));
+            Space.Add(new BallSocketJoint(upperLimb, lowerLimb, upperLimb.Position + new Vector3(.7m.ToFix(), 0.ToFix(), 0.ToFix())));
             angularMotor = new AngularMotor(upperLimb, lowerLimb);
-            angularMotor.Settings.MaximumForce = 150;
+            angularMotor.Settings.MaximumForce = 150.ToFix();
             Space.Add(angularMotor);
 
             //Make the first leg.
-            upperLimb = new Box(body.Position + new Vector3(-.6m, -2.1m, 0), .5m, 1.3m, .5m, 8);
+            upperLimb = new Box(body.Position + new Vector3((-.6m).ToFix(), (-2.1m).ToFix(), 0.ToFix()), .5m.ToFix(), 1.3m.ToFix(), .5m.ToFix(), 8.ToFix());
             Space.Add(upperLimb);
 
-            lowerLimb = new Box(upperLimb.Position + new Vector3(0, -1.7m, 0), .5m, 1.3m, .5m, 8);
+            lowerLimb = new Box(upperLimb.Position + new Vector3(0.ToFix(), (-1.7m).ToFix(), 0.ToFix()), .5m.ToFix(), 1.3m.ToFix(), .5m.ToFix(), 8.ToFix());
             Space.Add(lowerLimb);
 
             //Connect the body to the upper leg.
-            Space.Add(new BallSocketJoint(body, upperLimb, upperLimb.Position + new Vector3(0, .9m, 0)));
+            Space.Add(new BallSocketJoint(body, upperLimb, upperLimb.Position + new Vector3(0.ToFix(), .9m.ToFix(), 0.ToFix())));
             //Angular motors can be used to simulate friction when their goal velocity is 0.
             angularMotor = new AngularMotor(body, upperLimb);
-            angularMotor.Settings.MaximumForce = 350; //The maximum force of 'friction' in this joint.
+            angularMotor.Settings.MaximumForce = 350.ToFix(); //The maximum force of 'friction' in this joint.
             Space.Add(angularMotor);
 
 
             //Connect the upper leg to the lower leg.
-            Space.Add(new BallSocketJoint(upperLimb, lowerLimb, upperLimb.Position + new Vector3(0, -.9m, 0)));
+            Space.Add(new BallSocketJoint(upperLimb, lowerLimb, upperLimb.Position + new Vector3(0.ToFix(), (-.9m).ToFix(), 0.ToFix())));
             angularMotor = new AngularMotor(upperLimb, lowerLimb);
-            angularMotor.Settings.MaximumForce = 250;
+            angularMotor.Settings.MaximumForce = 250.ToFix();
             Space.Add(angularMotor);
 
             //Make the second leg.
-            upperLimb = new Box(body.Position + new Vector3(.6m, -2.1m, 0), .5m, 1.3m, .5m, 8);
+            upperLimb = new Box(body.Position + new Vector3(.6m.ToFix(), (-2.1m).ToFix(), 0.ToFix()), .5m.ToFix(), 1.3m.ToFix(), .5m.ToFix(), 8.ToFix());
             Space.Add(upperLimb);
 
-            lowerLimb = new Box(upperLimb.Position + new Vector3(0, -1.7m, 0), .5m, 1.3m, .5m, 8);
+            lowerLimb = new Box(upperLimb.Position + new Vector3(0.ToFix(), (-1.7m).ToFix(), 0.ToFix()), .5m.ToFix(), 1.3m.ToFix(), .5m.ToFix(), 8.ToFix());
             Space.Add(lowerLimb);
 
             //Connect the body to the upper leg.
-            Space.Add(new BallSocketJoint(body, upperLimb, upperLimb.Position + new Vector3(0, .9m, 0)));
+            Space.Add(new BallSocketJoint(body, upperLimb, upperLimb.Position + new Vector3(0.ToFix(), .9m.ToFix(), 0.ToFix())));
             //Angular motors can be used to simulate friction when their goal velocity is 0.
             angularMotor = new AngularMotor(body, upperLimb);
-            angularMotor.Settings.MaximumForce = 350; //The maximum force of 'friction' in this joint.
+            angularMotor.Settings.MaximumForce = 350.ToFix(); //The maximum force of 'friction' in this joint.
             Space.Add(angularMotor);
 
 
             //Connect the upper leg to the lower leg.
-            Space.Add(new BallSocketJoint(upperLimb, lowerLimb, upperLimb.Position + new Vector3(0, -.9m, 0)));
+            Space.Add(new BallSocketJoint(upperLimb, lowerLimb, upperLimb.Position + new Vector3(0.ToFix(), (-.9m).ToFix(), 0.ToFix())));
             angularMotor = new AngularMotor(upperLimb, lowerLimb);
-            angularMotor.Settings.MaximumForce = 250;
+            angularMotor.Settings.MaximumForce = 250.ToFix();
             Space.Add(angularMotor);
 
             //Add some ground.
-            Space.Add(new Box(new Vector3(0, -3.5m, 0), 40, 1, 40));
+            Space.Add(new Box(new Vector3(0.ToFix(), (-3.5m).ToFix(), 0.ToFix()), 40.ToFix(), 1.ToFix(), 40.ToFix()));
 
-            game.Camera.Position = new Vector3(0, 5, 25);
+            game.Camera.Position = new Vector3(0.ToFix(), 5.ToFix(), 25.ToFix());
         }
 
         /// <summary>

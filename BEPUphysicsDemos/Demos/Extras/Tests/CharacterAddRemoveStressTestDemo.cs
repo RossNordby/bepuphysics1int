@@ -42,7 +42,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             {
                 for (int j = 0; j < yCount; j++)
                 {
-                    var staticMesh = new InstancedMesh(meshShape, new AffineTransform(Matrix3x3.Identity, new Vector3(-xSpacing * (xCount - 1) / 2 + i * xSpacing, 0, -ySpacing * (yCount - 1) / 2 + j * ySpacing)));
+                    var staticMesh = new InstancedMesh(meshShape, new AffineTransform(Matrix3x3.Identity, new Vector3((-xSpacing * (xCount - 1) / 2 + i * xSpacing).ToFix(), 0.ToFix(), (-ySpacing * (yCount - 1) / 2 + j * ySpacing).ToFix())));
                     staticMesh.Sidedness = TriangleSidedness.Counterclockwise;
                     Space.Add(staticMesh);
                     //meshes.Add(staticMesh);
@@ -58,7 +58,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             var numColumns = 8;
             var numRows = 8;
             var numHigh = 8;
-            Fix64 separation = 8;
+            Fix64 separation = 8.ToFix();
 
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
@@ -67,9 +67,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                         var character = new CharacterController();
                         character.Body.Position =
                             new Vector3(
-                            separation * i - numRows * separation / 2,
-                            40 + k * separation,
-                            separation * j - numColumns * separation / 2);
+(separation.Mul(i.ToFix())).Sub((numRows.ToFix().Mul(separation)).Div(2.ToFix())),
+40.ToFix().Add(k.ToFix().Mul(separation)),
+(separation.Mul(j.ToFix())).Sub((numColumns.ToFix().Mul(separation)).Div(2.ToFix())));
 
                         characters.Add(character);
 
@@ -80,7 +80,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             numColumns = 8;
             numRows = 8;
             numHigh = 8;
-            separation = 8;
+            separation = 8.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
@@ -88,9 +88,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                         var character = new SphereCharacterController();
                         character.Body.Position =
                             new Vector3(
-                            separation * i - numRows * separation / 2,
-                            48 + k * separation,
-                            separation * j - numColumns * separation / 2);
+(separation.Mul(i.ToFix())).Sub((numRows.ToFix().Mul(separation)).Div(2.ToFix())),
+48.ToFix().Add(k.ToFix().Mul(separation)),
+(separation.Mul(j.ToFix())).Sub((numColumns.ToFix().Mul(separation)).Div(2.ToFix())));
 
                         sphereCharacters.Add(character);
 
@@ -98,23 +98,23 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                     }
 
 
-            game.Camera.Position = new Vector3(0, 10, 40);
+            game.Camera.Position = new Vector3(0.ToFix(), 10.ToFix(), 40.ToFix());
 
             //Dump some boxes on top of the characters for fun.
             numColumns = 8;
             numRows = 8;
             numHigh = 8;
-            separation = 8;
+            separation = 8.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
                     {
                         var toAdd = new Box(
                             new Vector3(
-                            separation * i - numRows * separation / 2,
-                            52 + k * separation,
-                            separation * j - numColumns * separation / 2),
-                            0.8m, 0.8m, 0.8m, 15);
+(separation.Mul(i.ToFix())).Sub((numRows.ToFix().Mul(separation)).Div(2.ToFix())),
+52.ToFix().Add(k.ToFix().Mul(separation)),
+(separation.Mul(j.ToFix())).Sub((numColumns.ToFix().Mul(separation)).Div(2.ToFix()))),
+0.8m.ToFix(), 0.8m.ToFix(), 0.8m.ToFix(), 15.ToFix());
                         toAdd.PositionUpdateMode = BEPUphysics.PositionUpdating.PositionUpdateMode.Continuous;
 
                         Space.Add(toAdd);
@@ -169,7 +169,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                     }
                     else
                     {
-                        characters[i].HorizontalMotionConstraint.MovementDirection = new Vector2((Fix64) (random.NextDouble() * 2 - 1), (Fix64) (random.NextDouble() * 2 - 1));
+                        characters[i].HorizontalMotionConstraint.MovementDirection = new Vector2((random.NextDouble() * 2 - 1).ToFix(), (random.NextDouble() * 2 - 1).ToFix());
                         if (random.NextDouble() < .01f)
                             characters[i].Jump();
 
@@ -198,7 +198,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                     }
                     else
                     {
-                        sphereCharacters[i].HorizontalMotionConstraint.MovementDirection = new Vector2((Fix64) (random.NextDouble() * 2 - 1), (Fix64) (random.NextDouble() * 2 - 1));
+                        sphereCharacters[i].HorizontalMotionConstraint.MovementDirection = new Vector2((random.NextDouble() * 2 - 1).ToFix(), (random.NextDouble() * 2 - 1).ToFix());
                         if (random.NextDouble() < .01f)
                             sphereCharacters[i].Jump();
                     }

@@ -23,19 +23,19 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         {
 
             List<CompoundShapeEntry> shapes = new List<CompoundShapeEntry>();
-            Fix64 totalWeight = 0;
-            Fix64 density = 10;
+            Fix64 totalWeight = 0.ToFix();
+            Fix64 density = 10.ToFix();
 
 
-            Fix64 weight = density * 2;
+            Fix64 weight = density.Mul(2.ToFix());
             totalWeight += weight;
             for (int i = 0; i < 4; i++)
             {
                 shapes.Add(new CompoundShapeEntry(
-                    new BoxShape(1, 1, 2),
+                    new BoxShape(1.ToFix(), 1.ToFix(), 2.ToFix()),
                     new RigidTransform(
-                    new Vector3(-.5m + i * 1, 0, 15),
-                    Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.PiOver2 * 2))
+                    new Vector3((-.5m + i * 1).ToFix(), 0.ToFix(), 15.ToFix()),
+                    Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.PiOver2.Mul(2.ToFix())))
                     //Quaternion.Identity)
                     , weight));
             }
@@ -66,17 +66,17 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             int width = 3;
             int height = 3;
             int length = 10;
-            Fix64 blockWidth = 1;
-            Fix64 blockHeight = 1;
-            Fix64 blockLength = 1;
+            Fix64 blockWidth = 1.ToFix();
+            Fix64 blockHeight = 1.ToFix();
+            Fix64 blockLength = 1.ToFix();
 
 
 
             for (int q = 0; q < 1; q++)
             {
                 shapes.Clear();
-                totalWeight = 0;
-                density = 1;
+                totalWeight = 0.ToFix();
+                density = 1.ToFix();
 
                 for (int i = 0; i < width; i++)
                 {
@@ -84,12 +84,12 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                     {
                         for (int k = 0; k < length; k++)
                         {
-                            weight = density * blockWidth * blockLength * blockHeight;
+                            weight = ((density.Mul(blockWidth)).Mul(blockLength)).Mul(blockHeight);
                             totalWeight += weight;
                             shapes.Add(new CompoundShapeEntry(
                                 new BoxShape(blockWidth, blockHeight, blockLength),
                                 new RigidTransform(
-                                new Vector3(5 + q * 20 + i * blockWidth, j * blockHeight, k * blockLength),
+                                new Vector3((5 + q * 20).ToFix().Add(i.ToFix().Mul(blockWidth)), j.ToFix().Mul(blockHeight), k.ToFix().Mul(blockLength)),
                                 //Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.PiOver2))
                                 Quaternion.Identity)
                                 , weight));
@@ -118,9 +118,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
             }
 
-            Box ground = new Box(new Vector3(0, -4.5m, 0), 50, 1, 50);
+            Box ground = new Box(new Vector3(0.ToFix(), (-4.5m).ToFix(), 0.ToFix()), 50.ToFix(), 1.ToFix(), 50.ToFix());
             Space.Add(ground);
-            game.Camera.Position = new Vector3(0, 6, 15);
+            game.Camera.Position = new Vector3(0.ToFix(), 6.ToFix(), 15.ToFix());
         }
 
         /// <summary>

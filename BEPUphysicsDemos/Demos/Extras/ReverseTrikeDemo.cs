@@ -24,8 +24,8 @@ namespace BEPUphysicsDemos.Demos.Extras
         private readonly RevoluteMotor drivingMotor2;
         private readonly RevoluteMotor steeringMotor1;
         private readonly RevoluteMotor steeringMotor2;
-        private Fix64 driveSpeed = 30;
-        private Fix64 maximumTurnAngle = MathHelper.Pi * .3m;
+        private Fix64 driveSpeed = 30.ToFix();
+        private Fix64 maximumTurnAngle = MathHelper.Pi.Mul(.3m.ToFix());
 
         /// <summary>
         /// Constructs a new demo.
@@ -34,18 +34,18 @@ namespace BEPUphysicsDemos.Demos.Extras
         public ReverseTrikeDemo(DemosGame game)
             : base(game)
         {
-            game.Camera.Position = new Vector3(0, 2, 15);
+            game.Camera.Position = new Vector3(0.ToFix(), 2.ToFix(), 15.ToFix());
 
-            Space.Add(new Box(new Vector3(0, -5, 0), 20, 1, 20));
+            Space.Add(new Box(new Vector3(0.ToFix(), (-5).ToFix(), 0.ToFix()), 20.ToFix(), 1.ToFix(), 20.ToFix()));
 
-            var body = new Box(new Vector3(0, 0, 0), 2, 1, 3, 10);
-            body.CollisionInformation.LocalPosition = new Vector3(0, .8m, 0);
+            var body = new Box(new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()), 2.ToFix(), 1.ToFix(), 3.ToFix(), 10.ToFix());
+            body.CollisionInformation.LocalPosition = new Vector3(0.ToFix(), .8m.ToFix(), 0.ToFix());
             Space.Add(body);
 
             #region First Wheel
 
-            var wheel = new Cylinder(body.Position + new Vector3(-1.3m, 0, -1.5m), .2m, .5m, 4);
-            wheel.Material = new Material(1.5m, 1.5m, 0);
+            var wheel = new Cylinder(body.Position + new Vector3((-1.3m).ToFix(), 0.ToFix(), (-1.5m).ToFix()), .2m.ToFix(), .5m.ToFix(), 4.ToFix());
+            wheel.Material = new Material(1.5m.ToFix(), 1.5m.ToFix(), 0.ToFix());
             wheel.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.PiOver2);
 
             //Preventing the occasional pointless collision pair can speed things up.
@@ -56,7 +56,7 @@ namespace BEPUphysicsDemos.Demos.Extras
             var swivelHingeAngularJoint = new SwivelHingeAngularJoint(body, wheel, Vector3.Up, Vector3.Right);
             //Motorize the wheel.
             drivingMotor1 = new RevoluteMotor(body, wheel, Vector3.Left);
-            drivingMotor1.Settings.VelocityMotor.Softness = .2m;
+            drivingMotor1.Settings.VelocityMotor.Softness = .2m.ToFix();
             //Let it roll when the user isn't giving specific commands.
             drivingMotor1.IsActive = false;
             steeringMotor1 = new RevoluteMotor(body, wheel, Vector3.Up);
@@ -93,8 +93,8 @@ namespace BEPUphysicsDemos.Demos.Extras
 
             #region Second Wheel
 
-            wheel = new Cylinder(body.Position + new Vector3(1.3m, 0, -1.5m), .2m, .5m, 4);
-            wheel.Material = new Material(1.5m, 1.5m, 0);
+            wheel = new Cylinder(body.Position + new Vector3(1.3m.ToFix(), 0.ToFix(), (-1.5m).ToFix()), .2m.ToFix(), .5m.ToFix(), 4.ToFix());
+            wheel.Material = new Material(1.5m.ToFix(), 1.5m.ToFix(), 0.ToFix());
             wheel.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.PiOver2);
 
 
@@ -106,7 +106,7 @@ namespace BEPUphysicsDemos.Demos.Extras
             swivelHingeAngularJoint = new SwivelHingeAngularJoint(body, wheel, Vector3.Up, Vector3.Right);
             //Motorize the wheel.
             drivingMotor2 = new RevoluteMotor(body, wheel, Vector3.Left);
-            drivingMotor2.Settings.VelocityMotor.Softness = .2m;
+            drivingMotor2.Settings.VelocityMotor.Softness = .2m.ToFix();
             //Let it roll when the user isn't giving specific commands.
             drivingMotor2.IsActive = false;
             steeringMotor2 = new RevoluteMotor(body, wheel, Vector3.Up);
@@ -127,8 +127,8 @@ namespace BEPUphysicsDemos.Demos.Extras
 
             #region Third Wheel
 
-            wheel = new Cylinder(body.Position + new Vector3(0, -.3m, 1.5m), .2m, .5m, 4);
-            wheel.Material = new Material(1.5m, 1.5m, 0);
+            wheel = new Cylinder(body.Position + new Vector3(0.ToFix(), (-.3m).ToFix(), 1.5m.ToFix()), .2m.ToFix(), .5m.ToFix(), 4.ToFix());
+            wheel.Material = new Material(1.5m.ToFix(), 1.5m.ToFix(), 0.ToFix());
             wheel.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.PiOver2);
 
             //Preventing the occasional pointless collision pair can speed things up.
@@ -152,26 +152,26 @@ namespace BEPUphysicsDemos.Demos.Extras
             int xLength = 180;
             int zLength = 180;
 
-			Fix64 xSpacing = 8;
-			Fix64 zSpacing = 8;
+			Fix64 xSpacing = 8.ToFix();
+			Fix64 zSpacing = 8.ToFix();
             var heights = new Fix64[xLength, zLength];
             for (int i = 0; i < xLength; i++)
             {
                 for (int j = 0; j < zLength; j++)
                 {
-					Fix64 x = i - xLength / 2;
-					Fix64 z = j - zLength / 2;
+					Fix64 x = (i - xLength / 2).ToFix();
+					Fix64 z = (j - zLength / 2).ToFix();
                     //heights[i,j] = (Fix64)(x * y / 1000f);
-                    heights[i, j] = 10 * (Fix64.Sin(x / 8) + Fix64.Sin(z / 8));
+                    heights[i, j] = 10.ToFix().Mul((Fix64.Sin(x.Div(8.ToFix())).Add(Fix64.Sin(z.Div(8.ToFix())))));
                     //heights[i,j] = 3 * (Fix64)Math.Sin(x * y / 100f);
                     //heights[i,j] = (x * x * x * y - y * y * y * x) / 1000f;
                 }
             }
             //Create the terrain.
             var terrain = new Terrain(heights, new AffineTransform(
-                new Vector3(xSpacing, 1, zSpacing), 
+                new Vector3(xSpacing, 1.ToFix(), zSpacing), 
                 Quaternion.Identity, 
-                new Vector3(-xLength * xSpacing / 2, -10, -zLength * zSpacing / 2)));
+                new Vector3(((-xLength).ToFix().Mul(xSpacing)).Div(2.ToFix()), (-10).ToFix(), ((-zLength).ToFix().Mul(zSpacing)).Div(2.ToFix()))));
             Space.Add(terrain);
 
             game.ModelDrawer.Add(terrain);
@@ -199,8 +199,8 @@ namespace BEPUphysicsDemos.Demos.Extras
             else if (Game.KeyboardInput.IsKeyDown(Keys.NumPad5))
             {
                 //Go backward
-                drivingMotor1.Settings.VelocityMotor.GoalVelocity = -driveSpeed;
-                drivingMotor2.Settings.VelocityMotor.GoalVelocity = -driveSpeed;
+                drivingMotor1.Settings.VelocityMotor.GoalVelocity = driveSpeed.Neg();
+                drivingMotor2.Settings.VelocityMotor.GoalVelocity = driveSpeed.Neg();
                 //The driving motors are disabled when no button is pressed, so need to turn it on.
                 drivingMotor1.IsActive = true;
                 drivingMotor2.IsActive = true;
@@ -221,14 +221,14 @@ namespace BEPUphysicsDemos.Demos.Extras
             else if (Game.KeyboardInput.IsKeyDown(Keys.NumPad6))
             {
                 //Turn right
-                steeringMotor1.Settings.Servo.Goal = -maximumTurnAngle;
-                steeringMotor2.Settings.Servo.Goal = -maximumTurnAngle;
+                steeringMotor1.Settings.Servo.Goal = maximumTurnAngle.Neg();
+                steeringMotor2.Settings.Servo.Goal = maximumTurnAngle.Neg();
             }
             else
             {
                 //Face forward
-                steeringMotor1.Settings.Servo.Goal = 0;
-                steeringMotor2.Settings.Servo.Goal = 0;
+                steeringMotor1.Settings.Servo.Goal = 0.ToFix();
+                steeringMotor2.Settings.Servo.Goal = 0.ToFix();
             }
 
             base.Update(dt);

@@ -18,10 +18,10 @@ namespace BEPUphysicsDemos.Demos
         public PyramidDemo(DemosGame game)
             : base(game)
         {
-            Fix64 boxSize = 2;
+            Fix64 boxSize = 2.ToFix();
             int boxCount = 20;
-            Fix64 platformLength = MathHelper.Min(50, boxCount * boxSize + 10);
-            Space.Add(new Box(new Vector3(0, -.5m, 0), boxCount * boxSize + 20, 1,
+            Fix64 platformLength = MathHelper.Min(50.ToFix(), (boxCount.ToFix().Mul(boxSize)).Add(10.ToFix()));
+            Space.Add(new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), (boxCount.ToFix().Mul(boxSize)).Add(20.ToFix()), 1.ToFix(),
                               platformLength));
 
             for (int i = 0; i < boxCount; i++)
@@ -30,10 +30,10 @@ namespace BEPUphysicsDemos.Demos
                 {
                     Space.Add(new Box(
                                   new Vector3(
-                                      -boxCount * boxSize / 2 + boxSize / 2 * i + j * (boxSize),
-                                      (boxSize / 2) + i * boxSize,
-                                      0),
-                                  boxSize, boxSize, boxSize, 20));
+((((-boxCount).ToFix() * boxSize).Div(2.ToFix())).Add((boxSize / 2.ToFix()).Mul(i.ToFix()))).Add(j.ToFix().Mul((boxSize))),
+(boxSize.Div(2.ToFix())).Add(i.ToFix().Mul(boxSize)),
+0.ToFix()),
+                                  boxSize, boxSize, boxSize, 20.ToFix()));
                 }
             }
             //Down here are the 'destructors' used to blow up the pyramid.  One set is physically simulated, the other kinematic.
@@ -75,9 +75,9 @@ namespace BEPUphysicsDemos.Demos
             //Space.Add(staticSphere);
 
 
-            game.Camera.Position = new Vector3(-boxCount * boxSize, 2, boxCount * boxSize);
-            game.Camera.Yaw(MathHelper.Pi / -4);
-            game.Camera.Pitch(MathHelper.Pi / 9);
+            game.Camera.Position = new Vector3((-boxCount).ToFix().Mul(boxSize), 2.ToFix(), boxCount.ToFix().Mul(boxSize));
+            game.Camera.Yaw(MathHelper.Pi.Div((-4).ToFix()));
+            game.Camera.Pitch(MathHelper.Pi.Div(9.ToFix()));
         }
 
         /// <summary>

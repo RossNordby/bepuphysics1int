@@ -16,8 +16,8 @@ namespace BEPUphysics.DeactivationManagement
         private int maximumDeactivationAttemptsPerFrame = 100;
         private int deactivationIslandIndex;
 
-        internal Fix64 velocityLowerLimit = (Fix64).26m.ToFix();
-        internal Fix64 velocityLowerLimitSquared = (Fix64)(.26m * .26m).ToFix();
+        internal Fix64 velocityLowerLimit = .26m.ToFix();
+        internal Fix64 velocityLowerLimitSquared = (.26m * .26m).ToFix();
         internal Fix64 lowVelocityTimeMinimum = F64.C1;
 
         ///<summary>
@@ -228,7 +228,7 @@ namespace BEPUphysics.DeactivationManagement
 
         ConcurrentDeque<SimulationIslandConnection> splitAttempts = new ConcurrentDeque<SimulationIslandConnection>();
 
-        static Fix64 maximumSplitAttemptsFraction = (Fix64).01m.ToFix();
+        static Fix64 maximumSplitAttemptsFraction = .01m.ToFix();
         /// <summary>
         /// Gets or sets the fraction of splits that the deactivation manager will attempt in a single frame.
         /// The total splits queued multiplied by this value results in the number of splits managed.

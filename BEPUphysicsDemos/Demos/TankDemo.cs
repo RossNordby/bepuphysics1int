@@ -27,26 +27,26 @@ namespace BEPUphysicsDemos.Demos
 
         public Tank(Vector3 position)
         {
-            Body = new Box(position, 4, (Fix64).5m, 5, 20);
-            Body.CollisionInformation.LocalPosition = new Vector3(0, (Fix64).8m, 0);
+            Body = new Box(position, 4.ToFix(), .5m.ToFix(), 5.ToFix(), 20.ToFix());
+            Body.CollisionInformation.LocalPosition = new Vector3(0.ToFix(), .8m.ToFix(), 0.ToFix());
 
             var treadDescription = new TreadSegmentDescription
             {
-                Width = (Fix64)0.5m,
-                Radius = (Fix64)0.5m,
-                Mass = 1,
-                Friction = (Fix64)2f,
-                MotorSoftness = 0,//0.3m,
-                MotorMaximumForce = 30,
-                SuspensionDamping = 70,
-                SuspensionStiffness = 300,
-                SuspensionLength = 1
-            };
+                Width = 0.5m.ToFix(),
+                Radius = 0.5m.ToFix(),
+                Mass = 1.ToFix(),
+                Friction = 2f.ToFix(),
+                MotorSoftness = 0.ToFix(),//0.3m,
+                MotorMaximumForce = 30.ToFix(),
+                SuspensionDamping = 70.ToFix(),
+                SuspensionStiffness = 300.ToFix(),
+                SuspensionLength = 1.ToFix()
+			};
 
-            RightTread = new Tread(Body, new Vector3((Fix64)(-1.8m), (Fix64)(-.2m), (Fix64)(-2.1m)), 5, 1, treadDescription);
-            LeftTread = new Tread(Body, new Vector3((Fix64)1.8m, (Fix64)(-.2m), (Fix64)(-2.1m)), 5, 1, treadDescription);
+            RightTread = new Tread(Body, new Vector3((-1.8m).ToFix(), (-.2m).ToFix(), (-2.1m).ToFix()), 5, 1.ToFix(), treadDescription);
+            LeftTread = new Tread(Body, new Vector3(1.8m.ToFix(), (-.2m).ToFix(), (-2.1m).ToFix()), 5, 1.ToFix(), treadDescription);
 
-            Turret = new Turret(Body, new Vector3(0, (Fix64)1.5m, (Fix64)0.5m));
+            Turret = new Turret(Body, new Vector3(0.ToFix(), 1.5m.ToFix(), 0.5m.ToFix()));
         }
 
         public void AddToSpace(Space space)
@@ -117,7 +117,7 @@ namespace BEPUphysicsDemos.Demos
         public Fix64 MaximumPitch { get; set; }
 
 
-        private Fix64 TimeBetweenFiring = (Fix64)1.8m;
+        private Fix64 TimeBetweenFiring = 1.8m.ToFix();
         private Fix64 lastFireTime;
 
         private const int MaximumShellCount = 3;
@@ -126,28 +126,28 @@ namespace BEPUphysicsDemos.Demos
         public Turret(Entity tankBody, Vector3 offset)
         {
             var position = offset + tankBody.Position;
-            Body = new Cylinder(position, (Fix64)0.7m, (Fix64)0.8m, 8);
+            Body = new Cylinder(position, 0.7m.ToFix(), 0.8m.ToFix(), 8.ToFix());
             //Position the center of the arm a bit further forward since it will be laying down.
-            position.Z -= 2;
-            Barrel = new Cylinder(position, 3, (Fix64)0.2m, 3);
+            position.Z -= 2.ToFix();
+            Barrel = new Cylinder(position, 3.ToFix(), 0.2m.ToFix(), 3.ToFix());
             //Rotate the arm so that it points straight forward (that is, along {0, 0, -1}).
-            Barrel.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver2);
+            Barrel.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1.ToFix(), 0.ToFix(), 0.ToFix()), MathHelper.PiOver2);
 
             TankToTurretJoint = new RevoluteJoint(tankBody, Body, Body.Position, Vector3.Up);
-            TurretBodyToBarrelJoint = new RevoluteJoint(Body, Barrel, Body.Position + new Vector3(0, 0, (Fix64)(-0.5m)), Vector3.Left);
+            TurretBodyToBarrelJoint = new RevoluteJoint(Body, Barrel, Body.Position + new Vector3(0.ToFix(), 0.ToFix(), (-0.5m).ToFix()), Vector3.Left);
 
             //Turn on the control constraints. We'll put them into servo mode, but velocity mode would also work just fine.
             TankToTurretJoint.Motor.IsActive = true;
             TankToTurretJoint.Motor.Settings.Mode = MotorMode.Servomechanism;
-            TankToTurretJoint.Motor.Settings.Servo.BaseCorrectiveSpeed = (Fix64)0.5m;
-            TankToTurretJoint.Motor.Settings.MaximumForce = 500;
+            TankToTurretJoint.Motor.Settings.Servo.BaseCorrectiveSpeed = 0.5m.ToFix();
+            TankToTurretJoint.Motor.Settings.MaximumForce = 500.ToFix();
             TankToTurretJoint.Motor.Basis.SetLocalAxes(Vector3.Up, Vector3.Forward);
 
             TurretBodyToBarrelJoint.Motor.IsActive = true;
             TurretBodyToBarrelJoint.Motor.Settings.Mode = MotorMode.Servomechanism;
-            TurretBodyToBarrelJoint.Motor.Settings.Servo.BaseCorrectiveSpeed = (Fix64)0.5m;
+            TurretBodyToBarrelJoint.Motor.Settings.Servo.BaseCorrectiveSpeed = 0.5m.ToFix();
             //We take special care to limit this motor's force to stop the turret from smashing the tank body.
-            TurretBodyToBarrelJoint.Motor.Settings.MaximumForce = 300;
+            TurretBodyToBarrelJoint.Motor.Settings.MaximumForce = 300.ToFix();
             TurretBodyToBarrelJoint.Motor.Basis.SetLocalAxes(Vector3.Right, Vector3.Forward);
 
             //Don't let the directly connected objects generate collisions. The arm can still hit the tank body, though.
@@ -155,15 +155,15 @@ namespace BEPUphysicsDemos.Demos
             CollisionRules.AddRule(Barrel, Body, CollisionRule.NoBroadPhase);
 
             //Don't have a lot of leeway downards. The turret will quickly bump the tank body.
-            MinimumPitch = -MathHelper.Pi * (Fix64)0.05m;
-            MaximumPitch = MathHelper.Pi * (Fix64)0.4m;
+            MinimumPitch = MathHelper.Pi.Neg().Mul(0.05m.ToFix());
+            MaximumPitch = MathHelper.Pi.Mul(0.4m.ToFix());
 
             //Build an ammunition pool.
             shellPool = new Queue<Sphere>(MaximumShellCount);
 
             for (int i = 0; i < MaximumShellCount; ++i)
             {
-                var shell = new Sphere(new Vector3(10000, 0, 0), (Fix64)0.2m, 2);
+                var shell = new Sphere(new Vector3(10000.ToFix(), 0.ToFix(), 0.ToFix()), 0.2m.ToFix(), 2.ToFix());
                 shell.PositionUpdateMode = BEPUphysics.PositionUpdating.PositionUpdateMode.Continuous;
                 shellPool.Enqueue(shell);
             }
@@ -199,8 +199,8 @@ namespace BEPUphysicsDemos.Demos
         {
             if (Barrel.Space != null)
             {
-                var currentTime = (Fix64)(Stopwatch.GetTimestamp() / (decimal)Stopwatch.Frequency);
-                if (currentTime - lastFireTime > TimeBetweenFiring)
+                var currentTime = (Stopwatch.GetTimestamp() / (decimal)Stopwatch.Frequency).ToFix();
+                if (currentTime.Sub(lastFireTime) > TimeBetweenFiring)
                 {
                     lastFireTime = currentTime;
 
@@ -219,11 +219,11 @@ namespace BEPUphysicsDemos.Demos
 
                     //Position the shell at the end of the turret.
                     var firingDirection = Barrel.OrientationMatrix.Down;
-                    shell.Position = Barrel.Position + firingDirection * (Barrel.Height * (Fix64)0.5m + (Fix64)(0.2m * 1.1m));
+                    shell.Position = Barrel.Position + firingDirection * (Barrel.Height.Mul(0.5m.ToFix()).Add((0.2m * 1.1m).ToFix()));
 
                     //Shoot it!
-                    shell.LinearVelocity = Barrel.LinearVelocity + firingDirection * 100;
-                    Barrel.LinearMomentum += -firingDirection * 20 * shell.Mass;
+                    shell.LinearVelocity = Barrel.LinearVelocity + firingDirection * 100.ToFix();
+                    Barrel.LinearMomentum += -firingDirection * 20.ToFix() * shell.Mass;
 
                     return true;
                 }
@@ -251,7 +251,7 @@ namespace BEPUphysicsDemos.Demos
             Segments = new List<TreadSegment>();
             Vector3 nextSegmentPosition = tankBody.Position + offsetToFrontOfTread;
             //The front of the tread includes the radius of the first segment.
-            nextSegmentPosition.Z += treadSegmentDescription.Radius * (Fix64)0.5m;
+            nextSegmentPosition.Z += treadSegmentDescription.Radius.Mul(0.5m.ToFix());
             for (int i = 0; i < segmentCount; ++i)
             {
                 Segments.Add(new TreadSegment(nextSegmentPosition, tankBody, treadSegmentDescription));
@@ -382,19 +382,19 @@ namespace BEPUphysicsDemos.Demos
 
             //Connect the wheel to the body.
             SuspensionAxisJoint = new PointOnLineJoint(body, Entity, Entity.Position, Vector3.Down, Entity.Position);
-            SuspensionLengthLimit = new LinearAxisLimit(body, Entity, Entity.Position, Entity.Position, Vector3.Down, -treadSegmentDescription.SuspensionLength, 0);
+            SuspensionLengthLimit = new LinearAxisLimit(body, Entity, Entity.Position, Entity.Position, Vector3.Down, treadSegmentDescription.SuspensionLength.Neg(), 0.ToFix());
             //This linear axis motor will give the suspension its springiness by pushing the wheels outward.
             SuspensionSpring = new LinearAxisMotor(body, Entity, Entity.Position, Entity.Position, Vector3.Down);
             SuspensionSpring.Settings.Mode = MotorMode.Servomechanism;
-            SuspensionSpring.Settings.Servo.Goal = 0;
+            SuspensionSpring.Settings.Servo.Goal = 0.ToFix();
             SuspensionSpring.Settings.Servo.SpringSettings.Stiffness = treadSegmentDescription.SuspensionStiffness;
             SuspensionSpring.Settings.Servo.SpringSettings.Damping = treadSegmentDescription.SuspensionDamping;
 
             SuspensionAngularJoint = new RevoluteAngularJoint(body, Entity, Vector3.Right);
             //Make the joint extremely rigid.  There are going to be extreme conditions when the wheels get up to speed;
             //we don't want the forces involved to torque the wheel off the frame!
-            SuspensionAngularJoint.SpringSettings.Damping *= Entity.Mass * 50;
-            SuspensionAngularJoint.SpringSettings.Stiffness *= Entity.Mass * 50;
+            SuspensionAngularJoint.SpringSettings.Damping *= Entity.Mass.Mul(50.ToFix());
+            SuspensionAngularJoint.SpringSettings.Stiffness *= Entity.Mass.Mul(50.ToFix());
             //Motorize the wheel.
             Motor = new RevoluteMotor(body, Entity, Vector3.Left);
             Motor.Settings.VelocityMotor.Softness = treadSegmentDescription.MotorSoftness;
@@ -444,11 +444,11 @@ namespace BEPUphysicsDemos.Demos
         public TankDemo(DemosGame game)
             : base(game)
         {
-            game.Camera.Position = new Vector3(0, 2, 15);
+            game.Camera.Position = new Vector3(0.ToFix(), 2.ToFix(), 15.ToFix());
 
-            Space.Add(new Box(new Vector3(0, -5, 0), 20, 1, 20));
+            Space.Add(new Box(new Vector3(0.ToFix(), (-5).ToFix(), 0.ToFix()), 20.ToFix(), 1.ToFix(), 20.ToFix()));
 
-            playerTank = new Tank(new Vector3(0, 0, 0));
+            playerTank = new Tank(new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()));
             playerTank.AddToSpace(Space);
 
 
@@ -459,7 +459,7 @@ namespace BEPUphysicsDemos.Demos
             {
                 for (int j = 0; j < 3; ++j)
                 {
-                    var autoTank = new Tank(new Vector3(-30 + i * 10, 30, -30 + j * 10));
+                    var autoTank = new Tank(new Vector3((-30 + i * 10).ToFix(), 30.ToFix(), (-30 + j * 10).ToFix()));
                     autoTanks.Add(autoTank);
                     autoTank.AddToSpace(Space);
                 }
@@ -471,26 +471,26 @@ namespace BEPUphysicsDemos.Demos
             int xLength = 180;
             int zLength = 180;
 
-			Fix64 xSpacing = 8;
-			Fix64 zSpacing = 8;
+			Fix64 xSpacing = 8.ToFix();
+			Fix64 zSpacing = 8.ToFix();
             var heights = new Fix64[xLength, zLength];
             for (int i = 0; i < xLength; i++)
             {
                 for (int j = 0; j < zLength; j++)
                 {
-					Fix64 x = i - xLength / 2;
-					Fix64 z = j - zLength / 2;
+					Fix64 x = (i - xLength / 2).ToFix();
+					Fix64 z = (j - zLength / 2).ToFix();
                     //heights[i,j] = (Fix64)(x * y / 1000f);
-                    heights[i, j] = 20 * (Fix64.Sin(x / 8) + Fix64.Sin(z / 8));
+                    heights[i, j] = 20.ToFix().Mul((Fix64.Sin(x.Div(8.ToFix())).Add(Fix64.Sin(z.Div(8.ToFix())))));
                     //heights[i,j] = 3 * (Fix64)Math.Sin(x * y / 100f);
                     //heights[i,j] = (x * x * x * y - y * y * y * x) / 1000f;
                 }
             }
             //Create the terrain.
             var terrain = new Terrain(heights, new AffineTransform(
-                    new Vector3(xSpacing, 1, zSpacing),
+                    new Vector3(xSpacing, 1.ToFix(), zSpacing),
                     Quaternion.Identity,
-                    new Vector3(-xLength * xSpacing / 2, -10, -zLength * zSpacing / 2)));
+                    new Vector3(((-xLength).ToFix().Mul(xSpacing)).Div(2.ToFix()), (-10).ToFix(), ((-zLength).ToFix().Mul(zSpacing)).Div(2.ToFix()))));
 
             //terrain.Thickness = 5; //Uncomment this and shoot some things at the bottom of the terrain! They'll be sucked up through the ground.
 
@@ -511,19 +511,19 @@ namespace BEPUphysicsDemos.Demos
 
         public override void Update(Fix64 dt)
         {
-			Fix64 driveSpeed = 20;
+			Fix64 driveSpeed = 20.ToFix();
             if (Game.KeyboardInput.IsKeyDown(Keys.Up))
             {
                 if (Game.KeyboardInput.IsKeyDown(Keys.Right))
                 {
                     //Turn right while still allowing forward motion
                     playerTank.RightTread.SetTreadGoalVelocity(driveSpeed);
-                    playerTank.LeftTread.SetTreadGoalVelocity(0);
+                    playerTank.LeftTread.SetTreadGoalVelocity(0.ToFix());
                 }
                 else if (Game.KeyboardInput.IsKeyDown(Keys.Left))
                 {
                     //Turn left while still allowing forward motion
-                    playerTank.RightTread.SetTreadGoalVelocity(0);
+                    playerTank.RightTread.SetTreadGoalVelocity(0.ToFix());
                     playerTank.LeftTread.SetTreadGoalVelocity(driveSpeed);
                 }
                 else
@@ -539,20 +539,20 @@ namespace BEPUphysicsDemos.Demos
                 if (Game.KeyboardInput.IsKeyDown(Keys.Right))
                 {
                     //Turn right while still allowing backward motion
-                    playerTank.RightTread.SetTreadGoalVelocity(-driveSpeed);
-                    playerTank.LeftTread.SetTreadGoalVelocity(0);
+                    playerTank.RightTread.SetTreadGoalVelocity(driveSpeed.Neg());
+                    playerTank.LeftTread.SetTreadGoalVelocity(0.ToFix());
                 }
                 else if (Game.KeyboardInput.IsKeyDown(Keys.Left))
                 {
                     //Turn left while still allowing backward motion
-                    playerTank.RightTread.SetTreadGoalVelocity(0);
-                    playerTank.LeftTread.SetTreadGoalVelocity(-driveSpeed);
+                    playerTank.RightTread.SetTreadGoalVelocity(0.ToFix());
+                    playerTank.LeftTread.SetTreadGoalVelocity(driveSpeed.Neg());
                 }
                 else
                 {
                     //Go backward
-                    playerTank.RightTread.SetTreadGoalVelocity(-driveSpeed);
-                    playerTank.LeftTread.SetTreadGoalVelocity(-driveSpeed);
+                    playerTank.RightTread.SetTreadGoalVelocity(driveSpeed.Neg());
+                    playerTank.LeftTread.SetTreadGoalVelocity(driveSpeed.Neg());
                 }
             }
             else
@@ -561,31 +561,31 @@ namespace BEPUphysicsDemos.Demos
                 {
                     //Turn right
                     playerTank.RightTread.SetTreadGoalVelocity(driveSpeed);
-                    playerTank.LeftTread.SetTreadGoalVelocity(-driveSpeed);
+                    playerTank.LeftTread.SetTreadGoalVelocity(driveSpeed.Neg());
                 }
                 else if (Game.KeyboardInput.IsKeyDown(Keys.Left))
                 {
                     //Turn left
-                    playerTank.RightTread.SetTreadGoalVelocity(-driveSpeed);
+                    playerTank.RightTread.SetTreadGoalVelocity(driveSpeed.Neg());
                     playerTank.LeftTread.SetTreadGoalVelocity(driveSpeed);
                 }
                 else
                 {
                     //Stop
-                    playerTank.RightTread.SetTreadGoalVelocity(0);
-                    playerTank.LeftTread.SetTreadGoalVelocity(0);
+                    playerTank.RightTread.SetTreadGoalVelocity(0.ToFix());
+                    playerTank.LeftTread.SetTreadGoalVelocity(0.ToFix());
                 }
             }
 
             //Control the turret
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad8))
-                playerTank.Turret.PitchGoal += (Fix64)1.5m * dt;
+                playerTank.Turret.PitchGoal += (1.5m.ToFix()).Mul(dt);
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad5))
-                playerTank.Turret.PitchGoal -= (Fix64)1.5m * dt;
+                playerTank.Turret.PitchGoal -= (1.5m.ToFix()).Mul(dt);
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad4))
-                playerTank.Turret.YawGoal += (Fix64)1.5m * dt;
+                playerTank.Turret.YawGoal += (1.5m.ToFix()).Mul(dt);
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad6))
-                playerTank.Turret.YawGoal -= (Fix64)1.5m * dt;
+                playerTank.Turret.YawGoal -= (1.5m.ToFix()).Mul(dt);
 
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad0))
             {
@@ -614,27 +614,27 @@ namespace BEPUphysicsDemos.Demos
                             break;
                         case 1:
                             //Go backward.
-                            autoTank.RightTread.SetTreadGoalVelocity(-driveSpeed);
-                            autoTank.LeftTread.SetTreadGoalVelocity(-driveSpeed);
+                            autoTank.RightTread.SetTreadGoalVelocity(driveSpeed.Neg());
+                            autoTank.LeftTread.SetTreadGoalVelocity(driveSpeed.Neg());
                             break;
                         case 2:
                             //Turn one way.
                             autoTank.RightTread.SetTreadGoalVelocity(driveSpeed);
-                            autoTank.LeftTread.SetTreadGoalVelocity(0);
+                            autoTank.LeftTread.SetTreadGoalVelocity(0.ToFix());
                             break;
                         case 3:
                             //Turn the other way.
-                            autoTank.RightTread.SetTreadGoalVelocity(0);
+                            autoTank.RightTread.SetTreadGoalVelocity(0.ToFix());
                             autoTank.LeftTread.SetTreadGoalVelocity(driveSpeed);
                             break;
                         case 4:
                             //Turn one way.
                             autoTank.RightTread.SetTreadGoalVelocity(driveSpeed);
-                            autoTank.LeftTread.SetTreadGoalVelocity(-driveSpeed);
+                            autoTank.LeftTread.SetTreadGoalVelocity(driveSpeed.Neg());
                             break;
                         case 5:
                             //Turn the other way.
-                            autoTank.RightTread.SetTreadGoalVelocity(-driveSpeed);
+                            autoTank.RightTread.SetTreadGoalVelocity(driveSpeed.Neg());
                             autoTank.LeftTread.SetTreadGoalVelocity(driveSpeed);
                             break;
                     }
@@ -643,14 +643,14 @@ namespace BEPUphysicsDemos.Demos
                 //Now aim the turret.
                 var random = aiRandom.Next(0, 100);
                 if (random >= 98)
-                    autoTank.Turret.YawGoal += (Fix64)0.2m;
+                    autoTank.Turret.YawGoal += 0.2m.ToFix();
                 if (random <= 2)
-                    autoTank.Turret.YawGoal -= (Fix64)0.2m;
+                    autoTank.Turret.YawGoal -= 0.2m.ToFix();
                 random = aiRandom.Next(0, 100);
                 if (random >= 98)
-                    autoTank.Turret.PitchGoal += (Fix64)0.1m;
+                    autoTank.Turret.PitchGoal += 0.1m.ToFix();
                 if (random <= 2)
-                    autoTank.Turret.PitchGoal -= (Fix64)0.1m;
+                    autoTank.Turret.PitchGoal -= 0.1m.ToFix();
                 if (aiRandom.Next(0, 100) == 0)
                 {
                     Sphere firedShell;

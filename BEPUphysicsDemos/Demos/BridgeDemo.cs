@@ -25,28 +25,28 @@ namespace BEPUphysicsDemos.Demos
             //Form a long chain of planks connected by revolute joints.
             //The revolute joints control the three linear degrees of freedom and two angular degrees of freedom.
             //The third allowed angular degree of freedom allows the bridge to flex like a rope bridge.
-            Vector3 startPosition = new Vector3(0, 0, 0);
-            var startPlatform = new Box(startPosition - new Vector3(0, 0, (Fix64)3.2m), 8, (Fix64).5m, 8);
+            Vector3 startPosition = new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix());
+            var startPlatform = new Box(startPosition - new Vector3(0.ToFix(), 0.ToFix(), 3.2m.ToFix()), 8.ToFix(), .5m.ToFix(), 8.ToFix());
             Space.Add(startPlatform);
-            Vector3 offset = new Vector3(0, 0, (Fix64)1.7m);
+            Vector3 offset = new Vector3(0.ToFix(), 0.ToFix(), 1.7m.ToFix());
             Box previousLink = startPlatform;
             Vector3 position = new Vector3();
             for (int i = 1; i <= 200; i++)
             {
-                position = startPosition + offset * i;
-                Box link = new Box(position, (Fix64)4.5m, (Fix64).3m, (Fix64)1.5m, 50);
+                position = startPosition + offset * i.ToFix();
+                Box link = new Box(position, 4.5m.ToFix(), .3m.ToFix(), 1.5m.ToFix(), 50.ToFix());
                 Space.Add(link);
-                Space.Add(new RevoluteJoint(previousLink, link, position - offset * (Fix64).5m, Vector3.Right));
+                Space.Add(new RevoluteJoint(previousLink, link, position - offset * .5m.ToFix(), Vector3.Right));
 
                 previousLink = link;
             }
-            var endPlatform = new Box(position - new Vector3(0, 0, (Fix64)(-4.8m)), 8, (Fix64).5m, 8);
+            var endPlatform = new Box(position - new Vector3(0.ToFix(), 0.ToFix(), (-4.8m).ToFix()), 8.ToFix(), .5m.ToFix(), 8.ToFix());
             Space.Add(endPlatform);
 
-            Space.Add(new RevoluteJoint(previousLink, endPlatform, position + offset * (Fix64).5m, Vector3.Right));
+            Space.Add(new RevoluteJoint(previousLink, endPlatform, position + offset * .5m.ToFix(), Vector3.Right));
 
 
-            game.Camera.Position = startPosition + new Vector3(0, 1, offset.Z * 200 + 5);
+            game.Camera.Position = startPosition + new Vector3(0.ToFix(), 1.ToFix(), (offset.Z.Mul(200.ToFix())).Add(5.ToFix()));
         }
 
         /// <summary>

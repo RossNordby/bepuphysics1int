@@ -22,44 +22,44 @@ namespace BEPUphysicsDemos.Demos.Extras
         public SolidPyramidDemo(DemosGame game)
             : base(game)
         {
-            Fix64 boxSize = 1;
+            Fix64 boxSize = 1.ToFix();
             int bottomBoxCount = 10;
 
-            var ground = new Box(new Vector3(0, -.5m, 0), 40, 1, 40);
+            var ground = new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), 40.ToFix(), 1.ToFix(), 40.ToFix());
             Space.Add(ground);
 
-            Fix64 spacing = 0.05m;
+            Fix64 spacing = 0.05m.ToFix();
 
-            Fix64 offset = -0.5m * ((bottomBoxCount - 1) * (boxSize + spacing));
-            var origin = new Vector3(offset, -boxSize * 0.5m, offset);
+            Fix64 offset = (-0.5m).ToFix().Mul((((bottomBoxCount - 1).ToFix()).Mul((boxSize.Add(spacing)))));
+            var origin = new Vector3(offset, boxSize.Neg().Mul(0.5m.ToFix()), offset);
             for (int heightIndex = 0; heightIndex < bottomBoxCount - 2; ++heightIndex)
             {
                 var levelWidth = bottomBoxCount - heightIndex;
-                Fix64 perBoxWidth = boxSize + spacing;
+                Fix64 perBoxWidth = boxSize.Add(spacing);
                 //Move the origin for this level.
-                origin.X += perBoxWidth * 0.5m;
+                origin.X += perBoxWidth.Mul(0.5m.ToFix());
                 origin.Y += boxSize;
-                origin.Z += perBoxWidth * 0.5m;
+                origin.Z += perBoxWidth.Mul(0.5m.ToFix());
 
                 for (int i = 0; i < levelWidth; ++i)
                 {
                     for (int j = 0; j < levelWidth; ++j)
                     {
                         var position = new Vector3(
-                            origin.X + i * perBoxWidth,
+origin.X.Add(i.ToFix().Mul(perBoxWidth)),
                             origin.Y,
-                            origin.Z + j * perBoxWidth);
+origin.Z.Add(j.ToFix().Mul(perBoxWidth)));
 
-                        var box = new Box(position, boxSize, boxSize, boxSize, 20);
+                        var box = new Box(position, boxSize, boxSize, boxSize, 20.ToFix());
 
                         Space.Add(box);
                     }
                 }
             }
 
-            game.Camera.Position = new Vector3(-bottomBoxCount * boxSize, 2, bottomBoxCount * boxSize);
-            game.Camera.Yaw(MathHelper.Pi / -4);
-            game.Camera.Pitch(MathHelper.Pi / 9);
+            game.Camera.Position = new Vector3((-bottomBoxCount).ToFix().Mul(boxSize), 2.ToFix(), bottomBoxCount.ToFix().Mul(boxSize));
+            game.Camera.Yaw(MathHelper.Pi.Div((-4).ToFix()));
+            game.Camera.Pitch(MathHelper.Pi.Div(9.ToFix()));
         }
 
         /// <summary>

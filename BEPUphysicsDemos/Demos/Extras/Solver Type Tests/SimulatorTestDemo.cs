@@ -27,7 +27,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             public DynamicVisualizer(LinearDynamic dynamic, ModelDrawer modelDrawer)
             {
                 Dynamic = dynamic;
-                DisplayCollidable = new DisplayEntityCollidable(modelDrawer, new ConvexCollidable<BoxShape>(new BoxShape(0.5m, 0.5m, 0.5m)));
+                DisplayCollidable = new DisplayEntityCollidable(modelDrawer, new ConvexCollidable<BoxShape>(new BoxShape(0.5m.ToFix(), 0.5m.ToFix(), 0.5m.ToFix())));
                 modelDrawer.Add(DisplayCollidable);
             }
 
@@ -53,7 +53,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             int width = 30;
             int height = 10;
             int length = 30;
-            Fix64 spacing = 3;
+            Fix64 spacing = 3.ToFix();
             var dynamics = new LinearDynamic[width, height, length];
             for (int widthIndex = 0; widthIndex < width; ++widthIndex)
             {
@@ -61,9 +61,9 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
                 {
                     for (int lengthIndex = 0; lengthIndex < length; ++lengthIndex)
                     {
-                        var dynamic = new LinearDynamic(10)
+                        var dynamic = new LinearDynamic(10.ToFix())
                             {
-                                Position = offset + new Vector3(spacing * widthIndex, spacing * heightIndex + 10, spacing * lengthIndex)
+                                Position = offset + new Vector3(spacing.Mul(widthIndex.ToFix()), (spacing.Mul(heightIndex.ToFix())).Add(10.ToFix()), spacing.Mul(lengthIndex.ToFix()))
                             };
                         dynamics[widthIndex, heightIndex, lengthIndex] = dynamic;
                         simulator.Add(dynamic);
@@ -71,8 +71,8 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
                 }
             }
 
-            Vector3 normal = new Vector3(0, 1, 0);
-            Plane plane = new Plane(normal, -Vector3.Dot(offset, normal));
+            Vector3 normal = new Vector3(0.ToFix(), 1.ToFix(), 0.ToFix());
+            Plane plane = new Plane(normal, Vector3.Dot(offset, normal).Neg());
 
             //Create a bunch of connections between the dynamic objects.
             for (int widthIndex = 0; widthIndex < width; ++widthIndex)
@@ -123,8 +123,8 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             jacobiSimulator = new JacobiSimulator();
             sequentialImpulsesSimulator = new SequentialImpulsesSimulator();
 
-            BuildSimulation(new Vector3(-65, 0, 0), jacobiSimulator);
-            BuildSimulation(new Vector3(65, 0, 0), sequentialImpulsesSimulator);
+            BuildSimulation(new Vector3((-65).ToFix(), 0.ToFix(), 0.ToFix()), jacobiSimulator);
+            BuildSimulation(new Vector3(65.ToFix(), 0.ToFix(), 0.ToFix()), sequentialImpulsesSimulator);
 
             //Build some visualizers for the simulators.
             var jacobiDynamics = jacobiSimulator.Dynamics;
@@ -149,7 +149,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             //jacobiSimulator.Gravity = new Vector3();
             //sequentialImpulsesSimulator.Gravity = new Vector3();
 
-            game.Camera.Position = new Vector3(0, 36, 200);
+            game.Camera.Position = new Vector3(0.ToFix(), 36.ToFix(), 200.ToFix());
         }
 
         private void UpdateConstraintLine(int index, VertexPositionColor[] lines, Constraint constraint)
@@ -166,14 +166,14 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             var planeConstraint = constraint as PlaneCollisionConstraint;
             if (planeConstraint != null)
             {
-                Fix64 threshold = 1;
+                Fix64 threshold = 1.ToFix();
                 Fix64 distance = planeConstraint.Distance;
                 if (distance < threshold)
                 {
-                    if (distance > 0)
+                    if (distance > 0.ToFix())
                     {
                         //We're near enough to see it, but not penetrating.
-                        color = Color.Lerp(new Color(1f, 1f, 1f), new Color(1f, 0f, 0f), (float)((threshold - distance) / threshold));
+                        color = Color.Lerp(new Color(1f, 1f, 1f), new Color(1f, 0f, 0f), ((threshold.Sub(distance)).Div(threshold)).ToFloat());
                         lines[index] = new VertexPositionColor(MathConverter.Convert(planeConstraint.Dynamic.Position), color);
                         lines[index + 1] = new VertexPositionColor(MathConverter.Convert(planeConstraint.Dynamic.Position - planeConstraint.Plane.Normal * distance), color);
                     }
@@ -200,7 +200,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         {
             for (int i = 0; i < dynamics.Count; ++i)
             {
-                dynamics[i].Velocity += 5 * new Vector3(2 * (Fix64)random.NextDouble() - 1, (Fix64)random.NextDouble(), 2 * (Fix64)random.NextDouble() - 1);
+                dynamics[i].Velocity += 5.ToFix() * new Vector3((2.ToFix().Mul(random.NextDouble().ToFix())).Sub(1.ToFix()), random.NextDouble().ToFix(), 2.ToFix().Mul(random.NextDouble().ToFix()).Sub(1.ToFix()));
             }
         }
 
@@ -213,8 +213,8 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
                 ShakeDynamics(sequentialImpulsesSimulator.Dynamics);
             }
 
-            jacobiSimulator.Update(1 / (Fix64)60, Space.ParallelLooper);
-            sequentialImpulsesSimulator.Update(1 / (Fix64)60, Space.ParallelLooper);
+            jacobiSimulator.Update(1.ToFix().Div(60.ToFix()), Space.ParallelLooper);
+            sequentialImpulsesSimulator.Update(1.ToFix().Div(60.ToFix()), Space.ParallelLooper);
 
             //Update the dynamics visualizers.
             if (Game.displayEntities)

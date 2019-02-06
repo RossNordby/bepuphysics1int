@@ -949,35 +949,34 @@ dividend.Add(zSq2);
 			return atan;
 		}
 
-		/*
+		
 		public static implicit operator Fix64(int value) {
-			return new Fix64(value);
+			throw new Exception("Casting not supported");
 		}
 		public static explicit operator Fix64(long value) {
-            return new Fix64(value * ONE);
-        }
+			throw new Exception("Casting not supported");
+		}
         public static explicit operator long(Fix64 value) {
-            return value.RawValue >> FRACTIONAL_PLACES;
-        }
+			throw new Exception("Casting not supported");
+		}
         public static explicit operator Fix64(float value) {
-            return new Fix64((long)(value * ONE));
-        }
+			throw new Exception("Casting not supported");
+		}
         public static explicit operator float(Fix64 value) {
-            return (float)value.RawValue / ONE;
-        }
+			throw new Exception("Casting not supported");
+		}
         public static explicit operator Fix64(double value) {
-            return new Fix64((long)(value * ONE));
-        }
+			throw new Exception("Casting not supported");
+		}
         public static explicit operator double(Fix64 value) {
-            return (double)value.RawValue / ONE;
-        }
+			throw new Exception("Casting not supported");
+		}
         public static implicit operator Fix64(decimal value) {
-            return new Fix64((long)(value * ONE));
-        }
+			throw new Exception("Casting not supported");
+		}
         public static explicit operator decimal(Fix64 value) {
-            return (decimal)value.RawValue / ONE;
-        }
-		*/
+			throw new Exception("Casting not supported");
+		}
 		
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public float ToFloat() {
@@ -1015,8 +1014,10 @@ dividend.Add(zSq2);
 
 
 		public override bool Equals(object obj) {
-            return obj is Fix64 && ((Fix64)obj).RawValue == RawValue;
-        }
+#pragma warning disable CastToFix // Cast to Fix not supported
+			return obj is Fix64 && ((Fix64) obj).RawValue == RawValue;
+#pragma warning restore CastToFix // Cast to Fix not supported
+		}
 
         public override int GetHashCode() {
             return RawValue.GetHashCode();

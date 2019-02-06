@@ -39,7 +39,7 @@ namespace BEPUphysicsDemos.Demos
         public StandardDemo(DemosGame game)
             : base(game)
         {
-            freeCameraControlScheme = new FreeCameraControlScheme(10, game.Camera, game);
+            freeCameraControlScheme = new FreeCameraControlScheme(10.ToFix(), game.Camera, game);
 
             //Creates the player character (C).
             character = new CharacterControllerInput(Space, game.Camera, game);
@@ -48,12 +48,12 @@ namespace BEPUphysicsDemos.Demos
             var wheelModel = game.Content.Load<Model>("carWheel");
             var wheelTexture = game.Content.Load<Texture2D>("wheel");
             whitePixel = game.Content.Load<Texture2D>("whitePixel");
-            vehicle = new VehicleInput(new Vector3(10000, 0, 0), Space, game.Camera, game, game.ModelDrawer, wheelModel, wheelTexture);
-            Space.ForceUpdater.Gravity = new Vector3(0, (Fix64)(-9.81m), 0); //If left unset, the default value is (0,0,0).
+            vehicle = new VehicleInput(new Vector3(10000.ToFix(), 0.ToFix(), 0.ToFix()), Space, game.Camera, game, game.ModelDrawer, wheelModel, wheelTexture);
+            Space.ForceUpdater.Gravity = new Vector3(0.ToFix(), (-9.81m).ToFix(), 0.ToFix()); //If left unset, the default value is (0,0,0).
 
             //Create the tossable ball.
-            kapow = new Sphere(new Vector3(11000, 0, 0), (Fix64).6m, 20);
-            kapowMaker = new Explosion(Vector3.Zero, 400, 15, Space);
+            kapow = new Sphere(new Vector3(11000.ToFix(), 0.ToFix(), 0.ToFix()), .6m.ToFix(), 20.ToFix());
+            kapowMaker = new Explosion(Vector3.Zero, 400.ToFix(), 15.ToFix(), Space);
             //Create the right-click grab spring.
             grabber = new MotorizedGrabSpring();
             grabberGraphic = game.ConstraintDrawer.Add(grabber);
@@ -104,11 +104,11 @@ namespace BEPUphysicsDemos.Demos
 #endif
                 {
                     if (character.IsActive) //Keep the ball out of the character's body if its being used.
-                        kapow.Position = Game.Camera.Position + Game.Camera.WorldMatrix.Forward * 3;
+                        kapow.Position = Game.Camera.Position + Game.Camera.WorldMatrix.Forward * 3.ToFix();
                     else
                         kapow.Position = Game.Camera.Position + Game.Camera.WorldMatrix.Forward;
                     kapow.AngularVelocity = Vector3.Zero;
-                    kapow.LinearVelocity = Game.Camera.WorldMatrix.Forward * 30;
+                    kapow.LinearVelocity = Game.Camera.WorldMatrix.Forward * 30.ToFix();
                 }
 
             #endregion
@@ -125,7 +125,7 @@ namespace BEPUphysicsDemos.Demos
             {
                 //Find the earliest ray hit
                 RayCastResult raycastResult;
-                if (Space.RayCast(new Ray(Game.Camera.Position, Game.Camera.WorldMatrix.Forward), 1000, rayCastFilter, out raycastResult))
+                if (Space.RayCast(new Ray(Game.Camera.Position, Game.Camera.WorldMatrix.Forward), 1000.ToFix(), rayCastFilter, out raycastResult))
                 {
                     var entityCollision = raycastResult.HitObject as EntityCollidable;
                     //If there's a valid ray hit, then grab the connected object!

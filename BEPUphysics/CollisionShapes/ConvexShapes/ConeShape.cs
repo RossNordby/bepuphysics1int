@@ -124,7 +124,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             if (horizontalLengthSquared > Toolbox.Epsilon)
             {
                 var radOverSigma = radius.Div(Fix64.Sqrt(horizontalLengthSquared));
-                extremePoint = new Vector3((Fix64)(radOverSigma.Mul(direction.X)), F64.Cm0p25.Mul(height), (Fix64)(radOverSigma.Mul(direction.Z)));
+                extremePoint = new Vector3((radOverSigma.Mul(direction.X)), F64.Cm0p25.Mul(height), (radOverSigma.Mul(direction.Z)));
             }
             else // It's pointing almost straight down...
                 extremePoint = new Vector3(F64.C0, F64.Cm0p25.Mul(height), F64.C0);

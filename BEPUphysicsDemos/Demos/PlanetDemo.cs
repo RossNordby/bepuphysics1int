@@ -27,11 +27,11 @@ namespace BEPUphysicsDemos.Demos
             //By pre-allocating a bunch of box-box pair handlers, the simulation will avoid having to allocate new ones at runtime.
             NarrowPhaseHelper.Factories.BoxBox.EnsureCount(1000);
 
-            planetPosition = new Vector3(0, 0, 0);
-            var planet = new Sphere(planetPosition, 30);
+            planetPosition = new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix());
+            var planet = new Sphere(planetPosition, 30.ToFix());
             Space.Add(planet);
 
-            var field = new GravitationalField(new InfiniteForceFieldShape(), planet.Position, 66730 / 2, 100);
+            var field = new GravitationalField(new InfiniteForceFieldShape(), planet.Position, (66730 / 2).ToFix(), 100.ToFix());
             Space.Add(field);
 
             //Drop the "meteorites" on the planet.
@@ -39,18 +39,18 @@ namespace BEPUphysicsDemos.Demos
             int numColumns = 10;
             int numRows = 10;
             int numHigh = 10;
-            Fix64 separation = 5;
+            Fix64 separation = 5.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
                     {
-                        toAdd = new Box(new Vector3(separation * i - numRows * separation / 2, 40 + k * separation, separation * j - numColumns * separation / 2), 1, 1, 1, 5);
-                        toAdd.LinearVelocity = new Vector3(30, 0, 0);
-                        toAdd.LinearDamping = 0;
-                        toAdd.AngularDamping = 0;
+                        toAdd = new Box(new Vector3((separation.Mul(i.ToFix())).Sub((numRows.ToFix().Mul(separation)).Div(2.ToFix())), 40.ToFix().Add(k.ToFix().Mul(separation)), (separation.Mul(j.ToFix())).Sub((numColumns.ToFix().Mul(separation)).Div(2.ToFix()))), 1.ToFix(), 1.ToFix(), 1.ToFix(), 5.ToFix());
+                        toAdd.LinearVelocity = new Vector3(30.ToFix(), 0.ToFix(), 0.ToFix());
+                        toAdd.LinearDamping = 0.ToFix();
+                        toAdd.AngularDamping = 0.ToFix();
                         Space.Add(toAdd);
                     }
-            game.Camera.Position = new Vector3(0, 0, 150);
+            game.Camera.Position = new Vector3(0.ToFix(), 0.ToFix(), 150.ToFix());
 
 
 

@@ -3,6 +3,7 @@ using BEPUphysics.Constraints.TwoEntity.Joints;
 using BEPUphysics.Constraints.TwoEntity.Motors;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
+using FixMath.NET;
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -18,9 +19,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         public TwistTestDemo(DemosGame game)
             : base(game)
         {
-            var a = new Box(new Vector3(-2, 2, 0), 1, 2, 2, 5);
-            var b = new Box(new Vector3(2, 2, 0), 1, 2, 2, 5);
-            b.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(0, 1, 0), MathHelper.PiOver4);
+            var a = new Box(new Vector3((-2).ToFix(), 2.ToFix(), 0.ToFix()), 1.ToFix(), 2.ToFix(), 2.ToFix(), 5.ToFix());
+            var b = new Box(new Vector3(2.ToFix(), 2.ToFix(), 0.ToFix()), 1.ToFix(), 2.ToFix(), 2.ToFix(), 5.ToFix());
+            b.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(0.ToFix(), 1.ToFix(), 0.ToFix()), MathHelper.PiOver4);
             Space.Add(a);
             Space.Add(b);
 
@@ -31,7 +32,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             //Space.Add(twistJoint);
             Space.Add(twistMotor);
 
-            var ballSocketJoint = new BallSocketJoint(a, b, (a.Position + b.Position) * 0.5m);
+            var ballSocketJoint = new BallSocketJoint(a, b, (a.Position + b.Position) * 0.5m.ToFix());
             var swingLimit = new SwingLimit(a, b, a.OrientationMatrix.Right, a.OrientationMatrix.Right, MathHelper.PiOver2);
 
             Space.Add(ballSocketJoint);
@@ -41,9 +42,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
 
 
-            Box ground = new Box(new Vector3(0, -.5m, 0), 50, 1, 50);
+            Box ground = new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), 50.ToFix(), 1.ToFix(), 50.ToFix());
             Space.Add(ground);
-            game.Camera.Position = new Vector3(0, 6, 15);
+            game.Camera.Position = new Vector3(0.ToFix(), 6.ToFix(), 15.ToFix());
         }
 
 

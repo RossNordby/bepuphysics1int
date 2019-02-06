@@ -34,7 +34,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             {
                 Fix64 d;
                 Vector3.Dot(ref plane.Normal, ref Dynamic.Position, out d);
-                return d + plane.D;
+                return d.Add(plane.D);
             }
         }
 
@@ -52,19 +52,19 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             Vector3.Dot(ref plane.Normal, ref Dynamic.Position, out d);
 
             if (useConstraintCounts)
-                effectiveMass = 1 / (Dynamic.ConstraintCount * Dynamic.InverseMass + Softness);
+                effectiveMass = 1.ToFix().Div(((Dynamic.ConstraintCount.ToFix().Mul(Dynamic.InverseMass)).Add(Softness)));
             else
-                effectiveMass = 1 / (Dynamic.InverseMass + Softness);
+                effectiveMass = 1.ToFix().Div((Dynamic.InverseMass.Add(Softness)));
 
-            Fix64 error = d + plane.D;
-            if (error > 0)
+            Fix64 error = d.Add(plane.D);
+            if (error > 0.ToFix())
             {
                 //Allow the dynamic to approach the plane, but no closer.
-                biasVelocity = error * inverseDt;
+                biasVelocity = error.Mul(inverseDt);
             }
             else
             {
-                biasVelocity = error * BiasFactor * inverseDt;
+                biasVelocity = (error.Mul(BiasFactor)).Mul(inverseDt);
             }
         }
 
@@ -74,14 +74,14 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             Vector3.Dot(ref Dynamic.Velocity, ref plane.Normal, out velocityAlongJacobian);
 
 
-            Fix64 changeInVelocity = -velocityAlongJacobian - biasVelocity - Softness * accumulatedImpulse;
+            Fix64 changeInVelocity = (velocityAlongJacobian.Neg().Sub(biasVelocity)).Sub(Softness.Mul(accumulatedImpulse));
 
-            Fix64 newImpulse = changeInVelocity * effectiveMass;
+            Fix64 newImpulse = changeInVelocity.Mul(effectiveMass);
 
-            Fix64 newAccumulatedImpulse = accumulatedImpulse + newImpulse;
-            newAccumulatedImpulse = MathHelper.Max(newAccumulatedImpulse, 0);
+            Fix64 newAccumulatedImpulse = accumulatedImpulse.Add(newImpulse);
+            newAccumulatedImpulse = MathHelper.Max(newAccumulatedImpulse, 0.ToFix());
 
-            impulse = newAccumulatedImpulse - accumulatedImpulse;
+            impulse = newAccumulatedImpulse.Sub(accumulatedImpulse);
             accumulatedImpulse = newAccumulatedImpulse;
 
         }

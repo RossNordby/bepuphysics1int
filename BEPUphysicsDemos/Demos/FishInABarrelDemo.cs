@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using BEPUphysics.CollisionRuleManagement;
 using BEPUphysics.NarrowPhaseSystems.Pairs;
 using BEPUutilities;
+using FixMath.NET;
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -28,11 +29,11 @@ namespace BEPUphysicsDemos.Demos
         public FishInABarrelDemo(DemosGame game)
             : base(game)
         {
-            game.Camera.Position = new Vector3(0, 7, 30);
+            game.Camera.Position = new Vector3(0.ToFix(), 7.ToFix(), 30.ToFix());
 
-            var detector = new Box(new Vector3(0, 0, 0), 1.5m, 1.5m, 1.5m);
+            var detector = new Box(new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()), 1.5m.ToFix(), 1.5m.ToFix(), 1.5m.ToFix());
             detector.CollisionInformation.CollisionRules.Personal = CollisionRule.NoSolver;
-            var acceptedTriggerEntity = new Box(new Vector3(5, 0, 0), 1.6m, .7m, .4m, 1);
+            var acceptedTriggerEntity = new Box(new Vector3(5.ToFix(), 0.ToFix(), 0.ToFix()), 1.6m.ToFix(), .7m.ToFix(), .4m.ToFix(), 1.ToFix());
             acceptedTrigger = acceptedTriggerEntity.CollisionInformation;
 
             detector.Tag = "noDisplayObject";
@@ -55,7 +56,7 @@ namespace BEPUphysicsDemos.Demos
             game.ModelDrawer.Add(fishDepositoryGroup);
 
 
-            movedBox = new Box(new Vector3(-4, 5, 0), 1, 1, 1, 1);
+            movedBox = new Box(new Vector3((-4).ToFix(), 5.ToFix(), 0.ToFix()), 1.ToFix(), 1.ToFix(), 1.ToFix());
             detector.Space.Add(movedBox);
             detector.CollisionInformation.Events.InitialCollisionDetected += InitialCollisionDetected;
             detector.CollisionInformation.Events.CollisionEnded += CollisionEnded;
@@ -78,7 +79,7 @@ namespace BEPUphysicsDemos.Demos
             if (other == acceptedTrigger)
             {
                 //If the detector collided with the accepted trigger, move the box.
-                movedBox.Position = new Vector3(4, 5, 0);
+                movedBox.Position = new Vector3(4.ToFix(), 5.ToFix(), 0.ToFix());
                 movedBox.Orientation = Quaternion.Identity;
                 movedBox.LinearVelocity = Vector3.Zero;
                 movedBox.AngularVelocity = Vector3.Zero;
@@ -91,7 +92,7 @@ namespace BEPUphysicsDemos.Demos
             if (other == acceptedTrigger)
             {
                 //If the detector ceases to collide, get rid of the spawned box.
-                movedBox.Position = new Vector3(-4, 5, 0);
+                movedBox.Position = new Vector3((-4).ToFix(), 5.ToFix(), 0.ToFix());
                 movedBox.Orientation = Quaternion.Identity;
                 movedBox.LinearVelocity = Vector3.Zero;
                 movedBox.AngularVelocity = Vector3.Zero;

@@ -88,7 +88,7 @@ namespace BEPUphysicsDrawer.Font
 		/// <param name="position">Position to draw the text at.</param>
 		public void Draw(string text, Fix64 value, Vector2 position)
 		{
-			Draw(text, (double)value, position);
+			Draw(text, value.ToDouble(), position);
 		}
 
 		/// <summary>

@@ -25,13 +25,13 @@ namespace BEPUphysicsDrawer.Models
             if (coneShape == null)
                 throw new ArgumentException("Wrong shape type.");
 
-            float verticalOffset = -(float)coneShape.Height / 4;
+            float verticalOffset = -(float)coneShape.Height.ToFloat() / 4;
             float angleBetweenFacets = MathHelper.TwoPi / NumSides;
-            float radius = (float)coneShape.Radius;
+            float radius = (float)coneShape.Radius.ToFloat();
 
             //Create the vertex list
 
-            var topVertexPosition = new Vector3(0, (float)coneShape.Height + verticalOffset, 0);
+            var topVertexPosition = new Vector3(0, (float)coneShape.Height.ToFloat() + verticalOffset, 0);
 
             for (int i = 0; i < NumSides; i++)
             {

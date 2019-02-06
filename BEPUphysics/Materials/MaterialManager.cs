@@ -27,7 +27,7 @@ namespace BEPUphysics.Materials
         /// Default coefficient of kinetic friction. 
         /// Defaults to 0.8.
         ///</summary>
-        public static Fix64 DefaultKineticFriction = (Fix64).8m.ToFix();
+        public static Fix64 DefaultKineticFriction = .8m.ToFix();
         ///<summary>
         /// Default coefficient of static friction.
         /// Defaults to 1.

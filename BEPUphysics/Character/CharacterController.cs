@@ -409,27 +409,27 @@ namespace BEPUphysics.Character
 			)
         {
 			if (height == null)
-				height = (Fix64)1.7m.ToFix();
+				height = 1.7m.ToFix();
 			if (crouchingHeight == null)
-				crouchingHeight = (Fix64)(1.7m * .7m).ToFix();
+				crouchingHeight = (1.7m * .7m).ToFix();
 			if (proneHeight == null)
-				proneHeight = (Fix64)(1.7m * 0.3m).ToFix();
+				proneHeight = (1.7m * 0.3m).ToFix();
 			if (radius == null)
-				radius = (Fix64)0.6m.ToFix();
+				radius = 0.6m.ToFix();
 			if (margin == null)
-				margin = (Fix64)0.1m.ToFix();
+				margin = 0.1m.ToFix();
 			if (mass == null)
 				mass = 10.ToFix();
 			if (maximumTractionSlope == null)
-				maximumTractionSlope = (Fix64)0.8m.ToFix();
+				maximumTractionSlope = 0.8m.ToFix();
 			if (maximumSupportSlope == null)
-				maximumSupportSlope = (Fix64)1.3m.ToFix();
+				maximumSupportSlope = 1.3m.ToFix();
 			if (standingSpeed == null)
 				standingSpeed = 8.ToFix();
 			if (crouchingSpeed == null)
 				crouchingSpeed = 3.ToFix();
 			if (proneSpeed == null)
-				proneSpeed = (Fix64)1.5m.ToFix();
+				proneSpeed = 1.5m.ToFix();
 			if (tractionForce == null)
 				tractionForce = 1000.ToFix();
 			if (slidingSpeed == null)
@@ -441,7 +441,7 @@ namespace BEPUphysics.Character
 			if (airForce == null)
 				airForce = 250.ToFix();
 			if (jumpSpeed == null)
-				jumpSpeed = (Fix64)4.5m.ToFix();
+				jumpSpeed = 4.5m.ToFix();
 			if (slidingJumpSpeed == null)
 				slidingJumpSpeed = 3.ToFix();
 			if (maximumGlueForce == null)
@@ -450,9 +450,9 @@ namespace BEPUphysics.Character
 			if (margin > radius || margin > crouchingHeight || margin > height)
                 throw new ArgumentException("Margin must not be larger than the character's radius or height.");
 
-            Body = new Cylinder(position, (Fix64)height, (Fix64)radius, (Fix64)mass);
+            Body = new Cylinder(position, height.Value, radius.Value, mass.Value);
             Body.IgnoreShapeChanges = true; //Wouldn't want inertia tensor recomputations to occur when crouching and such.
-            Body.CollisionInformation.Shape.CollisionMargin = (Fix64)margin;
+            Body.CollisionInformation.Shape.CollisionMargin = margin.Value;
             //Making the character a continuous object prevents it from flying through walls which would be pretty jarring from a player's perspective.
             Body.PositionUpdateMode = PositionUpdateMode.Continuous;
             Body.LocalInertiaTensorInverse = new Matrix3x3();
@@ -460,26 +460,26 @@ namespace BEPUphysics.Character
             //In a future version where this is changed, change this to conceptually minimally required CreatingPair.
             Body.CollisionInformation.Events.DetectingInitialCollision += RemoveFriction;
             Body.LinearDamping = F64.C0;
-            ContactCategorizer = new CharacterContactCategorizer((Fix64)maximumTractionSlope, (Fix64)maximumSupportSlope);
+            ContactCategorizer = new CharacterContactCategorizer(maximumTractionSlope.Value, maximumSupportSlope.Value);
             QueryManager = new QueryManager(Body, ContactCategorizer);
             SupportFinder = new SupportFinder(Body, QueryManager, ContactCategorizer);
             HorizontalMotionConstraint = new HorizontalMotionConstraint(Body, SupportFinder);
-            HorizontalMotionConstraint.PositionAnchorDistanceThreshold = ((Fix64)radius).Mul(F64.C0p25);
-            VerticalMotionConstraint = new VerticalMotionConstraint(Body, SupportFinder, (Fix64)maximumGlueForce);
+            HorizontalMotionConstraint.PositionAnchorDistanceThreshold = (radius.Value).Mul(F64.C0p25);
+            VerticalMotionConstraint = new VerticalMotionConstraint(Body, SupportFinder, maximumGlueForce.Value);
             StepManager = new StepManager(Body, ContactCategorizer, SupportFinder, QueryManager, HorizontalMotionConstraint);
-            StanceManager = new StanceManager(Body, (Fix64)crouchingHeight, (Fix64)proneHeight, QueryManager, SupportFinder);
+            StanceManager = new StanceManager(Body, crouchingHeight.Value, proneHeight.Value, QueryManager, SupportFinder);
             PairLocker = new CharacterPairLocker(Body);
 
-            StandingSpeed = (Fix64)standingSpeed;
-            CrouchingSpeed = (Fix64)crouchingSpeed;
-            ProneSpeed = (Fix64)proneSpeed;
-            TractionForce = (Fix64)tractionForce;
-            SlidingSpeed = (Fix64)slidingSpeed;
-            SlidingForce = (Fix64)slidingForce;
-            AirSpeed = (Fix64)airSpeed;
-            AirForce = (Fix64)airForce;
-            JumpSpeed = (Fix64)jumpSpeed;
-            SlidingJumpSpeed = (Fix64)slidingJumpSpeed;
+            StandingSpeed = standingSpeed.Value;
+            CrouchingSpeed = crouchingSpeed.Value;
+            ProneSpeed = proneSpeed.Value;
+            TractionForce = tractionForce.Value;
+            SlidingSpeed = slidingSpeed.Value;
+            SlidingForce = slidingForce.Value;
+            AirSpeed = airSpeed.Value;
+            AirForce = airForce.Value;
+            JumpSpeed = jumpSpeed.Value;
+            SlidingJumpSpeed = slidingJumpSpeed.Value;
 
             //Enable multithreading for the characters.  
             IsUpdatedSequentially = false;

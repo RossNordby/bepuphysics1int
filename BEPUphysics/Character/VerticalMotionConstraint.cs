@@ -90,7 +90,7 @@ namespace BEPUphysics.Character
 		{
 			this.characterBody = characterBody;
 			this.supportFinder = supportFinder;
-			MaximumGlueForce = (Fix64)5000.ToFix();
+			MaximumGlueForce = 5000.ToFix();
 		}
 
 		/// <summary>

@@ -24,15 +24,15 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         public PersistentManifoldStressTestDemo(DemosGame game)
             : base(game)
         {
-            var ground = new Box(new Vector3(0, -.5m, 0), 200, 1, 200);
+            var ground = new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), 200.ToFix(), 1.ToFix(), 200.ToFix());
             Space.Add(ground);
 
 
 
             var spawnVolume = new BoundingBox
                 {
-                    Min = new Vector3(-25, 2, -25),
-                    Max = new Vector3(25, 102, 25)
+                    Min = new Vector3((-25).ToFix(), 2.ToFix(), (-25).ToFix()),
+                    Max = new Vector3(25.ToFix(), 102.ToFix(), 25.ToFix())
                 };
 
             var span = spawnVolume.Max - spawnVolume.Min;
@@ -43,11 +43,11 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             for (int i = 0; i < 5000; ++i)
             {
                 Vector3 position;
-                position.X = spawnVolume.Min.X + (Fix64)random.NextDouble() * span.X;
-                position.Y = spawnVolume.Min.Y + (Fix64)random.NextDouble() * span.Y;
-                position.Z = spawnVolume.Min.Z + (Fix64)random.NextDouble() * span.Z;
+                position.X = spawnVolume.Min.X.Add((random.NextDouble().ToFix()).Mul(span.X));
+                position.Y = spawnVolume.Min.Y.Add((random.NextDouble().ToFix()).Mul(span.Y));
+                position.Z = spawnVolume.Min.Z.Add((random.NextDouble().ToFix()).Mul(span.Z));
 
-                var entity = new Capsule(position, 2, 0.8m, 10);
+                var entity = new Capsule(position, 2.ToFix(), 0.8m.ToFix(), 10.ToFix());
                 Space.Add(entity);
             }
 
@@ -68,9 +68,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
             Console.WriteLine("Time: {0}", time);
  
-            game.Camera.Position = new Vector3(-10, 10, 10);
-            game.Camera.Yaw(MathHelper.Pi / -4);
-            game.Camera.Pitch(MathHelper.Pi / 9);
+            game.Camera.Position = new Vector3((-10).ToFix(), 10.ToFix(), 10.ToFix());
+            game.Camera.Yaw(MathHelper.Pi.Div((-4).ToFix()));
+            game.Camera.Pitch(MathHelper.Pi.Div(9.ToFix()));
         }
 
 

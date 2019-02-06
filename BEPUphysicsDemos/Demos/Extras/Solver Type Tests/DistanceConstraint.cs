@@ -46,16 +46,16 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             }
             else
             {
-                currentDistance = 0;
+                currentDistance = 0.ToFix();
                 jacobian = Toolbox.UpVector;
             }
 
             if (useConstraintCounts)
-                effectiveMass = 1 / (A.ConstraintCount * A.InverseMass + B.ConstraintCount * B.InverseMass + Softness);
+                effectiveMass = 1.ToFix().Div((((A.ConstraintCount.ToFix().Mul(A.InverseMass)).Add(B.ConstraintCount.ToFix().Mul(B.InverseMass))).Add(Softness)));
             else
-                effectiveMass = 1 / (A.InverseMass + B.InverseMass + Softness);
-            accumulatedImpulse = 0;
-            biasVelocity = (distance - currentDistance) * BiasFactor * inverseDt;
+                effectiveMass = 1.ToFix().Div(((A.InverseMass.Add(B.InverseMass)).Add(Softness)));
+            accumulatedImpulse = 0.ToFix();
+            biasVelocity = ((distance.Sub(currentDistance)).Mul(BiasFactor)).Mul(inverseDt);
 
         }
 
@@ -67,9 +67,9 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             Vector3.Dot(ref relativeVelocity, ref jacobian, out relativeVelocityAlongJacobian);
 
 
-            Fix64 changeInVelocity = relativeVelocityAlongJacobian - biasVelocity - Softness * accumulatedImpulse;
+            Fix64 changeInVelocity = (relativeVelocityAlongJacobian.Sub(biasVelocity)).Sub(Softness.Mul(accumulatedImpulse));
 
-            impulse = changeInVelocity * effectiveMass;
+            impulse = changeInVelocity.Mul(effectiveMass);
 
             accumulatedImpulse += impulse;
 
@@ -94,7 +94,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             }
             else
             {
-                Vector3.Multiply(ref jacobian, -impulseToApply, out worldSpaceImpulse);
+                Vector3.Multiply(ref jacobian, impulseToApply.Neg(), out worldSpaceImpulse);
             }
             dynamic.ApplyImpulse(ref worldSpaceImpulse);
 

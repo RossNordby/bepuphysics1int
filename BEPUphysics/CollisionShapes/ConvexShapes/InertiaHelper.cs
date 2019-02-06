@@ -18,7 +18,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// Larger tensors (above 1) improve stiffness of constraints and contacts, while smaller values (towards 1) are closer to 'realistic' behavior.
         /// Defaults to 2.5.
         /// </summary>
-        public static Fix64 InertiaTensorScale = (Fix64)2.5m.ToFix();
+        public static Fix64 InertiaTensorScale = 2.5m.ToFix();
 
         ///<summary>
         /// Number of samples the system takes along a side of an object's AABB when voxelizing it.

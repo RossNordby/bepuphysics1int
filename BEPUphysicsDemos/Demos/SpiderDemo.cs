@@ -30,11 +30,11 @@ namespace BEPUphysicsDemos.Demos
         public SpiderDemo(DemosGame game)
             : base(game)
         {
-            game.Camera.Position = new Vector3(0, 2, 15);
+            game.Camera.Position = new Vector3(0.ToFix(), 2.ToFix(), 15.ToFix());
 
-            Space.Add(new Box(new Vector3(0, -5, 0), 20, 1, 20));
+            Space.Add(new Box(new Vector3(0.ToFix(), (-5).ToFix(), 0.ToFix()), 20.ToFix(), 1.ToFix(), 20.ToFix()));
 
-            BuildBot(new Vector3(0, 3, 0), out legJoints);
+            BuildBot(new Vector3(0.ToFix(), 3.ToFix(), 0.ToFix()), out legJoints);
 
 
             //x and y, in terms of heightmaps, refer to their local x and y coordinates.  In world space, they correspond to x and z.
@@ -42,26 +42,26 @@ namespace BEPUphysicsDemos.Demos
             int xLength = 180;
             int zLength = 180;
 
-            Fix64 xSpacing = 8;
-            Fix64 zSpacing = 8;
+            Fix64 xSpacing = 8.ToFix();
+            Fix64 zSpacing = 8.ToFix();
             var heights = new Fix64[xLength, zLength];
             for (int i = 0; i < xLength; i++)
             {
                 for (int j = 0; j < zLength; j++)
                 {
-                    Fix64 x = i - xLength / 2;
-                    Fix64 z = j - zLength / 2;
+                    Fix64 x = (i - xLength / 2).ToFix();
+                    Fix64 z = (j - zLength / 2).ToFix();
                     //heights[i,j] = (Fix64)(x * y / 1000f);
-                    heights[i, j] = 10 * (Fix64.Sin(x / 8) + Fix64.Sin(z / 8));
+                    heights[i, j] = 10.ToFix().Mul((Fix64.Sin(x.Div(8.ToFix())).Add(Fix64.Sin(z.Div(8.ToFix())))));
                     //heights[i,j] = 3 * (Fix64)Math.Sin(x * y / 100f);
                     //heights[i,j] = (x * x * x * y - y * y * y * x) / 1000f;
                 }
             }
             //Create the terrain.
             var terrain = new Terrain(heights, new AffineTransform(
-                    new Vector3(xSpacing, 1, zSpacing),
+                    new Vector3(xSpacing, 1.ToFix(), zSpacing),
                     Quaternion.Identity,
-                    new Vector3(-xLength * xSpacing / 2, -10, -zLength * zSpacing / 2)));
+                    new Vector3(((-xLength).ToFix().Mul(xSpacing)).Div(2.ToFix()), (-10).ToFix(), ((-zLength).ToFix().Mul(zSpacing)).Div(2.ToFix()))));
 
             //terrain.Thickness = 5; //Uncomment this and shoot some things at the bottom of the terrain! They'll be sucked up through the ground.
 
@@ -72,27 +72,27 @@ namespace BEPUphysicsDemos.Demos
 
         void BuildBot(Vector3 position, out List<RevoluteJoint> legJoints)
         {
-            var body = new Box(position + new Vector3(0, 2.5m, 0), 2, 3, 2, 30);
+            var body = new Box(position + new Vector3(0.ToFix(), 2.5m.ToFix(), 0.ToFix()), 2.ToFix(), 3.ToFix(), 2.ToFix(), 30.ToFix());
             Space.Add(body);
 
             legJoints = new List<RevoluteJoint>();
 
             //Plop four legs on the spider.
-            BuildLeg(body, new RigidTransform(body.Position + new Vector3(-.8m, -1, -.8m), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver4 * 3)), legJoints);
-            BuildLeg(body, new RigidTransform(body.Position + new Vector3(-.8m, -1, .8m), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver4 * 5)), legJoints);
-            BuildLeg(body, new RigidTransform(body.Position + new Vector3(.8m, -1, -.8m), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver4)), legJoints);
-            BuildLeg(body, new RigidTransform(body.Position + new Vector3(.8m, -1, .8m), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver4 * 7)), legJoints);
+            BuildLeg(body, new RigidTransform(body.Position + new Vector3((-.8m).ToFix(), (-1).ToFix(), (-.8m).ToFix()), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver4.Mul(3.ToFix()))), legJoints);
+            BuildLeg(body, new RigidTransform(body.Position + new Vector3((-.8m).ToFix(), (-1).ToFix(), .8m.ToFix()), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver4.Mul(5.ToFix()))), legJoints);
+            BuildLeg(body, new RigidTransform(body.Position + new Vector3(.8m.ToFix(), (-1).ToFix(), (-.8m).ToFix()), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver4)), legJoints);
+            BuildLeg(body, new RigidTransform(body.Position + new Vector3(.8m.ToFix(), (-1).ToFix(), .8m.ToFix()), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver4.Mul(7.ToFix()))), legJoints);
         }
 
         void BuildLeg(Entity body, RigidTransform legTransform, List<RevoluteJoint> legJoints)
         {
             //Build the leg in local space.
-            var upperLeg = new Box(new Vector3(.75m, 0, 0), 1.5m, .6m, .6m, 7);
-            var lowerLeg = new Box(new Vector3(1.2m, -.75m, 0), .6m, 1.5m, .6m, 7);
+            var upperLeg = new Box(new Vector3(.75m.ToFix(), 0.ToFix(), 0.ToFix()), 1.5m.ToFix(), .6m.ToFix(), .6m.ToFix(), 7.ToFix());
+            var lowerLeg = new Box(new Vector3(1.2m.ToFix(), (-.75m).ToFix(), 0.ToFix()), .6m.ToFix(), 1.5m.ToFix(), .6m.ToFix(), 7.ToFix());
 
             //Increase the feetfriction to make walking easier.
-            lowerLeg.Material.KineticFriction = 3;
-            lowerLeg.Material.StaticFriction = 3;
+            lowerLeg.Material.KineticFriction = 3.ToFix();
+            lowerLeg.Material.StaticFriction = 3.ToFix();
 
             Space.Add(upperLeg);
             Space.Add(lowerLeg);
@@ -112,7 +112,7 @@ namespace BEPUphysicsDemos.Demos
             //While the angular joint doesn't need any extra configuration, the limit does in order to ensure that its interpretation of angles matches ours.
             bodyToUpper.Limit.LocalTestAxis = Vector3.Left;
             bodyToUpper.Limit.Basis.SetWorldAxes(legTransform.OrientationMatrix.Forward, legTransform.OrientationMatrix.Left);
-            bodyToUpper.Limit.MinimumAngle = -MathHelper.PiOver4;
+            bodyToUpper.Limit.MinimumAngle = MathHelper.PiOver4.Neg();
             bodyToUpper.Limit.MaximumAngle = MathHelper.PiOver4;
             //Similarly, the motor needs configuration.
             bodyToUpper.Motor.IsActive = true;
@@ -120,18 +120,18 @@ namespace BEPUphysicsDemos.Demos
             bodyToUpper.Motor.Basis.SetWorldAxes(legTransform.OrientationMatrix.Forward, legTransform.OrientationMatrix.Left);
             bodyToUpper.Motor.Settings.Mode = MotorMode.Servomechanism;
             //Weaken the spring to prevent it from launching too much.
-            bodyToUpper.Motor.Settings.Servo.SpringSettings.Stiffness *= .01m;
-            bodyToUpper.Motor.Settings.Servo.SpringSettings.Damping *= .01m;
+            bodyToUpper.Motor.Settings.Servo.SpringSettings.Stiffness *= .01m.ToFix();
+            bodyToUpper.Motor.Settings.Servo.SpringSettings.Damping *= .01m.ToFix();
             Space.Add(bodyToUpper);
 
             //Connect the upper leg to the lower leg.
-            var upperToLower = new RevoluteJoint(upperLeg, lowerLeg, legTransform.Position - legTransform.OrientationMatrix.Left * 1.2m, legTransform.OrientationMatrix.Forward);
+            var upperToLower = new RevoluteJoint(upperLeg, lowerLeg, legTransform.Position - legTransform.OrientationMatrix.Left * 1.2m.ToFix(), legTransform.OrientationMatrix.Forward);
             //Both the motor and limit need to be activated for this leg.
             upperToLower.Limit.IsActive = true;
             //While the angular joint doesn't need any extra configuration, the limit does in order to ensure that its interpretation of angles matches ours.
             upperToLower.Limit.LocalTestAxis = Vector3.Down;
             upperToLower.Limit.Basis.SetWorldAxes(legTransform.OrientationMatrix.Forward, legTransform.OrientationMatrix.Down);
-            upperToLower.Limit.MinimumAngle = -MathHelper.PiOver4;
+            upperToLower.Limit.MinimumAngle = MathHelper.PiOver4.Neg();
             upperToLower.Limit.MaximumAngle = MathHelper.PiOver4;
             //Similarly, the motor needs configuration.
             upperToLower.Motor.IsActive = true;
@@ -139,8 +139,8 @@ namespace BEPUphysicsDemos.Demos
             upperToLower.Motor.Basis.SetWorldAxes(legTransform.OrientationMatrix.Forward, legTransform.OrientationMatrix.Down);
             upperToLower.Motor.Settings.Mode = MotorMode.Servomechanism;
             //Weaken the spring to prevent it from launching too much.
-            upperToLower.Motor.Settings.Servo.SpringSettings.Stiffness *= .01m;
-            upperToLower.Motor.Settings.Servo.SpringSettings.Damping *= .01m;
+            upperToLower.Motor.Settings.Servo.SpringSettings.Stiffness *= .01m.ToFix();
+            upperToLower.Motor.Settings.Servo.SpringSettings.Damping *= .01m.ToFix();
             Space.Add(upperToLower);
 
             legJoints.Add(upperToLower);
@@ -214,14 +214,14 @@ namespace BEPUphysicsDemos.Demos
 
         void Extend(RevoluteJoint joint, Fix64 dt)
         {
-            Fix64 extensionSpeed = 2;
-            joint.Motor.Settings.Servo.Goal = MathHelper.Clamp(joint.Motor.Settings.Servo.Goal + extensionSpeed * dt, joint.Limit.MinimumAngle, joint.Limit.MaximumAngle);
+            Fix64 extensionSpeed = 2.ToFix();
+            joint.Motor.Settings.Servo.Goal = MathHelper.Clamp(joint.Motor.Settings.Servo.Goal.Add(extensionSpeed.Mul(dt)), joint.Limit.MinimumAngle, joint.Limit.MaximumAngle);
         }
 
         void Retract(RevoluteJoint joint, Fix64 dt)
         {
-            Fix64 retractionSpeed = 2;
-            joint.Motor.Settings.Servo.Goal = MathHelper.Clamp(joint.Motor.Settings.Servo.Goal - retractionSpeed * dt, joint.Limit.MinimumAngle, joint.Limit.MaximumAngle);
+            Fix64 retractionSpeed = 2.ToFix();
+            joint.Motor.Settings.Servo.Goal = MathHelper.Clamp(joint.Motor.Settings.Servo.Goal.Sub(retractionSpeed.Mul(dt)), joint.Limit.MinimumAngle, joint.Limit.MaximumAngle);
         }
 
 

@@ -26,7 +26,7 @@ namespace BEPUphysicsDemos.Demos
             //This is a little convenience method used to extract vertices and indices from a model.
             //It doesn't do anything special; any approach that gets valid vertices and indices will work.
             ModelDataExtractor.GetVerticesAndIndicesFromModel(playgroundModel, out staticTriangleVertices, out staticTriangleIndices);
-            var staticMesh = new StaticMesh(staticTriangleVertices, staticTriangleIndices, new AffineTransform(Matrix3x3.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), new Vector3(0, -10, 0)));
+            var staticMesh = new StaticMesh(staticTriangleVertices, staticTriangleIndices, new AffineTransform(Matrix3x3.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), new Vector3(0.ToFix(), (-10).ToFix(), 0.ToFix())));
             staticMesh.Sidedness = TriangleSidedness.Counterclockwise;
 
             Space.Add(staticMesh);
@@ -37,23 +37,23 @@ namespace BEPUphysicsDemos.Demos
             int numColumns = 8;
             int numRows = 8;
             int numHigh = 1;
-            Fix64 separation = 8;
+            Fix64 separation = 8.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
                     {
                         var toAdd = new Box(
                             new Vector3(
-                            separation * i - numRows * separation / 2,
-                            30 + k * separation,
-                            separation * j - numColumns * separation / 2),
-                            2, 2, 2, 15);
+(separation.Mul(i.ToFix())).Sub((numRows.ToFix().Mul(separation)).Div(2.ToFix())),
+30.ToFix().Add(k.ToFix().Mul(separation)),
+(separation.Mul(j.ToFix())).Sub((numColumns.ToFix().Mul(separation)).Div(2.ToFix()))),
+2.ToFix(), 2.ToFix(), 2.ToFix(), 15.ToFix());
                         Space.Add(toAdd);
                     }
 
 
 
-            game.Camera.Position = new Vector3(0, 10, 40);
+            game.Camera.Position = new Vector3(0.ToFix(), 10.ToFix(), 40.ToFix());
 
 
         }

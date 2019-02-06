@@ -32,7 +32,7 @@ namespace BEPUphysicsDemos.AlternateMovement
         /// <summary>
         /// Speed that the vehicle tries towreach when moving backward.
         /// </summary>
-        public Fix64 BackwardSpeed = -15;
+        public Fix64 BackwardSpeed = (-15).ToFix();
 
         /// <summary>
         /// Default coefficient of sliding friction on an individual wheel in the tank track.
@@ -43,7 +43,7 @@ namespace BEPUphysicsDemos.AlternateMovement
         /// <summary>
         /// Speed that the vehicle tries to reach when moving forward.
         /// </summary>
-        public Fix64 ForwardSpeed = 15;
+        public Fix64 ForwardSpeed = 15.ToFix();
 
         /// <summary>
         /// Whether or not to use the vehicle's input.
@@ -80,7 +80,7 @@ namespace BEPUphysicsDemos.AlternateMovement
             //The default friction blender is multiplicative.  This tank had its coefficients designed for averaged coefficients.
             //So, let's average the friction coefficients!
             //Try to fiddle with the configuration and this blender to see how you like other approaches.
-            return (wheelFriction + supportFriction) / 2;
+            return (wheelFriction.Add(supportFriction)).Div(2.ToFix());
         }
 
         /// <summary>
@@ -103,28 +103,28 @@ namespace BEPUphysicsDemos.AlternateMovement
         {
             var bodies = new List<CompoundShapeEntry>()
             {
-                new CompoundShapeEntry(new BoxShape(4, 1, 8), new Vector3(0, 0, 0), 500),
-                new CompoundShapeEntry(new BoxShape(3, (Fix64).7m, 4), new Vector3(0, (Fix64)(.5m + .35m), (Fix64).5m), 1)
+                new CompoundShapeEntry(new BoxShape(4.ToFix(), 1.ToFix(), 8.ToFix()), new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()), 500.ToFix()),
+                new CompoundShapeEntry(new BoxShape(3.ToFix(), .7m.ToFix(), 4.ToFix()), new Vector3(0.ToFix(), (.5m + .35m).ToFix(), .5m.ToFix()), 1.ToFix())
             };
-            var body = new CompoundBody(bodies, 501);
-            body.CollisionInformation.LocalPosition = new Vector3(0, (Fix64).5m, 0);
+            var body = new CompoundBody(bodies, 501.ToFix());
+            body.CollisionInformation.LocalPosition = new Vector3(0.ToFix(), .5m.ToFix(), 0.ToFix());
             body.Position = (position); //At first, just keep it out of the way.
             Vehicle = new Vehicle(body);
 
             #region RaycastWheelShapes
 
             //The wheel model used is not aligned initially with how a wheel would normally look, so rotate them.
-            MaximumDriveForce = 1800;
-            BaseSlidingFriction = 3;
+            MaximumDriveForce = 1800.ToFix();
+            BaseSlidingFriction = 3.ToFix();
 
             Matrix wheelGraphicRotation = Matrix.CreateFromAxisAngle(Vector3.Forward, MathHelper.PiOver2);
             for (int i = 0; i < 6; i++)
             {
                 var toAdd = new Wheel(
-                    new RaycastWheelShape((Fix64).375m, wheelGraphicRotation),
-                    new WheelSuspension(2000, 300, Vector3.Down, (Fix64)1.3m, new Vector3((Fix64)(-1.9m), 0, (Fix64)(-2.9m) + i * (Fix64)1.15m)),
-                    new WheelDrivingMotor(10, MaximumDriveForce, MaximumDriveForce),
-                    new WheelBrake(7, 7, 1),
+                    new RaycastWheelShape(.375m.ToFix(), wheelGraphicRotation),
+                    new WheelSuspension(2000.ToFix(), 300.ToFix(), Vector3.Down, 1.3m.ToFix(), new Vector3((-1.9m).ToFix(), 0.ToFix(), (-2.9m).ToFix().Add(i.ToFix().Mul(1.15m.ToFix())))),
+                    new WheelDrivingMotor(10.ToFix(), MaximumDriveForce, MaximumDriveForce),
+                    new WheelBrake(7.ToFix(), 7.ToFix(), 1.ToFix()),
                     new WheelSlidingFriction(BaseSlidingFriction, BaseSlidingFriction));
                 toAdd.DrivingMotor.GripFrictionBlender = FrictionBlender;
                 toAdd.Brake.FrictionBlender = FrictionBlender;
@@ -135,10 +135,10 @@ namespace BEPUphysicsDemos.AlternateMovement
             for (int i = 0; i < 6; i++)
             {
                 var toAdd = new Wheel(
-                    new RaycastWheelShape((Fix64).375m, wheelGraphicRotation),
-                    new WheelSuspension(2000, 300, Vector3.Down, (Fix64)1.3m, new Vector3((Fix64)1.9m, 0, (Fix64)(-2.9m) + i * (Fix64)1.15m)),
-                    new WheelDrivingMotor(10, 2000, 1000),
-                    new WheelBrake(7, 7, 1),
+                    new RaycastWheelShape(.375m.ToFix(), wheelGraphicRotation),
+                    new WheelSuspension(2000.ToFix(), 300.ToFix(), Vector3.Down, 1.3m.ToFix(), new Vector3(1.9m.ToFix(), 0.ToFix(), (-2.9m).ToFix().Add(i.ToFix().Mul(1.15m.ToFix())))),
+                    new WheelDrivingMotor(10.ToFix(), 2000.ToFix(), 1000.ToFix()),
+                    new WheelBrake(7.ToFix(), 7.ToFix(), 1.ToFix()),
                     new WheelSlidingFriction(BaseSlidingFriction, BaseSlidingFriction));
                 toAdd.DrivingMotor.GripFrictionBlender = FrictionBlender;
                 toAdd.Brake.FrictionBlender = FrictionBlender;
@@ -179,7 +179,7 @@ namespace BEPUphysicsDemos.AlternateMovement
 
 
 
-            CameraControlScheme = new ChaseCameraControlScheme(Vehicle.Body, new Vector3(0, (Fix64)0.6m, 0), true, 10, camera, game);
+            CameraControlScheme = new ChaseCameraControlScheme(Vehicle.Body, new Vector3(0.ToFix(), 0.6m.ToFix(), 0.ToFix()), true, 10.ToFix(), camera, game);
 
         }
 
@@ -380,7 +380,7 @@ namespace BEPUphysicsDemos.AlternateMovement
                             //run at full force.  This helps prevents wild spinouts and encourages
                             //more 'tanky' movement.
                             wheel.DrivingMotor.TargetSpeed = BackwardSpeed;
-                            wheel.DrivingMotor.MaximumBackwardForce = MaximumDriveForce / 3;
+                            wheel.DrivingMotor.MaximumBackwardForce = MaximumDriveForce.Div(3.ToFix());
                         }
                         //It's possible to configure the tank in such a way
                         //that you won't have to use separate sliding frictions while turning,
@@ -397,7 +397,7 @@ namespace BEPUphysicsDemos.AlternateMovement
                         foreach (Wheel wheel in rightTrack)
                         {
                             wheel.DrivingMotor.TargetSpeed = BackwardSpeed;
-                            wheel.DrivingMotor.MaximumBackwardForce = MaximumDriveForce / 3;
+                            wheel.DrivingMotor.MaximumBackwardForce = MaximumDriveForce.Div(3.ToFix());
                         }
                         ReduceSlidingFriction();
                     }
@@ -422,7 +422,7 @@ namespace BEPUphysicsDemos.AlternateMovement
                         foreach (Wheel wheel in leftTrack)
                         {
                             wheel.DrivingMotor.TargetSpeed = ForwardSpeed;
-                            wheel.DrivingMotor.MaximumForwardForce = MaximumDriveForce / 3;
+                            wheel.DrivingMotor.MaximumForwardForce = MaximumDriveForce.Div(3.ToFix());
                         }
                         ReduceSlidingFriction();
                     }
@@ -436,7 +436,7 @@ namespace BEPUphysicsDemos.AlternateMovement
                         foreach (Wheel wheel in rightTrack)
                         {
                             wheel.DrivingMotor.TargetSpeed = ForwardSpeed;
-                            wheel.DrivingMotor.MaximumForwardForce = MaximumDriveForce / 3;
+                            wheel.DrivingMotor.MaximumForwardForce = MaximumDriveForce.Div(3.ToFix());
                         }
                         ReduceSlidingFriction();
                     }
@@ -454,11 +454,11 @@ namespace BEPUphysicsDemos.AlternateMovement
                     //Turn left
                     foreach (Wheel wheel in leftTrack)
                     {
-                        wheel.DrivingMotor.TargetSpeed = BackwardSpeed / 5;
+                        wheel.DrivingMotor.TargetSpeed = BackwardSpeed.Div(5.ToFix());
                     }
                     foreach (Wheel wheel in rightTrack)
                     {
-                        wheel.DrivingMotor.TargetSpeed = ForwardSpeed / 5;
+                        wheel.DrivingMotor.TargetSpeed = ForwardSpeed.Div(5.ToFix());
                     }
                     ReduceSlidingFriction();
                 }
@@ -467,11 +467,11 @@ namespace BEPUphysicsDemos.AlternateMovement
                     //Turn right
                     foreach (Wheel wheel in leftTrack)
                     {
-                        wheel.DrivingMotor.TargetSpeed = ForwardSpeed / 5;
+                        wheel.DrivingMotor.TargetSpeed = ForwardSpeed.Div(5.ToFix());
                     }
                     foreach (Wheel wheel in rightTrack)
                     {
-                        wheel.DrivingMotor.TargetSpeed = BackwardSpeed / 5;
+                        wheel.DrivingMotor.TargetSpeed = BackwardSpeed.Div(5.ToFix());
                     }
                     ReduceSlidingFriction();
                 }
@@ -480,7 +480,7 @@ namespace BEPUphysicsDemos.AlternateMovement
                     //Idle
                     foreach (Wheel wheel in Vehicle.Wheels)
                     {
-                        wheel.DrivingMotor.TargetSpeed = 0;
+                        wheel.DrivingMotor.TargetSpeed = 0.ToFix();
                     }
                 }
                 if (keyboardInput.IsKeyDown(Keys.Space))
@@ -502,7 +502,7 @@ namespace BEPUphysicsDemos.AlternateMovement
                 {
                     wheel.Brake.IsBraking = true;
                     //Don't want the car to keep trying to drive.
-                    wheel.DrivingMotor.TargetSpeed = 0;
+                    wheel.DrivingMotor.TargetSpeed = 0.ToFix();
                 }
             }
         }

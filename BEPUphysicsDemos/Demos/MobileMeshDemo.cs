@@ -24,21 +24,21 @@ namespace BEPUphysicsDemos.Demos
 
             //Create a big hollow sphere (squished into an ellipsoid).
             ModelDataExtractor.GetVerticesAndIndicesFromModel(game.Content.Load<Model>("hollowsphere"), out vertices, out indices);
-            var transform = new AffineTransform(new Vector3(.06m, .04m, .06m), Quaternion.Identity, new Vector3(0, 0, 0));
+            var transform = new AffineTransform(new Vector3(.06m.ToFix(), .04m.ToFix(), .06m.ToFix()), Quaternion.Identity, new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()));
 
             //Note that meshes can also be made solid (MobileMeshSolidity.Solid).  This gives meshes a solid collidable volume, instead of just
             //being thin shells.  However, enabling solidity is more expensive.
             var mesh = new MobileMesh(vertices, indices, transform, MobileMeshSolidity.Counterclockwise);
-            mesh.Position = new Vector3(0, 0, 0);
+            mesh.Position = new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix());
             //Make the mesh spin a bit!
-            mesh.AngularVelocity = new Vector3(0, 1, 0);
+            mesh.AngularVelocity = new Vector3(0.ToFix(), 1.ToFix(), 0.ToFix());
             Space.Add(mesh);
 
             //Add another mobile mesh inside.
             ModelDataExtractor.GetVerticesAndIndicesFromModel(game.Content.Load<Model>("tube"), out vertices, out indices);
-            transform = new AffineTransform(new Vector3(1, 1, 1), Quaternion.Identity, new Vector3(0, 0, 0));
-            mesh = new MobileMesh(vertices, indices, transform, MobileMeshSolidity.Counterclockwise, 10);
-            mesh.Position = new Vector3(0, 10, 0);
+            transform = new AffineTransform(new Vector3(1.ToFix(), 1.ToFix(), 1.ToFix()), Quaternion.Identity, new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()));
+            mesh = new MobileMesh(vertices, indices, transform, MobileMeshSolidity.Counterclockwise, 10.ToFix());
+            mesh.Position = new Vector3(0.ToFix(), 10.ToFix(), 0.ToFix());
             Space.Add(mesh);
 
             //Create a bunch of boxes.
@@ -52,18 +52,18 @@ namespace BEPUphysicsDemos.Demos
             int numRows = 4;
             int numHigh = 4;
 #endif
-            Fix64 separation = 1.5m;
+            Fix64 separation = 1.5m.ToFix();
 
 
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
                     {
-                        Space.Add(new Box(new Vector3(separation * i, k * separation, separation * j), 1, 1, 1, 5));
+                        Space.Add(new Box(new Vector3(separation.Mul(i.ToFix()), k.ToFix().Mul(separation), separation.Mul(j.ToFix())), 1.ToFix(), 1.ToFix(), 1.ToFix(), 5.ToFix()));
                     }
 
             //Space.Add(new Box(new Vector3(0, -10, 0), 1, 1, 1));
-            game.Camera.Position = new Vector3(0, -10, 5);
+            game.Camera.Position = new Vector3(0.ToFix(), (-10).ToFix(), 5.ToFix());
 
 
         }

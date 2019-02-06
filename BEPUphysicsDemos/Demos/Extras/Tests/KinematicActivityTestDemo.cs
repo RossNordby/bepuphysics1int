@@ -22,12 +22,12 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             : base(game)
         {
 
-            Space.Add(new Box(new Vector3(0, 0, 0), 50, 1, 50));
+            Space.Add(new Box(new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()), 50.ToFix(), 1.ToFix(), 50.ToFix()));
 
             //Kinematic objects, by default, rely on velocity to define activity.
             //If a kinematic object teleports every frame, it never has velocity.
             //However, it should still wake up anything that it collides with, including sleeping dynamic objects.
-            teleportingBox = new Box(new Vector3(-12, 3, 10), 1, 1, 1);
+            teleportingBox = new Box(new Vector3((-12).ToFix(), 3.ToFix(), 10.ToFix()), 1.ToFix(), 1.ToFix(), 1.ToFix());
             Space.Add(teleportingBox);
 
             for (int i = 0; i < 3; i++)
@@ -36,7 +36,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        Space.Add(new Box(new Vector3(i * 2 - 8, j * 2 + 4, k * 2 + 10), 2, 2, 2, 4));
+                        Space.Add(new Box(new Vector3((i * 2 - 8).ToFix(), (j * 2 + 4).ToFix(), (k * 2 + 10).ToFix()), 2.ToFix(), 2.ToFix(), 2.ToFix(), 4.ToFix()));
                     }
                 }
             }
@@ -48,7 +48,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        Space.Add(new Box(new Vector3(i * 2 - 8, j * 2 + 4, k * 2 - 10), 2, 2, 2, 4));
+                        Space.Add(new Box(new Vector3((i * 2 - 8).ToFix(), (j * 2 + 4).ToFix(), (k * 2 - 10).ToFix()), 2.ToFix(), 2.ToFix(), 2.ToFix(), 4.ToFix()));
                     }
                 }
             }
@@ -60,11 +60,11 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        Space.Add(new Box(new Vector3(i * 2 + 8, j * 2 + 6, k * 2 + 10), 2, 2, 2, 4));
+                        Space.Add(new Box(new Vector3((i * 2 + 8).ToFix(), (j * 2 + 6).ToFix(), (k * 2 + 10).ToFix()), 2.ToFix(), 2.ToFix(), 2.ToFix(), 4.ToFix()));
                     }
                 }
             }
-            movingBox = new Box(new Vector3(10, 4, 12), 10, 1, 10);
+            movingBox = new Box(new Vector3(10.ToFix(), 4.ToFix(), 12.ToFix()), 10.ToFix(), 1.ToFix(), 10.ToFix());
             Space.Add(movingBox);
 
             //Create a stack for the deletion test.
@@ -74,11 +74,11 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        Space.Add(new Box(new Vector3(i * 2 + 8, j * 2 + 6, k * 2 - 10), 2, 2, 2, 4));
+                        Space.Add(new Box(new Vector3((i * 2 + 8).ToFix(), (j * 2 + 6).ToFix(), (k * 2 - 10).ToFix()), 2.ToFix(), 2.ToFix(), 2.ToFix(), 4.ToFix()));
                     }
                 }
             }
-            boxToDelete = new Box(new Vector3(10, 4, -8), 10, 1, 10);
+            boxToDelete = new Box(new Vector3(10.ToFix(), 4.ToFix(), (-8).ToFix()), 10.ToFix(), 1.ToFix(), 10.ToFix());
             Space.Add(boxToDelete);
 
             //Create a stack for the always-active test.
@@ -88,15 +88,15 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        Space.Add(new Box(new Vector3(i * 2 - 8, j * 2 + 15, k * 2 - 10), 2, 2, 2, 4));
+                        Space.Add(new Box(new Vector3((i * 2 - 8).ToFix(), (j * 2 + 15).ToFix(), (k * 2 - 10).ToFix()), 2.ToFix(), 2.ToFix(), 2.ToFix(), 4.ToFix()));
                     }
                 }
             }
-            alwaysActiveBox = new Box(new Vector3(-6, 12.5m, -8), 10, 1, 10);
+            alwaysActiveBox = new Box(new Vector3((-6).ToFix(), 12.5m.ToFix(), (-8).ToFix()), 10.ToFix(), 1.ToFix(), 10.ToFix());
             Space.Add(alwaysActiveBox);
 
 
-            game.Camera.Position = new Vector3(0, 7, 30);
+            game.Camera.Position = new Vector3(0.ToFix(), 7.ToFix(), 30.ToFix());
 
         }
 
@@ -106,12 +106,12 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             base.Update(dt);
             //Teleport the box sideways into the sleeping dynamic objects.
             if (Game.KeyboardInput.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.NumPad0))
-                teleportingBox.Position += new Vector3(.1m, 0, 0);
+                teleportingBox.Position += new Vector3(.1m.ToFix(), 0.ToFix(), 0.ToFix());
             //Moving the object after things relying on it have gone to sleep.
             if (Game.WasKeyPressed(Microsoft.Xna.Framework.Input.Keys.NumPad1))
             {
-                if (movingBox.LinearVelocity.LengthSquared() == 0)
-                    movingBox.LinearVelocity = new Vector3(1, 0, 0);
+                if (movingBox.LinearVelocity.LengthSquared() == 0.ToFix())
+                    movingBox.LinearVelocity = new Vector3(1.ToFix(), 0.ToFix(), 0.ToFix());
                 else
                     movingBox.LinearVelocity = new Vector3();
             }
@@ -119,7 +119,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             //Adding a new kinematic after the stack of objects goes to sleep.
             if (Game.WasKeyPressed(Microsoft.Xna.Framework.Input.Keys.NumPad2))
             {
-                Box box = new Box(new Vector3(-6, 1, -8), 10, .1m, 10);
+                Box box = new Box(new Vector3((-6).ToFix(), 1.ToFix(), (-8).ToFix()), 10.ToFix(), .1m.ToFix(), 10.ToFix());
                 Space.Add(box);
                 Game.ModelDrawer.Add(box);
             }

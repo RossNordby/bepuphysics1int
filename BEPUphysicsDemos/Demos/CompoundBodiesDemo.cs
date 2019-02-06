@@ -4,6 +4,7 @@ using BEPUphysics.CollisionShapes.ConvexShapes;
 using System.Collections.Generic;
 using System.Diagnostics;
 using BEPUutilities;
+using FixMath.NET;
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -23,29 +24,29 @@ namespace BEPUphysicsDemos.Demos
             //Build the first body
             var bodies = new List<CompoundShapeEntry>
             {
-                new CompoundShapeEntry(new SphereShape(.5m), new Vector3(0, 1, 0), 1),
-                new CompoundShapeEntry(new ConeShape(2, .5m), new Vector3(1, 1, 0), 1),
-                new CompoundShapeEntry(new SphereShape(.5m), new Vector3(-1, 1, 0), 1)
+                new CompoundShapeEntry(new SphereShape(.5m.ToFix()), new Vector3(0.ToFix(), 1.ToFix(), 0.ToFix()), 1.ToFix()),
+                new CompoundShapeEntry(new ConeShape(2.ToFix(), .5m.ToFix()), new Vector3(1.ToFix(), 1.ToFix(), 0.ToFix()), 1.ToFix()),
+                new CompoundShapeEntry(new SphereShape(.5m.ToFix()), new Vector3((-1).ToFix(), 1.ToFix(), 0.ToFix()), 1.ToFix())
             };
-            var cb1 = new CompoundBody(bodies, 45);
+            var cb1 = new CompoundBody(bodies, 45.ToFix());
 
 
 
             //Build the second body
             bodies = new List<CompoundShapeEntry>
             {
-                new CompoundShapeEntry(new BoxShape(1,1,1), new Vector3(0, 3, 0), 1),
-                new CompoundShapeEntry(new BoxShape(1,1,1), new Vector3(1, 3.5m, 0), 1),
+                new CompoundShapeEntry(new BoxShape(1.ToFix(),1.ToFix(),1.ToFix()), new Vector3(0.ToFix(), 3.ToFix(), 0.ToFix()), 1.ToFix()),
+                new CompoundShapeEntry(new BoxShape(1.ToFix(),1.ToFix(),1.ToFix()), new Vector3(1.ToFix(), 3.5m.ToFix(), 0.ToFix()), 1.ToFix()),
             };
-            var cb2 = new CompoundBody(bodies, 4);
+            var cb2 = new CompoundBody(bodies, 4.ToFix());
 
             bodies = new List<CompoundShapeEntry>();
             //Build the third Braum's-fry style body
             for (int k = 0; k < 7; k++)
             {
-                bodies.Add(new CompoundShapeEntry(new BoxShape(1, 1, 1), new Vector3(-4 + k * .7m, 2 + .7m * k, 2 + k * .2m), 1));
+                bodies.Add(new CompoundShapeEntry(new BoxShape(1.ToFix(), 1.ToFix(), 1.ToFix()), new Vector3((-4 + k * .7m).ToFix(), (2 + .7m * k).ToFix(), (2 + k * .2m).ToFix()), 1.ToFix()));
             }
-            var cb3 = new CompoundBody(bodies, 7);
+            var cb3 = new CompoundBody(bodies, 7.ToFix());
 
             //Add them all to the space
             Space.Add(cb3);
@@ -54,8 +55,8 @@ namespace BEPUphysicsDemos.Demos
 
 
 
-            Space.Add(new Box(new Vector3(0, -.5m, 0), 10, 1, 10));
-            game.Camera.Position = new Vector3(0, 3, 15);
+            Space.Add(new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), 10.ToFix(), 1.ToFix(), 10.ToFix()));
+            game.Camera.Position = new Vector3(0.ToFix(), 3.ToFix(), 15.ToFix());
 
         }
 

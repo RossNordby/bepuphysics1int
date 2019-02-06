@@ -8,6 +8,7 @@ using System;
 using Matrix = Microsoft.Xna.Framework.Matrix;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
+using FixMath.NET;
 
 namespace BEPUphysicsDrawer.Models
 {
@@ -44,7 +45,7 @@ namespace BEPUphysicsDrawer.Models
 
             var normalTransform = Matrix3x3.AdjugateTranspose(DisplayedObject.WorldTransform.LinearTransform);
 
-            var reverseWinding = BEPUutilities.Vector3.Dot(normalTransform.Up, DisplayedObject.WorldTransform.LinearTransform.Up) < 0;
+            var reverseWinding = BEPUutilities.Vector3.Dot(normalTransform.Up, DisplayedObject.WorldTransform.LinearTransform.Up) < 0.ToFix();
 
 
             for (int j = 0; j < numRows; j++)

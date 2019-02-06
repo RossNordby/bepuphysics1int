@@ -26,13 +26,13 @@ namespace BEPUphysicsDrawer.Models
                 throw new ArgumentException("Wrong shape type.");
 
             var n = new Vector3();
-            var offset = new Vector3(0, (float)capsuleShape.Length / 2, 0);
+            var offset = new Vector3(0, (float)capsuleShape.Length.ToFloat() / 2, 0);
             float angleBetweenFacets = MathHelper.TwoPi / NumSides;
-            float radius = (float)capsuleShape.Radius;
+            float radius = (float)capsuleShape.Radius.ToFloat();
 
             //Create the vertex list
             //Top
-            vertices.Add(new VertexPositionNormalTexture(new Vector3(0, radius + (float)capsuleShape.Length / 2, 0), Vector3.Up, Vector2.Zero));
+            vertices.Add(new VertexPositionNormalTexture(new Vector3(0, radius + (float)capsuleShape.Length.ToFloat() / 2, 0), Vector3.Up, Vector2.Zero));
             //Upper hemisphere
             for (int i = 1; i <= NumSides / 4; i++)
             {
@@ -70,7 +70,7 @@ namespace BEPUphysicsDrawer.Models
                 }
             }
             //Bottom
-            vertices.Add(new VertexPositionNormalTexture(new Vector3(0, -radius - (float)capsuleShape.Length / 2, 0), Vector3.Down, Vector2.Zero));
+            vertices.Add(new VertexPositionNormalTexture(new Vector3(0, -radius - (float)capsuleShape.Length.ToFloat() / 2, 0), Vector3.Down, Vector2.Zero));
 
 
             //Create the index list

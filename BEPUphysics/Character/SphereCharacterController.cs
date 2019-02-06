@@ -301,13 +301,13 @@ namespace BEPUphysics.Character
             Fix64? maximumGlueForce = null)
         {
 			if (radius == null)
-				radius = (Fix64).85m.ToFix();
+				radius = .85m.ToFix();
 			if (mass == null)
 				mass = 10.ToFix();
 			if (maximumTractionSlope == null)
-				maximumTractionSlope = (Fix64)0.8m.ToFix();
+				maximumTractionSlope = 0.8m.ToFix();
 			if (maximumSupportSlope == null)
-				maximumSupportSlope = (Fix64)1.3m.ToFix();
+				maximumSupportSlope = 1.3m.ToFix();
 			if (speed == null)
 				speed = 8.ToFix();
 			if (tractionForce == null)
@@ -321,13 +321,13 @@ namespace BEPUphysics.Character
 			if (airForce == null)
 				airForce = 250.ToFix();
 			if (jumpSpeed == 0.ToFix())
-				jumpSpeed = (Fix64)4.5m.ToFix();
+				jumpSpeed = 4.5m.ToFix();
 			if (slidingJumpSpeed == null)
 				slidingJumpSpeed = 3.ToFix();
 			if (maximumGlueForce == null)
 				maximumGlueForce = 5000.ToFix();
 
-			Body = new Sphere(position, (Fix64)radius, (Fix64)mass);
+			Body = new Sphere(position, radius.Value, mass.Value);
             Body.IgnoreShapeChanges = true; //Wouldn't want inertia tensor recomputations to occur if the shape changes.
             //Making the character a continuous object prevents it from flying through walls which would be pretty jarring from a player's perspective.
             Body.PositionUpdateMode = PositionUpdateMode.Continuous;
@@ -336,22 +336,22 @@ namespace BEPUphysics.Character
             //In a future version where this is changed, change this to conceptually minimally required CreatingPair.
             Body.CollisionInformation.Events.DetectingInitialCollision += RemoveFriction;
             Body.LinearDamping = F64.C0;
-            ContactCategorizer = new CharacterContactCategorizer((Fix64)maximumTractionSlope, (Fix64)maximumSupportSlope);
+            ContactCategorizer = new CharacterContactCategorizer(maximumTractionSlope.Value, maximumSupportSlope.Value);
             QueryManager = new QueryManager(Body, ContactCategorizer);
             SupportFinder = new SupportFinder(Body, QueryManager, ContactCategorizer);
             HorizontalMotionConstraint = new HorizontalMotionConstraint(Body, SupportFinder);
-            HorizontalMotionConstraint.PositionAnchorDistanceThreshold = ((Fix64)(3m / 17m).ToFix()).Mul((Fix64)radius);
-            VerticalMotionConstraint = new VerticalMotionConstraint(Body, SupportFinder, (Fix64)maximumGlueForce);
+            HorizontalMotionConstraint.PositionAnchorDistanceThreshold = ((3m / 17m).ToFix()).Mul(radius.Value);
+            VerticalMotionConstraint = new VerticalMotionConstraint(Body, SupportFinder, maximumGlueForce.Value);
             PairLocker = new CharacterPairLocker(Body);
 
-            Speed = (Fix64)speed;
-            TractionForce = (Fix64)tractionForce;
-            SlidingSpeed = (Fix64)slidingSpeed;
-            SlidingForce = (Fix64)slidingForce;
-            AirSpeed = (Fix64)airSpeed;
-            AirForce = (Fix64)airForce;
-            JumpSpeed = (Fix64)jumpSpeed;
-            SlidingJumpSpeed = (Fix64)slidingJumpSpeed;
+            Speed = speed.Value;
+            TractionForce = tractionForce.Value;
+            SlidingSpeed = slidingSpeed.Value;
+            SlidingForce = slidingForce.Value;
+            AirSpeed = airSpeed.Value;
+            AirForce = airForce.Value;
+            JumpSpeed = jumpSpeed.Value;
+            SlidingJumpSpeed = slidingJumpSpeed.Value;
 
             //Enable multithreading for the sphere characters.  
             //See the bottom of the Update method for more information about using multithreading with this character.

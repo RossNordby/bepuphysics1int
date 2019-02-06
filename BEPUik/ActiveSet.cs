@@ -38,7 +38,7 @@ namespace BEPUik
         /// </summary>
         public bool UseAutomass { get; set; }
 
-        private Fix64 automassUnstressedFalloff = (Fix64)0.9m.ToFix();
+        private Fix64 automassUnstressedFalloff = 0.9m.ToFix();
         /// <summary>
         /// Gets or sets the multiplier applied to the mass of a bone before distributing it to the child bones.
         /// Used only when UseAutomass is set to true.

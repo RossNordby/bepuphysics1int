@@ -21,24 +21,24 @@ namespace BEPUphysicsDemos.Demos
             : base(game)
         {
             var tris = new List<Vector3[]>();
-            Fix64 basinWidth = 100;
-            Fix64 basinLength = 100;
-            Fix64 basinHeight = 16;
-            Fix64 waterHeight = 15;
+            Fix64 basinWidth = 100.ToFix();
+            Fix64 basinLength = 100.ToFix();
+            Fix64 basinHeight = 16.ToFix();
+            Fix64 waterHeight = 15.ToFix();
 
             //Remember, the triangles composing the surface need to be coplanar with the surface.  In this case, this means they have the same height.
             tris.Add(new[]
                          {
-                             new Vector3(-basinWidth / 2, waterHeight, -basinLength / 2), new Vector3(basinWidth / 2, waterHeight, -basinLength / 2),
-                             new Vector3(-basinWidth / 2, waterHeight, basinLength / 2)
+                             new Vector3(basinWidth .Neg().Div(2.ToFix()), waterHeight, basinLength .Neg().Div(2.ToFix())), new Vector3(basinWidth.Div(2.ToFix()), waterHeight, basinLength .Neg().Div(2.ToFix())),
+                             new Vector3(basinWidth .Neg().Div(2.ToFix()), waterHeight, basinLength.Div(2.ToFix()))
                          });
             tris.Add(new[]
                          {
-                             new Vector3(-basinWidth / 2, waterHeight, basinLength / 2), new Vector3(basinWidth / 2, waterHeight, -basinLength / 2),
-                             new Vector3(basinWidth / 2, waterHeight, basinLength / 2)
+                             new Vector3(basinWidth .Neg().Div(2.ToFix()), waterHeight, basinLength.Div(2.ToFix())), new Vector3(basinWidth.Div(2.ToFix()), waterHeight, basinLength .Neg().Div(2.ToFix())),
+                             new Vector3(basinWidth.Div(2.ToFix()), waterHeight, basinLength.Div(2.ToFix()))
                          });
-            var fluid = new FluidVolume(Vector3.Up, -9.81m, tris, waterHeight, .8m, .8m, .7m);
-            Space.ForceUpdater.Gravity = new Vector3(0, -9.81m, 0);
+            var fluid = new FluidVolume(Vector3.Up, (-9.81m).ToFix(), tris, waterHeight, .8m.ToFix(), .8m.ToFix(), .7m.ToFix());
+            Space.ForceUpdater.Gravity = new Vector3(0.ToFix(), (-9.81m).ToFix(), 0.ToFix());
 
 
             //fluid.FlowDirection = Vector3.Right;
@@ -47,26 +47,26 @@ namespace BEPUphysicsDemos.Demos
             Space.Add(fluid);
             game.ModelDrawer.Add(fluid);
             //Create the container.
-            Space.Add(new Box(new Vector3(0, 0, 0), basinWidth, 1, basinLength));
-            Space.Add(new Box(new Vector3(-basinWidth / 2 - .5m, basinHeight / 2 - .5m, 0), 1, basinHeight, basinLength));
-            Space.Add(new Box(new Vector3(basinWidth / 2 + .5m, basinHeight / 2 - .5m, 0), 1, basinHeight, basinLength));
-            Space.Add(new Box(new Vector3(0, basinHeight / 2 - .5m, -basinLength / 2 - .5m), basinWidth + 2, basinHeight, 1));
-            Space.Add(new Box(new Vector3(0, basinHeight / 2 - .5m, basinLength / 2 + .5m), basinWidth + 2, basinHeight, 1));
+            Space.Add(new Box(new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()), basinWidth, 1.ToFix(), basinLength));
+            Space.Add(new Box(new Vector3((basinWidth.Neg().Div(2.ToFix())).Sub(.5m.ToFix()), (basinHeight.Div(2.ToFix())).Sub(.5m.ToFix()), 0.ToFix()), 1.ToFix(), basinHeight, basinLength));
+            Space.Add(new Box(new Vector3((basinWidth.Div(2.ToFix())).Add(.5m.ToFix()), (basinHeight.Div(2.ToFix())).Sub(.5m.ToFix()), 0.ToFix()), 1.ToFix(), basinHeight, basinLength));
+            Space.Add(new Box(new Vector3(0.ToFix(), (basinHeight.Div(2.ToFix())).Sub(.5m.ToFix()), (basinLength.Neg().Div(2.ToFix())).Sub(.5m.ToFix())), basinWidth.Add(2.ToFix()), basinHeight, 1.ToFix()));
+            Space.Add(new Box(new Vector3(0.ToFix(), (basinHeight.Div(2.ToFix())).Sub(.5m.ToFix()), (basinLength.Div(2.ToFix())).Add(.5m.ToFix())), basinWidth.Add(2.ToFix()), basinHeight, 1.ToFix()));
 
 
             //Create a tiled floor.
             Entity toAdd;
-            Fix64 boxWidth = 10;
+            Fix64 boxWidth = 10.ToFix();
             int numBoxesWide = 8;
             for (int i = 0; i < numBoxesWide; i++)
             {
                 for (int k = 0; k < numBoxesWide; k++)
                 {
                     toAdd = new Box(new Vector3(
-                        -boxWidth * numBoxesWide / 2 + (boxWidth + .1m) * i,
-                        15,
-                        -boxWidth * numBoxesWide / 2 + (boxWidth + .1m) * k),
-                        boxWidth, 5, boxWidth, 300);
+((boxWidth.Neg().Mul(numBoxesWide.ToFix())).Div(2.ToFix())).Add((boxWidth.Add(.1m.ToFix())).Mul(i.ToFix())),
+15.ToFix(),
+((boxWidth.Neg().Mul(numBoxesWide.ToFix())).Div(2.ToFix())).Add((boxWidth.Add(.1m.ToFix())).Mul(k.ToFix()))),
+                        boxWidth, 5.ToFix(), boxWidth, 300.ToFix());
 
                     Space.Add(toAdd);
                 }
@@ -82,7 +82,7 @@ namespace BEPUphysicsDemos.Demos
             //}
 
 
-            game.Camera.Position = new Vector3(0, waterHeight + 5, 35);
+            game.Camera.Position = new Vector3(0.ToFix(), waterHeight.Add(5.ToFix()), 35.ToFix());
         }
 
         /// <summary>

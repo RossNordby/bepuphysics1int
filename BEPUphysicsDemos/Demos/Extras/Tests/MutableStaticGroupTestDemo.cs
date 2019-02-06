@@ -42,9 +42,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             var collidables = new List<Collidable>();
 
             //Start with a whole bunch of boxes.  These are entity collidables, but without entities!
-            Fix64 xSpacing = 6;
-            Fix64 ySpacing = 6;
-            Fix64 zSpacing = 6;
+            Fix64 xSpacing = 6.ToFix();
+            Fix64 ySpacing = 6.ToFix();
+            Fix64 zSpacing = 6.ToFix();
 
 
             //NOTE: You might notice this demo takes a while to start, especially on the Xbox360.  Do not fear!  That's due to the creation of the graphics data, not the physics.
@@ -63,13 +63,13 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                     for (int k = 0; k < zCount; k++)
                     {
                         //Create a transform and the instance of the mesh.
-                        var collidable = new ConvexCollidable<BoxShape>(new BoxShape((Fix64)random.NextDouble() * 6 + .5m, (Fix64)random.NextDouble() * 6 + .5m, (Fix64)random.NextDouble() * 6 + .5m));
+                        var collidable = new ConvexCollidable<BoxShape>(new BoxShape((random.NextDouble().ToFix().Mul(6.ToFix())).Add(.5m.ToFix()), (random.NextDouble().ToFix().Mul(6.ToFix())).Add(.5m.ToFix()), random.NextDouble().ToFix().Mul(6.ToFix()).Add(.5m.ToFix())));
 
                         //This EntityCollidable isn't associated with an entity, so we must manually tell it where to sit by setting the WorldTransform.
                         //This also updates its bounding box.
                         collidable.WorldTransform = new RigidTransform(
-                            new Vector3(i * xSpacing - xCount * xSpacing * .5m, j * ySpacing + 3, k * zSpacing - zCount * zSpacing * .5m),
-                            Quaternion.CreateFromAxisAngle(Vector3.Normalize(new Vector3((Fix64)random.NextDouble(), (Fix64)random.NextDouble(), (Fix64)random.NextDouble())), (Fix64)random.NextDouble() * 100));
+                            new Vector3((i.ToFix().Mul(xSpacing)).Sub((xCount.ToFix().Mul(xSpacing)).Mul(.5m.ToFix())), (j.ToFix().Mul(ySpacing)).Add(3.ToFix()), k.ToFix().Mul(zSpacing).Sub((zCount.ToFix().Mul(zSpacing)).Mul(.5m.ToFix()))),
+                            Quaternion.CreateFromAxisAngle(Vector3.Normalize(new Vector3(random.NextDouble().ToFix(), random.NextDouble().ToFix(), random.NextDouble().ToFix())), random.NextDouble().ToFix().Mul(100.ToFix())));
 
                         collidables.Add(collidable);
                     }
@@ -78,9 +78,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
 
             //Now create a bunch of instanced meshes too.
-            xSpacing = 6;
-            ySpacing = 6;
-            zSpacing = 6;
+            xSpacing = 6.ToFix();
+            ySpacing = 6.ToFix();
+            zSpacing = 6.ToFix();
 
             xCount = 10;
             yCount = 2;
@@ -99,9 +99,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                     {
                         //Create a transform and the instance of the mesh.
                         var transform = new AffineTransform(
-                            new Vector3((Fix64)random.NextDouble() * 6 + .5m, (Fix64)random.NextDouble() * 6 + .5m, (Fix64)random.NextDouble() * 6 + .5m),
-                             Quaternion.CreateFromAxisAngle(Vector3.Normalize(new Vector3((Fix64)random.NextDouble(), (Fix64)random.NextDouble(), (Fix64)random.NextDouble())), (Fix64)random.NextDouble() * 100),
-                            new Vector3(i * xSpacing - xCount * xSpacing * .5m, j * ySpacing + 50, k * zSpacing - zCount * zSpacing * .5m));
+                            new Vector3((random.NextDouble().ToFix().Mul(6.ToFix())).Add(.5m.ToFix()), (random.NextDouble().ToFix().Mul(6.ToFix())).Add(.5m.ToFix()), random.NextDouble().ToFix().Mul(6.ToFix()).Add(.5m.ToFix())),
+                             Quaternion.CreateFromAxisAngle(Vector3.Normalize(new Vector3(random.NextDouble().ToFix(), random.NextDouble().ToFix(), random.NextDouble().ToFix())), random.NextDouble().ToFix().Mul(100.ToFix())),
+                            new Vector3((i.ToFix().Mul(xSpacing)).Sub((xCount.ToFix().Mul(xSpacing)).Mul(.5m.ToFix())), (j.ToFix().Mul(ySpacing)).Add(50.ToFix()), k.ToFix().Mul(zSpacing).Sub((zCount.ToFix().Mul(zSpacing)).Mul(.5m.ToFix()))));
                         var mesh = new InstancedMesh(meshShape, transform);
                         //Making the triangles one-sided makes collision detection a bit more robust, since the backsides of triangles won't try to collide with things
                         //and 'pull' them back into the mesh.
@@ -111,8 +111,8 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 }
             }
 
-            var ground = new ConvexCollidable<BoxShape>(new BoxShape(200, 1, 200));
-            ground.WorldTransform = new RigidTransform(new Vector3(0, -3, 0), Quaternion.Identity);
+            var ground = new ConvexCollidable<BoxShape>(new BoxShape(200.ToFix(), 1.ToFix(), 200.ToFix()));
+            ground.WorldTransform = new RigidTransform(new Vector3(0.ToFix(), (-3).ToFix(), 0.ToFix()), Quaternion.Identity);
             collidables.Add(ground);
 
             var group = new StaticGroup(collidables);
@@ -155,24 +155,24 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             xCount = 8;
             yCount = 3;
             zCount = 8;
-            xSpacing = 3;
-            ySpacing = 5;
-            zSpacing = 3;
+            xSpacing = 3.ToFix();
+            ySpacing = 5.ToFix();
+            zSpacing = 3.ToFix();
             for (int i = 0; i < xCount; i++)
                 for (int j = 0; j < zCount; j++)
                     for (int k = 0; k < yCount; k++)
                     {
                         Space.Add(new Box(new Vector3(
-                                                 xSpacing * i - (xCount - 1) * xSpacing / 2,
-                                                 100 + k * (ySpacing),
-                                                 2 + zSpacing * j - (zCount - 1) * zSpacing / 2),
-                                             1, 1, 1, 10));
+(xSpacing.Mul(i.ToFix())).Sub((((xCount - 1).ToFix()).Mul(xSpacing)).Div(2.ToFix())),
+100.ToFix().Add(k.ToFix().Mul((ySpacing))),
+(2.ToFix().Add(zSpacing.Mul(j.ToFix()))).Sub((((zCount - 1).ToFix()).Mul(zSpacing)).Div(2.ToFix()))),
+1.ToFix(), 1.ToFix(), 1.ToFix(), 10.ToFix()));
                     }
 
 
 
 
-            game.Camera.Position = new Vector3(0, 60, 90);
+            game.Camera.Position = new Vector3(0.ToFix(), 60.ToFix(), 90.ToFix());
         }
 
         /// <summary>

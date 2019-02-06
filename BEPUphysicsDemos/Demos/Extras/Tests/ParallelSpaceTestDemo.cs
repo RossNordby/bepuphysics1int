@@ -25,15 +25,15 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             for (int i = 0; i < 32; i++)
             {
                 var space = new Space(null);
-                space.ForceUpdater.Gravity = new Vector3(0, -9.81m, 0);
-                var box = new Box(new Vector3(20 * i, 0, 0), 100, 1, 100);
+                space.ForceUpdater.Gravity = new Vector3(0.ToFix(), (-9.81m).ToFix(), 0.ToFix());
+                var box = new Box(new Vector3((20 * i).ToFix(), 0.ToFix(), 0.ToFix()), 100.ToFix(), 1.ToFix(), 100.ToFix());
                 space.Add(box);
                 //game.ModelDrawer.Add(box);
                 for (int j = 0; j < 30; j++)
                 {
                     for (int k = 0; k < 10; k++)
                     {
-                        box = new Box(new Vector3(20 * i, 2 + j * 1.1m, 0), 1, 1, 1, 1);
+                        box = new Box(new Vector3((20 * i).ToFix(), (2 + j * 1.1m).ToFix(), 0.ToFix()), 1.ToFix(), 1.ToFix(), 1.ToFix());
                         entities.Add(box);
                         space.Add(box);
                         //game.ModelDrawer.Add(box);
@@ -41,7 +41,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 }
                 spaces.Add(space);
             }
-            game.Camera.Position = new Vector3(20, 10, 70);
+            game.Camera.Position = new Vector3(20.ToFix(), 10.ToFix(), 70.ToFix());
 
         }
 
@@ -51,9 +51,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             base.Update(dt);
             for (int i = 0; i < entities.Count; i++)
             {
-                var impulse = dt * new Vector3((Fix64)(random.NextDouble() * 30 - 15), (Fix64)(random.NextDouble() * 30 - 15), (Fix64)(random.NextDouble() * 30 - 15));
+                var impulse = dt * new Vector3((random.NextDouble() * 30 - 15).ToFix(), (random.NextDouble() * 30 - 15).ToFix(), (random.NextDouble() * 30 - 15).ToFix());
                 entities[i].ApplyLinearImpulse(ref impulse);
-                impulse = dt * new Vector3((Fix64)(random.NextDouble() * 10 - 5), (Fix64)(random.NextDouble() * 10 - 5), (Fix64)(random.NextDouble() * 10 - 5));
+                impulse = dt * new Vector3((random.NextDouble() * 10 - 5).ToFix(), (random.NextDouble() * 10 - 5).ToFix(), (random.NextDouble() * 10 - 5).ToFix());
                 entities[i].ApplyAngularImpulse(ref impulse);
             }
 
@@ -68,7 +68,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             });
 
             timeSinceLastReset += dt;
-            if (timeSinceLastReset > 10)
+            if (timeSinceLastReset > 10.ToFix())
             {
                 Console.WriteLine("Resetting.  Number of resets performed: " + (++resets));
                 Game.SwitchSimulation(1);

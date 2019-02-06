@@ -68,18 +68,18 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
         void FillSpace(Space space, ModelDrawer modelDrawer = null)
         {
-            Entity ground = new MorphableEntity(new BoxShape(50, 1, 50));
+            Entity ground = new MorphableEntity(new BoxShape(50.ToFix(), 1.ToFix(), 50.ToFix()));
             space.Add(ground);
-            space.ForceUpdater.Gravity = new Vector3(0, -10, 0);
+            space.ForceUpdater.Gravity = new Vector3(0.ToFix(), (-10).ToFix(), 0.ToFix());
 
             ModelDataExtractor.GetVerticesAndIndicesFromModel(Game.Content.Load<Model>("playground"), out Vector3[] vertices, out int[] indices);
-            var mesh = new StaticMesh(vertices, indices, new AffineTransform(new Vector3(50, -20, 0)));
+            var mesh = new StaticMesh(vertices, indices, new AffineTransform(new Vector3(50.ToFix(), (-20).ToFix(), 0.ToFix())));
             space.Add(mesh);
             modelDrawer?.Add(mesh);
 
             for (int i = 0; i < 100; i++)
             {
-                Entity e = new Box(new Vector3(.1m * i, 1 * i + 1, 0), 1, 1, 1, 1);
+                Entity e = new Box(new Vector3((.1m * i).ToFix(), (1 * i + 1).ToFix(), 0.ToFix()), 1.ToFix(), 1.ToFix(), 1.ToFix());
                 //Entity e = new Capsule(new Vector3(.1m * i, 1 * i + 1, 0), .5m, .5m, 1);
                 //Entity e = new Sphere(new Vector3(.1m * i, 1 * i + 1, 0), .5m, 1);
                 e.ActivityInformation.IsAlwaysActive = true;
@@ -89,7 +89,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             for (int i = 0; i < 200; i++)
             {
                 //Entity e = new Box(new Vector3(.1m * i, 1 * i + 1, 2), 1, 1, 1, 1);
-                Entity e = new Capsule(new Vector3(.1m * i, 1 * i + 1, 2), .5m, .5m, 1);
+                Entity e = new Capsule(new Vector3((.1m * i).ToFix(), (1 * i + 1).ToFix(), 2.ToFix()), .5m.ToFix(), .5m.ToFix(), 1.ToFix());
                 //Entity e = new Sphere(new Vector3(.1m * i, 1 * i + 1, 2), .5m, 1);
                 e.ActivityInformation.IsAlwaysActive = true;
                 e.CollisionInformation.Tag = i;
@@ -99,7 +99,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             {
                 //Entity e = new Box(new Vector3(.1m * i, 1 * i + 1, 4), 1, 1, 1, 1);
                 //Entity e = new Capsule(new Vector3(.1m * i, 1 * i + 1, 4), .5m, .5m, 1);
-                Entity e = new Sphere(new Vector3(.1m * i, 1 * i + 1, 4), .5m, 1);
+                Entity e = new Sphere(new Vector3((.1m * i).ToFix(), (1 * i + 1).ToFix(), 4.ToFix()), .5m.ToFix(), 1.ToFix());
                 e.ActivityInformation.IsAlwaysActive = true;
                 e.CollisionInformation.Tag = i;
                 space.Add(e);

@@ -26,9 +26,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         public MPRCastingDemo(DemosGame game)
             : base(game)
         {
-            bShape = new BoxShape(1, 0, 1);
+            bShape = new BoxShape(1.ToFix(), 0.ToFix(), 1.ToFix());
             //bShape.CollisionMargin = 0;
-            aShape = new ConeShape(1, .4m);
+            aShape = new ConeShape(1.ToFix(), .4m.ToFix());
             //aShape.CollisionMargin = 0;
             a = new Entity(aShape);
             b = new Entity(bShape);
@@ -36,12 +36,12 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             NarrowPhaseHelper.CollisionManagers.Remove(new TypePair(typeof(ConvexCollidable<BoxShape>), typeof(ConvexCollidable<BoxShape>)));
             Space.Add(a);
             Space.Add(b);
-            a.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathHelper.PiOver4);
+            a.Orientation = Quaternion.CreateFromAxisAngle(new Vector3(1.ToFix(), 0.ToFix(), 0.ToFix()), MathHelper.PiOver4);
             b.Orientation = Quaternion.Identity;
-            aTransform = new RigidTransform(new Vector3(-10, -10, -10), a.Orientation);
-            bTransform = new RigidTransform(new Vector3(10, 10, 10), b.Orientation);
+            aTransform = new RigidTransform(new Vector3((-10).ToFix(), (-10).ToFix(), (-10).ToFix()), a.Orientation);
+            bTransform = new RigidTransform(new Vector3(10.ToFix(), 10.ToFix(), 10.ToFix()), b.Orientation);
 
-            game.Camera.Position = new Vector3(0, 5, 17);
+            game.Camera.Position = new Vector3(0.ToFix(), 5.ToFix(), 17.ToFix());
         }
 
 
@@ -64,8 +64,8 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad5))
                 aTransform.Position += Vector3.Backward * dt;
 
-            Vector3 sweepA = new Vector3(20, 20, 20);
-            Vector3 sweepB = new Vector3(-20, -20, -20);
+            Vector3 sweepA = new Vector3(20.ToFix(), 20.ToFix(), 20.ToFix());
+            Vector3 sweepB = new Vector3((-20).ToFix(), (-20).ToFix(), (-20).ToFix());
 
             if (hit = MPRToolbox.Sweep(aShape, bShape, ref sweepA, ref sweepB, ref aTransform, ref bTransform, out hitData))
             //if (hit = OldGJKVerifier.ConvexCast(a.CollisionInformation.Shape, b.CollisionInformation.Shape, ref sweepA, ref sweepB, ref aTransform, ref bTransform, out hitData))
@@ -85,7 +85,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         {
             if (hit)
             {
-                Game.TinyTextDrawer.Draw("Time: ", (double)hitData.T, 10, new Microsoft.Xna.Framework.Vector2(50, 50));
+                Game.TinyTextDrawer.Draw("Time: ", hitData.T.ToDouble(), 10, new Microsoft.Xna.Framework.Vector2(50, 50));
             }
             else
             {

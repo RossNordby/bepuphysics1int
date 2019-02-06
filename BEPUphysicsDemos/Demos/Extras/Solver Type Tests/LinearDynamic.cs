@@ -45,7 +45,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         public LinearDynamic(Fix64 mass)
         {
             this.mass = mass;
-            this.inverseMass = 1 / mass;
+            this.inverseMass = 1.ToFix().Div(mass);
 
             Id = GetId();
         }

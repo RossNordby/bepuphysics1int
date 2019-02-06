@@ -13,62 +13,62 @@ namespace ConversionHelper
         public static Vector2 Convert(BEPUutilities.Vector2 bepuVector)
         {
             Vector2 toReturn;
-            toReturn.X = (float)bepuVector.X;
-            toReturn.Y = (float)bepuVector.Y;
+            toReturn.X = (float)bepuVector.X.ToFloat();
+            toReturn.Y = (float)bepuVector.Y.ToFloat();
             return toReturn;
         }
 
         public static void Convert(ref BEPUutilities.Vector2 bepuVector, out Vector2 xnaVector)
         {
-            xnaVector.X = (float)bepuVector.X;
-            xnaVector.Y = (float)bepuVector.Y;
+            xnaVector.X = (float)bepuVector.X.ToFloat();
+            xnaVector.Y = (float)bepuVector.Y.ToFloat();
         }
 
         public static BEPUutilities.Vector2 Convert(Vector2 xnaVector)
         {
             BEPUutilities.Vector2 toReturn;
-            toReturn.X = (Fix64)xnaVector.X;
-            toReturn.Y = (Fix64)xnaVector.Y;
+            toReturn.X = xnaVector.X.ToFix();
+            toReturn.Y = xnaVector.Y.ToFix();
             return toReturn;
         }
 
         public static void Convert(ref Vector2 xnaVector, out BEPUutilities.Vector2 bepuVector)
         {
-            bepuVector.X = (Fix64)xnaVector.X;
-            bepuVector.Y = (Fix64)xnaVector.Y;
+            bepuVector.X = xnaVector.X.ToFix();
+            bepuVector.Y = xnaVector.Y.ToFix();
         }
 
         //Vector3
         public static Vector3 Convert(BEPUutilities.Vector3 bepuVector)
         {
             Vector3 toReturn;
-            toReturn.X = (float)bepuVector.X;
-            toReturn.Y = (float)bepuVector.Y;
-            toReturn.Z = (float)bepuVector.Z;
+            toReturn.X = (float)bepuVector.X.ToFloat();
+            toReturn.Y = (float)bepuVector.Y.ToFloat();
+            toReturn.Z = (float)bepuVector.Z.ToFloat();
             return toReturn;
         }
 
         public static void Convert(ref BEPUutilities.Vector3 bepuVector, out Vector3 xnaVector)
         {
-            xnaVector.X = (float)bepuVector.X;
-            xnaVector.Y = (float)bepuVector.Y;
-            xnaVector.Z = (float)bepuVector.Z;
+            xnaVector.X = (float)bepuVector.X.ToFloat();
+            xnaVector.Y = (float)bepuVector.Y.ToFloat();
+            xnaVector.Z = (float)bepuVector.Z.ToFloat();
         }
 
         public static BEPUutilities.Vector3 Convert(Vector3 xnaVector)
         {
             BEPUutilities.Vector3 toReturn;
-            toReturn.X = (Fix64)xnaVector.X;
-            toReturn.Y = (Fix64)xnaVector.Y;
-            toReturn.Z = (Fix64)xnaVector.Z;
+            toReturn.X = xnaVector.X.ToFix();
+            toReturn.Y = xnaVector.Y.ToFix();
+            toReturn.Z = xnaVector.Z.ToFix();
             return toReturn;
         }
 
         public static void Convert(ref Vector3 xnaVector, out BEPUutilities.Vector3 bepuVector)
         {
-            bepuVector.X = (Fix64)xnaVector.X;
-            bepuVector.Y = (Fix64)xnaVector.Y;
-            bepuVector.Z = (Fix64)xnaVector.Z;
+            bepuVector.X = xnaVector.X.ToFix();
+            bepuVector.Y = xnaVector.Y.ToFix();
+            bepuVector.Z = xnaVector.Z.ToFix();
         }
 
         public static Vector3[] Convert(BEPUutilities.Vector3[] bepuVectors)
@@ -110,49 +110,49 @@ namespace ConversionHelper
 
         public static void Convert(ref BEPUutilities.Matrix matrix, out Matrix xnaMatrix)
         {
-            xnaMatrix.M11 = (float)matrix.M11;
-            xnaMatrix.M12 = (float)matrix.M12;
-            xnaMatrix.M13 = (float)matrix.M13;
-            xnaMatrix.M14 = (float)matrix.M14;
+            xnaMatrix.M11 = (float)matrix.M11.ToFloat();
+            xnaMatrix.M12 = (float)matrix.M12.ToFloat();
+            xnaMatrix.M13 = (float)matrix.M13.ToFloat();
+            xnaMatrix.M14 = (float)matrix.M14.ToFloat();
 
-            xnaMatrix.M21 = (float)matrix.M21;
-            xnaMatrix.M22 = (float)matrix.M22;
-            xnaMatrix.M23 = (float)matrix.M23;
-            xnaMatrix.M24 = (float)matrix.M24;
+            xnaMatrix.M21 = (float)matrix.M21.ToFloat();
+            xnaMatrix.M22 = (float)matrix.M22.ToFloat();
+            xnaMatrix.M23 = (float)matrix.M23.ToFloat();
+            xnaMatrix.M24 = (float)matrix.M24.ToFloat();
 
-            xnaMatrix.M31 = (float)matrix.M31;
-            xnaMatrix.M32 = (float)matrix.M32;
-            xnaMatrix.M33 = (float)matrix.M33;
-            xnaMatrix.M34 = (float)matrix.M34;
+            xnaMatrix.M31 = (float)matrix.M31.ToFloat();
+            xnaMatrix.M32 = (float)matrix.M32.ToFloat();
+            xnaMatrix.M33 = (float)matrix.M33.ToFloat();
+            xnaMatrix.M34 = (float)matrix.M34.ToFloat();
 
-            xnaMatrix.M41 = (float)matrix.M41;
-            xnaMatrix.M42 = (float)matrix.M42;
-            xnaMatrix.M43 = (float)matrix.M43;
-            xnaMatrix.M44 = (float)matrix.M44;
+            xnaMatrix.M41 = (float)matrix.M41.ToFloat();
+            xnaMatrix.M42 = (float)matrix.M42.ToFloat();
+            xnaMatrix.M43 = (float)matrix.M43.ToFloat();
+            xnaMatrix.M44 = (float)matrix.M44.ToFloat();
 
         }
 
         public static void Convert(ref Matrix matrix, out BEPUutilities.Matrix bepuMatrix)
         {
-            bepuMatrix.M11 = (Fix64)matrix.M11;
-            bepuMatrix.M12 = (Fix64)matrix.M12;
-            bepuMatrix.M13 = (Fix64)matrix.M13;
-            bepuMatrix.M14 = (Fix64)matrix.M14;
+            bepuMatrix.M11 = matrix.M11.ToFix();
+            bepuMatrix.M12 = matrix.M12.ToFix();
+            bepuMatrix.M13 = matrix.M13.ToFix();
+            bepuMatrix.M14 = matrix.M14.ToFix();
 
-            bepuMatrix.M21 = (Fix64)matrix.M21;
-            bepuMatrix.M22 = (Fix64)matrix.M22;
-            bepuMatrix.M23 = (Fix64)matrix.M23;
-            bepuMatrix.M24 = (Fix64)matrix.M24;
+            bepuMatrix.M21 = matrix.M21.ToFix();
+            bepuMatrix.M22 = matrix.M22.ToFix();
+            bepuMatrix.M23 = matrix.M23.ToFix();
+            bepuMatrix.M24 = matrix.M24.ToFix();
 
-            bepuMatrix.M31 = (Fix64)matrix.M31;
-            bepuMatrix.M32 = (Fix64)matrix.M32;
-            bepuMatrix.M33 = (Fix64)matrix.M33;
-            bepuMatrix.M34 = (Fix64)matrix.M34;
+            bepuMatrix.M31 = matrix.M31.ToFix();
+            bepuMatrix.M32 = matrix.M32.ToFix();
+            bepuMatrix.M33 = matrix.M33.ToFix();
+            bepuMatrix.M34 = matrix.M34.ToFix();
 
-            bepuMatrix.M41 = (Fix64)matrix.M41;
-            bepuMatrix.M42 = (Fix64)matrix.M42;
-            bepuMatrix.M43 = (Fix64)matrix.M43;
-            bepuMatrix.M44 = (Fix64)matrix.M44;
+            bepuMatrix.M41 = matrix.M41.ToFix();
+            bepuMatrix.M42 = matrix.M42.ToFix();
+            bepuMatrix.M43 = matrix.M43.ToFix();
+            bepuMatrix.M44 = matrix.M44.ToFix();
 
         }
 
@@ -165,19 +165,19 @@ namespace ConversionHelper
 
         public static void Convert(ref BEPUutilities.Matrix3x3 matrix, out Matrix xnaMatrix)
         {
-            xnaMatrix.M11 = (float)matrix.M11;
-            xnaMatrix.M12 = (float)matrix.M12;
-            xnaMatrix.M13 = (float)matrix.M13;
+            xnaMatrix.M11 = (float)matrix.M11.ToFloat();
+            xnaMatrix.M12 = (float)matrix.M12.ToFloat();
+            xnaMatrix.M13 = (float)matrix.M13.ToFloat();
             xnaMatrix.M14 = 0;
 
-            xnaMatrix.M21 = (float)matrix.M21;
-            xnaMatrix.M22 = (float)matrix.M22;
-            xnaMatrix.M23 = (float)matrix.M23;
+            xnaMatrix.M21 = (float)matrix.M21.ToFloat();
+            xnaMatrix.M22 = (float)matrix.M22.ToFloat();
+            xnaMatrix.M23 = (float)matrix.M23.ToFloat();
             xnaMatrix.M24 = 0;
 
-            xnaMatrix.M31 = (float)matrix.M31;
-            xnaMatrix.M32 = (float)matrix.M32;
-            xnaMatrix.M33 = (float)matrix.M33;
+            xnaMatrix.M31 = (float)matrix.M31.ToFloat();
+            xnaMatrix.M32 = (float)matrix.M32.ToFloat();
+            xnaMatrix.M33 = (float)matrix.M33.ToFloat();
             xnaMatrix.M34 = 0;
 
             xnaMatrix.M41 = 0;
@@ -188,17 +188,17 @@ namespace ConversionHelper
 
         public static void Convert(ref Matrix matrix, out BEPUutilities.Matrix3x3 bepuMatrix)
         {
-            bepuMatrix.M11 = (Fix64)matrix.M11;
-            bepuMatrix.M12 = (Fix64)matrix.M12;
-            bepuMatrix.M13 = (Fix64)matrix.M13;
+            bepuMatrix.M11 = matrix.M11.ToFix();
+            bepuMatrix.M12 = matrix.M12.ToFix();
+            bepuMatrix.M13 = matrix.M13.ToFix();
 
-            bepuMatrix.M21 = (Fix64)matrix.M21;
-            bepuMatrix.M22 = (Fix64)matrix.M22;
-            bepuMatrix.M23 = (Fix64)matrix.M23;
+            bepuMatrix.M21 = matrix.M21.ToFix();
+            bepuMatrix.M22 = matrix.M22.ToFix();
+            bepuMatrix.M23 = matrix.M23.ToFix();
 
-            bepuMatrix.M31 = (Fix64)matrix.M31;
-            bepuMatrix.M32 = (Fix64)matrix.M32;
-            bepuMatrix.M33 = (Fix64)matrix.M33;
+            bepuMatrix.M31 = matrix.M31.ToFix();
+            bepuMatrix.M32 = matrix.M32.ToFix();
+            bepuMatrix.M33 = matrix.M33.ToFix();
 
         }
 
@@ -206,37 +206,37 @@ namespace ConversionHelper
         public static Quaternion Convert(BEPUutilities.Quaternion quaternion)
         {
             Quaternion toReturn;
-            toReturn.X = (float)quaternion.X;
-            toReturn.Y = (float)quaternion.Y;
-            toReturn.Z = (float)quaternion.Z;
-            toReturn.W = (float)quaternion.W;
+            toReturn.X = (float)quaternion.X.ToFloat();
+            toReturn.Y = (float)quaternion.Y.ToFloat();
+            toReturn.Z = (float)quaternion.Z.ToFloat();
+            toReturn.W = (float)quaternion.W.ToFloat();
             return toReturn;
         }
 
         public static BEPUutilities.Quaternion Convert(Quaternion quaternion)
         {
             BEPUutilities.Quaternion toReturn;
-            toReturn.X = (Fix64)quaternion.X;
-            toReturn.Y = (Fix64)quaternion.Y;
-            toReturn.Z = (Fix64)quaternion.Z;
-            toReturn.W = (Fix64)quaternion.W;
+            toReturn.X = quaternion.X.ToFix();
+            toReturn.Y = quaternion.Y.ToFix();
+            toReturn.Z = quaternion.Z.ToFix();
+            toReturn.W = quaternion.W.ToFix();
             return toReturn;
         }
 
         public static void Convert(ref BEPUutilities.Quaternion bepuQuaternion, out Quaternion quaternion)
         {
-            quaternion.X = (float)bepuQuaternion.X;
-            quaternion.Y = (float)bepuQuaternion.Y;
-            quaternion.Z = (float)bepuQuaternion.Z;
-            quaternion.W = (float)bepuQuaternion.W;
+            quaternion.X = (float)bepuQuaternion.X.ToFloat();
+            quaternion.Y = (float)bepuQuaternion.Y.ToFloat();
+            quaternion.Z = (float)bepuQuaternion.Z.ToFloat();
+            quaternion.W = (float)bepuQuaternion.W.ToFloat();
         }
 
         public static void Convert(ref Quaternion quaternion, out  BEPUutilities.Quaternion bepuQuaternion)
         {
-            bepuQuaternion.X = (Fix64)quaternion.X;
-            bepuQuaternion.Y = (Fix64)quaternion.Y;
-            bepuQuaternion.Z = (Fix64)quaternion.Z;
-            bepuQuaternion.W = (Fix64)quaternion.W;
+            bepuQuaternion.X = quaternion.X.ToFix();
+            bepuQuaternion.Y = quaternion.Y.ToFix();
+            bepuQuaternion.Z = quaternion.Z.ToFix();
+            bepuQuaternion.W = quaternion.W.ToFix();
         }
 
         //Ray
@@ -302,7 +302,7 @@ namespace ConversionHelper
         {
             BoundingSphere toReturn;
             Convert(ref boundingSphere.Center, out toReturn.Center);
-            toReturn.Radius = (float)boundingSphere.Radius;
+            toReturn.Radius = (float)boundingSphere.Radius.ToFloat();
             return toReturn;
         }
 
@@ -310,20 +310,20 @@ namespace ConversionHelper
         {
             BEPUutilities.BoundingSphere toReturn;
             Convert(ref boundingSphere.Center, out toReturn.Center);
-            toReturn.Radius = (Fix64)boundingSphere.Radius;
+            toReturn.Radius = boundingSphere.Radius.ToFix();
             return toReturn;
         }
 
         public static void Convert(ref BEPUutilities.BoundingSphere boundingSphere, out BoundingSphere xnaBoundingSphere)
         {
             Convert(ref boundingSphere.Center, out xnaBoundingSphere.Center);
-            xnaBoundingSphere.Radius = (float)boundingSphere.Radius;
+            xnaBoundingSphere.Radius = (float)boundingSphere.Radius.ToFloat();
         }
 
         public static void Convert(ref BoundingSphere boundingSphere, out BEPUutilities.BoundingSphere bepuBoundingSphere)
         {
             Convert(ref boundingSphere.Center, out bepuBoundingSphere.Center);
-            bepuBoundingSphere.Radius = (Fix64)boundingSphere.Radius;
+            bepuBoundingSphere.Radius = boundingSphere.Radius.ToFix();
         }
 
         //Plane
@@ -331,7 +331,7 @@ namespace ConversionHelper
         {
             Plane toReturn;
             Convert(ref plane.Normal, out toReturn.Normal);
-            toReturn.D = (float)plane.D;
+            toReturn.D = (float)plane.D.ToFloat();
             return toReturn;
         }
 
@@ -339,20 +339,20 @@ namespace ConversionHelper
         {
             BEPUutilities.Plane toReturn;
             Convert(ref plane.Normal, out toReturn.Normal);
-            toReturn.D = (Fix64)plane.D;
+            toReturn.D = plane.D.ToFix();
             return toReturn;
         }
 
         public static void Convert(ref BEPUutilities.Plane plane, out Plane xnaPlane)
         {
             Convert(ref plane.Normal, out xnaPlane.Normal);
-            xnaPlane.D = (float)plane.D;
+            xnaPlane.D = (float)plane.D.ToFloat();
         }
 
         public static void Convert(ref Plane plane, out BEPUutilities.Plane bepuPlane)
         {
             Convert(ref plane.Normal, out bepuPlane.Normal);
-            bepuPlane.D = (Fix64)plane.D;
+            bepuPlane.D = plane.D.ToFix();
         }
     }
 }

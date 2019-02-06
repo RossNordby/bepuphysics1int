@@ -125,13 +125,13 @@ namespace BEPUphysicsDemos.SampleCode
         {
             //You can configure the stiffness and damping of the corrective springs like so.
             //For this example, the motors will be just be the nearly rigid default.
-            linearMotor.Settings.Servo.SpringSettings.Stiffness = 60000 * e.Mass;
-            linearMotor.Settings.Servo.SpringSettings.Damping = 9000 * e.Mass;
+            linearMotor.Settings.Servo.SpringSettings.Stiffness = 60000.ToFix().Mul(e.Mass);
+            linearMotor.Settings.Servo.SpringSettings.Damping = 9000.ToFix().Mul(e.Mass);
 
-            angularMotor.Settings.VelocityMotor.Softness = 0.1m / e.Mass;
+            angularMotor.Settings.VelocityMotor.Softness = 0.1m.ToFix().Div(e.Mass);
             //An unlimited motor will gladly push the entity through other objects.
             //Putting a limit on the strength of the motor will prevent it from doing so.
-            linearMotor.Settings.MaximumForce = 1000 * e.Mass;
+            linearMotor.Settings.MaximumForce = 1000.ToFix().Mul(e.Mass);
 
             Entity = e;
             LocalOffset = Quaternion.Transform(grabLocation - e.Position, Quaternion.Conjugate(e.Orientation));

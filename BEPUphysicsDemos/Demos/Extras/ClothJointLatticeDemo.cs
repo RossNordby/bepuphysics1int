@@ -27,18 +27,18 @@ namespace BEPUphysicsDemos.Demos.Extras
 
             int numColumns = 16;
             int numRows = 16;
-            Fix64 xSpacing = 3.09m;
-            Fix64 zSpacing = 3.09m;
+            Fix64 xSpacing = 3.09m.ToFix();
+            Fix64 zSpacing = 3.09m.ToFix();
             var lattice = new Entity[numRows,numColumns];
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                 {
                     latticePiece = new Sphere(
                         new Vector3(
-                            xSpacing * i - (numRows - 1) * xSpacing / 2,
-                            15.58m,
-                            2 + zSpacing * j - (numColumns - 1) * zSpacing / 2),
-                        .3m, 10);
+(xSpacing.Mul(i.ToFix())).Sub((((numRows - 1).ToFix()).Mul(xSpacing)).Div(2.ToFix())),
+15.58m.ToFix(),
+(2.ToFix().Add(zSpacing.Mul(j.ToFix()))).Sub((((numColumns - 1).ToFix()).Mul(zSpacing)).Div(2.ToFix()))),
+.3m.ToFix(), 10.ToFix());
 
                     latticePiece.LocalInertiaTensorInverse = new Matrix3x3();
                     latticePiece.Tag = "noDisplayObject"; //The joint lines are visible enough; don't add a sphere model for this sphere.
@@ -60,24 +60,24 @@ namespace BEPUphysicsDemos.Demos.Extras
                     if (i + 1 < numRows)
                     {
                         distanceJoint = new DistanceJoint(lattice[i, j], lattice[i + 1, j], lattice[i, j].Position, lattice[i + 1, j].Position);
-                        distanceJoint.SpringSettings.Stiffness = 1000;
-                        distanceJoint.SpringSettings.Damping = 1000;
+                        distanceJoint.SpringSettings.Stiffness = 1000.ToFix();
+                        distanceJoint.SpringSettings.Damping = 1000.ToFix();
                         distanceJoint.SolverSettings.MaximumIterationCount = clothIterations;
                         Space.Add(distanceJoint);
 
                         if (j + 1 < numColumns)
                         {
                             distanceJoint = new DistanceJoint(lattice[i, j], lattice[i + 1, j + 1], lattice[i, j].Position, lattice[i + 1, j + 1].Position);
-                            distanceJoint.SpringSettings.Stiffness = 1000;
-                            distanceJoint.SpringSettings.Damping = 1000;
+                            distanceJoint.SpringSettings.Stiffness = 1000.ToFix();
+                            distanceJoint.SpringSettings.Damping = 1000.ToFix();
                             distanceJoint.SolverSettings.MaximumIterationCount = clothIterations;
                             Space.Add(distanceJoint);
                         }
                         if (j - 1 >= 0)
                         {
                             distanceJoint = new DistanceJoint(lattice[i, j], lattice[i + 1, j - 1], lattice[i, j].Position, lattice[i + 1, j - 1].Position);
-                            distanceJoint.SpringSettings.Stiffness = 1000;
-                            distanceJoint.SpringSettings.Damping = 1000;
+                            distanceJoint.SpringSettings.Stiffness = 1000.ToFix();
+                            distanceJoint.SpringSettings.Damping = 1000.ToFix();
                             distanceJoint.SolverSettings.MaximumIterationCount = clothIterations;
                             Space.Add(distanceJoint);
                         }
@@ -85,8 +85,8 @@ namespace BEPUphysicsDemos.Demos.Extras
                     if (j + 1 < numColumns)
                     {
                         distanceJoint = new DistanceJoint(lattice[i, j], lattice[i, j + 1], lattice[i, j].Position, lattice[i, j + 1].Position);
-                        distanceJoint.SpringSettings.Stiffness = 1000;
-                        distanceJoint.SpringSettings.Damping = 1000;
+                        distanceJoint.SpringSettings.Stiffness = 1000.ToFix();
+                        distanceJoint.SpringSettings.Damping = 1000.ToFix();
                         distanceJoint.SolverSettings.MaximumIterationCount = clothIterations;
                         Space.Add(distanceJoint);
                     }
@@ -96,10 +96,10 @@ namespace BEPUphysicsDemos.Demos.Extras
 
 
             //Add some ground.
-            Space.Add(new Sphere(new Vector3(0, 0, 0), 10));
-            Space.Add(new Box(new Vector3(0, -3.5m, 0), 80, 1, 80));
+            Space.Add(new Sphere(new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix()), 10.ToFix()));
+            Space.Add(new Box(new Vector3(0.ToFix(), (-3.5m).ToFix(), 0.ToFix()), 80.ToFix(), 1.ToFix(), 80.ToFix()));
 
-            game.Camera.Position = new Vector3(0, 5, 25);
+            game.Camera.Position = new Vector3(0.ToFix(), 5.ToFix(), 25.ToFix());
         }
 
         /// <summary>

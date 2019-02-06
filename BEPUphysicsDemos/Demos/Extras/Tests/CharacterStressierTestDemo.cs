@@ -43,7 +43,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             {
                 for (int j = 0; j < yCount; j++)
                 {
-                    var staticMesh = new InstancedMesh(meshShape, new AffineTransform(Matrix3x3.Identity, new Vector3(-xSpacing * (xCount - 1) / 2 + i * xSpacing, 0, -ySpacing * (yCount - 1) / 2 + j * ySpacing)));
+                    var staticMesh = new InstancedMesh(meshShape, new AffineTransform(Matrix3x3.Identity, new Vector3((-xSpacing * (xCount - 1) / 2 + i * xSpacing).ToFix(), 0.ToFix(), (-ySpacing * (yCount - 1) / 2 + j * ySpacing).ToFix())));
                     staticMesh.Sidedness = TriangleSidedness.Counterclockwise;
                     Space.Add(staticMesh);
                     //meshes.Add(staticMesh);
@@ -59,7 +59,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             //Start with a whole bunch of boxes.  These are entity collidables, but without entities!
             xSpacing = 25;
             ySpacing = 16;
-            Fix64 zSpacing = 25;
+            Fix64 zSpacing = 25.ToFix();
 
             xCount = 25;
             yCount = 7;
@@ -74,13 +74,13 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                     for (int k = 0; k < zCount; k++)
                     {
                         //Create a transform and the instance of the mesh.
-                        var collidable = new ConvexCollidable<BoxShape>(new BoxShape((Fix64)random.NextDouble() * 25 + 5.5m, (Fix64)random.NextDouble() * 25 + 5.5m, (Fix64)random.NextDouble() * 25 + 5.5m));
+                        var collidable = new ConvexCollidable<BoxShape>(new BoxShape((random.NextDouble().ToFix().Mul(25.ToFix())).Add(5.5m.ToFix()), (random.NextDouble().ToFix().Mul(25.ToFix())).Add(5.5m.ToFix()), random.NextDouble().ToFix().Mul(25.ToFix()).Add(5.5m.ToFix())));
 
                         //This EntityCollidable isn't associated with an entity, so we must manually tell it where to sit by setting the WorldTransform.
                         //This also updates its bounding box.
                         collidable.WorldTransform = new RigidTransform(
-                            new Vector3(i * xSpacing - xCount * xSpacing * .5m, j * ySpacing + -50, k * zSpacing - zCount * zSpacing * .5m),
-                            Quaternion.CreateFromAxisAngle(Vector3.Normalize(new Vector3((Fix64)random.NextDouble(), (Fix64)random.NextDouble(), (Fix64)random.NextDouble())), (Fix64)random.NextDouble() * 100));
+                            new Vector3((i * xSpacing - xCount * xSpacing * .5m).ToFix(), (j * ySpacing + -50).ToFix(), (k.ToFix().Mul(zSpacing)).Sub((zCount.ToFix().Mul(zSpacing)).Mul(.5m.ToFix()))),
+                            Quaternion.CreateFromAxisAngle(Vector3.Normalize(new Vector3(random.NextDouble().ToFix(), random.NextDouble().ToFix(), random.NextDouble().ToFix())), random.NextDouble().ToFix().Mul(100.ToFix())));
 
                         collidables.Add(collidable);
                         game.ModelDrawer.Add(collidable);
@@ -95,7 +95,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             var numColumns = 16;
             var numRows = 16;
             var numHigh = 16;
-            Fix64 separation = 24;
+            Fix64 separation = 24.ToFix();
 
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
@@ -104,9 +104,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                         var character = new CharacterController();
                         character.Body.Position =
                             new Vector3(
-                            separation * i - numRows * separation / 2,
-                            50 + k * separation,
-                            separation * j - numColumns * separation / 2);
+(separation.Mul(i.ToFix())).Sub((numRows.ToFix().Mul(separation)).Div(2.ToFix())),
+50.ToFix().Add(k.ToFix().Mul(separation)),
+(separation.Mul(j.ToFix())).Sub((numColumns.ToFix().Mul(separation)).Div(2.ToFix())));
 
                         characters.Add(character);
 
@@ -115,23 +115,23 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
            
 
-            game.Camera.Position = new Vector3(0, 10, 40);
+            game.Camera.Position = new Vector3(0.ToFix(), 10.ToFix(), 40.ToFix());
 
             //Dump some boxes on top of the characters for fun.
             numColumns = 16;
             numRows = 16;
             numHigh = 8;
-            separation = 24;
+            separation = 24.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
                     {
                         var toAdd = new Box(
                             new Vector3(
-                            separation * i - numRows * separation / 2,
-                            52 + k * separation,
-                            separation * j - numColumns * separation / 2),
-                            0.8m, 0.8m, 0.8m, 15);
+(separation.Mul(i.ToFix())).Sub((numRows.ToFix().Mul(separation)).Div(2.ToFix())),
+52.ToFix().Add(k.ToFix().Mul(separation)),
+(separation.Mul(j.ToFix())).Sub((numColumns.ToFix().Mul(separation)).Div(2.ToFix()))),
+0.8m.ToFix(), 0.8m.ToFix(), 0.8m.ToFix(), 15.ToFix());
                         toAdd.PositionUpdateMode = BEPUphysics.PositionUpdating.PositionUpdateMode.Continuous;
 
                         Space.Add(toAdd);
@@ -156,7 +156,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             //Tell all the characters to run around randomly.
             for (int i = 0; i < characters.Count; i++)
             {
-                characters[i].HorizontalMotionConstraint.MovementDirection = new Vector2((Fix64)(random.NextDouble() * 2 - 1), (Fix64)(random.NextDouble() * 2 - 1));
+                characters[i].HorizontalMotionConstraint.MovementDirection = new Vector2((random.NextDouble() * 2 - 1).ToFix(), (random.NextDouble() * 2 - 1).ToFix());
                 if (random.NextDouble() < .01f)
                     characters[i].Jump();
 
@@ -174,7 +174,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             //Tell the sphere characters to run around too.
             for (int i = 0; i < sphereCharacters.Count; i++)
             {
-                sphereCharacters[i].HorizontalMotionConstraint.MovementDirection = new Vector2((Fix64)(random.NextDouble() * 2 - 1), (Fix64)(random.NextDouble() * 2 - 1));
+                sphereCharacters[i].HorizontalMotionConstraint.MovementDirection = new Vector2((random.NextDouble() * 2 - 1).ToFix(), (random.NextDouble() * 2 - 1).ToFix());
                 if (random.NextDouble() < .01f)
                     sphereCharacters[i].Jump();
             }

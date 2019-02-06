@@ -44,7 +44,7 @@ namespace BEPUphysicsDemos.Demos
 
 
             game.Camera.LockedUp = Vector3.Up;
-            game.Camera.ViewDirection = new Vector3(0, 0, -1);
+            game.Camera.ViewDirection = new Vector3(0.ToFix(), 0.ToFix(), (-1).ToFix());
             
         }
 
@@ -87,7 +87,7 @@ namespace BEPUphysicsDemos.Demos
                 //Interpolation isn't used in the demos by default, so passing in a really short time adds a lot of time between discretely visible time steps.
                 //Using a Space.TimeStepSettings.TimeStepDuration of 1/60f (the default), this will perform one time step every 20 frames (about three per second at the usual game update rate).
                 //This can make it easier to examine behavior frame-by-frame.
-                Space.Update(1 / (Fix64)1200); 
+                Space.Update(1.ToFix().Div(1200.ToFix())); 
             }
             else
 #endif
@@ -95,14 +95,14 @@ namespace BEPUphysicsDemos.Demos
 
 
             long endTime = Stopwatch.GetTimestamp();
-            accumulatedPhysicsTime += (Fix64)(endTime - startTime) / (Fix64)Stopwatch.Frequency;
+            accumulatedPhysicsTime += ((endTime - startTime).ToFix()).Div(Stopwatch.Frequency.ToFix());
             accumulatedPhysicsFrames++;
             previousTimeMeasurement += dt;
-            if (previousTimeMeasurement > (Fix64).3m)
+            if (previousTimeMeasurement > .3m.ToFix())
             {
-                previousTimeMeasurement -= (Fix64).3m;
-                PhysicsTime = accumulatedPhysicsTime / accumulatedPhysicsFrames;
-                accumulatedPhysicsTime = 0;
+                previousTimeMeasurement -= .3m.ToFix();
+                PhysicsTime = accumulatedPhysicsTime.Div(accumulatedPhysicsFrames.ToFix());
+                accumulatedPhysicsTime = 0.ToFix();
                 accumulatedPhysicsFrames = 0;
             }
 

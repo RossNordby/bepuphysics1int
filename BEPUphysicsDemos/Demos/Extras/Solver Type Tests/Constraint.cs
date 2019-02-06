@@ -10,8 +10,8 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
     abstract class Constraint
     {
 
-        public Fix64 Softness = 0;
-        public Fix64 BiasFactor = 0.2m;
+        public Fix64 Softness = 0.ToFix();
+        public Fix64 BiasFactor = 0.2m.ToFix();
 
         public abstract void Preupdate(Fix64 inverseDt, bool useConstraintCounts);
 

@@ -3,6 +3,7 @@ using BEPUutilities;
 using BEPUphysics.CollisionRuleManagement;
 using BEPUphysics.CollisionShapes;
 using Microsoft.Xna.Framework.Graphics;
+using FixMath.NET;
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -24,30 +25,30 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             //Hardcoded box
             vertices = new Vector3[] 
             {
-                new Vector3(0.5m, 0.5m, 0.5m),
-                new Vector3(0.5m,0.5m,-0.5m),
-                new Vector3(-0.5000001m,0.5m ,-0.4999999m),
-                new Vector3(-0.4999998m ,0.5m ,0.5000002m),
-                new Vector3(-0.4999998m ,-0.5m ,0.5000002m),
-                new Vector3(-0.5000001m ,-0.5m ,-0.4999999m),
-                new Vector3(0.5m ,-0.5m ,-0.5m),
-                new Vector3(0.5m ,-0.5m ,0.5m),
-                new Vector3(0.5m ,0.5m ,0.5m),
-                new Vector3(0.5m ,-0.5m ,0.5m),
-                new Vector3(0.5m ,-0.5m ,-0.5m),
-                new Vector3(0.5m ,0.5m ,-0.5m),
-                new Vector3(0.5m,0.5m ,-0.5m),
-                new Vector3(0.5m ,-0.5m ,-0.5m),
-                new Vector3(-0.5000001m ,-0.5m ,-0.4999999m),
-                new Vector3(-0.5000001m,0.5m ,-0.4999999m),
-                new Vector3(-0.5000001m ,0.5m ,-0.4999999m),
-                new Vector3(-0.5000001m ,-0.5m ,-0.4999999m),
-                new Vector3(-0.4999998m ,-0.5m ,0.5000002m),
-                new Vector3(-0.4999998m ,0.5m ,0.5000002m),
-                new Vector3(-0.4999998m,0.5m ,0.5000002m),
-                new Vector3(-0.4999998m ,-0.5m ,0.5000002m),
-                new Vector3(0.5m ,-0.5m,0.5m) ,
-                new Vector3(0.5m ,0.5m ,0.5m)
+                new Vector3(0.5m.ToFix(), 0.5m.ToFix(), 0.5m.ToFix()),
+                new Vector3(0.5m.ToFix(),0.5m.ToFix(),(-0.5m).ToFix()),
+                new Vector3((-0.5000001m).ToFix(),0.5m.ToFix(),(-0.4999999m).ToFix()),
+                new Vector3((-0.4999998m).ToFix(),0.5m.ToFix(),0.5000002m.ToFix()),
+                new Vector3((-0.4999998m).ToFix(),(-0.5m).ToFix(),0.5000002m.ToFix()),
+                new Vector3((-0.5000001m).ToFix(),(-0.5m).ToFix(),(-0.4999999m).ToFix()),
+                new Vector3(0.5m.ToFix(),(-0.5m).ToFix(),(-0.5m).ToFix()),
+                new Vector3(0.5m.ToFix(),(-0.5m).ToFix(),0.5m.ToFix()),
+                new Vector3(0.5m.ToFix(),0.5m.ToFix(),0.5m.ToFix()),
+                new Vector3(0.5m.ToFix(),(-0.5m).ToFix(),0.5m.ToFix()),
+                new Vector3(0.5m.ToFix(),(-0.5m).ToFix(),(-0.5m).ToFix()),
+                new Vector3(0.5m.ToFix(),0.5m.ToFix(),(-0.5m).ToFix()),
+                new Vector3(0.5m.ToFix(),0.5m.ToFix(),(-0.5m).ToFix()),
+                new Vector3(0.5m.ToFix(),(-0.5m).ToFix(),(-0.5m).ToFix()),
+                new Vector3((-0.5000001m).ToFix(),(-0.5m).ToFix(),(-0.4999999m).ToFix()),
+                new Vector3((-0.5000001m).ToFix(),0.5m.ToFix(),(-0.4999999m).ToFix()),
+                new Vector3((-0.5000001m).ToFix(),0.5m.ToFix(),(-0.4999999m).ToFix()),
+                new Vector3((-0.5000001m).ToFix(),(-0.5m).ToFix(),(-0.4999999m).ToFix()),
+                new Vector3((-0.4999998m).ToFix(),(-0.5m).ToFix(),0.5000002m.ToFix()),
+                new Vector3((-0.4999998m).ToFix(),0.5m.ToFix(),0.5000002m.ToFix()),
+                new Vector3((-0.4999998m).ToFix(),0.5m.ToFix(),0.5000002m.ToFix()),
+                new Vector3((-0.4999998m).ToFix(),(-0.5m).ToFix(),0.5000002m.ToFix()),
+                new Vector3(0.5m.ToFix(),(-0.5m).ToFix(),0.5m.ToFix()) ,
+                new Vector3(0.5m.ToFix(),0.5m.ToFix(),0.5m.ToFix())
             };
 
             indices = new[] 
@@ -66,49 +67,49 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 23, 22, 20
             };
 
-            var mesh = new MobileMesh(vertices, indices, AffineTransform.Identity, MobileMeshSolidity.Solid, 10);
+            var mesh = new MobileMesh(vertices, indices, AffineTransform.Identity, MobileMeshSolidity.Solid, 10.ToFix());
             Space.Add(mesh);
 
             //Tube
             ModelDataExtractor.GetVerticesAndIndicesFromModel(game.Content.Load<Model>("tube"), out vertices, out indices);
-            mesh = new MobileMesh(vertices, indices, AffineTransform.Identity, MobileMeshSolidity.Solid, 10);
-            mesh.Position = new Vector3(-10, 10, 0);
+            mesh = new MobileMesh(vertices, indices, AffineTransform.Identity, MobileMeshSolidity.Solid, 10.ToFix());
+            mesh.Position = new Vector3((-10).ToFix(), 10.ToFix(), 0.ToFix());
             Space.Add(mesh);
 
             //Cube
             ModelDataExtractor.GetVerticesAndIndicesFromModel(game.Content.Load<Model>("cube"), out vertices, out indices);
-            mesh = new MobileMesh(vertices, indices, AffineTransform.Identity, MobileMeshSolidity.Solid, 10);
-            mesh.Position = new Vector3(10, 0, 0);
+            mesh = new MobileMesh(vertices, indices, AffineTransform.Identity, MobileMeshSolidity.Solid, 10.ToFix());
+            mesh.Position = new Vector3(10.ToFix(), 0.ToFix(), 0.ToFix());
             Space.Add(mesh);
 
             //Guy
             ModelDataExtractor.GetVerticesAndIndicesFromModel(game.Content.Load<Model>("guy"), out vertices, out indices);
-            mesh = new MobileMesh(vertices, indices, AffineTransform.Identity, MobileMeshSolidity.Solid, 10);
-            mesh.Position = new Vector3(0, 0, 10);
+            mesh = new MobileMesh(vertices, indices, AffineTransform.Identity, MobileMeshSolidity.Solid, 10.ToFix());
+            mesh.Position = new Vector3(0.ToFix(), 0.ToFix(), 10.ToFix());
             Space.Add(mesh);
 
             //Barrel Platform
             ModelDataExtractor.GetVerticesAndIndicesFromModel(game.Content.Load<Model>("barrelandplatform"), out vertices, out indices);
-            mesh = new MobileMesh(vertices, indices, AffineTransform.Identity, MobileMeshSolidity.Solid, 10);
-            mesh.Position = new Vector3(0, 0, -10);
+            mesh = new MobileMesh(vertices, indices, AffineTransform.Identity, MobileMeshSolidity.Solid, 10.ToFix());
+            mesh.Position = new Vector3(0.ToFix(), 0.ToFix(), (-10).ToFix());
             Space.Add(mesh);
 
             //FloaterTube
             ModelDataExtractor.GetVerticesAndIndicesFromModel(game.Content.Load<Model>("tube"), out vertices, out indices);
-            mesh = new MobileMesh(vertices, indices, new AffineTransform(new Vector3(1, 1, 1), Quaternion.Identity, new Vector3(0, 0, 0)), MobileMeshSolidity.Solid);
-            mesh.Position = new Vector3(5, 18, 0);
+            mesh = new MobileMesh(vertices, indices, new AffineTransform(new Vector3(1.ToFix(), 1.ToFix(), 1.ToFix()), Quaternion.Identity, new Vector3(0.ToFix(), 0.ToFix(), 0.ToFix())), MobileMeshSolidity.Solid);
+            mesh.Position = new Vector3(5.ToFix(), 18.ToFix(), 0.ToFix());
             Space.Add(mesh);
 
             //Float a box through the last mesh to check contact generation controllably.
-            var solidityTester = new Box(new Vector3(5, 8, 0), 1, 1, 1);
-            solidityTester.LinearVelocity = new Vector3(0, 1, 0);
+            var solidityTester = new Box(new Vector3(5.ToFix(), 8.ToFix(), 0.ToFix()), 1.ToFix(), 1.ToFix(), 1.ToFix());
+            solidityTester.LinearVelocity = new Vector3(0.ToFix(), 1.ToFix(), 0.ToFix());
             CollisionRules.AddRule(solidityTester, mesh, CollisionRule.NoSolver);
             Space.Add(solidityTester);
 
 
-            Space.Add(new Box(new Vector3(0, -5, 0), 50, 1, 50));
+            Space.Add(new Box(new Vector3(0.ToFix(), (-5).ToFix(), 0.ToFix()), 50.ToFix(), 1.ToFix(), 50.ToFix()));
 
-            game.Camera.Position = new Vector3(0, 10, 20);
+            game.Camera.Position = new Vector3(0.ToFix(), 10.ToFix(), 20.ToFix());
 
         }
 

@@ -5,6 +5,7 @@ using BEPUphysics.NarrowPhaseSystems.Pairs;
 using Microsoft.Xna.Framework;
 using ConversionHelper;
 using BEPUutilities;
+using FixMath.NET;
 
 namespace BEPUphysicsDrawer.Lines
 {
@@ -33,7 +34,7 @@ namespace BEPUphysicsDrawer.Lines
                     foreach (ContactInformation information in pairHandler.Contacts)
                     {
                         contactCount++;
-                        if (information.Contact.PenetrationDepth < 0)
+                        if (information.Contact.PenetrationDepth < 0.ToFix())
                         {
                             contactLines.Add(new VertexPositionColor(MathConverter.Convert(information.Contact.Position), Color.Blue));
                             contactLines.Add(new VertexPositionColor(MathConverter.Convert(information.Contact.Position + information.Contact.Normal * information.Contact.PenetrationDepth), Color.White));
@@ -45,7 +46,7 @@ namespace BEPUphysicsDrawer.Lines
                             contactLines.Add(new VertexPositionColor(MathConverter.Convert(information.Contact.Position), Color.White));
                             contactLines.Add(new VertexPositionColor(MathConverter.Convert(information.Contact.Position + information.Contact.Normal * information.Contact.PenetrationDepth), Color.Red));
                             contactLines.Add(new VertexPositionColor(MathConverter.Convert(information.Contact.Position + information.Contact.Normal * information.Contact.PenetrationDepth), Color.White));
-                            contactLines.Add(new VertexPositionColor(MathConverter.Convert(information.Contact.Position + information.Contact.Normal * (information.Contact.PenetrationDepth + F64.C0p3)), Color.White));
+                            contactLines.Add(new VertexPositionColor(MathConverter.Convert(information.Contact.Position + information.Contact.Normal * (information.Contact.PenetrationDepth.Add(F64.C0p3))), Color.White));
                         }
 
                     }

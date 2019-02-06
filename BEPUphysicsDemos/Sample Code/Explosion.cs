@@ -80,7 +80,7 @@ namespace BEPUphysicsDemos.SampleCode
                             //Note the extra distance term in the denominator.  This normalizes the
                             //offset, resulting in a quadratic explosion falloff.
                             //A linear falloff could be accomplished by not including the extra distance term.
-                            e.LinearMomentum += (offset * (Magnitude / (distanceSquared * distance)));
+                            e.LinearMomentum += (offset * (Magnitude.Div((distanceSquared.Mul(distance)))));
                             //The above only applies a linear impulse, which is quick and usually sufficient to look like an explosion.
                             //If you want some extra chaotic spinning, try applying an angular impulse.
                             //Using e.ApplyImpulse with an appropriate impulse location or e.applyAngularImpulse will do the job.
@@ -88,7 +88,7 @@ namespace BEPUphysicsDemos.SampleCode
                         }
                         else
                         {
-                            e.LinearMomentum += (new Vector3(0, Magnitude, 0));
+                            e.LinearMomentum += (new Vector3(0.ToFix(), Magnitude, 0.ToFix()));
                         }
                     }
                 }

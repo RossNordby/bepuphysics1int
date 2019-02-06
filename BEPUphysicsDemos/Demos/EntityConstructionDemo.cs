@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using BEPUphysics.CollisionShapes;
 using BEPUphysics.CollisionRuleManagement;
 using BEPUphysics.Materials;
+using FixMath.NET;
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -38,7 +39,7 @@ namespace BEPUphysicsDemos.Demos
 
             //We'll start with such an entity for the kinematic ground.  Notice how it allows the definition of position and shape data all in the constructor.
             //It has other overloads that allow you to specify a mass (for a dynamic object) or a full MotionState instead of just a position.
-            Box ground = new Box(new Vector3(0, -.5m, 0), 50, 1, 50);
+            Box ground = new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), 50.ToFix(), 1.ToFix(), 50.ToFix());
             Space.Add(ground);
 
             //If you examine the ground's CollisionInformation property, you'll find that it is a generic method which returns a ConvexCollidable<BoxShape>.
@@ -50,9 +51,9 @@ namespace BEPUphysicsDemos.Demos
             //The generic parameter is the type of the Collidable that the entity uses as its collision proxy.
             //It is also what allows prefab types' CollisionInformation property to return that type rather than EntityCollidable.
 
-            Space.Add(new Entity<ConvexCollidable<SphereShape>>(new ConvexCollidable<SphereShape>(new SphereShape(1)), 1)
+            Space.Add(new Entity<ConvexCollidable<SphereShape>>(new ConvexCollidable<SphereShape>(new SphereShape(1.ToFix())), 1.ToFix())
                           {
-                              Position = new Vector3(-10, 1, 0)
+                              Position = new Vector3((-10).ToFix(), 1.ToFix(), 0.ToFix())
                           });
 
             //That's a bit unwieldy<<>><>, but it works.  Directly constructing entities in this manner isn't common or generally necessary.
@@ -68,9 +69,9 @@ namespace BEPUphysicsDemos.Demos
             //So let's move onto something a little more convenient.  Entity<T> has a non-generic parent Entity.  It still has a CollisionInformation property,
             //but it returns an EntityCollidable rather than a specific type.
 
-            Space.Add(new Entity(new BoxShape(2, 2, 2), 1)
+            Space.Add(new Entity(new BoxShape(2.ToFix(), 2.ToFix(), 2.ToFix()), 1.ToFix())
                 {
-                    Position = new Vector3(10, 1, 0)
+                    Position = new Vector3(10.ToFix(), 1.ToFix(), 0.ToFix())
                 });
 
             //Much better! No more ugly generic type syntax pollution.  Notice that there are quite a few overloads in the Entity.
@@ -86,19 +87,19 @@ namespace BEPUphysicsDemos.Demos
 
             //That's where the MorphableEntity comes in.  
 
-            var morphable = new MorphableEntity(new CylinderShape(2, 1), 1)
+            var morphable = new MorphableEntity(new CylinderShape(2.ToFix(), 1.ToFix()), 1.ToFix())
             {
-                Position = new Vector3(10, 3, 0)
+                Position = new Vector3(10.ToFix(), 3.ToFix(), 0.ToFix())
             };
             Space.Add(morphable);
 
             //It is constructed identically to its parent Entity class, but after being created, the EntityCollidable it uses can change!
-            morphable.CollisionInformation = new ConvexCollidable<ConeShape>(new ConeShape(2, 1));
+            morphable.CollisionInformation = new ConvexCollidable<ConeShape>(new ConeShape(2.ToFix(), 1.ToFix()));
 
             //That's neat, but that collidable constructor with generic type is a bit ugly.  We don't care about doing any type-specific configuration
             //on the EntityCollidable itself, so we can just tell the shape to make us an EntityCollidable instance.  This is what the Entity/MorphableEntity constructors
             //do internally when given an EntityShape instead of an EntityCollidable (which in turn contains an EntityShape).
-            morphable.CollisionInformation = new ConeShape(2, 1).GetCollidableInstance();
+            morphable.CollisionInformation = new ConeShape(2.ToFix(), 1.ToFix()).GetCollidableInstance();
 
             //While this is arguably a bit prettier, its major benefit comes from the fact that you don't need to know the type of the shape to call GetCollidableInstance.
             //If it's an EntityShape, it can create an EntityCollidable for itself.
@@ -113,23 +114,23 @@ namespace BEPUphysicsDemos.Demos
             //First, create the pointset that composes the convex hull.
             var vertices = new[] 
             {
-                new Vector3(-1,0,-1),
-                new Vector3(-1,0,1),
-                new Vector3(1,0,-1),
-                new Vector3(1,0,1),
-                new Vector3(0,2,0)             
+                new Vector3((-1).ToFix(),0.ToFix(),(-1).ToFix()),
+                new Vector3((-1).ToFix(),0.ToFix(),1.ToFix()),
+                new Vector3(1.ToFix(),0.ToFix(),(-1).ToFix()),
+                new Vector3(1.ToFix(),0.ToFix(),1.ToFix()),
+                new Vector3(0.ToFix(),2.ToFix(),0.ToFix())             
             };
             //Construct the shape itself.
             var convexHullShape = new ConvexHullShape(vertices);
 
             //Create an entity using the shape.
-            var convexHull = new Entity(convexHullShape, 2) { Position = new Vector3(0, 1, 0) };
+            var convexHull = new Entity(convexHullShape, 2.ToFix()) { Position = new Vector3(0.ToFix(), 1.ToFix(), 0.ToFix()) };
             Space.Add(convexHull);
             //Create a bunch of other shapes using that first shape's properties.  
             //Instead of using a first entity's data, this could also be pulled in from some external source (deserialized save data or something).
             for (int i = 1; i <= 10; i++)
             {
-                Space.Add(new Entity(convexHullShape, convexHull.Mass, convexHull.LocalInertiaTensor) { Position = new Vector3(0, 1 + i * 3, 0) });
+                Space.Add(new Entity(convexHullShape, convexHull.Mass, convexHull.LocalInertiaTensor) { Position = new Vector3(0.ToFix(), (1 + i * 3).ToFix(), 0.ToFix()) });
             }
 
             //In older versions, initializing the entity was a little expensive if the inertia tensor and some other data wasn't provided.
@@ -143,12 +144,12 @@ namespace BEPUphysicsDemos.Demos
             //More complicated shapes, like the ConvexHullShape, can be constructed from data which is not initially centered around the origin.  For example, consider these vertices:
             vertices = new[] 
             {
-                new Vector3(-5,15,-1),
-                new Vector3(-5,15,1),
-                new Vector3(-3,15,-1),
-                new Vector3(-3,15,1),
-                new Vector3(-4,17,0),    
-                new Vector3(-4,13,0)             
+                new Vector3((-5).ToFix(),15.ToFix(),(-1).ToFix()),
+                new Vector3((-5).ToFix(),15.ToFix(),1.ToFix()),
+                new Vector3((-3).ToFix(),15.ToFix(),(-1).ToFix()),
+                new Vector3((-3).ToFix(),15.ToFix(),1.ToFix()),
+                new Vector3((-4).ToFix(),17.ToFix(),0.ToFix()),    
+                new Vector3((-4).ToFix(),13.ToFix(),0.ToFix())             
             };
             //The center of those points is obviously going to be very far from the origin.
             //When we construct a ConvexHullShape, the points get 'recentered.'
@@ -162,7 +163,7 @@ namespace BEPUphysicsDemos.Demos
             convexHullShape = new ConvexHullShape(vertices, out center);
 
             //Now, when the entity is created, we can position it at the original point's center.  The shape still contains local data, but the entity's location ends up putting the shape in the right spot.
-            convexHull = new Entity(convexHullShape, 2) { Position = center };
+            convexHull = new Entity(convexHullShape, 2.ToFix()) { Position = center };
             Space.Add(convexHull);
 
 
@@ -171,10 +172,10 @@ namespace BEPUphysicsDemos.Demos
             //Here's the common simple approach to making a compound body, using a prefab type for now.
             CompoundBody body = new CompoundBody(new List<CompoundShapeEntry>
             {
-                new CompoundShapeEntry(new BoxShape(1, 1, 1), new Vector3(-7, 3, 8), 1),
-                new CompoundShapeEntry(new BoxShape(1, 3, 1), new Vector3(-8, 2, 8), 5),
-                new CompoundShapeEntry(new BoxShape(1, 1, 1), new Vector3(-9, 1, 8), 1)
-            }, 10);
+                new CompoundShapeEntry(new BoxShape(1.ToFix(), 1.ToFix(), 1.ToFix()), new Vector3((-7).ToFix(), 3.ToFix(), 8.ToFix()), 1.ToFix()),
+                new CompoundShapeEntry(new BoxShape(1.ToFix(), 3.ToFix(), 1.ToFix()), new Vector3((-8).ToFix(), 2.ToFix(), 8.ToFix()), 5.ToFix()),
+                new CompoundShapeEntry(new BoxShape(1.ToFix(), 1.ToFix(), 1.ToFix()), new Vector3((-9).ToFix(), 1.ToFix(), 8.ToFix()), 1.ToFix())
+            }, 10.ToFix());
             Space.Add(body);
             //Each entry has a shape, a rigid transform (orientation and/or translation), and a weight.
             //The rigid transform defines the position of the shape in world space.  They will be recentered into local space within the CompoundShape itself (see previous convex hull example).
@@ -186,22 +187,22 @@ namespace BEPUphysicsDemos.Demos
             //Just like shapes can be shared between entities, you can re-use a shape for multiple entries within a compound body.
             var compoundShape = new CompoundShape(new List<CompoundShapeEntry>
             {
-                new CompoundShapeEntry(convexHullShape, new Vector3(7, 3, 8), 1),
-                new CompoundShapeEntry(convexHullShape, new RigidTransform(new Vector3(8, 2, 8), Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.PiOver2)), 5),
-                new CompoundShapeEntry(convexHullShape, new Vector3(9, 1, 8), 1)
+                new CompoundShapeEntry(convexHullShape, new Vector3(7.ToFix(), 3.ToFix(), 8.ToFix()), 1.ToFix()),
+                new CompoundShapeEntry(convexHullShape, new RigidTransform(new Vector3(8.ToFix(), 2.ToFix(), 8.ToFix()), Quaternion.CreateFromAxisAngle(Vector3.Forward, MathHelper.PiOver2)), 5.ToFix()),
+                new CompoundShapeEntry(convexHullShape, new Vector3(9.ToFix(), 1.ToFix(), 8.ToFix()), 1.ToFix())
             });
 
             //And just like normal convex shapes can be shared, so can compound shapes!
             for (int i = 0; i < 3; i++)
-                Space.Add(new Entity(compoundShape, 10) { Position = new Vector3(8, 10 + i * 4, 8) });
+                Space.Add(new Entity(compoundShape, 10.ToFix()) { Position = new Vector3(8.ToFix(), (10 + i * 4).ToFix(), 8.ToFix()) });
 
             //************************
             //You can also use compound shapes as subshapes, creating nested compounds.
             Space.Add(new Entity(new CompoundShape(new List<CompoundShapeEntry>
             {
-                new CompoundShapeEntry(compoundShape, new Vector3(7, 5, 8), 1),
-                new CompoundShapeEntry(compoundShape, new Vector3(9, 1, 8), 1)
-            }), 10) { Position = new Vector3(8, 25, 8) });
+                new CompoundShapeEntry(compoundShape, new Vector3(7.ToFix(), 5.ToFix(), 8.ToFix()), 1.ToFix()),
+                new CompoundShapeEntry(compoundShape, new Vector3(9.ToFix(), 1.ToFix(), 8.ToFix()), 1.ToFix())
+            }), 10.ToFix()) { Position = new Vector3(8.ToFix(), 25.ToFix(), 8.ToFix()) });
 
 
             //************************
@@ -213,9 +214,9 @@ namespace BEPUphysicsDemos.Demos
 
             var compoundBody = new CompoundBody(new List<CompoundChildData>
             {
-                new CompoundChildData { Entry = new CompoundShapeEntry(new CylinderShape(1, 1), new Vector3(0, 2, 8)), CollisionRules = new CollisionRules { Personal = CollisionRule.NoBroadPhase } },
-                new CompoundChildData { Entry = new CompoundShapeEntry(new BoxShape(3, 1, 3), new Vector3(0, 1, 8)), Material = new Material(3, 3, 0) }
-            }, 10);
+                new CompoundChildData { Entry = new CompoundShapeEntry(new CylinderShape(1.ToFix(), 1.ToFix()), new Vector3(0.ToFix(), 2.ToFix(), 8.ToFix())), CollisionRules = new CollisionRules { Personal = CollisionRule.NoBroadPhase } },
+                new CompoundChildData { Entry = new CompoundShapeEntry(new BoxShape(3.ToFix(), 1.ToFix(), 3.ToFix()), new Vector3(0.ToFix(), 1.ToFix(), 8.ToFix())), Material = new Material(3.ToFix(), 3.ToFix(), 0.ToFix()) }
+            }, 10.ToFix());
             Space.Add(compoundBody);
 
             //In this example, one of the two blocks doesn't collide with anything.  The other does collide, and has a very high friction material.
@@ -247,12 +248,12 @@ namespace BEPUphysicsDemos.Demos
             //At load time, the matching shape can be created at virtually no cost.
 
             //Stuff the shape into the world!
-            Space.Add(new Entity(shapeFromCachedData, 10)
+            Space.Add(new Entity(shapeFromCachedData, 10.ToFix())
                 {
-                    Position = new Vector3(-10, 5, -5)
+                    Position = new Vector3((-10).ToFix(), 5.ToFix(), (-5).ToFix())
                 });
 
-            Game.Camera.Position = new Vector3(0, 3, 25);
+            Game.Camera.Position = new Vector3(0.ToFix(), 3.ToFix(), 25.ToFix());
         }
 
         /// <summary>

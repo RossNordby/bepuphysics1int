@@ -38,9 +38,9 @@ namespace BEPUphysicsDemos.Demos
                 {
                     //Create a transform and the instance of the mesh.
                     var transform = new AffineTransform(
-                        new Vector3((Fix64)random.NextDouble() * 6 + .5m, (Fix64)random.NextDouble() * 6 + .5m, (Fix64)random.NextDouble() * 6 + .5m), 
-                         Quaternion.CreateFromAxisAngle(Vector3.Normalize(new Vector3((Fix64)random.NextDouble(), (Fix64)random.NextDouble(), (Fix64)random.NextDouble())), (Fix64)random.NextDouble() * 100),
-                        new Vector3(i * 2, 3, j * 2));
+                        new Vector3((random.NextDouble().ToFix().Mul(6.ToFix())).Add(.5m.ToFix()), (random.NextDouble().ToFix().Mul(6.ToFix())).Add(.5m.ToFix()), (random.NextDouble().ToFix().Mul(6.ToFix())).Add(.5m.ToFix())), 
+                         Quaternion.CreateFromAxisAngle(Vector3.Normalize(new Vector3(random.NextDouble().ToFix(), random.NextDouble().ToFix(), random.NextDouble().ToFix())), random.NextDouble().ToFix().Mul(100.ToFix())),
+                        new Vector3((i * 2).ToFix(), 3.ToFix(), (j * 2).ToFix()));
                     var mesh = new InstancedMesh(meshShape, transform);
                     //Making the triangles one-sided makes collision detection a bit more robust, since the backsides of triangles won't try to collide with things
                     //and 'pull' them back into the mesh.
@@ -56,13 +56,13 @@ namespace BEPUphysicsDemos.Demos
                 for (int j = 0; j < 5; j++)
                 {
                     //Drop a box on the mesh.
-                    Space.Add(new Box(new Vector3((i + 1) * 4, 10, (j + 1) * 4), 1, 1, 1, 10));
+                    Space.Add(new Box(new Vector3(((i + 1) * 4).ToFix(), 10.ToFix(), ((j + 1) * 4).ToFix()), 1.ToFix(), 1.ToFix(), 1.ToFix(), 10.ToFix()));
                 }
             }
 
-            Space.Add(new Box(new Vector3(10, 0, 10), 20, 1, 20));
+            Space.Add(new Box(new Vector3(10.ToFix(), 0.ToFix(), 10.ToFix()), 20.ToFix(), 1.ToFix(), 20.ToFix()));
 
-            game.Camera.Position = new Vector3(10, 6, 30);
+            game.Camera.Position = new Vector3(10.ToFix(), 6.ToFix(), 30.ToFix());
         }
 
         /// <summary>

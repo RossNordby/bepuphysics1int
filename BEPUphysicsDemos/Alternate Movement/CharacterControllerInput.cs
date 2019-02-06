@@ -67,7 +67,7 @@ namespace BEPUphysicsDemos.AlternateMovement
                 IsActive = true;
                 Space.Add(CharacterController);
                 //Offset the character start position from the camera to make sure the camera doesn't shift upward discontinuously.
-                CharacterController.Body.Position = Camera.Position - new Vector3(0, CameraControlScheme.StandingCameraOffset, 0);
+                CharacterController.Body.Position = Camera.Position - new Vector3(0.ToFix(), CameraControlScheme.StandingCameraOffset, 0.ToFix());
             }
         }
 
@@ -122,19 +122,19 @@ namespace BEPUphysicsDemos.AlternateMovement
 
                 if (keyboardInput.IsKeyDown(Keys.E))
                 {
-                    totalMovement += new Vector2(0, 1);
+                    totalMovement += new Vector2(0.ToFix(), 1.ToFix());
                 }
                 if (keyboardInput.IsKeyDown(Keys.D))
                 {
-                    totalMovement += new Vector2(0, -1);
+                    totalMovement += new Vector2(0.ToFix(), (-1).ToFix());
                 }
                 if (keyboardInput.IsKeyDown(Keys.S))
                 {
-                    totalMovement += new Vector2(-1, 0);
+                    totalMovement += new Vector2((-1).ToFix(), 0.ToFix());
                 }
                 if (keyboardInput.IsKeyDown(Keys.F))
                 {
-                    totalMovement += new Vector2(1, 0);
+                    totalMovement += new Vector2(1.ToFix(), 0.ToFix());
                 }
                 if (totalMovement == Vector2.Zero)
                     CharacterController.HorizontalMotionConstraint.MovementDirection = Vector2.Zero;

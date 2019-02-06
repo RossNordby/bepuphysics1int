@@ -26,9 +26,9 @@ namespace BEPUphysicsDrawer.Models
             if (cylinderShape == null)
                 throw new ArgumentException("Wrong shape type.");
 
-            float verticalOffset = (float)cylinderShape.Height / 2;
+            float verticalOffset = (float)cylinderShape.Height.ToFloat() / 2;
             float angleBetweenFacets = MathHelper.TwoPi / NumSides;
-            float radius = (float)cylinderShape.Radius;
+            float radius = (float)cylinderShape.Radius.ToFloat();
 
             //Create the vertex list
             for (int i = 0; i < NumSides; i++)

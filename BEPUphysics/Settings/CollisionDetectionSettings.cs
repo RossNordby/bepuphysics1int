@@ -10,7 +10,7 @@ namespace BEPUphysics.Settings
     {
 
 
-        internal static Fix64 ContactInvalidationLengthSquared = (Fix64).01m.ToFix();
+        internal static Fix64 ContactInvalidationLengthSquared = .01m.ToFix();
 
         /// <summary>
         /// For persistent manifolds, contacts are represented by an offset in local space of two colliding bodies.
@@ -33,7 +33,7 @@ namespace BEPUphysics.Settings
         }
 
 
-        internal static Fix64 ContactMinimumSeparationDistanceSquared = (Fix64).0009m.ToFix();
+        internal static Fix64 ContactMinimumSeparationDistanceSquared = .0009m.ToFix();
         /// <summary>
         /// In persistent manifolds, if two contacts are too close together, then 
         /// the system will not use one of them.  This avoids redundant constraints.
@@ -51,7 +51,7 @@ namespace BEPUphysics.Settings
             }
         }
 
-        internal static Fix64 nonconvexNormalDotMinimum = (Fix64).99m.ToFix();
+        internal static Fix64 nonconvexNormalDotMinimum = .99m.ToFix();
         /// <summary>
         /// In regular convex manifolds, two contacts are considered redundant if their positions are too close together.  
         /// In nonconvex manifolds, the normal must also be tested, since a contact in the same location could have a different normal.
@@ -73,15 +73,15 @@ namespace BEPUphysics.Settings
         /// The default amount of allowed penetration into the margin before position correcting impulses will be applied.
         /// Defaults to .01f.
         /// </summary>
-        public static Fix64 AllowedPenetration = (Fix64).01m.ToFix();
+        public static Fix64 AllowedPenetration = .01m.ToFix();
 
         /// <summary>
         /// Default collision margin around objects.  Margins help prevent objects from interpenetrating and improve stability.
         /// Defaults to .04f.
         /// </summary>
-        public static Fix64 DefaultMargin = (Fix64).04m.ToFix();
+        public static Fix64 DefaultMargin = .04m.ToFix();
 
-        internal static Fix64 maximumContactDistance = (Fix64).1m.ToFix();
+        internal static Fix64 maximumContactDistance = .1m.ToFix();
         /// <summary>
         /// Maximum distance between the surfaces defining a contact point allowed before removing the contact.
         /// Defaults to .1f.

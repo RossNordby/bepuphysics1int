@@ -23,9 +23,9 @@ namespace BEPUphysicsDemos.Demos
         {
             SpawnRow();
 
-            game.Camera.Position = new Vector3(-30, 30, -30);
-            game.Camera.Yaw((Fix64)(-3 * Math.PI / 4));
-            game.Camera.Pitch(-(Fix64)Math.PI / 12);
+            game.Camera.Position = new Vector3((-30).ToFix(), 30.ToFix(), (-30).ToFix());
+            game.Camera.Yaw((-3 * Math.PI / 4).ToFix());
+            game.Camera.Pitch(((-Math.PI).ToFix()).Div(12.ToFix()));
         }
 
         void SpawnRow()
@@ -35,9 +35,9 @@ namespace BEPUphysicsDemos.Demos
 
             int numColumns = 20;
 
-            Fix64 damping = 0.3m;
-            Fix64 verticalOffsetPerColumn = 0.5m;
-            Fix64 verticalSpacing = 1.5m;
+            Fix64 damping = 0.3m.ToFix();
+            Fix64 verticalOffsetPerColumn = 0.5m.ToFix();
+            Fix64 verticalSpacing = 1.5m.ToFix();
 
             Entity toAdd;
             for (int j = 0; j < numColumns; j++)
@@ -46,13 +46,13 @@ namespace BEPUphysicsDemos.Demos
                 {
                     if (k % 2 == 1)
                     {
-                        toAdd = new Box(new Vector3(j * 10 + -3, -0.5m + j * verticalOffsetPerColumn + verticalSpacing * k, rowIndex * 10 + zOffset), 1, 1, 7, 20);
+                        toAdd = new Box(new Vector3((j * 10 + -3).ToFix(), ((-0.5m).ToFix().Add(j.ToFix().Mul(verticalOffsetPerColumn))).Add(verticalSpacing.Mul(k.ToFix())), (rowIndex * 10 + zOffset).ToFix()), 1.ToFix(), 1.ToFix(), 7.ToFix(), 20.ToFix());
                         toAdd.LinearDamping = damping;
                         toAdd.AngularDamping = damping;
                         Space.Add(toAdd);
                         Game.ModelDrawer.Add(toAdd);
                         toAdd.Tag = "noDisplayObject";
-                        toAdd = new Box(new Vector3(j * 10 + 3, -0.5m + j * verticalOffsetPerColumn + verticalSpacing * k, rowIndex * 10 + zOffset), 1, 1, 7, 20);
+                        toAdd = new Box(new Vector3((j * 10 + 3).ToFix(), ((-0.5m).ToFix().Add(j.ToFix().Mul(verticalOffsetPerColumn))).Add(verticalSpacing.Mul(k.ToFix())), (rowIndex * 10 + zOffset).ToFix()), 1.ToFix(), 1.ToFix(), 7.ToFix(), 20.ToFix());
                         toAdd.LinearDamping = damping;
                         toAdd.AngularDamping = damping;
                         Space.Add(toAdd);
@@ -61,13 +61,13 @@ namespace BEPUphysicsDemos.Demos
                     }
                     else
                     {
-                        toAdd = new Box(new Vector3(j * 10 + 0, -0.5m + j * verticalOffsetPerColumn + verticalSpacing * k, rowIndex * 10 + zOffset - 3), 7, 1, 1, 20);
+                        toAdd = new Box(new Vector3((j * 10 + 0).ToFix(), ((-0.5m).ToFix().Add(j.ToFix().Mul(verticalOffsetPerColumn))).Add(verticalSpacing.Mul(k.ToFix())), (rowIndex * 10 + zOffset - 3).ToFix()), 7.ToFix(), 1.ToFix(), 1.ToFix(), 20.ToFix());
                         toAdd.LinearDamping = damping;
                         toAdd.AngularDamping = damping;
                         Space.Add(toAdd);
                         Game.ModelDrawer.Add(toAdd);
                         toAdd.Tag = "noDisplayObject";
-                        toAdd = new Box(new Vector3(j * 10 + 0, -0.5m + j * verticalOffsetPerColumn + verticalSpacing * k, rowIndex * 10 + zOffset + 3), 7, 1, 1, 20);
+                        toAdd = new Box(new Vector3((j * 10 + 0).ToFix(), ((-0.5m).ToFix().Add(j.ToFix().Mul(verticalOffsetPerColumn))).Add(verticalSpacing.Mul(k.ToFix())), (rowIndex * 10 + zOffset + 3).ToFix()), 7.ToFix(), 1.ToFix(), 1.ToFix(), 20.ToFix());
                         toAdd.LinearDamping = damping;
                         toAdd.AngularDamping = damping;
                         Space.Add(toAdd);
@@ -76,7 +76,7 @@ namespace BEPUphysicsDemos.Demos
                     }
                 }
             }
-            var ground = new Box(new Vector3(10 * numColumns * 0.5m - 5, -.5m, rowIndex * 10 + zOffset), 10 * numColumns, 1, 10);
+            var ground = new Box(new Vector3((10 * numColumns * 0.5m - 5).ToFix(), (-.5m).ToFix(), (rowIndex * 10 + zOffset).ToFix()), (10 * numColumns).ToFix(), 1.ToFix(), 10.ToFix());
             Space.Add(ground);
             Game.ModelDrawer.Add(ground);
             ground.Tag = "noDisplayObject";

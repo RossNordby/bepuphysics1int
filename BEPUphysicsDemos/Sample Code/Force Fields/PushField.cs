@@ -55,15 +55,15 @@ namespace BEPUphysicsDemos.SampleCode
         /// <param name="impulse">Force to apply at the given position.</param>
         protected override void CalculateImpulse(Entity e, Fix64 dt, out Vector3 impulse)
         {
-            if (MaximumPushSpeed > 0)
+            if (MaximumPushSpeed > 0.ToFix())
             {
                 //Current velocity along the tangent direction.
                 Fix64 dot = Vector3.Dot(e.LinearVelocity, forceDirection);
                 //Compute the velocity difference between the current and the maximum
-                dot = MaximumPushSpeed - dot;
+                dot = MaximumPushSpeed.Sub(dot);
                 //Compute the force needed to reach the maximum, but clamp it to the amount of force that the field can apply
                 //Also, don't apply a force that would slow an object down.
-                dot = MathHelper.Clamp(dot * e.Mass, 0, forceMagnitude * dt);
+                dot = MathHelper.Clamp(dot.Mul(e.Mass), 0.ToFix(), forceMagnitude.Mul(dt));
                 Vector3.Multiply(ref forceDirection, dot, out impulse);
             }
             else

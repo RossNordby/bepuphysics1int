@@ -59,7 +59,7 @@ namespace BEPUphysicsDemos
             OffsetFromChaseTarget = offsetFromChaseTarget;
             TransformOffset = transformOffset;
             DistanceToTarget = distanceToTarget;
-            ChaseCameraMargin = 1;
+            ChaseCameraMargin = 1.ToFix();
 
             rayCastFilter = RayCastFilter;
         }
@@ -76,7 +76,7 @@ namespace BEPUphysicsDemos
             RayCastResult result;
 			Fix64 cameraDistance = ChasedEntity.Space.RayCast(new Ray(lookAt, backwards), DistanceToTarget, rayCastFilter, out result) ? result.HitData.T : DistanceToTarget;
 
-            Camera.Position = lookAt + (MathHelper.Max(cameraDistance - ChaseCameraMargin, 0)) * backwards; //Put the camera just before any hit spot.
+            Camera.Position = lookAt + (MathHelper.Max(cameraDistance.Sub(ChaseCameraMargin), 0.ToFix())) * backwards; //Put the camera just before any hit spot.
 
 
         }

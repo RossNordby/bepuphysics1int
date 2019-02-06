@@ -18,7 +18,7 @@ namespace BEPUphysics.Constraints.SingleEntity
         private Fix64 maximumSpeed;
         private Fix64 maximumSpeedSquared;
 
-        private Fix64 softness = (Fix64).00001m.ToFix();
+        private Fix64 softness = .00001m.ToFix();
         private Fix64 usedSoftness;
 
         /// <summary>
