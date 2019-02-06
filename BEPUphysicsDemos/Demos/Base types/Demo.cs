@@ -4,7 +4,7 @@ using System.Diagnostics;
 using BEPUphysics;
 using BEPUutilities;
 using BEPUutilities.Threading;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -14,8 +14,8 @@ namespace BEPUphysicsDemos.Demos
     public abstract class Demo
     {
         private int accumulatedPhysicsFrames;
-        private Fix64 accumulatedPhysicsTime;
-        private Fix64 previousTimeMeasurement;
+        private Fix32 accumulatedPhysicsTime;
+        private Fix32 previousTimeMeasurement;
         private ParallelLooper parallelLooper;
 
         protected Demo(DemosGame game)
@@ -51,7 +51,7 @@ namespace BEPUphysicsDemos.Demos
         /// <summary>
         /// Gets the average time spent per frame in the physics simulation.
         /// </summary>
-        public Fix64 PhysicsTime { get; private set; }
+        public Fix32 PhysicsTime { get; private set; }
 
         /// <summary>
         /// Gets the name of the demo.
@@ -72,7 +72,7 @@ namespace BEPUphysicsDemos.Demos
         /// Updates the game.
         /// </summary>
         /// <param name="dt">Game timestep.</param>
-        public virtual void Update(Fix64 dt)
+        public virtual void Update(Fix32 dt)
         {
             long startTime = Stopwatch.GetTimestamp();
 

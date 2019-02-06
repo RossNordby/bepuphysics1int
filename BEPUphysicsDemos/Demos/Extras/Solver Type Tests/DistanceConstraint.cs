@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
 {
@@ -15,15 +15,15 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
 
 
         private Vector3 jacobian;
-        private Fix64 effectiveMass;
+        private Fix32 effectiveMass;
 
 
-        private Fix64 biasVelocity;
+        private Fix32 biasVelocity;
 
-        private Fix64 accumulatedImpulse;
-        private Fix64 impulse;
+        private Fix32 accumulatedImpulse;
+        private Fix32 impulse;
 
-        private Fix64 distance;
+        private Fix32 distance;
 
         public DistanceConstraint(LinearDynamic a, LinearDynamic b)
         {
@@ -35,13 +35,13 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             distance = (a.Position - b.Position).Length();
         }
 
-        public override void Preupdate(Fix64 inverseDt, bool useConstraintCounts)
+        public override void Preupdate(Fix32 inverseDt, bool useConstraintCounts)
         {
             Vector3.Subtract(ref B.Position, ref A.Position, out jacobian);
-            Fix64 currentDistance = jacobian.LengthSquared();
+            Fix32 currentDistance = jacobian.LengthSquared();
             if (currentDistance > Toolbox.Epsilon)
             {
-                currentDistance = Fix64Ext.Sqrt(currentDistance);
+                currentDistance = Fix32Ext.Sqrt(currentDistance);
                 Vector3.Divide(ref jacobian, currentDistance, out jacobian);
             }
             else
@@ -63,11 +63,11 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         {
             Vector3 relativeVelocity;
             Vector3.Subtract(ref B.Velocity, ref A.Velocity, out relativeVelocity);
-            Fix64 relativeVelocityAlongJacobian;
+            Fix32 relativeVelocityAlongJacobian;
             Vector3.Dot(ref relativeVelocity, ref jacobian, out relativeVelocityAlongJacobian);
 
 
-            Fix64 changeInVelocity = (relativeVelocityAlongJacobian.Sub(biasVelocity)).Sub(Softness.Mul(accumulatedImpulse));
+            Fix32 changeInVelocity = (relativeVelocityAlongJacobian.Sub(biasVelocity)).Sub(Softness.Mul(accumulatedImpulse));
 
             impulse = changeInVelocity.Mul(effectiveMass);
 
@@ -86,7 +86,7 @@ accumulatedImpulse.Add(impulse);
             ApplyImpulse(dynamic, accumulatedImpulse);
         }
 
-        private void ApplyImpulse(LinearDynamic dynamic, Fix64 impulseToApply)
+        private void ApplyImpulse(LinearDynamic dynamic, Fix32 impulseToApply)
         {
             Vector3 worldSpaceImpulse;
             if (A == dynamic)

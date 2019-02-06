@@ -1,7 +1,7 @@
 ﻿using BEPUphysics.Entities;
 using BEPUphysics.UpdateableSystems;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.SampleCode
 {
@@ -10,8 +10,8 @@ namespace BEPUphysicsDemos.SampleCode
     /// </summary>
     public class Thruster : Updateable, IDuringForcesUpdateable
     {
-        private Fix64 age;
-        private Fix64 lifeSpan;
+        private Fix32 age;
+        private Fix32 lifeSpan;
 
         /// <summary>
         /// Constructs a thruster originating at the given position, pushing in the given direction.
@@ -20,7 +20,7 @@ namespace BEPUphysicsDemos.SampleCode
         /// <param name="pos">Origin of the force.</param>
         /// <param name="dir">Direction of the force.</param>
         /// <param name="time">Total lifespan of the force.  A lifespan of zero is infinite.</param>
-        public Thruster(Entity targetEntity, Vector3 pos, Vector3 dir, Fix64 time)
+        public Thruster(Entity targetEntity, Vector3 pos, Vector3 dir, Fix32 time)
         {
             Target = targetEntity;
             Position = pos;
@@ -47,7 +47,7 @@ namespace BEPUphysicsDemos.SampleCode
         /// Gets or sets the length of time that the thruster has been firing.
         /// This can be reset to 'refresh' the life of the force.
         /// </summary>
-        public Fix64 Age
+        public Fix32 Age
         {
             get { return age; }
             set
@@ -62,7 +62,7 @@ namespace BEPUphysicsDemos.SampleCode
         /// Maximum life span of the force, after which the thruster will deactivate.
         /// Set to 0 for infinite lifespan.
         /// </summary>
-        public Fix64 LifeSpan
+        public Fix32 LifeSpan
         {
             get { return lifeSpan; }
             set
@@ -79,7 +79,7 @@ namespace BEPUphysicsDemos.SampleCode
         /// Called automatically by the owning space during a space update.
         /// </summary>
         /// <param name="dt">Simulation timestep.</param>
-        void IDuringForcesUpdateable.Update(Fix64 dt)
+        void IDuringForcesUpdateable.Update(Fix32 dt)
         {
             //Transform the local position and direction into world space.
             Vector3 worldPosition = Target.Position + Matrix3x3.Transform(Position, Target.OrientationMatrix);

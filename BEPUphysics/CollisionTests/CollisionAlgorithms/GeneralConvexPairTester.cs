@@ -4,7 +4,7 @@ using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.CollisionTests.CollisionAlgorithms.GJK;
  
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 {
@@ -142,7 +142,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             
             Vector3 displacement;
             Vector3.Subtract(ref closestB, ref closestA, out displacement);
-            Fix64 distanceSquared = displacement.LengthSquared();
+            Fix32 distanceSquared = displacement.LengthSquared();
 
             if (distanceSquared < Toolbox.Epsilon)
             {
@@ -151,7 +151,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
 
             localDirection = displacement; //Use this as the direction for future deep contacts.
-            Fix64 margin = collidableA.Shape.collisionMargin.Add(collidableB.Shape.collisionMargin);
+            Fix32 margin = collidableA.Shape.collisionMargin.Add(collidableB.Shape.collisionMargin);
 
 
             if (distanceSquared < margin.Mul(margin))
@@ -167,7 +167,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Vector3.Add(ref closestA, ref contact.Position, out contact.Position); //A + t * AB.
 
                 contact.Normal = displacement;
-                Fix64 distance = Fix64Ext.Sqrt(distanceSquared);
+                Fix32 distance = Fix32Ext.Sqrt(distanceSquared);
                 Vector3.Divide(ref contact.Normal, distance, out contact.Normal);
                 contact.PenetrationDepth = margin.Sub(distance);
                 return true;

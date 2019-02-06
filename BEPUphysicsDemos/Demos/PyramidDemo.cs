@@ -2,7 +2,7 @@
 using System;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -18,9 +18,9 @@ namespace BEPUphysicsDemos.Demos
         public PyramidDemo(DemosGame game)
             : base(game)
         {
-            Fix64 boxSize = 2.ToFix();
+            Fix32 boxSize = 2.ToFix();
             int boxCount = 20;
-            Fix64 platformLength = MathHelper.Min(50.ToFix(), (boxCount.ToFix().Mul(boxSize)).Add(10.ToFix()));
+            Fix32 platformLength = MathHelper.Min(50.ToFix(), (boxCount.ToFix().Mul(boxSize)).Add(10.ToFix()));
             Space.Add(new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), (boxCount.ToFix().Mul(boxSize)).Add(20.ToFix()), 1.ToFix(),
                               platformLength));
 

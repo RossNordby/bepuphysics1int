@@ -1,6 +1,6 @@
 ﻿using System;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUik
 {
@@ -196,11 +196,11 @@ namespace BEPUik
             Vector3 preadd = accumulatedImpulse;
             Vector3.Add(ref constraintSpaceImpulse, ref accumulatedImpulse, out accumulatedImpulse);
             //But wait! The accumulated impulse may exceed this constraint's capacity! Check to make sure!
-            Fix64 impulseSquared = accumulatedImpulse.LengthSquared();
+            Fix32 impulseSquared = accumulatedImpulse.LengthSquared();
             if (impulseSquared > maximumImpulseSquared)
             {
                 //Oops! Clamp that down.
-                Vector3.Multiply(ref accumulatedImpulse, maximumImpulse.Div(Fix64Ext.Sqrt(impulseSquared)), out accumulatedImpulse);
+                Vector3.Multiply(ref accumulatedImpulse, maximumImpulse.Div(Fix32Ext.Sqrt(impulseSquared)), out accumulatedImpulse);
                 //Update the impulse based upon the clamped accumulated impulse and the original, pre-add accumulated impulse.
                 Vector3.Subtract(ref accumulatedImpulse, ref preadd, out constraintSpaceImpulse);
             }

@@ -3,7 +3,7 @@ using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUphysics.Materials;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -98,8 +98,8 @@ namespace BEPUphysicsDemos.Demos
             Space.Add(distanceJoint);
 
             int numBlocksTall = 10; //How many 'stories' tall.
-            Fix64 blockWidth = 4.ToFix(); //Total width/length of the tower.
-            Fix64 blockHeight = 1.333m.ToFix();
+            Fix32 blockWidth = 4.ToFix(); //Total width/length of the tower.
+            Fix32 blockHeight = 1.333m.ToFix();
             Entity toAdd;
             for (int i = 0; i < numBlocksTall; i++)
             {

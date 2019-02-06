@@ -1,7 +1,7 @@
 ﻿using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionShapes
 {
@@ -20,7 +20,7 @@ namespace BEPUphysics.CollisionShapes
         /// <summary>
         /// Gets the volume of the shape.
         /// </summary>
-        public Fix64 Volume { get; internal set; }
+        public Fix32 Volume { get; internal set; }
 
         internal Matrix3x3 volumeDistribution;
         /// <summary>

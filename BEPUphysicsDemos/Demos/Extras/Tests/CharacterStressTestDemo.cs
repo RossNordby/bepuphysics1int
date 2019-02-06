@@ -6,7 +6,7 @@ using BEPUutilities;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -57,7 +57,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             var numColumns = 16;
             var numRows = 16;
             var numHigh = 8;
-            Fix64 separation = 64.ToFix();
+            Fix32 separation = 64.ToFix();
 
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
@@ -133,7 +133,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             get { return "Character Stress Test"; }
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             //Tell all the characters to run around randomly.
             for (int i = 0; i < characters.Count; i++)

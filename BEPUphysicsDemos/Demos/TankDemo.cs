@@ -12,7 +12,7 @@ using BEPUphysics.Constraints.TwoEntity.Joints;
 using BEPUphysics.Constraints.TwoEntity.JointLimits;
 using Microsoft.Xna.Framework.Input;
 using System;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -91,7 +91,7 @@ namespace BEPUphysicsDemos.Demos
         /// <summary>
         /// Gets or sets the goal of the yaw motor. Convenience property; accesses TurretToTankJoint.Motor.Settings.Servo.Goal.
         /// </summary>
-        public Fix64 YawGoal
+        public Fix32 YawGoal
         {
             get { return TankToTurretJoint.Motor.Settings.Servo.Goal; }
             set { TankToTurretJoint.Motor.Settings.Servo.Goal = value; }
@@ -100,7 +100,7 @@ namespace BEPUphysicsDemos.Demos
         /// <summary>
         /// Gets or sets the goal of the pitch motor. Convenience property; accesses TurretToTankJoint.Motor.Settings.Servo.Goal.
         /// </summary>
-        public Fix64 PitchGoal
+        public Fix32 PitchGoal
         {
             get { return TurretBodyToBarrelJoint.Motor.Settings.Servo.Goal; }
             set { TurretBodyToBarrelJoint.Motor.Settings.Servo.Goal = MathHelper.Clamp(value, MinimumPitch, MaximumPitch); }
@@ -109,16 +109,16 @@ namespace BEPUphysicsDemos.Demos
         /// <summary>
         /// Gets or sets the minimum allowed pitch of the tank turret arm. The servo goal will be clamped between the minimum and maximum.
         /// </summary>
-        public Fix64 MinimumPitch { get; set; }
+        public Fix32 MinimumPitch { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum allowed pitch of the tank turret arm. The servo goal will be clamped between the minimum and maximum.
         /// </summary>
-        public Fix64 MaximumPitch { get; set; }
+        public Fix32 MaximumPitch { get; set; }
 
 
-        private Fix64 TimeBetweenFiring = 1.8m.ToFix();
-        private Fix64 lastFireTime;
+        private Fix32 TimeBetweenFiring = 1.8m.ToFix();
+        private Fix32 lastFireTime;
 
         private const int MaximumShellCount = 3;
         private Queue<Sphere> shellPool;
@@ -247,7 +247,7 @@ position.Z.Sub(2.ToFix());
         /// </summary>
         public List<NoRotationJoint> SegmentAngularBindings { get; private set; }
 
-        public Tread(Entity tankBody, Vector3 offsetToFrontOfTread, int segmentCount, Fix64 spacing, TreadSegmentDescription treadSegmentDescription)
+        public Tread(Entity tankBody, Vector3 offsetToFrontOfTread, int segmentCount, Fix32 spacing, TreadSegmentDescription treadSegmentDescription)
         {
             Segments = new List<TreadSegment>();
             Vector3 nextSegmentPosition = tankBody.Position + offsetToFrontOfTread;
@@ -284,7 +284,7 @@ nextSegmentPosition.Z.Add(spacing);
             //Each segment is no different than the others.
         }
 
-        public void SetTreadGoalVelocity(Fix64 goal)
+        public void SetTreadGoalVelocity(Fix32 goal)
         {
             foreach (var segment in Segments)
             {
@@ -320,15 +320,15 @@ nextSegmentPosition.Z.Add(spacing);
 
     public struct TreadSegmentDescription
     {
-        public Fix64 Mass;
-        public Fix64 Width;
-        public Fix64 Radius;
-        public Fix64 Friction;
-        public Fix64 SuspensionLength;
-        public Fix64 SuspensionStiffness;
-        public Fix64 SuspensionDamping;
-        public Fix64 MotorSoftness;
-        public Fix64 MotorMaximumForce;
+        public Fix32 Mass;
+        public Fix32 Width;
+        public Fix32 Radius;
+        public Fix32 Friction;
+        public Fix32 SuspensionLength;
+        public Fix32 SuspensionStiffness;
+        public Fix32 SuspensionDamping;
+        public Fix32 MotorSoftness;
+        public Fix32 MotorMaximumForce;
     }
 
     public class TreadSegment
@@ -366,7 +366,7 @@ nextSegmentPosition.Z.Add(spacing);
         /// <summary>
         /// Gets or sets the goal angular velocity for this segment.
         /// </summary>
-        public Fix64 GoalSpeed
+        public Fix32 GoalSpeed
         {
             get { return Motor.Settings.VelocityMotor.GoalVelocity; }
             set { Motor.Settings.VelocityMotor.GoalVelocity = value; }
@@ -475,17 +475,17 @@ SuspensionAngularJoint.SpringSettings.Damping.Mul(Entity.Mass.Mul(50.ToFix()));
             int xLength = 180;
             int zLength = 180;
 
-			Fix64 xSpacing = 8.ToFix();
-			Fix64 zSpacing = 8.ToFix();
-            var heights = new Fix64[xLength, zLength];
+			Fix32 xSpacing = 8.ToFix();
+			Fix32 zSpacing = 8.ToFix();
+            var heights = new Fix32[xLength, zLength];
             for (int i = 0; i < xLength; i++)
             {
                 for (int j = 0; j < zLength; j++)
                 {
-					Fix64 x = (i - xLength / 2).ToFix();
-					Fix64 z = (j - zLength / 2).ToFix();
+					Fix32 x = (i - xLength / 2).ToFix();
+					Fix32 z = (j - zLength / 2).ToFix();
                     //heights[i,j] = (Fix64)(x * y / 1000f);
-                    heights[i, j] = 20.ToFix().Mul((Fix64Ext.Sin(x.Div(8.ToFix())).Add(Fix64Ext.Sin(z.Div(8.ToFix())))));
+                    heights[i, j] = 20.ToFix().Mul((Fix32Ext.Sin(x.Div(8.ToFix())).Add(Fix32Ext.Sin(z.Div(8.ToFix())))));
                     //heights[i,j] = 3 * (Fix64)Math.Sin(x * y / 100f);
                     //heights[i,j] = (x * x * x * y - y * y * y * x) / 1000f;
                 }
@@ -513,9 +513,9 @@ SuspensionAngularJoint.SpringSettings.Damping.Mul(Entity.Mass.Mul(50.ToFix()));
             get { return "Tank Demo"; }
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
-			Fix64 driveSpeed = 20.ToFix();
+			Fix32 driveSpeed = 20.ToFix();
             if (Game.KeyboardInput.IsKeyDown(Keys.Up))
             {
                 if (Game.KeyboardInput.IsKeyDown(Keys.Right))

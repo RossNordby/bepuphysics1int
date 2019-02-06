@@ -96,9 +96,9 @@
       <Project>{34853dea-43a6-4f2f-a379-d1ee04d256d2}</Project>
       <Name>BEPUutilities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FixedMath.Net\src\FixedMath.NET.csproj">
-      <Project>{d46c606e-5826-465f-9983-251e3d3b2f1c}</Project>
-      <Name>FixedMath.NET</Name>
+    <ProjectReference Include="..\Fix32Lib\Fix32Lib.csproj">
+      <Project>{f0c0a8c3-016d-46e4-bc13-940f89085213}</Project>
+      <Name>Fix32Lib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

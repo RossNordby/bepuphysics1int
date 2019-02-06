@@ -3,7 +3,7 @@ using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
 using System.Diagnostics;
 using BEPUphysics.NarrowPhaseSystems;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -51,9 +51,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             //    Space.Add(sphere);
             //}
 
-            Fix64 width = 10.ToFix();
-            Fix64 height = 50.ToFix();
-            Fix64 length = 10.ToFix();
+            Fix32 width = 10.ToFix();
+            Fix32 height = 50.ToFix();
+            Fix32 length = 10.ToFix();
             for (int i = 0; i.ToFix() < width; i++)
             {
                 for (int j = 0; j.ToFix() < height; j++)

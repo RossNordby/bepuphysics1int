@@ -2,7 +2,7 @@
 using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -35,9 +35,9 @@ namespace BEPUphysicsDemos.Demos
 
             int numColumns = 20;
 
-            Fix64 damping = 0.3m.ToFix();
-            Fix64 verticalOffsetPerColumn = 0.5m.ToFix();
-            Fix64 verticalSpacing = 1.5m.ToFix();
+            Fix32 damping = 0.3m.ToFix();
+            Fix32 verticalOffsetPerColumn = 0.5m.ToFix();
+            Fix32 verticalSpacing = 1.5m.ToFix();
 
             Entity toAdd;
             for (int j = 0; j < numColumns; j++)
@@ -83,7 +83,7 @@ namespace BEPUphysicsDemos.Demos
             ++rowIndex;
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             if (rowIndex < 20)
             {

@@ -1,5 +1,5 @@
 ﻿using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUik
 {

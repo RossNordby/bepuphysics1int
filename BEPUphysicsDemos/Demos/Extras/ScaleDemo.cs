@@ -2,7 +2,7 @@
 using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras
 {
@@ -20,7 +20,7 @@ namespace BEPUphysicsDemos.Demos.Extras
         {
             //Pick a scale!
             //Beware: If you go too far (particularly 0.01 and lower) issues could start to crop up.
-            Fix64 scale = 1.ToFix();
+            Fix32 scale = 1.ToFix();
 
             //Load in mesh data and create the collision mesh.
             //The 'mesh' will be a supergiant triangle.
@@ -60,10 +60,10 @@ namespace BEPUphysicsDemos.Demos.Extras
             int numColumns = 8;
             int numRows = 8;
             int numHigh = 1;
-            Fix64 separation = 2.ToFix().Mul(scale);
-            Fix64 baseWidth = 0.5m.ToFix();
-            Fix64 baseHeight = 1.ToFix();
-            Fix64 baseLength = 1.5m.ToFix();
+            Fix32 separation = 2.ToFix().Mul(scale);
+            Fix32 baseWidth = 0.5m.ToFix();
+            Fix32 baseHeight = 1.ToFix();
+            Fix32 baseLength = 1.5m.ToFix();
             Entity toAdd;
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
@@ -118,7 +118,7 @@ baseHeight.Mul(scale), (0.5m.ToFix().Mul(baseWidth)).Mul(scale),  15.ToFix());
             get { return "Scale Demo"; }
         }
 
-        private Fix64 originalCameraSpeed;
+        private Fix32 originalCameraSpeed;
         public override void CleanUp()
         {
             freeCameraControlScheme.Speed = originalCameraSpeed;

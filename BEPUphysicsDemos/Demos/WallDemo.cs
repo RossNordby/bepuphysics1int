@@ -1,6 +1,6 @@
 ﻿using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -18,9 +18,9 @@ namespace BEPUphysicsDemos.Demos
         {
             int width = 10;
             int height = 10;
-			Fix64 blockWidth = 2.ToFix();
-			Fix64 blockHeight = 1.ToFix();
-			Fix64 blockLength = 1.ToFix();
+			Fix32 blockWidth = 2.ToFix();
+			Fix32 blockHeight = 1.ToFix();
+			Fix32 blockLength = 1.ToFix();
 
             for (int i = 0; i < width; i++)
             {

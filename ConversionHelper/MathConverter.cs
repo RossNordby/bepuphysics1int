@@ -1,4 +1,4 @@
-using FixMath.NET;
+
 using Microsoft.Xna.Framework;
 
 namespace ConversionHelper

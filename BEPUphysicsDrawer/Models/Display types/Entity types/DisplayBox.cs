@@ -5,7 +5,7 @@ using BEPUphysics.CollisionShapes.ConvexShapes;
 using System;
 using BEPUphysics.CollisionShapes;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDrawer.Models
 {

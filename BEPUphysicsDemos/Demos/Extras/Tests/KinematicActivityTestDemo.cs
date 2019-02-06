@@ -1,6 +1,6 @@
 ﻿using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -101,7 +101,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         }
 
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             base.Update(dt);
             //Teleport the box sideways into the sleeping dynamic objects.

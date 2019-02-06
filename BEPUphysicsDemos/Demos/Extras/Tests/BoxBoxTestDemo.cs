@@ -3,7 +3,7 @@ using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using System.Diagnostics;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -33,9 +33,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             int numColumns = 3;
             int numRows = 3;
             int numHigh = 30;
-            Fix64 xSpacing = 1.01m.ToFix();
-            Fix64 ySpacing = 1.01m.ToFix();
-            Fix64 zSpacing = 1.01m.ToFix();
+            Fix32 xSpacing = 1.01m.ToFix();
+            Fix32 ySpacing = 1.01m.ToFix();
+            Fix32 zSpacing = 1.01m.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
@@ -51,7 +51,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             game.Camera.Position = new Vector3(0.ToFix(), 3.ToFix(), 10.ToFix());
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             if (Game.WasKeyPressed(Microsoft.Xna.Framework.Input.Keys.P))
                 Debug.WriteLine("break.");

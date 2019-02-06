@@ -7,7 +7,7 @@ using BEPUutilities.DataStructures;
 using BEPUphysics.CollisionTests;
 using BEPUphysics.Settings;
 using BEPUutilities.ResourceManagement;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Character
 {
@@ -42,11 +42,11 @@ namespace BEPUphysics.Character
             proneQueryObject.Shape.CollisionMargin = characterBody.CollisionInformation.Shape.CollisionMargin;
         }
 
-        private Fix64 standingHeight;
+        private Fix32 standingHeight;
         /// <summary>
         /// Gets or sets the height of the character while standing.  To avoid resizing-related problems, use this only when the character is not being actively simulated or is not currently standing.
         /// </summary>
-        public Fix64 StandingHeight
+        public Fix32 StandingHeight
         {
             get { return standingHeight; }
             set
@@ -64,11 +64,11 @@ namespace BEPUphysics.Character
             }
         }
 
-        private Fix64 crouchingHeight;
+        private Fix32 crouchingHeight;
         /// <summary>
         /// Gets or sets the height of the character while crouching.  Must be less than the standing height.  To avoid resizing-related problems, use this only when the character is not being actively simulated or is not currently crouching.
         /// </summary>
-        public Fix64 CrouchingHeight
+        public Fix32 CrouchingHeight
         {
             get { return crouchingHeight; }
             set
@@ -87,11 +87,11 @@ namespace BEPUphysics.Character
             }
         }
 
-        private Fix64 proneHeight;
+        private Fix32 proneHeight;
         /// <summary>
         /// Gets or sets the height of the character while prone.  Must be less than the standing height.  To avoid resizing-related problems, use this only when the character is not being actively simulated or is not currently prone.
         /// </summary>
-        public Fix64 ProneHeight
+        public Fix32 ProneHeight
         {
             get { return proneHeight; }
             set
@@ -139,7 +139,7 @@ namespace BEPUphysics.Character
         /// <param name="proneHeight">Prone height of the character.</param>
         /// <param name="queryManager">Provider of queries used by the stance manager to test if it is okay to change stances.</param>
         /// <param name="supportFinder">Support finder used by the character.</param>
-        public StanceManager(Cylinder characterBody, Fix64 crouchingHeight, Fix64 proneHeight, QueryManager queryManager, SupportFinder supportFinder)
+        public StanceManager(Cylinder characterBody, Fix32 crouchingHeight, Fix32 proneHeight, QueryManager queryManager, SupportFinder supportFinder)
         {
             this.QueryManager = queryManager;
             this.SupportFinder = supportFinder;
@@ -181,7 +181,7 @@ namespace BEPUphysics.Character
         /// <param name="newHeight">If the transition is safe, the new height of the character. Zero otherwise.</param>
         /// <param name="newPosition">If the transition is safe, the new location of the character body if the transition occurred. Zero vector otherwise.</param>
         /// <returns>True if the target stance is different than the current stance and the transition is valid, false otherwise.</returns>
-        public bool CheckTransition(Stance targetStance, out Fix64 newHeight, out Vector3 newPosition)
+        public bool CheckTransition(Stance targetStance, out Fix32 newHeight, out Vector3 newPosition)
         {
             var currentPosition = characterBody.position;
             var down = characterBody.orientationMatrix.Down;
@@ -191,7 +191,7 @@ namespace BEPUphysics.Character
             if (CurrentStance != targetStance)
             {
 
-                Fix64 currentHeight;
+                Fix32 currentHeight;
                 switch (CurrentStance)
                 {
                     case Stance.Prone:
@@ -204,7 +204,7 @@ namespace BEPUphysics.Character
                         currentHeight = standingHeight;
                         break;
                 }
-                Fix64 targetHeight;
+                Fix32 targetHeight;
                 switch (targetStance)
                 {
                     case Stance.Prone:
@@ -280,10 +280,10 @@ namespace BEPUphysics.Character
                         //In this, while the bottom of the character is extending downward, the character position actually either stays the same or goes up. 
                         //(We arbitrarily ignore the case where the character could push off a ceiling.)
                         //The goal is to put the feet of the character on any support that can be found, and then verify that the rest of its body fits in that location.
-                        Fix64 lowestBound = F64.C0;
-                        Fix64 originalHighestBound = (targetHeight.Sub(currentHeight)).Mul(F64.C0p5.Neg());
-                        Fix64 highestBound = originalHighestBound;
-                        Fix64 currentOffset = F64.C0;
+                        Fix32 lowestBound = F64.C0;
+                        Fix32 originalHighestBound = (targetHeight.Sub(currentHeight)).Mul(F64.C0p5.Neg());
+                        Fix32 highestBound = originalHighestBound;
+                        Fix32 currentOffset = F64.C0;
 
                         int attempts = 0;
                         //Don't keep querying indefinitely.  If we fail to reach it in a few informed steps, it's probably not worth continuing.
@@ -292,7 +292,7 @@ namespace BEPUphysics.Character
                         while (attempts++ < 5 && lowestBound.Sub(highestBound) > Toolbox.BigEpsilon)
                         {
                             Vector3 candidatePosition = currentPosition + currentOffset * down;
-                            Fix64 hintOffset;
+                            Fix32 hintOffset;
                             switch (lastState = TrySupportLocation(queryObject, ref candidatePosition, out hintOffset, ref tractionContacts, ref supportContacts, ref sideContacts, ref headContacts))
                             {
                                 case CharacterContactPositionState.Accepted:
@@ -352,7 +352,7 @@ namespace BEPUphysics.Character
         /// <returns>Whether or not the character was able to change its stance.</returns>
         public bool UpdateStance(out Vector3 newPosition)
         {
-            Fix64 newHeight;
+            Fix32 newHeight;
             if (CheckTransition(DesiredStance, out newHeight, out newPosition))
             {
                 CurrentStance = DesiredStance;
@@ -386,8 +386,8 @@ namespace BEPUphysics.Character
             foreach (var c in SupportFinder.Supports)
             {
                 //An existing contact is considered 'deeper' if its normal-adjusted depth is greater than the new contact.
-                Fix64 dot = Vector3.Dot(contact.Normal, c.Contact.Normal);
-                Fix64 depth = (dot.Mul(c.Contact.PenetrationDepth)).Add(Toolbox.BigEpsilon);
+                Fix32 dot = Vector3.Dot(contact.Normal, c.Contact.Normal);
+                Fix32 depth = (dot.Mul(c.Contact.PenetrationDepth)).Add(Toolbox.BigEpsilon);
                 if (depth >= contact.PenetrationDepth)
                     return false;
             }
@@ -409,7 +409,7 @@ namespace BEPUphysics.Character
         }
 
 
-        CharacterContactPositionState TrySupportLocation(ConvexCollidable<CylinderShape> queryObject, ref Vector3 position, out Fix64 hintOffset,
+        CharacterContactPositionState TrySupportLocation(ConvexCollidable<CylinderShape> queryObject, ref Vector3 position, out Fix32 hintOffset,
             ref QuickList<CharacterContact> tractionContacts, ref QuickList<CharacterContact> supportContacts, ref QuickList<CharacterContact> sideContacts, ref QuickList<CharacterContact> headContacts)
         {
             hintOffset = F64.C0;

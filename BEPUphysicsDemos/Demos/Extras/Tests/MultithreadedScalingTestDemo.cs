@@ -8,7 +8,7 @@ using BEPUphysicsDemos.SampleCode;
 using System.Diagnostics;
 using System;
 using BEPUutilities.Threading;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -138,9 +138,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             int width = 25;
             int height = 15;
 #endif
-            Fix64 blockWidth = 2.ToFix();
-            Fix64 blockHeight = 1.ToFix();
-            Fix64 blockLength = 3.ToFix();
+            Fix32 blockWidth = 2.ToFix();
+            Fix32 blockHeight = 1.ToFix();
+            Fix32 blockLength = 3.ToFix();
 
 
             for (int i = 0; i < width; i++)
@@ -195,7 +195,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             int numRows = 10;
             int numHigh = 10;
 #endif
-            Fix64 separation = 5.ToFix();
+            Fix32 separation = 5.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
@@ -235,7 +235,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
         private int timeStepsElapsed;
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             timeStepsElapsed++;
             base.Update(dt);

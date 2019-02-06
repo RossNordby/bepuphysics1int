@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
-using FixMath.NET;
+
 
 namespace BEPUutilities
 {
@@ -56,7 +56,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="points">List of points to prune.</param>
         /// <param name="cellSize">Size of cells to determine redundancy.</param>
-        public static void RemoveRedundantPoints(IList<Vector3> points, Fix64 cellSize)
+        public static void RemoveRedundantPoints(IList<Vector3> points, Fix32 cellSize)
         {
             var rawPoints = CommonResources.GetVectorList();
             rawPoints.AddRange(points);
@@ -83,7 +83,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="points">List of points to prune.</param>
         /// <param name="cellSize">Size of cells to determine redundancy.</param>
-        public static void RemoveRedundantPoints(RawList<Vector3> points, Fix64 cellSize)
+        public static void RemoveRedundantPoints(RawList<Vector3> points, Fix32 cellSize)
         {
             var set = BlockedCellSets.Take();
             for (int i = points.Count - 1; i >= 0; --i)
@@ -91,9 +91,9 @@ namespace BEPUutilities
                 var element = points.Elements[i];
                 var cell = new BlockedCell
                 {
-                    X = Fix64Ext.Floor(element.X.Div(cellSize)).ToInt(),
-                    Y = Fix64Ext.Floor(element.Y.Div(cellSize)).ToInt(),
-                    Z = Fix64Ext.Floor(element.Z.Div(cellSize)).ToInt() 
+                    X = Fix32Ext.Floor(element.X.Div(cellSize)).ToInt(),
+                    Y = Fix32Ext.Floor(element.Y.Div(cellSize)).ToInt(),
+                    Z = Fix32Ext.Floor(element.Z.Div(cellSize)).ToInt() 
                 };
                 if (set.Contains(cell))
                 {

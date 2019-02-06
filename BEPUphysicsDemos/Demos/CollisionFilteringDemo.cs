@@ -2,7 +2,7 @@
 using BEPUphysics.Entities.Prefabs;
 using BEPUphysics.CollisionRuleManagement;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {

@@ -2,7 +2,7 @@
 using BEPUphysics.Entities.Prefabs;
 using BEPUphysics.PositionUpdating;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -25,8 +25,8 @@ namespace BEPUphysicsDemos.Demos
             kapow.PositionUpdateMode = PositionUpdateMode.Continuous; //The ball's really tiny! It will work better if it's handled continuously.
             Space.Add(kapow);
             int numBlocksTall = 18; //How many 'stories' tall.
-            Fix64 blockWidth = 3.ToFix(); //Total width/length of the tower.
-            Fix64 blockHeight = 1.ToFix().Div(2.ToFix());
+            Fix32 blockWidth = 3.ToFix(); //Total width/length of the tower.
+            Fix32 blockHeight = 1.ToFix().Div(2.ToFix());
             Entity toAdd;
 
 

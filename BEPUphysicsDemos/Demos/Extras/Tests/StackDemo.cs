@@ -1,6 +1,6 @@
 ﻿using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -18,9 +18,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         {
             kapow.PositionUpdateMode = BEPUphysics.PositionUpdating.PositionUpdateMode.Continuous;
             int height = 50;
-            Fix64 blockWidth = 3.ToFix();
-            Fix64 blockHeight = 1.ToFix();
-            Fix64 blockLength = 3.ToFix();
+            Fix32 blockWidth = 3.ToFix();
+            Fix32 blockHeight = 1.ToFix();
+            Fix32 blockLength = 3.ToFix();
 
             for (int i = 0; i < height; i++)
             {

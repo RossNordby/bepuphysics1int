@@ -8,7 +8,7 @@ using BEPUphysics.CollisionRuleManagement;
 using BEPUphysics.CollisionTests.CollisionAlgorithms;
 using BEPUphysics.NarrowPhaseSystems;
 using ConversionHelper;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -49,7 +49,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         bool hit;
         RayHit hitData;
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad6))
                 aTransform.Position += Vector3.Right * dt;

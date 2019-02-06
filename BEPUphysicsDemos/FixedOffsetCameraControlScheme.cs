@@ -1,6 +1,6 @@
 ﻿using BEPUphysics.Entities;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos
 {
@@ -33,7 +33,7 @@ namespace BEPUphysicsDemos
             CameraOffset = new Vector3(0.ToFix(), 0.7m.ToFix(), 0.ToFix());
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             base.Update(dt);
 

@@ -2,7 +2,7 @@
 using BEPUutilities;
 using Microsoft.Xna.Framework.Graphics;
 using BEPUphysics.CollisionShapes;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -52,7 +52,7 @@ namespace BEPUphysicsDemos.Demos
             int numRows = 4;
             int numHigh = 4;
 #endif
-            Fix64 separation = 1.5m.ToFix();
+            Fix32 separation = 1.5m.ToFix();
 
 
             for (int i = 0; i < numRows; i++)
@@ -69,7 +69,7 @@ namespace BEPUphysicsDemos.Demos
         }
 
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             base.Update(dt);
         }

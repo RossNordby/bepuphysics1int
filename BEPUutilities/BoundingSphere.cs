@@ -1,4 +1,4 @@
-﻿using FixMath.NET;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace BEPUutilities
         /// <summary>
         /// Radius of the sphere.
         /// </summary>
-        public Fix64 Radius;
+        public Fix32 Radius;
         /// <summary>
         /// Location of the center of the sphere.
         /// </summary>
@@ -25,7 +25,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="center">Location of the center of the sphere.</param>
         /// <param name="radius">Radius of the sphere.</param>
-        public BoundingSphere(Vector3 center, Fix64 radius)
+        public BoundingSphere(Vector3 center, Fix32 radius)
         {
             this.Center = center;
             this.Radius = radius;

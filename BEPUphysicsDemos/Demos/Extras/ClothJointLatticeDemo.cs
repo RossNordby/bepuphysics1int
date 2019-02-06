@@ -2,7 +2,7 @@
 using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras
 {
@@ -27,8 +27,8 @@ namespace BEPUphysicsDemos.Demos.Extras
 
             int numColumns = 16;
             int numRows = 16;
-            Fix64 xSpacing = 3.09m.ToFix();
-            Fix64 zSpacing = 3.09m.ToFix();
+            Fix32 xSpacing = 3.09m.ToFix();
+            Fix32 zSpacing = 3.09m.ToFix();
             var lattice = new Entity[numRows,numColumns];
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)

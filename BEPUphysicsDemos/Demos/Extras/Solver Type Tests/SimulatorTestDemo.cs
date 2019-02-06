@@ -9,7 +9,7 @@ using BEPUphysicsDrawer.Models;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
 using ConversionHelper;
-using FixMath.NET;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Plane = BEPUutilities.Plane;
@@ -53,7 +53,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             int width = 30;
             int height = 10;
             int length = 30;
-            Fix64 spacing = 3.ToFix();
+            Fix32 spacing = 3.ToFix();
             var dynamics = new LinearDynamic[width, height, length];
             for (int widthIndex = 0; widthIndex < width; ++widthIndex)
             {
@@ -166,8 +166,8 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             var planeConstraint = constraint as PlaneCollisionConstraint;
             if (planeConstraint != null)
             {
-                Fix64 threshold = 1.ToFix();
-                Fix64 distance = planeConstraint.Distance;
+                Fix32 threshold = 1.ToFix();
+                Fix32 distance = planeConstraint.Distance;
                 if (distance < threshold)
                 {
                     if (distance > 0.ToFix())
@@ -205,7 +205,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         }
 
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             if (Game.WasKeyPressed(Microsoft.Xna.Framework.Input.Keys.P))
             {

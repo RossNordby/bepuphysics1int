@@ -1,6 +1,6 @@
 ﻿using System;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUik
 {
@@ -73,11 +73,11 @@ namespace BEPUik
             set { LocalMeasurementAxisB = Quaternion.Transform(value, Quaternion.Conjugate(ConnectionB.Orientation)); }
         }
 
-        private Fix64 maximumAngle;
+        private Fix32 maximumAngle;
         /// <summary>
         /// Gets or sets the maximum angle between the two axes allowed by the constraint.
         /// </summary>
-        public Fix64 MaximumAngle
+        public Fix32 MaximumAngle
         {
             get { return maximumAngle; }
             set { maximumAngle = MathHelper.Max(F64.C0, value); }
@@ -95,10 +95,10 @@ namespace BEPUik
             //Pick an axis perpendicular to axisA to use as the measurement axis.
             Vector3 worldMeasurementAxisA;
             Vector3.Cross(ref Toolbox.UpVector, ref axisA, out worldMeasurementAxisA);
-            Fix64 lengthSquared = worldMeasurementAxisA.LengthSquared();
+            Fix32 lengthSquared = worldMeasurementAxisA.LengthSquared();
             if (lengthSquared > Toolbox.Epsilon)
             {
-                Vector3.Divide(ref worldMeasurementAxisA, Fix64Ext.Sqrt(lengthSquared), out worldMeasurementAxisA);
+                Vector3.Divide(ref worldMeasurementAxisA, Fix32Ext.Sqrt(lengthSquared), out worldMeasurementAxisA);
             }
             else
             {
@@ -127,7 +127,7 @@ namespace BEPUik
         /// <param name="axisA">Axis attached to connectionA in world space.</param>
         /// <param name="axisB">Axis attached to connectionB in world space.</param>
         /// <param name="maximumAngle">Maximum angle allowed between connectionA's axis and connectionB's axis.</param>
-        public IKTwistLimit(Bone connectionA, Bone connectionB, Vector3 axisA, Vector3 axisB, Fix64 maximumAngle)
+        public IKTwistLimit(Bone connectionA, Bone connectionB, Vector3 axisA, Vector3 axisB, Fix32 maximumAngle)
             : base(connectionA, connectionB)
         {
             AxisA = axisA;
@@ -160,9 +160,9 @@ namespace BEPUik
             Quaternion.Transform(ref twistMeasureAxisB, ref alignmentRotation, out twistMeasureAxisB);
 
             //We can now compare the angle between the twist axes.
-            Fix64 angle;
+            Fix32 angle;
             Vector3.Dot(ref twistMeasureAxisA, ref twistMeasureAxisB, out angle);
-            angle = Fix64Ext.Acos(MathHelper.Clamp(angle, F64.C1.Neg(), F64.C1));
+            angle = Fix32Ext.Acos(MathHelper.Clamp(angle, F64.C1.Neg(), F64.C1));
 
             //Compute the bias based upon the error.
             if (angle > maximumAngle)
@@ -173,10 +173,10 @@ namespace BEPUik
             //We can't just use the axes directly as jacobians. Consider 'cranking' one object around the other.
             Vector3 jacobian;
             Vector3.Add(ref axisA, ref axisB, out jacobian);
-            Fix64 lengthSquared = jacobian.LengthSquared();
+            Fix32 lengthSquared = jacobian.LengthSquared();
             if (lengthSquared > Toolbox.Epsilon)
             {
-                Vector3.Divide(ref jacobian, Fix64Ext.Sqrt(lengthSquared), out jacobian);
+                Vector3.Divide(ref jacobian, Fix32Ext.Sqrt(lengthSquared), out jacobian);
             }
             else
             {
@@ -190,7 +190,7 @@ namespace BEPUik
             //One side would end up doing nothing!
             Vector3 cross;
             Vector3.Cross(ref twistMeasureAxisA, ref twistMeasureAxisB, out cross);
-            Fix64 limitSide;
+            Fix32 limitSide;
             Vector3.Dot(ref cross, ref axisA, out limitSide);
             //Negate the jacobian based on what side of the limit we're on.
             if (limitSide < F64.C0)

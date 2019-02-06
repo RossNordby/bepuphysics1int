@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using BEPUphysics.CollisionTests;
 using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
-using FixMath.NET;
+
 
 namespace BEPUutilities
 {
@@ -18,17 +18,17 @@ namespace BEPUutilities
         /// <summary>
         /// Large tolerance value. Defaults to 1e-5f.
         /// </summary>
-        public static Fix64 BigEpsilon = 1e-5m.ToFix();
+        public static Fix32 BigEpsilon = 1e-5m.ToFix();
 
         /// <summary>
         /// Tolerance value. Defaults to 1e-7f.
         /// </summary>
-        public static Fix64 Epsilon = 1e-7m.ToFix();
+        public static Fix32 Epsilon = 1e-7m.ToFix();
 
         /// <summary>
         /// Represents an invalid Vector3.
         /// </summary>
-        public static readonly Vector3 NoVector = new Vector3(Fix64.MaxValue.Neg(), Fix64.MaxValue.Neg(), Fix64.MaxValue.Neg());
+        public static readonly Vector3 NoVector = new Vector3(Fix32.MaxValue.Neg(), Fix32.MaxValue.Neg(), Fix32.MaxValue.Neg());
 
         /// <summary>
         /// Reference for a vector with dimensions (0,0,1).
@@ -93,7 +93,7 @@ namespace BEPUutilities
         /// <param name="hitClockwise">True if the the triangle was hit on the clockwise face, false otherwise.</param>
         /// <param name="hit">Hit data of the ray, if any</param>
         /// <returns>Whether or not the ray and triangle intersect.</returns>
-        public static bool FindRayTriangleIntersection(ref Ray ray, Fix64 maximumLength, ref Vector3 a, ref Vector3 b, ref Vector3 c, out bool hitClockwise, out RayHit hit)
+        public static bool FindRayTriangleIntersection(ref Ray ray, Fix32 maximumLength, ref Vector3 a, ref Vector3 b, ref Vector3 c, out bool hitClockwise, out RayHit hit)
         {
             hitClockwise = false;
             hit = new RayHit();
@@ -105,7 +105,7 @@ namespace BEPUutilities
             if (hit.Normal.LengthSquared() < Epsilon)
                 return false; //Degenerate triangle!
 
-            Fix64 d;
+            Fix32 d;
             Vector3.Dot(ref ray.Direction, ref hit.Normal, out d);
             d = d.Neg();
 
@@ -124,17 +124,17 @@ namespace BEPUutilities
 
             // Compute barycentric coordinates
             Vector3.Subtract(ref hit.Location, ref a, out ap);
-            Fix64 ABdotAB, ABdotAC, ABdotAP;
-            Fix64 ACdotAC, ACdotAP;
+            Fix32 ABdotAB, ABdotAC, ABdotAP;
+            Fix32 ACdotAC, ACdotAP;
             Vector3.Dot(ref ab, ref ab, out ABdotAB);
             Vector3.Dot(ref ab, ref ac, out ABdotAC);
             Vector3.Dot(ref ab, ref ap, out ABdotAP);
             Vector3.Dot(ref ac, ref ac, out ACdotAC);
             Vector3.Dot(ref ac, ref ap, out ACdotAP);
 
-            Fix64 denom = F64.C1.Div(((ABdotAB.Mul(ACdotAC)).Sub(ABdotAC.Mul(ABdotAC))));
-            Fix64 u = ((ACdotAC.Mul(ABdotAP)).Sub(ABdotAC.Mul(ACdotAP))).Mul(denom);
-            Fix64 v = ((ABdotAB.Mul(ACdotAP)).Sub(ABdotAC.Mul(ABdotAP))).Mul(denom);
+            Fix32 denom = F64.C1.Div(((ABdotAB.Mul(ACdotAC)).Sub(ABdotAC.Mul(ABdotAC))));
+            Fix32 u = ((ACdotAC.Mul(ABdotAP)).Sub(ABdotAC.Mul(ACdotAP))).Mul(denom);
+            Fix32 v = ((ABdotAB.Mul(ACdotAP)).Sub(ABdotAC.Mul(ABdotAP))).Mul(denom);
 
             return (u >= BigEpsilon.Neg()) && (v >= BigEpsilon.Neg()) && (u.Add(v) <= F64.C1.Add(Toolbox.BigEpsilon));
 
@@ -151,7 +151,7 @@ namespace BEPUutilities
         /// <param name="c">Third vertex of the triangle.</param>
         /// <param name="hit">Hit data of the ray, if any</param>
         /// <returns>Whether or not the ray and triangle intersect.</returns>
-        public static bool FindRayTriangleIntersection(ref Ray ray, Fix64 maximumLength, TriangleSidedness sidedness, ref Vector3 a, ref Vector3 b, ref Vector3 c, out RayHit hit)
+        public static bool FindRayTriangleIntersection(ref Ray ray, Fix32 maximumLength, TriangleSidedness sidedness, ref Vector3 a, ref Vector3 b, ref Vector3 c, out RayHit hit)
         {
             hit = new RayHit();
             Vector3 ab, ac;
@@ -162,7 +162,7 @@ namespace BEPUutilities
             if (hit.Normal.LengthSquared() < Epsilon)
                 return false; //Degenerate triangle!
 
-            Fix64 d;
+            Fix32 d;
             Vector3.Dot(ref ray.Direction, ref hit.Normal, out d);
             d = d.Neg();
             switch (sidedness)
@@ -201,17 +201,17 @@ namespace BEPUutilities
 
             // Compute barycentric coordinates
             Vector3.Subtract(ref hit.Location, ref a, out ap);
-            Fix64 ABdotAB, ABdotAC, ABdotAP;
-            Fix64 ACdotAC, ACdotAP;
+            Fix32 ABdotAB, ABdotAC, ABdotAP;
+            Fix32 ACdotAC, ACdotAP;
             Vector3.Dot(ref ab, ref ab, out ABdotAB);
             Vector3.Dot(ref ab, ref ac, out ABdotAC);
             Vector3.Dot(ref ab, ref ap, out ABdotAP);
             Vector3.Dot(ref ac, ref ac, out ACdotAC);
             Vector3.Dot(ref ac, ref ap, out ACdotAP);
 
-            Fix64 denom = F64.C1.Div(((ABdotAB.Mul(ACdotAC)).Sub(ABdotAC.Mul(ABdotAC))));
-            Fix64 u = ((ACdotAC.Mul(ABdotAP)).Sub(ABdotAC.Mul(ACdotAP))).Mul(denom);
-            Fix64 v = ((ABdotAB.Mul(ACdotAP)).Sub(ABdotAC.Mul(ABdotAP))).Mul(denom);
+            Fix32 denom = F64.C1.Div(((ABdotAB.Mul(ACdotAC)).Sub(ABdotAC.Mul(ABdotAC))));
+            Fix32 u = ((ACdotAC.Mul(ABdotAP)).Sub(ABdotAC.Mul(ACdotAP))).Mul(denom);
+            Fix32 v = ((ABdotAB.Mul(ACdotAP)).Sub(ABdotAC.Mul(ABdotAP))).Mul(denom);
 
             return (u >= BigEpsilon.Neg()) && (v >= BigEpsilon.Neg()) && (u.Add(v) <= F64.C1.Add(Toolbox.BigEpsilon));
 
@@ -232,7 +232,7 @@ namespace BEPUutilities
             Plane p;
             p.Normal = Vector3.Cross(e - d, f - d);
             p.D = Vector3.Dot(p.Normal, d);
-            Fix64 t;
+            Fix32 t;
             return GetSegmentPlaneIntersection(a, b, p, out t, out q);
         }
 
@@ -246,7 +246,7 @@ namespace BEPUutilities
         /// <returns>Whether or not the segment intersects the plane.</returns>
         public static bool GetSegmentPlaneIntersection(Vector3 a, Vector3 b, Plane p, out Vector3 q)
         {
-            Fix64 t;
+            Fix32 t;
             return GetLinePlaneIntersection(ref a, ref b, ref p, out t, out q) && t >= F64.C0 && t <= F64.C1;
         }
 
@@ -259,7 +259,7 @@ namespace BEPUutilities
         /// <param name="t">Interval along segment to intersection.</param>
         /// <param name="q">Intersection point.</param>
         /// <returns>Whether or not the segment intersects the plane.</returns>
-        public static bool GetSegmentPlaneIntersection(Vector3 a, Vector3 b, Plane p, out Fix64 t, out Vector3 q)
+        public static bool GetSegmentPlaneIntersection(Vector3 a, Vector3 b, Plane p, out Fix32 t, out Vector3 q)
         {
             return GetLinePlaneIntersection(ref a, ref b, ref p, out t, out q) && t >= F64.C0 && t <= F64.C1;
         }
@@ -273,20 +273,20 @@ namespace BEPUutilities
         /// <param name="t">Interval along line to intersection (A + t * AB).</param>
         /// <param name="q">Intersection point.</param>
         /// <returns>Whether or not the line intersects the plane.  If false, the line is parallel to the plane's surface.</returns>
-        public static bool GetLinePlaneIntersection(ref Vector3 a, ref Vector3 b, ref Plane p, out Fix64 t, out Vector3 q)
+        public static bool GetLinePlaneIntersection(ref Vector3 a, ref Vector3 b, ref Plane p, out Fix32 t, out Vector3 q)
         {
             Vector3 ab;
             Vector3.Subtract(ref b, ref a, out ab);
-            Fix64 denominator;
+            Fix32 denominator;
             Vector3.Dot(ref p.Normal, ref ab, out denominator);
             if (denominator < Epsilon && denominator > Epsilon.Neg())
             {
                 //Surface of plane and line are parallel (or very close to it).
                 q = new Vector3();
-                t = Fix64.MaxValue;
+                t = Fix32.MaxValue;
                 return false;
             }
-            Fix64 numerator;
+            Fix32 numerator;
             Vector3.Dot(ref p.Normal, ref a, out numerator);
             t = (p.D.Sub(numerator)).Div(denominator);
             //Compute the intersection position.
@@ -303,18 +303,18 @@ namespace BEPUutilities
         /// <param name="t">Interval along line to intersection (A + t * AB).</param>
         /// <param name="q">Intersection point.</param>
         /// <returns>Whether or not the line intersects the plane.  If false, the line is parallel to the plane's surface.</returns>
-        public static bool GetRayPlaneIntersection(ref Ray ray, ref Plane p, out Fix64 t, out Vector3 q)
+        public static bool GetRayPlaneIntersection(ref Ray ray, ref Plane p, out Fix32 t, out Vector3 q)
         {
-            Fix64 denominator;
+            Fix32 denominator;
             Vector3.Dot(ref p.Normal, ref ray.Direction, out denominator);
             if (denominator < Epsilon && denominator > Epsilon.Neg())
             {
                 //Surface of plane and line are parallel (or very close to it).
                 q = new Vector3();
-                t = Fix64.MaxValue;
+                t = Fix32.MaxValue;
                 return false;
             }
-            Fix64 numerator;
+            Fix32 numerator;
             Vector3.Dot(ref p.Normal, ref ray.Position, out numerator);
             t = (p.D.Sub(numerator)).Div(denominator);
             //Compute the intersection position.
@@ -338,7 +338,7 @@ namespace BEPUutilities
         /// <returns>Voronoi region containing the closest point.</returns>
         public static VoronoiRegion GetClosestPointOnTriangleToPoint(ref Vector3 a, ref Vector3 b, ref Vector3 c, ref Vector3 p, out Vector3 closestPoint)
         {
-            Fix64 v, w;
+            Fix32 v, w;
             Vector3 ab;
             Vector3.Subtract(ref b, ref a, out ab);
             Vector3 ac;
@@ -346,9 +346,9 @@ namespace BEPUutilities
             //Vertex region A?
             Vector3 ap;
             Vector3.Subtract(ref p, ref a, out ap);
-            Fix64 d1;
+            Fix32 d1;
             Vector3.Dot(ref ab, ref ap, out d1);
-            Fix64 d2;
+            Fix32 d2;
             Vector3.Dot(ref ac, ref ap, out d2);
             if (d1 <= F64.C0 && d2 < F64.C0)
             {
@@ -358,9 +358,9 @@ namespace BEPUutilities
             //Vertex region B?
             Vector3 bp;
             Vector3.Subtract(ref p, ref b, out bp);
-            Fix64 d3;
+            Fix32 d3;
             Vector3.Dot(ref ab, ref bp, out d3);
-            Fix64 d4;
+            Fix32 d4;
             Vector3.Dot(ref ac, ref bp, out d4);
             if (d3 >= F64.C0 && d4 <= d3)
             {
@@ -368,7 +368,7 @@ namespace BEPUutilities
                 return VoronoiRegion.B;
             }
             //Edge region AB?
-            Fix64 vc = (d1.Mul(d4)).Sub(d3.Mul(d2));
+            Fix32 vc = (d1.Mul(d4)).Sub(d3.Mul(d2));
             if (vc <= F64.C0 && d1 >= F64.C0 && d3 <= F64.C0)
             {
                 v = d1.Div((d1.Sub(d3)));
@@ -379,9 +379,9 @@ namespace BEPUutilities
             //Vertex region C?
             Vector3 cp;
             Vector3.Subtract(ref p, ref c, out cp);
-            Fix64 d5;
+            Fix32 d5;
             Vector3.Dot(ref ab, ref cp, out d5);
-            Fix64 d6;
+            Fix32 d6;
             Vector3.Dot(ref ac, ref cp, out d6);
             if (d6 >= F64.C0 && d5 <= d6)
             {
@@ -389,7 +389,7 @@ namespace BEPUutilities
                 return VoronoiRegion.C;
             }
             //Edge region AC?
-            Fix64 vb = (d5.Mul(d2)).Sub(d1.Mul(d6));
+            Fix32 vb = (d5.Mul(d2)).Sub(d1.Mul(d6));
             if (vb <= F64.C0 && d2 >= F64.C0 && d6 <= F64.C0)
             {
                 w = d2.Div((d2.Sub(d6)));
@@ -398,7 +398,7 @@ namespace BEPUutilities
                 return VoronoiRegion.AC;
             }
             //Edge region BC?
-            Fix64 va = (d3.Mul(d6)).Sub(d5.Mul(d4));
+            Fix32 va = (d3.Mul(d6)).Sub(d5.Mul(d4));
             if (va <= F64.C0 && (d4.Sub(d3)) >= F64.C0 && (d5.Sub(d6)) >= F64.C0)
             {
                 w = (d4.Sub(d3)).Div(((d4.Sub(d3)).Add((d5.Sub(d6)))));
@@ -408,7 +408,7 @@ namespace BEPUutilities
                 return VoronoiRegion.BC;
             }
             //Inside triangle?
-            Fix64 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
+            Fix32 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
             v = vb.Mul(denom);
             w = vc.Mul(denom);
             Vector3 abv;
@@ -433,7 +433,7 @@ namespace BEPUutilities
         public static void GetClosestPointOnTriangleToPoint(ref Vector3 a, ref Vector3 b, ref Vector3 c, ref Vector3 p, RawList<Vector3> subsimplex, out Vector3 closestPoint)
         {
             subsimplex.Clear();
-            Fix64 v, w;
+            Fix32 v, w;
             Vector3 ab;
             Vector3.Subtract(ref b, ref a, out ab);
             Vector3 ac;
@@ -441,9 +441,9 @@ namespace BEPUutilities
             //Vertex region A?
             Vector3 ap;
             Vector3.Subtract(ref p, ref a, out ap);
-            Fix64 d1;
+            Fix32 d1;
             Vector3.Dot(ref ab, ref ap, out d1);
-            Fix64 d2;
+            Fix32 d2;
             Vector3.Dot(ref ac, ref ap, out d2);
             if (d1 <= F64.C0 && d2 < F64.C0)
             {
@@ -454,9 +454,9 @@ namespace BEPUutilities
             //Vertex region B?
             Vector3 bp;
             Vector3.Subtract(ref p, ref b, out bp);
-            Fix64 d3;
+            Fix32 d3;
             Vector3.Dot(ref ab, ref bp, out d3);
-            Fix64 d4;
+            Fix32 d4;
             Vector3.Dot(ref ac, ref bp, out d4);
             if (d3 >= F64.C0 && d4 <= d3)
             {
@@ -465,7 +465,7 @@ namespace BEPUutilities
                 return;
             }
             //Edge region AB?
-            Fix64 vc = (d1.Mul(d4)).Sub(d3.Mul(d2));
+            Fix32 vc = (d1.Mul(d4)).Sub(d3.Mul(d2));
             if (vc <= F64.C0 && d1 >= F64.C0 && d3 <= F64.C0)
             {
                 subsimplex.Add(a);
@@ -478,9 +478,9 @@ namespace BEPUutilities
             //Vertex region C?
             Vector3 cp;
             Vector3.Subtract(ref p, ref c, out cp);
-            Fix64 d5;
+            Fix32 d5;
             Vector3.Dot(ref ab, ref cp, out d5);
-            Fix64 d6;
+            Fix32 d6;
             Vector3.Dot(ref ac, ref cp, out d6);
             if (d6 >= F64.C0 && d5 <= d6)
             {
@@ -489,7 +489,7 @@ namespace BEPUutilities
                 return;
             }
             //Edge region AC?
-            Fix64 vb = (d5.Mul(d2)).Sub(d1.Mul(d6));
+            Fix32 vb = (d5.Mul(d2)).Sub(d1.Mul(d6));
             if (vb <= F64.C0 && d2 >= F64.C0 && d6 <= F64.C0)
             {
                 subsimplex.Add(a);
@@ -500,7 +500,7 @@ namespace BEPUutilities
                 return;
             }
             //Edge region BC?
-            Fix64 va = (d3.Mul(d6)).Sub(d5.Mul(d4));
+            Fix32 va = (d3.Mul(d6)).Sub(d5.Mul(d4));
             if (va <= F64.C0 && (d4.Sub(d3)) >= F64.C0 && (d5.Sub(d6)) >= F64.C0)
             {
                 subsimplex.Add(b);
@@ -515,7 +515,7 @@ namespace BEPUutilities
             subsimplex.Add(a);
             subsimplex.Add(b);
             subsimplex.Add(c);
-            Fix64 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
+            Fix32 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
             v = vb.Mul(denom);
             w = vc.Mul(denom);
             Vector3 abv;
@@ -538,11 +538,11 @@ namespace BEPUutilities
         /// <param name="baryCoords">Barycentric coordinates of the point on the triangle.</param>
         /// <param name="closestPoint">Closest point on tetrahedron to point.</param>
         [Obsolete("Used for simplex tests; consider using the PairSimplex and its variants instead for simplex-related testing.")]
-        public static void GetClosestPointOnTriangleToPoint(RawList<Vector3> q, int i, int j, int k, ref Vector3 p, RawList<int> subsimplex, RawList<Fix64> baryCoords, out Vector3 closestPoint)
+        public static void GetClosestPointOnTriangleToPoint(RawList<Vector3> q, int i, int j, int k, ref Vector3 p, RawList<int> subsimplex, RawList<Fix32> baryCoords, out Vector3 closestPoint)
         {
             subsimplex.Clear();
             baryCoords.Clear();
-            Fix64 v, w;
+            Fix32 v, w;
             Vector3 a = q[i];
             Vector3 b = q[j];
             Vector3 c = q[k];
@@ -553,9 +553,9 @@ namespace BEPUutilities
             //Vertex region A?
             Vector3 ap;
             Vector3.Subtract(ref p, ref a, out ap);
-            Fix64 d1;
+            Fix32 d1;
             Vector3.Dot(ref ab, ref ap, out d1);
-            Fix64 d2;
+            Fix32 d2;
             Vector3.Dot(ref ac, ref ap, out d2);
             if (d1 <= F64.C0 && d2 < F64.C0)
             {
@@ -567,9 +567,9 @@ namespace BEPUutilities
             //Vertex region B?
             Vector3 bp;
             Vector3.Subtract(ref p, ref b, out bp);
-            Fix64 d3;
+            Fix32 d3;
             Vector3.Dot(ref ab, ref bp, out d3);
-            Fix64 d4;
+            Fix32 d4;
             Vector3.Dot(ref ac, ref bp, out d4);
             if (d3 >= F64.C0 && d4 <= d3)
             {
@@ -579,7 +579,7 @@ namespace BEPUutilities
                 return; //barycentric coordinates (0,1,0)
             }
             //Edge region AB?
-            Fix64 vc = (d1.Mul(d4)).Sub(d3.Mul(d2));
+            Fix32 vc = (d1.Mul(d4)).Sub(d3.Mul(d2));
             if (vc <= F64.C0 && d1 >= F64.C0 && d3 <= F64.C0)
             {
                 subsimplex.Add(i);
@@ -594,9 +594,9 @@ namespace BEPUutilities
             //Vertex region C?
             Vector3 cp;
             Vector3.Subtract(ref p, ref c, out cp);
-            Fix64 d5;
+            Fix32 d5;
             Vector3.Dot(ref ab, ref cp, out d5);
-            Fix64 d6;
+            Fix32 d6;
             Vector3.Dot(ref ac, ref cp, out d6);
             if (d6 >= F64.C0 && d5 <= d6)
             {
@@ -606,7 +606,7 @@ namespace BEPUutilities
                 return; //barycentric coordinates (0,0,1)
             }
             //Edge region AC?
-            Fix64 vb = (d5.Mul(d2)).Sub(d1.Mul(d6));
+            Fix32 vb = (d5.Mul(d2)).Sub(d1.Mul(d6));
             if (vb <= F64.C0 && d2 >= F64.C0 && d6 <= F64.C0)
             {
                 subsimplex.Add(i);
@@ -619,7 +619,7 @@ namespace BEPUutilities
                 return; //barycentric coordinates (1-w, 0, w)
             }
             //Edge region BC?
-            Fix64 va = (d3.Mul(d6)).Sub(d5.Mul(d4));
+            Fix32 va = (d3.Mul(d6)).Sub(d5.Mul(d4));
             if (va <= F64.C0 && (d4.Sub(d3)) >= F64.C0 && (d5.Sub(d6)) >= F64.C0)
             {
                 subsimplex.Add(j);
@@ -636,7 +636,7 @@ namespace BEPUutilities
             subsimplex.Add(i);
             subsimplex.Add(j);
             subsimplex.Add(k);
-            Fix64 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
+            Fix32 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
             v = vb.Mul(denom);
             w = vc.Mul(denom);
             baryCoords.Add((F64.C1.Sub(v)).Sub(w));
@@ -661,7 +661,7 @@ namespace BEPUutilities
         /// <returns>Whether or not the point is within the triangle.</returns>
         public static bool IsPointInsideTriangle(ref Vector3 vA, ref Vector3 vB, ref Vector3 vC, ref Vector3 p)
         {
-            Fix64 u, v, w;
+            Fix32 u, v, w;
             GetBarycentricCoordinates(ref p, ref vA, ref vB, ref vC, out u, out v, out w);
             //Are the barycoords valid?
             return (u > Epsilon.Neg()) && (v > Epsilon.Neg()) && (w > Epsilon.Neg());
@@ -676,9 +676,9 @@ namespace BEPUutilities
         /// <param name="p">The point for comparison against the triangle.</param>
         /// <param name="margin">Extra area on the edges of the triangle to include.  Can be negative.</param>
         /// <returns>Whether or not the point is within the triangle.</returns>
-        public static bool IsPointInsideTriangle(ref Vector3 vA, ref Vector3 vB, ref Vector3 vC, ref Vector3 p, Fix64 margin)
+        public static bool IsPointInsideTriangle(ref Vector3 vA, ref Vector3 vB, ref Vector3 vC, ref Vector3 p, Fix32 margin)
         {
-            Fix64 u, v, w;
+            Fix32 u, v, w;
             GetBarycentricCoordinates(ref p, ref vA, ref vB, ref vC, out u, out v, out w);
             //Are the barycoords valid?
             return (u > margin.Neg()) && (v > margin.Neg()) && (w > margin.Neg());
@@ -701,7 +701,7 @@ namespace BEPUutilities
             Vector3.Subtract(ref b, ref a, out ab);
             Vector3 ap;
             Vector3.Subtract(ref p, ref a, out ap);
-            Fix64 t;
+            Fix32 t;
             Vector3.Dot(ref ap, ref ab, out t);
             if (t <= F64.C0)
             {
@@ -709,7 +709,7 @@ namespace BEPUutilities
             }
             else
             {
-                Fix64 denom = ((ab.X.Mul(ab.X)).Add(ab.Y.Mul(ab.Y))).Add(ab.Z.Mul(ab.Z));
+                Fix32 denom = ((ab.X.Mul(ab.X)).Add(ab.Y.Mul(ab.Y))).Add(ab.Z.Mul(ab.Z));
                 if (t >= denom)
                 {
                     closestPoint = b;
@@ -740,7 +740,7 @@ namespace BEPUutilities
             Vector3.Subtract(ref b, ref a, out ab);
             Vector3 ap;
             Vector3.Subtract(ref p, ref a, out ap);
-            Fix64 t;
+            Fix32 t;
             Vector3.Dot(ref ap, ref ab, out t);
             if (t <= F64.C0)
             {
@@ -750,7 +750,7 @@ namespace BEPUutilities
             }
             else
             {
-                Fix64 denom = ((ab.X.Mul(ab.X)).Add(ab.Y.Mul(ab.Y))).Add(ab.Z.Mul(ab.Z));
+                Fix32 denom = ((ab.X.Mul(ab.X)).Add(ab.Y.Mul(ab.Y))).Add(ab.Z.Mul(ab.Z));
                 if (t >= denom)
                 {
                     //t = 1;//Don't need this for returning purposes.
@@ -780,7 +780,7 @@ namespace BEPUutilities
         /// <param name="baryCoords">Barycentric coordinates of the point.</param>
         /// <param name="closestPoint">Closest point on the edge to p.</param>
         [Obsolete("Used for simplex tests; consider using the PairSimplex and its variants instead for simplex-related testing.")]
-        public static void GetClosestPointOnSegmentToPoint(List<Vector3> q, int i, int j, ref Vector3 p, List<int> subsimplex, List<Fix64> baryCoords, out Vector3 closestPoint)
+        public static void GetClosestPointOnSegmentToPoint(List<Vector3> q, int i, int j, ref Vector3 p, List<int> subsimplex, List<Fix32> baryCoords, out Vector3 closestPoint)
         {
             Vector3 a = q[i];
             Vector3 b = q[j];
@@ -790,7 +790,7 @@ namespace BEPUutilities
             Vector3.Subtract(ref b, ref a, out ab);
             Vector3 ap;
             Vector3.Subtract(ref p, ref a, out ap);
-            Fix64 t;
+            Fix32 t;
             Vector3.Dot(ref ap, ref ab, out t);
             if (t <= F64.C0)
             {
@@ -800,7 +800,7 @@ namespace BEPUutilities
             }
             else
             {
-                Fix64 denom = ((ab.X.Mul(ab.X)).Add(ab.Y.Mul(ab.Y))).Add(ab.Z.Mul(ab.Z));
+                Fix32 denom = ((ab.X.Mul(ab.X)).Add(ab.Y.Mul(ab.Y))).Add(ab.Z.Mul(ab.Z));
                 if (t >= denom)
                 {
                     subsimplex.Add(j);
@@ -829,12 +829,12 @@ namespace BEPUutilities
         /// <param name="a">First point on the line.</param>
         /// <param name="b">Second point on the line.</param>
         /// <returns>Shortest squared distance from the point to the line.</returns>
-        public static Fix64 GetSquaredDistanceFromPointToLine(ref Vector3 p, ref Vector3 a, ref Vector3 b)
+        public static Fix32 GetSquaredDistanceFromPointToLine(ref Vector3 p, ref Vector3 a, ref Vector3 b)
         {
             Vector3 ap, ab;
             Vector3.Subtract(ref p, ref a, out ap);
             Vector3.Subtract(ref b, ref a, out ab);
-            Fix64 e;
+            Fix32 e;
             Vector3.Dot(ref ap, ref ab, out e);
             return ap.LengthSquared().Sub((e.Mul(e)).Div(ab.LengthSquared()));
         }
@@ -854,7 +854,7 @@ namespace BEPUutilities
         /// <param name="c2">Closest point on second segment.</param>
         public static void GetClosestPointsBetweenSegments(Vector3 p1, Vector3 q1, Vector3 p2, Vector3 q2, out Vector3 c1, out Vector3 c2)
         {
-			Fix64 s, t;
+			Fix32 s, t;
             GetClosestPointsBetweenSegments(ref p1, ref q1, ref p2, ref q2, out s, out t, out c1, out c2);
         }
 
@@ -870,7 +870,7 @@ namespace BEPUutilities
         /// <param name="c1">Closest point on first segment.</param>
         /// <param name="c2">Closest point on second segment.</param>
         public static void GetClosestPointsBetweenSegments(ref Vector3 p1, ref Vector3 q1, ref Vector3 p2, ref Vector3 q2,
-                                                           out Fix64 s, out Fix64 t, out Vector3 c1, out Vector3 c2)
+                                                           out Fix32 s, out Fix32 t, out Vector3 c1, out Vector3 c2)
         {
             //Segment direction vectors
             Vector3 d1;
@@ -880,9 +880,9 @@ namespace BEPUutilities
             Vector3 r;
             Vector3.Subtract(ref p1, ref p2, out r);
             //distance
-            Fix64 a = d1.LengthSquared();
-            Fix64 e = d2.LengthSquared();
-            Fix64 f;
+            Fix32 a = d1.LengthSquared();
+            Fix32 e = d2.LengthSquared();
+            Fix32 f;
             Vector3.Dot(ref d2, ref r, out f);
 
             if (a <= Epsilon && e <= Epsilon)
@@ -901,7 +901,7 @@ namespace BEPUutilities
             }
             else
             {
-				Fix64 c = Vector3.Dot(d1, r);
+				Fix32 c = Vector3.Dot(d1, r);
                 if (e <= Epsilon)
                 {
                     // Second segment is basically a point.
@@ -910,8 +910,8 @@ namespace BEPUutilities
                 }
                 else
                 {
-					Fix64 b = Vector3.Dot(d1, d2);
-					Fix64 denom = (a.Mul(e)).Sub(b.Mul(b));
+					Fix32 b = Vector3.Dot(d1, d2);
+					Fix32 denom = (a.Mul(e)).Sub(b.Mul(b));
 
                     // If segments not parallel, compute closest point on L1 to L2, and
                     // clamp to segment S1. Else pick some s (here .5f)
@@ -957,7 +957,7 @@ namespace BEPUutilities
         /// <param name="c1">Closest point on first segment.</param>
         /// <param name="c2">Closest point on second segment.</param>
         public static void GetClosestPointsBetweenLines(ref Vector3 p1, ref Vector3 q1, ref Vector3 p2, ref Vector3 q2,
-                                                           out Fix64 s, out Fix64 t, out Vector3 c1, out Vector3 c2)
+                                                           out Fix32 s, out Fix32 t, out Vector3 c1, out Vector3 c2)
         {
             //Segment direction vectors
             Vector3 d1;
@@ -967,9 +967,9 @@ namespace BEPUutilities
             Vector3 r;
             Vector3.Subtract(ref p1, ref p2, out r);
 			//distance
-			Fix64 a = d1.LengthSquared();
-			Fix64 e = d2.LengthSquared();
-			Fix64 f;
+			Fix32 a = d1.LengthSquared();
+			Fix32 e = d2.LengthSquared();
+			Fix32 f;
             Vector3.Dot(ref d2, ref r, out f);
 
             if (a <= Epsilon && e <= Epsilon)
@@ -988,7 +988,7 @@ namespace BEPUutilities
             }
             else
             {
-				Fix64 c = Vector3.Dot(d1, r);
+				Fix32 c = Vector3.Dot(d1, r);
                 if (e <= Epsilon)
                 {
                     // Second segment is basically a point.
@@ -997,8 +997,8 @@ namespace BEPUutilities
                 }
                 else
                 {
-					Fix64 b = Vector3.Dot(d1, d2);
-					Fix64 denom = (a.Mul(e)).Sub(b.Mul(b));
+					Fix32 b = Vector3.Dot(d1, d2);
+					Fix32 denom = (a.Mul(e)).Sub(b.Mul(b));
 
                     // If segments not parallel, compute closest point on L1 to L2, and
                     // clamp to segment S1. Else pick some s (here .5f)
@@ -1043,9 +1043,9 @@ namespace BEPUutilities
             Vector3.Subtract(ref o, ref a, out ao);
             Vector3 q;
             Vector3.Cross(ref ab, ref ac, out q);
-			Fix64 signp;
+			Fix32 signp;
             Vector3.Dot(ref ap, ref q, out signp);
-			Fix64 signo;
+			Fix32 signo;
             Vector3.Dot(ref ao, ref q, out signo);
             if (signp.Mul(signo) <= F64.C0)
                 return true;
@@ -1059,11 +1059,11 @@ namespace BEPUutilities
         /// <param name="normal">Normal of the plane.</param>
         /// <param name="pointOnPlane">Point located on the plane.</param>
         /// <returns>Distance from the point to the plane.</returns>
-        public static Fix64 GetDistancePointToPlane(ref Vector3 point, ref Vector3 normal, ref Vector3 pointOnPlane)
+        public static Fix32 GetDistancePointToPlane(ref Vector3 point, ref Vector3 normal, ref Vector3 pointOnPlane)
         {
             Vector3 offset;
             Vector3.Subtract(ref point, ref pointOnPlane, out offset);
-			Fix64 dot;
+			Fix32 dot;
             Vector3.Dot(ref normal, ref offset, out dot);
             return dot.Div(normal.LengthSquared());
         }
@@ -1077,11 +1077,11 @@ namespace BEPUutilities
         /// <param name="projectedPoint">Projected location of point onto plane.</param>
         public static void GetPointProjectedOnPlane(ref Vector3 point, ref Vector3 normal, ref Vector3 pointOnPlane, out Vector3 projectedPoint)
         {
-			Fix64 dot;
+			Fix32 dot;
             Vector3.Dot(ref normal, ref point, out dot);
-			Fix64 dot2;
+			Fix32 dot2;
             Vector3.Dot(ref pointOnPlane, ref normal, out dot2);
-			Fix64 t = (dot.Sub(dot2)).Div(normal.LengthSquared());
+			Fix32 t = (dot.Sub(dot2)).Div(normal.LengthSquared());
             Vector3 multiply;
             Vector3.Multiply(ref normal, t, out multiply);
             Vector3.Subtract(ref point, ref multiply, out projectedPoint);
@@ -1098,9 +1098,9 @@ namespace BEPUutilities
         {
             foreach (Plane plane in planes)
             {
-				Fix64 centroidPlaneDot;
+				Fix32 centroidPlaneDot;
                 plane.DotCoordinate(ref centroid, out centroidPlaneDot);
-				Fix64 pointPlaneDot;
+				Fix32 pointPlaneDot;
                 plane.DotCoordinate(ref point, out pointPlaneDot);
                 if (!((centroidPlaneDot <= Epsilon && pointPlaneDot <= Epsilon) || (centroidPlaneDot >= Epsilon.Neg() && pointPlaneDot >= Epsilon.Neg())))
                 {
@@ -1132,13 +1132,13 @@ namespace BEPUutilities
             closestPoint = p;
             Vector3 pq;
             Vector3 q;
-			Fix64 bestSqDist = Fix64.MaxValue;
+			Fix32 bestSqDist = Fix32.MaxValue;
             // If point outside face abc then compute closest point on abc
             if (ArePointsOnOppositeSidesOfPlane(ref p, ref d, ref a, ref b, ref c))
             {
                 GetClosestPointOnTriangleToPoint(ref a, ref b, ref c, ref p, out q);
                 Vector3.Subtract(ref q, ref p, out pq);
-				Fix64 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
+				Fix32 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
                 // Update best closest point if (squared) distance is less than current best
                 if (sqDist < bestSqDist)
                 {
@@ -1151,7 +1151,7 @@ namespace BEPUutilities
             {
                 GetClosestPointOnTriangleToPoint(ref a, ref c, ref d, ref p, out q);
                 Vector3.Subtract(ref q, ref p, out pq);
-				Fix64 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
+				Fix32 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
                 if (sqDist < bestSqDist)
                 {
                     bestSqDist = sqDist;
@@ -1163,7 +1163,7 @@ namespace BEPUutilities
             {
                 GetClosestPointOnTriangleToPoint(ref a, ref d, ref b, ref p, out q);
                 Vector3.Subtract(ref q, ref p, out pq);
-				Fix64 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
+				Fix32 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
                 if (sqDist < bestSqDist)
                 {
                     bestSqDist = sqDist;
@@ -1175,7 +1175,7 @@ namespace BEPUutilities
             {
                 GetClosestPointOnTriangleToPoint(ref b, ref d, ref c, ref p, out q);
                 Vector3.Subtract(ref q, ref p, out pq);
-				Fix64 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
+				Fix32 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
                 if (sqDist < bestSqDist)
                 {
                     closestPoint = q;
@@ -1205,13 +1205,13 @@ namespace BEPUutilities
             closestPoint = p;
             Vector3 pq;
             Vector3 q;
-			Fix64 bestSqDist = Fix64.MaxValue;
+			Fix32 bestSqDist = Fix32.MaxValue;
             // If point outside face abc then compute closest point on abc
             if (ArePointsOnOppositeSidesOfPlane(ref p, ref d, ref a, ref b, ref c))
             {
                 GetClosestPointOnTriangleToPoint(ref a, ref b, ref c, ref p, subsimplex, out q);
                 Vector3.Subtract(ref q, ref p, out pq);
-				Fix64 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
+				Fix32 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
                 // Update best closest point if (squared) distance is less than current best
                 if (sqDist < bestSqDist)
                 {
@@ -1224,7 +1224,7 @@ namespace BEPUutilities
             {
                 GetClosestPointOnTriangleToPoint(ref a, ref c, ref d, ref p, subsimplex, out q);
                 Vector3.Subtract(ref q, ref p, out pq);
-				Fix64 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
+				Fix32 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
                 if (sqDist < bestSqDist)
                 {
                     bestSqDist = sqDist;
@@ -1236,7 +1236,7 @@ namespace BEPUutilities
             {
                 GetClosestPointOnTriangleToPoint(ref a, ref d, ref b, ref p, subsimplex, out q);
                 Vector3.Subtract(ref q, ref p, out pq);
-				Fix64 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
+				Fix32 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
                 if (sqDist < bestSqDist)
                 {
                     bestSqDist = sqDist;
@@ -1248,7 +1248,7 @@ namespace BEPUutilities
             {
                 GetClosestPointOnTriangleToPoint(ref b, ref d, ref c, ref p, subsimplex, out q);
                 Vector3.Subtract(ref q, ref p, out pq);
-				Fix64 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
+				Fix32 sqDist = ((pq.X.Mul(pq.X)).Add(pq.Y.Mul(pq.Y))).Add(pq.Z.Mul(pq.Z));
                 if (sqDist < bestSqDist)
                 {
                     closestPoint = q;
@@ -1265,7 +1265,7 @@ namespace BEPUutilities
         /// <param name="baryCoords">Barycentric coordinates of p on the tetrahedron.</param>
         /// <param name="closestPoint">Closest point on the tetrahedron to the point.</param>
         [Obsolete("This method was used for older GJK simplex tests.  If you need simplex tests, consider the PairSimplex class and its variants.")]
-        public static void GetClosestPointOnTetrahedronToPoint(RawList<Vector3> tetrahedron, ref Vector3 p, RawList<int> subsimplex, RawList<Fix64> baryCoords, out Vector3 closestPoint)
+        public static void GetClosestPointOnTetrahedronToPoint(RawList<Vector3> tetrahedron, ref Vector3 p, RawList<int> subsimplex, RawList<Fix32> baryCoords, out Vector3 closestPoint)
         {
             var subsimplexCandidate = CommonResources.GetIntList();
             var baryCoordsCandidate = CommonResources.GetFloatList();
@@ -1275,7 +1275,7 @@ namespace BEPUutilities
             Vector3 d = tetrahedron[3];
             closestPoint = p;
             Vector3 pq;
-			Fix64 bestSqDist = Fix64.MaxValue;
+			Fix32 bestSqDist = Fix32.MaxValue;
             subsimplex.Clear();
             subsimplex.Add(0); //Provides a baseline; if the object is not outside of any planes, then it's inside and the subsimplex is the tetrahedron itself.
             subsimplex.Add(1);
@@ -1290,7 +1290,7 @@ namespace BEPUutilities
             {
                 GetClosestPointOnTriangleToPoint(tetrahedron, 0, 1, 2, ref p, subsimplexCandidate, baryCoordsCandidate, out q);
                 Vector3.Subtract(ref q, ref p, out pq);
-				Fix64 sqDist = pq.LengthSquared();
+				Fix32 sqDist = pq.LengthSquared();
                 // Update best closest point if (squared) distance is less than current best
                 if (sqDist < bestSqDist)
                 {
@@ -1313,7 +1313,7 @@ namespace BEPUutilities
             {
                 GetClosestPointOnTriangleToPoint(tetrahedron, 0, 2, 3, ref p, subsimplexCandidate, baryCoordsCandidate, out q);
                 Vector3.Subtract(ref q, ref p, out pq);
-				Fix64 sqDist = pq.LengthSquared();
+				Fix32 sqDist = pq.LengthSquared();
                 if (sqDist < bestSqDist)
                 {
                     bestSqDist = sqDist;
@@ -1335,7 +1335,7 @@ namespace BEPUutilities
             {
                 GetClosestPointOnTriangleToPoint(tetrahedron, 0, 3, 1, ref p, subsimplexCandidate, baryCoordsCandidate, out q);
                 Vector3.Subtract(ref q, ref p, out pq);
-				Fix64 sqDist = pq.LengthSquared();
+				Fix32 sqDist = pq.LengthSquared();
                 if (sqDist < bestSqDist)
                 {
                     bestSqDist = sqDist;
@@ -1357,7 +1357,7 @@ namespace BEPUutilities
             {
                 GetClosestPointOnTriangleToPoint(tetrahedron, 1, 3, 2, ref p, subsimplexCandidate, baryCoordsCandidate, out q);
                 Vector3.Subtract(ref q, ref p, out pq);
-				Fix64 sqDist = pq.LengthSquared();
+				Fix32 sqDist = pq.LengthSquared();
                 if (sqDist < bestSqDist)
                 {
                     closestPoint = q;
@@ -1378,19 +1378,19 @@ namespace BEPUutilities
 				//subsimplex is the entire tetrahedron, can only occur when objects intersect!  Determinants of each of the tetrahedrons based on triangles composing the sides and the point itself.
 				//This is basically computing the volume of parallelepipeds (triple scalar product).
 				//Could be quicker just to do it directly.
-				Fix64 abcd = (new Matrix(tetrahedron[0].X, tetrahedron[0].Y, tetrahedron[0].Z, F64.C1,
+				Fix32 abcd = (new Matrix(tetrahedron[0].X, tetrahedron[0].Y, tetrahedron[0].Z, F64.C1,
                                          tetrahedron[1].X, tetrahedron[1].Y, tetrahedron[1].Z, F64.C1,
                                          tetrahedron[2].X, tetrahedron[2].Y, tetrahedron[2].Z, F64.C1,
                                          tetrahedron[3].X, tetrahedron[3].Y, tetrahedron[3].Z, F64.C1)).Determinant();
-				Fix64 pbcd = (new Matrix(p.X, p.Y, p.Z, F64.C1,
+				Fix32 pbcd = (new Matrix(p.X, p.Y, p.Z, F64.C1,
                                          tetrahedron[1].X, tetrahedron[1].Y, tetrahedron[1].Z, F64.C1,
                                          tetrahedron[2].X, tetrahedron[2].Y, tetrahedron[2].Z, F64.C1,
                                          tetrahedron[3].X, tetrahedron[3].Y, tetrahedron[3].Z, F64.C1)).Determinant();
-				Fix64 apcd = (new Matrix(tetrahedron[0].X, tetrahedron[0].Y, tetrahedron[0].Z, F64.C1,
+				Fix32 apcd = (new Matrix(tetrahedron[0].X, tetrahedron[0].Y, tetrahedron[0].Z, F64.C1,
                                          p.X, p.Y, p.Z, F64.C1,
                                          tetrahedron[2].X, tetrahedron[2].Y, tetrahedron[2].Z, F64.C1,
                                          tetrahedron[3].X, tetrahedron[3].Y, tetrahedron[3].Z, F64.C1)).Determinant();
-				Fix64 abpd = (new Matrix(tetrahedron[0].X, tetrahedron[0].Y, tetrahedron[0].Z, F64.C1,
+				Fix32 abpd = (new Matrix(tetrahedron[0].X, tetrahedron[0].Y, tetrahedron[0].Z, F64.C1,
                                          tetrahedron[1].X, tetrahedron[1].Y, tetrahedron[1].Z, F64.C1,
                                          p.X, p.Y, p.Z, F64.C1,
                                          tetrahedron[3].X, tetrahedron[3].Y, tetrahedron[3].Z, F64.C1)).Determinant();
@@ -1421,25 +1421,25 @@ namespace BEPUutilities
         ///<param name="maximumLength">Maximum length of the ray in units of the ray direction's length.</param>
         ///<param name="hit">Hit data of the ray, if any.</param>
         ///<returns>Whether or not the ray hits the sphere.</returns>
-        public static bool RayCastSphere(ref Ray ray, ref Vector3 spherePosition, Fix64 radius, Fix64 maximumLength, out RayHit hit)
+        public static bool RayCastSphere(ref Ray ray, ref Vector3 spherePosition, Fix32 radius, Fix32 maximumLength, out RayHit hit)
         {
             Vector3 normalizedDirection;
-			Fix64 length = ray.Direction.Length();
+			Fix32 length = ray.Direction.Length();
             Vector3.Divide(ref ray.Direction, length, out normalizedDirection);
 			maximumLength = maximumLength.Mul(length);
             hit = new RayHit();
             Vector3 m;
             Vector3.Subtract(ref ray.Position, ref spherePosition, out m);
-			Fix64 b = Vector3.Dot(m, normalizedDirection);
-			Fix64 c = m.LengthSquared().Sub(radius.Mul(radius));
+			Fix32 b = Vector3.Dot(m, normalizedDirection);
+			Fix32 c = m.LengthSquared().Sub(radius.Mul(radius));
 
             if (c > F64.C0 && b > F64.C0)
                 return false;
-			Fix64 discriminant = (b.Mul(b)).Sub(c);
+			Fix32 discriminant = (b.Mul(b)).Sub(c);
             if (discriminant < F64.C0)
                 return false;
 
-            hit.T = (b.Neg()).Sub(Fix64Ext.Sqrt(discriminant));
+            hit.T = (b.Neg()).Sub(Fix32Ext.Sqrt(discriminant));
             if (hit.T < F64.C0)
                 hit.T = F64.C0;
             if (hit.T > maximumLength)
@@ -1591,7 +1591,7 @@ namespace BEPUutilities
         /// <param name="angularMomentum">Angular momentum of the object.</param>
         /// <param name="dt">Time since last frame, in seconds.</param>
         /// <param name="newOrientation">New orientation quaternion.</param>
-        public static void UpdateOrientationRK4(ref Quaternion q, ref Matrix3x3 localInertiaTensorInverse, ref Vector3 angularMomentum, Fix64 dt, out Quaternion newOrientation)
+        public static void UpdateOrientationRK4(ref Quaternion q, ref Matrix3x3 localInertiaTensorInverse, ref Vector3 angularMomentum, Fix32 dt, out Quaternion newOrientation)
         {
             //TODO: This is a little goofy
             //Quaternion diff = differentiateQuaternion(ref q, ref localInertiaTensorInverse, ref angularMomentum);
@@ -1663,18 +1663,18 @@ namespace BEPUutilities
         /// <param name="aWeight">Weight of the first vertex.</param>
         /// <param name="bWeight">Weight of the second vertex.</param>
         /// <param name="cWeight">Weight of the third vertex.</param>
-        public static void GetBarycentricCoordinates(ref Vector3 p, ref Vector3 a, ref Vector3 b, ref Vector3 c, out Fix64 aWeight, out Fix64 bWeight, out Fix64 cWeight)
+        public static void GetBarycentricCoordinates(ref Vector3 p, ref Vector3 a, ref Vector3 b, ref Vector3 c, out Fix32 aWeight, out Fix32 bWeight, out Fix32 cWeight)
         {
             Vector3 ab, ac;
             Vector3.Subtract(ref b, ref a, out ab);
             Vector3.Subtract(ref c, ref a, out ac);
             Vector3 triangleNormal;
             Vector3.Cross(ref ab, ref ac, out triangleNormal);
-            Fix64 x = triangleNormal.X < F64.C0 ? triangleNormal.X.Neg() : triangleNormal.X;
-            Fix64 y = triangleNormal.Y < F64.C0 ? triangleNormal.Y.Neg() : triangleNormal.Y;
-            Fix64 z = triangleNormal.Z < F64.C0 ? triangleNormal.Z.Neg() : triangleNormal.Z;
+            Fix32 x = triangleNormal.X < F64.C0 ? triangleNormal.X.Neg() : triangleNormal.X;
+            Fix32 y = triangleNormal.Y < F64.C0 ? triangleNormal.Y.Neg() : triangleNormal.Y;
+            Fix32 z = triangleNormal.Z < F64.C0 ? triangleNormal.Z.Neg() : triangleNormal.Z;
 
-            Fix64 numeratorU, numeratorV, denominator;
+            Fix32 numeratorU, numeratorV, denominator;
             if (x >= y && x >= z)
             {
                 //The projection of the triangle on the YZ plane is the largest.
@@ -1713,7 +1713,7 @@ namespace BEPUutilities
 				//Sometimes, though, it could be that it's more of a line.
 				//If it's a little inefficient, don't worry- this is a corner case anyway.
 
-				Fix64 distance1, distance2, distance3;
+				Fix32 distance1, distance2, distance3;
                 Vector3.DistanceSquared(ref p, ref a, out distance1);
                 Vector3.DistanceSquared(ref p, ref b, out distance2);
                 Vector3.DistanceSquared(ref p, ref c, out distance3);

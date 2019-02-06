@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Input;
 using Ray = BEPUutilities.Ray;
 using Vector2 = BEPUutilities.Vector2;
 using Vector3 = BEPUutilities.Vector3;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -27,7 +27,7 @@ namespace BEPUphysicsDemos.Demos
     {
         protected FreeCameraControlScheme freeCameraControlScheme;
         protected CharacterControllerInput character;
-        protected Fix64 grabDistance;
+        protected Fix32 grabDistance;
         protected MotorizedGrabSpring grabber;
         protected LineDisplayObjectBase grabberGraphic;
         protected Entity kapow;
@@ -91,7 +91,7 @@ namespace BEPUphysicsDemos.Demos
             return entry != character.CharacterController.Body.CollisionInformation && entry.CollisionRules.Personal <= CollisionRule.Normal;
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             #region Kapow-Shooter Input
 

@@ -23,7 +23,7 @@ using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras
 {
@@ -60,7 +60,7 @@ namespace BEPUphysicsDemos.Demos.Extras
         /// <summary>
         /// Width of a single voxel cell.
         /// </summary>
-        public Fix64 CellWidth { get; private set; }
+        public Fix32 CellWidth { get; private set; }
 
         public void GetBoundingBox(ref Vector3 position, out BoundingBox boundingBox)
         {
@@ -69,7 +69,7 @@ namespace BEPUphysicsDemos.Demos.Extras
             Vector3.Add(ref size, ref position, out boundingBox.Max);
         }
 
-        public VoxelGridShape(bool[, ,] cells, Fix64 cellWidth)
+        public VoxelGridShape(bool[, ,] cells, Fix32 cellWidth)
         {
             Cells = cells;
             CellWidth = cellWidth;
@@ -131,7 +131,7 @@ namespace BEPUphysicsDemos.Demos.Extras
             events = new ContactEventManager<VoxelGrid>(this);
         }
 
-        public override bool RayCast(Ray ray, Fix64 maximumLength, out RayHit rayHit)
+        public override bool RayCast(Ray ray, Fix32 maximumLength, out RayHit rayHit)
         {
             //This example is primarily to show custom collidable pair management with a minimum of other complexity, and this isn't vital.
             //Note: the character controller makes significant use of ray casts. While its basic features work without ray casts, 
@@ -180,7 +180,7 @@ namespace BEPUphysicsDemos.Demos.Extras
         {
         }
 
-        protected override void UpdateBoundingBoxInternal(Fix64 dt)
+        protected override void UpdateBoundingBoxInternal(Fix32 dt)
         {
             Shape.GetBoundingBox(ref worldTransform, out boundingBox);
         }
@@ -277,7 +277,7 @@ voxelGrid.Position.Z.Add((position.Z.ToFix().Add(F64.C0p5)).Mul(voxelGrid.Shape.
         }
 
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             //Refresh the contact manifold for this frame.
             var transform = new RigidTransform(voxelGrid.Position);
@@ -416,7 +416,7 @@ voxelGrid.Position.Z.Add((position.Z.ToFix().Add(F64.C0p5)).Mul(voxelGrid.Shape.
             get { return null; }
         }
 
-        public override void UpdateTimeOfImpact(Collidable requester, Fix64 dt)
+        public override void UpdateTimeOfImpact(Collidable requester, Fix32 dt)
         {
             //Complicated and not vital. Leaving it out for simplicity. Check out InstancedMeshPairHandler for an example implementation.
             //Notice that we don't test for convex entity null explicitly.  The convex.IsActive property does that for us.
@@ -424,7 +424,7 @@ voxelGrid.Position.Z.Add((position.Z.ToFix().Add(F64.C0p5)).Mul(voxelGrid.Shape.
             {
                 //Only perform the test if the minimum radii are small enough relative to the size of the velocity.
                 Vector3 velocity = convex.Entity.LinearVelocity * dt;
-                Fix64 velocitySquared = velocity.LengthSquared();
+                Fix32 velocitySquared = velocity.LengthSquared();
 
                 var minimumRadius = convex.Shape.MinimumRadius.Mul(MotionSettings.CoreShapeScaling);
                 timeOfImpact = 1.ToFix();
@@ -559,7 +559,7 @@ voxelGrid.Position.Z.Add((position.Z.ToFix().Add(F64.C0p5)).Mul(voxelGrid.Shape.
                 {
                     for (int k = 0; k < cellCountZ; ++k)
                     {
-                        cells[i, j, k] = (Fix64Ext.Sin(((i.ToFix().Mul(0.55m.ToFix())).Add(6.ToFix())).Add(j.ToFix().Mul((-0.325m).ToFix()))).Add(Fix64Ext.Sin(((j.ToFix().Mul(0.35m.ToFix())).Sub(0.5m.ToFix())).Add(MathHelper.PiOver2))).Add(Fix64Ext.Sin((((k.ToFix().Mul(0.5m.ToFix())).Add(MathHelper.Pi)).Add(6.ToFix())).Add(j.ToFix().Mul(0.25f.ToFix()))))) > 0.ToFix();
+                        cells[i, j, k] = (Fix32Ext.Sin(((i.ToFix().Mul(0.55m.ToFix())).Add(6.ToFix())).Add(j.ToFix().Mul((-0.325m).ToFix()))).Add(Fix32Ext.Sin(((j.ToFix().Mul(0.35m.ToFix())).Sub(0.5m.ToFix())).Add(MathHelper.PiOver2))).Add(Fix32Ext.Sin((((k.ToFix().Mul(0.5m.ToFix())).Add(MathHelper.Pi)).Add(6.ToFix())).Add(j.ToFix().Mul(0.25f.ToFix()))))) > 0.ToFix();
                     }
                 }
             }
@@ -570,9 +570,9 @@ voxelGrid.Position.Z.Add((position.Z.ToFix().Add(F64.C0p5)).Mul(voxelGrid.Shape.
 
             int width = 10;
             int height = 10;
-            Fix64 blockWidth = 2.ToFix();
-            Fix64 blockHeight = 1.ToFix();
-            Fix64 blockLength = 1.ToFix();
+            Fix32 blockWidth = 2.ToFix();
+            Fix32 blockHeight = 1.ToFix();
+            Fix32 blockLength = 1.ToFix();
 
             for (int i = 0; i < width; i++)
             {

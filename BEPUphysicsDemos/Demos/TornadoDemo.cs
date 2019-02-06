@@ -5,7 +5,7 @@ using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
 using BEPUphysics.UpdateableSystems.ForceFields;
 using BEPUphysicsDemos.SampleCode;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -34,7 +34,7 @@ namespace BEPUphysicsDemos.Demos
             int numColumns = 10;
             int numRows = 10;
             int numHigh = 1;
-			Fix64 separation = 1.5m.ToFix();
+			Fix32 separation = 1.5m.ToFix();
             Entity toAdd;
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
@@ -55,19 +55,19 @@ namespace BEPUphysicsDemos.Demos
             int xLength = 180;
             int zLength = 180;
 
-			Fix64 xSpacing = 8.ToFix();
-			Fix64 zSpacing = 8.ToFix();
-            var heights = new Fix64[xLength,zLength];
+			Fix32 xSpacing = 8.ToFix();
+			Fix32 zSpacing = 8.ToFix();
+            var heights = new Fix32[xLength,zLength];
             for (int i = 0; i < xLength; i++)
             {
                 for (int j = 0; j < zLength; j++)
                 {
-					Fix64 x = (i - xLength / 2).ToFix();
-					Fix64 z = (j - zLength / 2).ToFix();
+					Fix32 x = (i - xLength / 2).ToFix();
+					Fix32 z = (j - zLength / 2).ToFix();
                     //heights[i,j] = (Fix64)Math.Pow(1.2 * Math.Sqrt(x * x + y * y), 2);
                     //heights[i,j] = -1f / (x * x + y * y);
                     //heights[i,j] = (Fix64)(x * y / 100f);
-                    heights[i,j] = 5.ToFix().Mul((Fix64Ext.Sin(x.Div(8.ToFix())).Add(Fix64Ext.Sin(z.Div(8.ToFix())))));
+                    heights[i,j] = 5.ToFix().Mul((Fix32Ext.Sin(x.Div(8.ToFix())).Add(Fix32Ext.Sin(z.Div(8.ToFix())))));
                     //heights[i,j] = 3 * (Fix64)Math.Sin(x * y / 100f);
                     //heights[i,j] = (x * x * x * y - y * y * y * x) / 1000f;
                 }
@@ -91,7 +91,7 @@ namespace BEPUphysicsDemos.Demos
             get { return "Tornado"; }
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             //Move the origin of the force of the tornado,
             Vector3 increment = new Vector3(10.ToFix(), 0.ToFix(), 0.ToFix()) * dt;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 
 namespace BEPUik
 {
@@ -38,12 +38,12 @@ namespace BEPUik
         /// </summary>
         public bool UseAutomass { get; set; }
 
-        private Fix64 automassUnstressedFalloff = 0.9m.ToFix();
+        private Fix32 automassUnstressedFalloff = 0.9m.ToFix();
         /// <summary>
         /// Gets or sets the multiplier applied to the mass of a bone before distributing it to the child bones.
         /// Used only when UseAutomass is set to true.
         /// </summary>
-        public Fix64 AutomassUnstressedFalloff
+        public Fix32 AutomassUnstressedFalloff
         {
             get { return automassUnstressedFalloff; }
             set
@@ -52,11 +52,11 @@ namespace BEPUik
             }
         }
 
-        private Fix64 automassTarget = F64.C1;
+        private Fix32 automassTarget = F64.C1;
         /// <summary>
         /// Gets or sets the mass that the heaviest bones will have when automass is enabled.
         /// </summary>
-        public Fix64 AutomassTarget
+        public Fix32 AutomassTarget
         {
             get { return automassTarget; }
             set
@@ -252,7 +252,7 @@ namespace BEPUik
             //We distribute a portion of the current bone's total mass to the child bones.
             //By applying a multiplier automassUnstressedFalloff, we guarantee that a chain has a certain maximum weight (excluding cycles).
             //This is thanks to the convergent geometric series sum(automassUnstressedFalloff^n, 1, infinity).
-            Fix64 massPerChild = uniqueChildren.Count > 0 ? (automassUnstressedFalloff.Mul(bone.Mass)).Div(uniqueChildren.Count.ToFix()) : F64.C0;
+            Fix32 massPerChild = uniqueChildren.Count > 0 ? (automassUnstressedFalloff.Mul(bone.Mass)).Div(uniqueChildren.Count.ToFix()) : F64.C0;
 
             uniqueChildren.Clear();
             //(If the number of children is 0, then the only bones which can exist are either bones which were already traversed and will be skipped
@@ -364,14 +364,14 @@ namespace BEPUik
             }
 
             //Normalize the masses of objects so that the heaviest bones have AutomassTarget mass.
-            Fix64 lowestInverseMass = Fix64.MaxValue;
+            Fix32 lowestInverseMass = Fix32.MaxValue;
             foreach (var bone in bones)
             {
                 if (bone.inverseMass < lowestInverseMass)
                     lowestInverseMass = bone.inverseMass;
             }
 
-            Fix64 inverseMassScale = F64.C1.Div((AutomassTarget.Mul(lowestInverseMass)));
+            Fix32 inverseMassScale = F64.C1.Div((AutomassTarget.Mul(lowestInverseMass)));
 
             foreach (var bone in bones)
             {

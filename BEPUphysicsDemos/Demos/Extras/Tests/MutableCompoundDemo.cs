@@ -5,7 +5,7 @@ using BEPUphysics.CollisionShapes;
 using System.Collections.Generic;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUphysics.Entities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -23,11 +23,11 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         {
 
             List<CompoundShapeEntry> shapes = new List<CompoundShapeEntry>();
-            Fix64 totalWeight = 0.ToFix();
-            Fix64 density = 10.ToFix();
+            Fix32 totalWeight = 0.ToFix();
+            Fix32 density = 10.ToFix();
 
 
-            Fix64 weight = density.Mul(2.ToFix());
+            Fix32 weight = density.Mul(2.ToFix());
 			totalWeight = totalWeight.Add(weight);
             for (int i = 0; i < 4; i++)
             {
@@ -66,9 +66,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             int width = 3;
             int height = 3;
             int length = 10;
-            Fix64 blockWidth = 1.ToFix();
-            Fix64 blockHeight = 1.ToFix();
-            Fix64 blockLength = 1.ToFix();
+            Fix32 blockWidth = 1.ToFix();
+            Fix32 blockHeight = 1.ToFix();
+            Fix32 blockLength = 1.ToFix();
 
 
 

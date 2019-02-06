@@ -6,7 +6,7 @@ using BEPUphysics.CollisionRuleManagement;
 using BEPUphysics.BroadPhaseEntries.Events;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using ConversionHelper;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -27,16 +27,16 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             int xLength = 256;
             int zLength = 256;
 
-            Fix64 xSpacing = .5m.ToFix();
-            Fix64 zSpacing = .5m.ToFix();
-            var heights = new Fix64[xLength, zLength];
+            Fix32 xSpacing = .5m.ToFix();
+            Fix32 zSpacing = .5m.ToFix();
+            var heights = new Fix32[xLength, zLength];
             for (int i = 0; i < xLength; i++)
             {
                 for (int j = 0; j < zLength; j++)
                 {
-                    Fix64 x = (i - xLength / 2).ToFix();
-                    Fix64 z = (j - zLength / 2).ToFix();
-                    heights[i, j] = (10.ToFix().Mul((Fix64Ext.Sin(x.Div(8.ToFix())).Add(Fix64Ext.Sin(z.Div(8.ToFix()))))));
+                    Fix32 x = (i - xLength / 2).ToFix();
+                    Fix32 z = (j - zLength / 2).ToFix();
+                    heights[i, j] = (10.ToFix().Mul((Fix32Ext.Sin(x.Div(8.ToFix())).Add(Fix32Ext.Sin(z.Div(8.ToFix()))))));
                 }
             }
             //Create the terrain.
@@ -81,7 +81,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         }
 
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
 #if XBOX360
             if(Game.GamePadInput.Triggers.Left > .5m)

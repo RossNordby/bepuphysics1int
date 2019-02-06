@@ -4,7 +4,7 @@ using BEPUphysics.Entities;
 using BEPUphysics.Settings;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Constraints.Collision
 {
@@ -13,19 +13,19 @@ namespace BEPUphysics.Constraints.Collision
     /// </summary>
     public class TwistFrictionConstraint : SolverUpdateable
     {
-        private readonly Fix64[] leverArms = new Fix64[4];
+        private readonly Fix32[] leverArms = new Fix32[4];
         private ConvexContactManifoldConstraint contactManifoldConstraint;
         ///<summary>
         /// Gets the contact manifold constraint that owns this constraint.
         ///</summary>
         public ConvexContactManifoldConstraint ContactManifoldConstraint { get { return contactManifoldConstraint; } }
-        internal Fix64 accumulatedImpulse;
-        private Fix64 angularX, angularY, angularZ;
+        internal Fix32 accumulatedImpulse;
+        private Fix32 angularX, angularY, angularZ;
         private int contactCount;
-        private Fix64 friction;
+        private Fix32 friction;
         Entity entityA, entityB;
         bool entityADynamic, entityBDynamic;
-        private Fix64 velocityToImpulse;
+        private Fix32 velocityToImpulse;
 
         ///<summary>
         /// Constructs a new twist friction constraint.
@@ -38,7 +38,7 @@ namespace BEPUphysics.Constraints.Collision
         /// <summary>
         /// Gets the torque applied by twist friction.
         /// </summary>
-        public Fix64 TotalTorque
+        public Fix32 TotalTorque
         {
             get { return accumulatedImpulse; }
         }
@@ -46,11 +46,11 @@ namespace BEPUphysics.Constraints.Collision
         ///<summary>
         /// Gets the angular velocity between the associated entities.
         ///</summary>
-        public Fix64 RelativeVelocity
+        public Fix32 RelativeVelocity
         {
             get
             {
-                Fix64 lambda = F64.C0;
+                Fix32 lambda = F64.C0;
                 if (entityA != null)
                     lambda = ((entityA.angularVelocity.X.Mul(angularX)).Add(entityA.angularVelocity.Y.Mul(angularY))).Add(entityA.angularVelocity.Z.Mul(angularZ));
                 if (entityB != null)
@@ -63,17 +63,17 @@ namespace BEPUphysics.Constraints.Collision
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public override Fix64 SolveIteration()
+        public override Fix32 SolveIteration()
         {
             //Compute relative velocity.  Collisions can occur between an entity and a non-entity.  If it's not an entity, assume it's not moving.
-            Fix64 lambda = RelativeVelocity;
+            Fix32 lambda = RelativeVelocity;
 
 			lambda =
 lambda.Mul(velocityToImpulse); //convert to impulse
 
             //Clamp accumulated impulse
-            Fix64 previousAccumulatedImpulse = accumulatedImpulse;
-            Fix64 maximumFrictionForce = F64.C0;
+            Fix32 previousAccumulatedImpulse = accumulatedImpulse;
+            Fix32 maximumFrictionForce = F64.C0;
             for (int i = 0; i < contactCount; i++)
             {
 				maximumFrictionForce = maximumFrictionForce.Add(leverArms[i].Mul(contactManifoldConstraint.penetrationConstraints.Elements[i].accumulatedImpulse));
@@ -105,7 +105,7 @@ lambda.Mul(velocityToImpulse); //convert to impulse
             }
 
 
-            return Fix64Ext.Abs(lambda);
+            return Fix32Ext.Abs(lambda);
         }
 
 
@@ -113,7 +113,7 @@ lambda.Mul(velocityToImpulse); //convert to impulse
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
 
             entityADynamic = entityA != null && entityA.isDynamic;
@@ -126,10 +126,10 @@ lambda.Mul(velocityToImpulse); //convert to impulse
             angularZ = normal.Z;
 
             //Compute inverse effective mass matrix
-            Fix64 entryA, entryB;
+            Fix32 entryA, entryB;
 
             //these are the transformed coordinates
-            Fix64 tX, tY, tZ;
+            Fix32 tX, tY, tZ;
             if (entityADynamic)
             {
                 tX = ((angularX.Mul(entityA.inertiaTensorInverse.M11)).Add(angularY.Mul(entityA.inertiaTensorInverse.M21))).Add(angularZ.Mul(entityA.inertiaTensorInverse.M31));
@@ -154,11 +154,11 @@ lambda.Mul(velocityToImpulse); //convert to impulse
 
 
             //Compute the relative velocity to determine what kind of friction to use
-            Fix64 relativeAngularVelocity = RelativeVelocity;
+            Fix32 relativeAngularVelocity = RelativeVelocity;
             //Set up friction and find maximum friction force
             Vector3 relativeSlidingVelocity = contactManifoldConstraint.SlidingFriction.relativeVelocity;
-            friction = Fix64Ext.Abs(relativeAngularVelocity) > CollisionResponseSettings.StaticFrictionVelocityThreshold ||
-(Fix64Ext.Abs(relativeSlidingVelocity.X).Add(Fix64Ext.Abs(relativeSlidingVelocity.Y))).Add(Fix64Ext.Abs(relativeSlidingVelocity.Z)) > CollisionResponseSettings.StaticFrictionVelocityThreshold
+            friction = Fix32Ext.Abs(relativeAngularVelocity) > CollisionResponseSettings.StaticFrictionVelocityThreshold ||
+(Fix32Ext.Abs(relativeSlidingVelocity.X).Add(Fix32Ext.Abs(relativeSlidingVelocity.Y))).Add(Fix32Ext.Abs(relativeSlidingVelocity.Z)) > CollisionResponseSettings.StaticFrictionVelocityThreshold
                            ? contactManifoldConstraint.materialInteraction.KineticFriction
                            : contactManifoldConstraint.materialInteraction.StaticFriction;
 			friction = friction.Mul(CollisionResponseSettings.TwistFrictionFactor);

@@ -5,7 +5,7 @@ using BEPUphysics.UpdateableSystems;
 using BEPUutilities;
 using BEPUphysics.Materials;
 using BEPUphysics.BroadPhaseEntries;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Vehicle
 {
@@ -299,7 +299,7 @@ namespace BEPUphysics.Vehicle
         }
 
 
-        internal void PreStep(Fix64 dt)
+        internal void PreStep(Fix32 dt)
         {
             Matrix.CreateFromAxisAngle(ref suspension.localDirection, shape.steeringAngle, out shape.steeringTransform);
             Matrix.TransformNormal(ref localForwardDirection, ref shape.steeringTransform, out worldForwardDirection);
@@ -369,7 +369,7 @@ namespace BEPUphysics.Vehicle
             if (suspension.isActive)
             {
                 if (++suspension.solverSettings.currentIterations <= suspension.solverSettings.maximumIterationCount)
-                    if (Fix64Ext.Abs(suspension.ApplyImpulse()) < suspension.solverSettings.minimumImpulse)
+                    if (Fix32Ext.Abs(suspension.ApplyImpulse()) < suspension.solverSettings.minimumImpulse)
                     {
                         suspension.numIterationsAtZeroImpulse++;
                         if (suspension.numIterationsAtZeroImpulse > suspension.solverSettings.minimumIterationCount)
@@ -391,7 +391,7 @@ namespace BEPUphysics.Vehicle
             if (slidingFriction.isActive)
             {
                 if (++slidingFriction.solverSettings.currentIterations <= suspension.solverSettings.maximumIterationCount)
-                    if (Fix64Ext.Abs(slidingFriction.ApplyImpulse()) < slidingFriction.solverSettings.minimumImpulse)
+                    if (Fix32Ext.Abs(slidingFriction.ApplyImpulse()) < slidingFriction.solverSettings.minimumImpulse)
                     {
                         slidingFriction.numIterationsAtZeroImpulse++;
                         if (slidingFriction.numIterationsAtZeroImpulse > slidingFriction.solverSettings.minimumIterationCount)
@@ -413,7 +413,7 @@ namespace BEPUphysics.Vehicle
             if (drivingMotor.isActive)
             {
                 if (++drivingMotor.solverSettings.currentIterations <= suspension.solverSettings.maximumIterationCount)
-                    if (Fix64Ext.Abs(drivingMotor.ApplyImpulse()) < drivingMotor.solverSettings.minimumImpulse)
+                    if (Fix32Ext.Abs(drivingMotor.ApplyImpulse()) < drivingMotor.solverSettings.minimumImpulse)
                     {
                         drivingMotor.numIterationsAtZeroImpulse++;
                         if (drivingMotor.numIterationsAtZeroImpulse > drivingMotor.solverSettings.minimumIterationCount)
@@ -435,7 +435,7 @@ namespace BEPUphysics.Vehicle
             if (brake.isActive)
             {
                 if (++brake.solverSettings.currentIterations <= suspension.solverSettings.maximumIterationCount)
-                    if (Fix64Ext.Abs(brake.ApplyImpulse()) < brake.solverSettings.minimumImpulse)
+                    if (Fix32Ext.Abs(brake.ApplyImpulse()) < brake.solverSettings.minimumImpulse)
                     {
                         brake.numIterationsAtZeroImpulse++;
                         if (brake.numIterationsAtZeroImpulse > brake.solverSettings.minimumIterationCount)
@@ -502,17 +502,17 @@ namespace BEPUphysics.Vehicle
         }
 
 
-        internal void UpdateAtEndOfFrame(Fix64 dt)
+        internal void UpdateAtEndOfFrame(Fix32 dt)
         {
             shape.UpdateWorldTransform();
         }
 
-        internal void UpdateAtEndOfUpdate(Fix64 dt)
+        internal void UpdateAtEndOfUpdate(Fix32 dt)
         {
             shape.UpdateSpin(dt);
         }
 
-        internal void UpdateDuringForces(Fix64 dt)
+        internal void UpdateDuringForces(Fix32 dt)
         {
             suspension.ComputeWorldSpaceData();
             shape.UpdateDetectorPosition();

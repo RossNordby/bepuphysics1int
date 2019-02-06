@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
 {
     abstract class Constraint
     {
 
-        public Fix64 Softness = 0.ToFix();
-        public Fix64 BiasFactor = 0.2m.ToFix();
+        public Fix32 Softness = 0.ToFix();
+        public Fix32 BiasFactor = 0.2m.ToFix();
 
-        public abstract void Preupdate(Fix64 inverseDt, bool useConstraintCounts);
+        public abstract void Preupdate(Fix32 inverseDt, bool useConstraintCounts);
 
         public abstract void SolveIteration();
 

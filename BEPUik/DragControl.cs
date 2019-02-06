@@ -1,4 +1,4 @@
-﻿using FixMath.NET;
+﻿
 using BEPUutilities;
 
 namespace BEPUik
@@ -35,7 +35,7 @@ namespace BEPUik
             LinearMotor.Rigidity = F64.C1;
         }
 
-        protected internal override void Preupdate(Fix64 dt, Fix64 updateRate)
+        protected internal override void Preupdate(Fix32 dt, Fix32 updateRate)
         {
             LinearMotor.Preupdate(dt, updateRate);
         }
@@ -65,7 +65,7 @@ namespace BEPUik
             LinearMotor.ClearAccumulatedImpulses();
         }
 
-        public override Fix64 MaximumForce
+        public override Fix32 MaximumForce
         {
             get { return LinearMotor.MaximumForce; }
             set

@@ -6,7 +6,7 @@ using ConversionHelper;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
 using System;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {

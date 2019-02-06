@@ -2,7 +2,7 @@
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 {
@@ -45,7 +45,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
 
             
-            Fix64 dot;
+            Fix32 dot;
             Vector3.Dot(ref triangleNormal, ref triangle.vA, out dot);
             switch (triangle.sidedness)
             {
@@ -69,8 +69,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Could optimize this process a bit.  The 'point' being compared is always zero.  Additionally, since the triangle normal is available,
             //there is a little extra possible optimization.
             lastRegion = Toolbox.GetClosestPointOnTriangleToPoint(ref triangle.vA, ref triangle.vB, ref triangle.vC, ref Toolbox.ZeroVector, out closestPoint);
-            Fix64 lengthSquared = closestPoint.LengthSquared();
-            Fix64 marginSum = triangle.collisionMargin.Add(sphere.collisionMargin);
+            Fix32 lengthSquared = closestPoint.LengthSquared();
+            Fix32 marginSum = triangle.collisionMargin.Add(sphere.collisionMargin);
 
             if (lengthSquared <= marginSum.Mul(marginSum))
             {
@@ -86,7 +86,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     return true;
                 }
 
-                lengthSquared = Fix64Ext.Sqrt(lengthSquared);
+                lengthSquared = Fix32Ext.Sqrt(lengthSquared);
                 Vector3.Divide(ref closestPoint, lengthSquared, out contact.Normal);
                 contact.PenetrationDepth = marginSum.Sub(lengthSquared);
                 contact.Position = closestPoint;

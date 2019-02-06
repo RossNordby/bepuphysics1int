@@ -10,7 +10,7 @@ using BEPUphysics.Constraints.TwoEntity.Motors;
 using BEPUphysics.CollisionShapes;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -188,9 +188,9 @@ namespace BEPUphysicsDemos.Demos
             int numColumns = 3;
             int numRows = 3;
             int numHigh = 3;
-            Fix64 xSpacing = 1.01m.ToFix();
-			Fix64 ySpacing = 1.01m.ToFix();
-			Fix64 zSpacing = 1.01m.ToFix();
+            Fix32 xSpacing = 1.01m.ToFix();
+			Fix32 ySpacing = 1.01m.ToFix();
+			Fix32 zSpacing = 1.01m.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
@@ -233,7 +233,7 @@ namespace BEPUphysicsDemos.Demos
                 offset = new Vector3(0.ToFix(), 0.ToFix(), 4.ToFix());
                 Box a = new Box(new Vector3((i * 1.5m + 3.5m).ToFix(), 10.ToFix(), 24.ToFix()), 1.5m.ToFix(), 1.ToFix(), 4.ToFix());
                 Box b = new Box(new Vector3((i * 1.5m + 3.5m).ToFix(), 10.ToFix(), 24.ToFix()), 1.5m.ToFix(), 1.ToFix(), 4.ToFix());
-                Fix64 angle = ((-i).ToFix().Mul(MathHelper.PiOver2)).Div(numPads.ToFix());
+                Fix32 angle = ((-i).ToFix().Mul(MathHelper.PiOver2)).Div(numPads.ToFix());
                 b.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Right, angle);
                 b.Position += offset * .5m.ToFix() + Quaternion.Transform(offset * .5m.ToFix(), b.Orientation);
 
@@ -249,10 +249,10 @@ namespace BEPUphysicsDemos.Demos
         EntityRotator platformRotator;
         Path<Vector3> platformPath;
         Path<Quaternion> platformOrientationPath;
-        Fix64 pathTime;
+        Fix32 pathTime;
 
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
 			//Increment the time.  Note that the space's timestep is used
 			//instead of the method's dt.  This is because the demos, by

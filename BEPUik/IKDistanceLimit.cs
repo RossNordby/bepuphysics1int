@@ -1,6 +1,6 @@
 ﻿using System;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUik
 {
@@ -36,21 +36,21 @@ namespace BEPUik
             set { LocalAnchorB = Quaternion.Transform(value - ConnectionB.Position, Quaternion.Conjugate(ConnectionB.Orientation)); }
         }
 
-        private Fix64 minimumDistance;
+        private Fix32 minimumDistance;
         /// <summary>
         /// Gets or sets the minimum distance that the joint connections should be kept from each other.
         /// </summary>
-        public Fix64 MinimumDistance
+        public Fix32 MinimumDistance
         {
             get { return minimumDistance; }
             set { minimumDistance = MathHelper.Max(F64.C0, value); }
         }
 
-         private Fix64 maximumDistance;
+         private Fix32 maximumDistance;
         /// <summary>
         /// Gets or sets the maximum distance that the joint connections should be kept from each other.
         /// </summary>
-        public Fix64 MaximumDistance
+        public Fix32 MaximumDistance
         {
             get { return maximumDistance; }
             set { maximumDistance = MathHelper.Max(F64.C0, value); }
@@ -65,7 +65,7 @@ namespace BEPUik
         /// <param name="anchorB">Anchor point on the second bone in world space.</param>
         /// <param name="minimumDistance">Minimum distance that the joint connections should be kept from each other.</param>
         /// <param name="maximumDistance">Maximum distance that the joint connections should be kept from each other.</param>
-        public IKDistanceLimit(Bone connectionA, Bone connectionB, Vector3 anchorA, Vector3 anchorB, Fix64 minimumDistance, Fix64 maximumDistance)
+        public IKDistanceLimit(Bone connectionA, Bone connectionB, Vector3 anchorA, Vector3 anchorB, Fix32 minimumDistance, Fix32 maximumDistance)
             : base(connectionA, connectionB)
         {
             AnchorA = anchorA;
@@ -87,7 +87,7 @@ namespace BEPUik
             //Compute the distance.
             Vector3 separation;
             Vector3.Subtract(ref anchorB, ref anchorA, out separation);
-            Fix64 currentDistance = separation.Length();
+            Fix32 currentDistance = separation.Length();
 
             //Compute jacobians
             Vector3 linearA;

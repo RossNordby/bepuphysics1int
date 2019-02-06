@@ -7,7 +7,7 @@ using BEPUutilities.DataStructures;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -58,7 +58,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             var numColumns = 8;
             var numRows = 8;
             var numHigh = 8;
-            Fix64 separation = 8.ToFix();
+            Fix32 separation = 8.ToFix();
 
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
@@ -136,7 +136,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             get { return "Character Add/Remove Test"; }
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             //Add previously removed characters.
             for (int i = removedCharacters.Count - 1; i >= 0; --i)

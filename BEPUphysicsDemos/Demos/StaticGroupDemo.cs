@@ -7,7 +7,7 @@ using System;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using System.Collections.Generic;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -41,9 +41,9 @@ namespace BEPUphysicsDemos.Demos
             var collidables = new List<Collidable>();
 
 			//Start with a whole bunch of boxes.  These are entity collidables, but without entities!
-			Fix64 xSpacing = 6.ToFix();
-			Fix64 ySpacing = 6.ToFix();
-			Fix64 zSpacing = 6.ToFix();
+			Fix32 xSpacing = 6.ToFix();
+			Fix32 ySpacing = 6.ToFix();
+			Fix32 zSpacing = 6.ToFix();
 
 
             //NOTE: You might notice this demo takes a while to start, especially on the Xbox360.  Do not fear!  That's due to the creation of the graphics data, not the physics.

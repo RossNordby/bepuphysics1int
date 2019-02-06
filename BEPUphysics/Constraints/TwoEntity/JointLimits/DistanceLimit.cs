@@ -2,7 +2,7 @@ using System;
 using BEPUphysics.Entities;
 
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Constraints.TwoEntity.JointLimits
 {
@@ -11,14 +11,14 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
     /// </summary>
     public class DistanceLimit : JointLimit, I1DImpulseConstraintWithError, I1DJacobianConstraint
     {
-        private Fix64 accumulatedImpulse;
+        private Fix32 accumulatedImpulse;
         private Vector3 anchorA;
 
         private Vector3 anchorB;
-        private Fix64 biasVelocity;
+        private Fix32 biasVelocity;
         private Vector3 jAngularA, jAngularB;
         private Vector3 jLinearA, jLinearB;
-        private Fix64 error;
+        private Fix32 error;
 
         private Vector3 localAnchorA;
 
@@ -27,16 +27,16 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// <summary>
         /// Maximum distance allowed between the anchors.
         /// </summary>
-        protected Fix64 maximumLength;
+        protected Fix32 maximumLength;
 
         /// <summary>
         /// Minimum distance maintained between the anchors.
         /// </summary>
-        protected Fix64 minimumLength;
+        protected Fix32 minimumLength;
 
 
         private Vector3 offsetA, offsetB;
-        private Fix64 velocityToImpulse;
+        private Fix32 velocityToImpulse;
 
         /// <summary>
         /// Constructs a distance limit joint.
@@ -59,7 +59,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// <param name="anchorB"> Connection to the spring from the second connected body in world space.</param>
         /// <param name="minimumLength">Minimum distance maintained between the anchors.</param>
         /// <param name="maximumLength">Maximum distance allowed between the anchors.</param>
-        public DistanceLimit(Entity connectionA, Entity connectionB, Vector3 anchorA, Vector3 anchorB, Fix64 minimumLength, Fix64 maximumLength)
+        public DistanceLimit(Entity connectionA, Entity connectionB, Vector3 anchorA, Vector3 anchorB, Fix32 minimumLength, Fix32 maximumLength)
         {
             ConnectionA = connectionA;
             ConnectionB = connectionB;
@@ -101,7 +101,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// <summary>
         /// Gets or sets the maximum distance allowed between the anchors.
         /// </summary>
-        public Fix64 MaximumLength
+        public Fix32 MaximumLength
         {
             get { return maximumLength; }
             set
@@ -114,7 +114,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// <summary>
         /// Gets or sets the minimum distance maintained between the anchors.
         /// </summary>
-        public Fix64 MinimumLength
+        public Fix32 MinimumLength
         {
             get { return minimumLength; }
             set
@@ -155,13 +155,13 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// <summary>
         /// Gets the current relative velocity between the connected entities with respect to the constraint.
         /// </summary>
-        public Fix64 RelativeVelocity
+        public Fix32 RelativeVelocity
         {
             get
             {
                 if (isLimitActive)
                 {
-                    Fix64 lambda, dot;
+                    Fix32 lambda, dot;
                     Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out lambda);
                     Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
 					lambda = lambda.Add(dot);
@@ -179,7 +179,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// <summary>
         /// Gets the total impulse applied by this constraint.
         /// </summary>
-        public Fix64 TotalImpulse
+        public Fix32 TotalImpulse
         {
             get { return accumulatedImpulse; }
         }
@@ -187,7 +187,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// <summary>
         /// Gets the current constraint error.
         /// </summary>
-        public Fix64 Error
+        public Fix32 Error
         {
             get { return error; }
         }
@@ -236,7 +236,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// Gets the mass matrix of the constraint.
         /// </summary>
         /// <param name="outputMassMatrix">Constraint's mass matrix.</param>
-        public void GetMassMatrix(out Fix64 outputMassMatrix)
+        public void GetMassMatrix(out Fix32 outputMassMatrix)
         {
             outputMassMatrix = velocityToImpulse;
         }
@@ -247,10 +247,10 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// Calculates and applies corrective impulses.
         /// Called automatically by space.
         /// </summary>
-        public override Fix64 SolveIteration()
+        public override Fix32 SolveIteration()
         {
             //Compute the current relative velocity.
-            Fix64 lambda, dot;
+            Fix32 lambda, dot;
             Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out lambda);
             Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
 			lambda = lambda.Add(dot);
@@ -267,7 +267,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
 lambda.Mul(velocityToImpulse);
 
             //Clamp accumulated impulse (can't go negative)
-            Fix64 previousAccumulatedImpulse = accumulatedImpulse;
+            Fix32 previousAccumulatedImpulse = accumulatedImpulse;
             accumulatedImpulse = MathHelper.Max(accumulatedImpulse.Add(lambda), F64.C0);
             lambda = accumulatedImpulse.Sub(previousAccumulatedImpulse);
 
@@ -288,14 +288,14 @@ lambda.Mul(velocityToImpulse);
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return (Fix64Ext.Abs(lambda));
+            return (Fix32Ext.Abs(lambda));
         }
 
         /// <summary>
         /// Calculates necessary information for velocity solving.
         /// </summary>
         /// <param name="dt">Time in seconds since the last update.</param>
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             //Transform the anchors and offsets into world space.
             Matrix3x3.Transform(ref localAnchorA, ref connectionA.orientationMatrix, out offsetA);
@@ -306,7 +306,7 @@ lambda.Mul(velocityToImpulse);
             //Compute the distance.
             Vector3 separation;
             Vector3.Subtract(ref anchorB, ref anchorA, out separation);
-            Fix64 distance = separation.Length();
+            Fix32 distance = separation.Length();
             if (distance <= maximumLength && distance >= minimumLength)
             {
                 isActiveInSolver = false;
@@ -400,7 +400,7 @@ lambda.Mul(velocityToImpulse);
                 return;
             }
 
-            Fix64 errorReduction;
+            Fix32 errorReduction;
             springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReduction, out softness);
 
             velocityToImpulse = F64.C1.Div((softness.Add(velocityToImpulse)));
@@ -418,7 +418,7 @@ lambda.Mul(velocityToImpulse);
             if (bounciness > F64.C0)
             {
                 //Compute currently relative velocity for bounciness.
-                Fix64 relativeVelocity, dot;
+                Fix32 relativeVelocity, dot;
                 Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out relativeVelocity);
                 Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
 				relativeVelocity = relativeVelocity.Add(dot);

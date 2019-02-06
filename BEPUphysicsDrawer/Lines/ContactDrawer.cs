@@ -5,7 +5,7 @@ using BEPUphysics.NarrowPhaseSystems.Pairs;
 using Microsoft.Xna.Framework;
 using ConversionHelper;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDrawer.Lines
 {

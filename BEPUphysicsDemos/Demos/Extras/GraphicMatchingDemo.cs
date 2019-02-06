@@ -3,7 +3,7 @@ using BEPUphysics.Entities.Prefabs;
 using BEPUphysicsDrawer.Models;
 using BEPUutilities;
 using ConversionHelper;
-using FixMath.NET;
+
 using Microsoft.Xna.Framework.Graphics;
 
 namespace BEPUphysicsDemos.Demos.Extras

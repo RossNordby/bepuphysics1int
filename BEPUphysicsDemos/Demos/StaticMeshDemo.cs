@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.Entities.Prefabs;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -37,7 +37,7 @@ namespace BEPUphysicsDemos.Demos
             int numColumns = 8;
             int numRows = 8;
             int numHigh = 1;
-            Fix64 separation = 8.ToFix();
+            Fix32 separation = 8.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)

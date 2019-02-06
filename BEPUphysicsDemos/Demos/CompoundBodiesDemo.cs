@@ -4,7 +4,7 @@ using BEPUphysics.CollisionShapes.ConvexShapes;
 using System.Collections.Generic;
 using System.Diagnostics;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {

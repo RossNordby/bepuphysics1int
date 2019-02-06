@@ -3,7 +3,7 @@ using BEPUutilities;
 using BEPUphysics.CollisionRuleManagement;
 using BEPUphysics.CollisionShapes;
 using Microsoft.Xna.Framework.Graphics;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {

@@ -1,4 +1,4 @@
-﻿using FixMath.NET;
+﻿
 
 namespace BEPUik
 {
@@ -14,7 +14,7 @@ namespace BEPUik
         /// </summary>
         public abstract Bone TargetBone { get; set; }
 
-        protected internal abstract void Preupdate(Fix64 dt, Fix64 updateRate);
+        protected internal abstract void Preupdate(Fix32 dt, Fix32 updateRate);
 
         protected internal abstract void UpdateJacobiansAndVelocityBias();
 
@@ -26,6 +26,6 @@ namespace BEPUik
 
         protected internal abstract void ClearAccumulatedImpulses();
 
-        public abstract Fix64 MaximumForce { get; set; }
+        public abstract Fix32 MaximumForce { get; set; }
     }
 }

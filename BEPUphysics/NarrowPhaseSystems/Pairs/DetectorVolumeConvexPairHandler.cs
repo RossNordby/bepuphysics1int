@@ -5,7 +5,7 @@ using BEPUphysics.CollisionTests.CollisionAlgorithms;
 using BEPUutilities.DataStructures;
 using BEPUutilities;
 using BEPUphysics.CollisionShapes.ConvexShapes;
-using FixMath.NET;
+
 
 namespace BEPUphysics.NarrowPhaseSystems.Pairs
 {
@@ -56,7 +56,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
         RawList<int> overlaps = new RawList<int>(8);
         private TriangleShape triangle = new TriangleShape { collisionMargin = F64.C0 };
-        public override void UpdateCollision(Fix64 dt)
+        public override void UpdateCollision(Fix32 dt)
         {
             WasContaining = Containing;
             WasTouching = Touching;

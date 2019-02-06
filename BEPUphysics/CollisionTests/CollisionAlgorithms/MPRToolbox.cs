@@ -6,7 +6,7 @@ using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
  
 using System.Diagnostics;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 {
@@ -28,12 +28,12 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         /// </summary>
         public static int OuterIterationLimit = 15;
 
-        private static Fix64 surfaceEpsilon = 1e-7m.ToFix();
+        private static Fix32 surfaceEpsilon = 1e-7m.ToFix();
         /// <summary>
         /// Gets or sets how close surface-finding based MPR methods have to get before exiting.
         /// Defaults to 1e-7.
         /// </summary>
-        public static Fix64 SurfaceEpsilon
+        public static Fix32 SurfaceEpsilon
         {
             get
             {
@@ -48,14 +48,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
         }
 
-        private static Fix64 depthRefinementEpsilon = 1e-4m.ToFix();
+        private static Fix32 depthRefinementEpsilon = 1e-4m.ToFix();
         /// <summary>
         /// Gets or sets how close the penetration depth refinement system should converge before quitting.
         /// Making this smaller can help more precisely find a local minimum at the cost of performance.
         /// The change will likely only be visible on curved shapes, since polytopes will converge extremely rapidly to a precise local minimum.
         /// Defaults to 1e-4.
         /// </summary>
-        public static Fix64 DepthRefinementEpsilon
+        public static Fix32 DepthRefinementEpsilon
         {
             get
             {
@@ -70,12 +70,12 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
         }
 
-        private static Fix64 rayCastSurfaceEpsilon = 1e-9m.ToFix();
+        private static Fix32 rayCastSurfaceEpsilon = 1e-9m.ToFix();
         /// <summary>
         /// Gets or sets how close surface-finding ray casts have to get before exiting.
         /// Defaults to 1e-9.
         /// </summary>
-        public static Fix64 RayCastSurfaceEpsilon
+        public static Fix32 RayCastSurfaceEpsilon
         {
             get
             {
@@ -183,7 +183,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
                 //If the origin is further along this direction than the extreme point, then there is no intersection.
                 //If the origin is within this extreme point, then there is an intersection.
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref v1, ref originRay, out dot);
                 if (dot < F64.C0)
                 {
@@ -193,10 +193,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 }
                 //Origin is inside.
                 //Compute barycentric coordinates along simplex (segment).
-                Fix64 dotv0;
+                Fix32 dotv0;
                 //Dot > 0, so dotv0 starts out negative.
                 Vector3.Dot(ref v0, ref originRay, out dotv0);
-                Fix64 barycentricCoordinate = (dotv0.Neg()).Div((dot.Sub(dotv0)));
+                Fix32 barycentricCoordinate = (dotv0.Neg()).Div((dot.Sub(dotv0)));
                 //Vector3.Subtract(ref v1A, ref v0A, out offset); //'v0a' is just the zero vector, so there's no need to calculate the offset.
                 Vector3.Multiply(ref v1A, barycentricCoordinate, out position);
                 return true;
@@ -225,7 +225,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                 // If the origin is outside the plane defined by v1,v0,v3, then the portal is invalid.
                 Vector3.Cross(ref v1, ref v3, out temp1);
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref temp1, ref v0, out dot);
                 if (dot < F64.C0)
                 {
@@ -270,7 +270,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Vector3.Subtract(ref v3, ref v2, out temp1);
                 Vector3.Subtract(ref v1, ref v2, out temp2);
                 Vector3.Cross(ref temp1, ref temp2, out n);
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref n, ref v1, out dot);
                 if (dot >= F64.C0)
                 {
@@ -286,28 +286,28 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                     Vector3 cross;
                     Vector3.Cross(ref temp1, ref temp2, out cross);
-                    Fix64 v0v1v2v3volume;
+                    Fix32 v0v1v2v3volume;
                     Vector3.Dot(ref cross, ref temp3, out v0v1v2v3volume);
 
                     Vector3.Cross(ref v1, ref v2, out cross);
-                    Fix64 ov1v2v3volume;
+                    Fix32 ov1v2v3volume;
                     Vector3.Dot(ref cross, ref v3, out ov1v2v3volume);
 
                     Vector3.Cross(ref originRay, ref temp2, out cross);
-                    Fix64 v0ov2v3volume;
+                    Fix32 v0ov2v3volume;
                     Vector3.Dot(ref cross, ref temp3, out v0ov2v3volume);
 
                     Vector3.Cross(ref temp1, ref originRay, out cross);
-                    Fix64 v0v1ov3volume;
+                    Fix32 v0v1ov3volume;
                     Vector3.Dot(ref cross, ref temp3, out v0v1ov3volume);
 
                     if (v0v1v2v3volume > Toolbox.Epsilon.Mul(F64.C0p01))
                     {
-                        Fix64 inverseTotalVolume = F64.C1.Div(v0v1v2v3volume);
-                        Fix64 v0Weight = ov1v2v3volume.Mul(inverseTotalVolume);
-                        Fix64 v1Weight = v0ov2v3volume.Mul(inverseTotalVolume);
-                        Fix64 v2Weight = v0v1ov3volume.Mul(inverseTotalVolume);
-                        Fix64 v3Weight = ((F64.C1.Sub(v0Weight)).Sub(v1Weight)).Sub(v2Weight);
+                        Fix32 inverseTotalVolume = F64.C1.Div(v0v1v2v3volume);
+                        Fix32 v0Weight = ov1v2v3volume.Mul(inverseTotalVolume);
+                        Fix32 v1Weight = v0ov2v3volume.Mul(inverseTotalVolume);
+                        Fix32 v2Weight = v0v1ov3volume.Mul(inverseTotalVolume);
+                        Fix32 v3Weight = ((F64.C1.Sub(v0Weight)).Sub(v1Weight)).Sub(v2Weight);
                         position = v1Weight * v1A + v2Weight * v2A + v3Weight * v3A;
                     }
                     else
@@ -322,7 +322,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Vector3 v4, v4A, v4B;
                 MinkowskiToolbox.GetLocalMinkowskiExtremePoint(shapeA, shapeB, ref n, ref localTransformB, out v4A, out v4B, out v4);
                 //If the origin is further along the direction than the extreme point, it's not inside the shape.
-                Fix64 dot2;
+                Fix32 dot2;
                 Vector3.Dot(ref v4, ref n, out dot2);
                 if (dot2 < F64.C0)
                 {
@@ -459,7 +459,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
                 //If the origin is further along this direction than the extreme point, then there is no intersection.
                 //If the origin is within this extreme point, then there is an intersection.
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref v1, ref originRay, out dot);
                 if (dot < F64.C0)
                 {
@@ -493,7 +493,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                 // If the origin is outside the plane defined by v1,v0,v3, then the portal is invalid.
                 Vector3.Cross(ref v1, ref v3, out temp1);
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref temp1, ref v0, out dot);
                 if (dot < F64.C0)
                 {
@@ -534,7 +534,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Vector3.Subtract(ref v3, ref v2, out temp1);
                 Vector3.Subtract(ref v1, ref v2, out temp2);
                 Vector3.Cross(ref temp1, ref temp2, out n);
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref n, ref v1, out dot);
                 if (dot >= F64.C0)
                 {
@@ -545,7 +545,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Vector3 v4;
                 MinkowskiToolbox.GetLocalMinkowskiExtremePoint(shapeA, shapeB, ref n, ref localTransformB, out v4);
                 //If the origin is further along the direction than the extreme point, it's not inside the shape.
-                Fix64 dot2;
+                Fix32 dot2;
                 Vector3.Dot(ref v4, ref n, out dot2);
                 if (dot2 < F64.C0)
                 {
@@ -608,7 +608,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         /// <param name="direction">Direction to cast the ray.</param>
         /// <param name="t">Length along the direction vector that the impact was found.</param>
         /// <param name="normal">Normal of the impact at the surface of the convex.</param>
-        public static void LocalSurfaceCast(ConvexShape shapeA, ConvexShape shapeB, ref RigidTransform localTransformB, ref Vector3 direction, out Fix64 t, out Vector3 normal)
+        public static void LocalSurfaceCast(ConvexShape shapeA, ConvexShape shapeB, ref RigidTransform localTransformB, ref Vector3 direction, out Fix32 t, out Vector3 normal)
         {
             // Local surface cast is very similar to regular MPR.  However, instead of starting at an interior point and targeting the origin,
             // the ray starts at the origin (a point known to be in both shape and shapeB), and just goes towards the direction until the surface
@@ -642,15 +642,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 //This isn't a bad thing- it means the direction is exactly aligned with the extreme point offset.
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
 
-                Fix64 rayLengthSquared = direction.LengthSquared();
+                Fix32 rayLengthSquared = direction.LengthSquared();
                 if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
-                    Vector3.Divide(ref direction, Fix64Ext.Sqrt(rayLengthSquared), out normal);
+                    Vector3.Divide(ref direction, Fix32Ext.Sqrt(rayLengthSquared), out normal);
                 else
                     normal = new Vector3();
 
-                Fix64 rate;
+                Fix32 rate;
                 Vector3.Dot(ref  normal, ref direction, out rate);
-                Fix64 distance;
+                Fix32 distance;
                 Vector3.Dot(ref  normal, ref v1, out distance);
                 if (rate > F64.C0)
                     t = distance.Div(rate);
@@ -669,7 +669,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             //It's possible that v1 and v2 were constructed in such a way that 'n' is not properly calibrated
             //relative to the direction vector.
-            Fix64 dot;
+            Fix32 dot;
             Vector3.Dot(ref n, ref direction, out dot);
             if (dot > F64.C0)
             {
@@ -690,7 +690,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 if (count > MPRToolbox.OuterIterationLimit)
                 {
                     //Can't enclose the origin! That's a bit odd; something is wrong.
-                    t = Fix64.MaxValue;
+                    t = Fix32.MaxValue;
                     normal = Toolbox.UpVector;
                     return;
                 }
@@ -746,7 +746,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                 //If the plane which generated the normal is very close to the extreme point, then we're at the surface.
                 Vector3.Dot(ref n, ref v1, out dot);
-                Fix64 supportDot;
+                Fix32 supportDot;
                 Vector3.Dot(ref v4, ref n, out supportDot);
 
                 if (supportDot.Sub(dot) < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
@@ -757,10 +757,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     ////Find the distance from the origin to the plane.
                     //t = dot * normalLengthInverse;
 
-                    Fix64 lengthSquared = n.LengthSquared();
+                    Fix32 lengthSquared = n.LengthSquared();
                     if (lengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
                     {
-                        Vector3.Divide(ref n, Fix64Ext.Sqrt(lengthSquared), out normal);
+                        Vector3.Divide(ref n, Fix32Ext.Sqrt(lengthSquared), out normal);
 
                         //The plane is very close to the surface, and the ray is known to pass through it.
                         //dot is the rate.
@@ -884,7 +884,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         /// <param name="t">Length along the direction vector that the impact was found.</param>
         /// <param name="normal">Normal of the impact at the surface of the convex.</param>
         /// <param name="position">Location of the ray cast hit on the surface of A.</param>
-        public static void LocalSurfaceCast(ConvexShape shapeA, ConvexShape shapeB, ref RigidTransform localTransformB, ref Vector3 direction, out Fix64 t, out Vector3 normal, out Vector3 position)
+        public static void LocalSurfaceCast(ConvexShape shapeA, ConvexShape shapeB, ref RigidTransform localTransformB, ref Vector3 direction, out Fix32 t, out Vector3 normal, out Vector3 position)
         {
             // Local surface cast is very similar to regular MPR.  However, instead of starting at an interior point and targeting the origin,
             // the ray starts at the origin (a point known to be in both shape and shapeB), and just goes towards the direction until the surface
@@ -918,15 +918,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 //This isn't a bad thing- it means the direction is exactly aligned with the extreme point offset.
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
 
-                Fix64 rayLengthSquared = direction.LengthSquared();
+                Fix32 rayLengthSquared = direction.LengthSquared();
                 if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
-                    Vector3.Divide(ref direction, Fix64Ext.Sqrt(rayLengthSquared), out normal);
+                    Vector3.Divide(ref direction, Fix32Ext.Sqrt(rayLengthSquared), out normal);
                 else
                     normal = new Vector3();
 
-                Fix64 rate;
+                Fix32 rate;
                 Vector3.Dot(ref  normal, ref direction, out rate);
-                Fix64 distance;
+                Fix32 distance;
                 Vector3.Dot(ref  normal, ref v1, out distance);
                 if (rate > F64.C0)
                     t = distance.Div(rate);
@@ -946,7 +946,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             //It's possible that v1 and v2 were constructed in such a way that 'n' is not properly calibrated
             //relative to the direction vector.
-            Fix64 dot;
+            Fix32 dot;
             Vector3.Dot(ref n, ref direction, out dot);
             if (dot > F64.C0)
             {
@@ -971,7 +971,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 if (count > MPRToolbox.OuterIterationLimit)
                 {
                     //Can't enclose the origin! That's a bit odd; something is wrong.
-                    t = Fix64.MaxValue;
+                    t = Fix32.MaxValue;
                     normal = Toolbox.UpVector;
                     position = new Vector3();
                     return;
@@ -1030,7 +1030,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                 //If the plane which generated the normal is very close to the extreme point, then we're at the surface.
                 Vector3.Dot(ref n, ref v1, out dot);
-                Fix64 supportDot;
+                Fix32 supportDot;
                 Vector3.Dot(ref v4, ref n, out supportDot);
 
                 if (supportDot.Sub(dot) < surfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
@@ -1041,10 +1041,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     ////Find the distance from the origin to the plane.
                     //t = dot * normalLengthInverse;
 
-                    Fix64 lengthSquared = n.LengthSquared();
+                    Fix32 lengthSquared = n.LengthSquared();
                     if (lengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
                     {
-                        Vector3.Divide(ref n, Fix64Ext.Sqrt(lengthSquared), out normal);
+                        Vector3.Divide(ref n, Fix32Ext.Sqrt(lengthSquared), out normal);
 
                         //The plane is very close to the surface, and the ray is known to pass through it.
                         //dot is the rate.
@@ -1062,7 +1062,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                         t = F64.C0;
                     }
 
-                    Fix64 v1Weight, v2Weight, v3Weight;
+                    Fix32 v1Weight, v2Weight, v3Weight;
                     Vector3.Multiply(ref direction, t, out position);
 
                     Toolbox.GetBarycentricCoordinates(ref position, ref v1, ref v2, ref v3, out v1Weight, out v2Weight, out v3Weight);
@@ -1178,13 +1178,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             //v1, v0, v3
             Vector3 cross = Vector3.Cross(v0 - v1, v3 - v1);
-            Fix64 planeProduct1 = Vector3.Dot(cross, direction);
+            Fix32 planeProduct1 = Vector3.Dot(cross, direction);
             //v3, v0, v2
             cross = Vector3.Cross(v0 - v3, v2 - v3);
-            Fix64 planeProduct2 = Vector3.Dot(cross, direction);
+            Fix32 planeProduct2 = Vector3.Dot(cross, direction);
             //v2, v0, v1
             cross = Vector3.Cross(v0 - v2, v1 - v2);
-            Fix64 planeProduct3 = Vector3.Dot(cross, direction);
+            Fix32 planeProduct3 = Vector3.Dot(cross, direction);
             return (planeProduct1 <= F64.C0 && planeProduct2 <= F64.C0 && planeProduct3 <= F64.C0) ||
                 (planeProduct1 >= F64.C0 && planeProduct2 >= F64.C0 && planeProduct3 >= F64.C0);
         }
@@ -1207,25 +1207,25 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
                 //First, try to use the heuristically found direction.  This comes from either the GJK shallow contact separating axis or from the relative velocity.
                 Vector3 rayCastDirection;
-                Fix64 lengthSquared = penetrationAxis.LengthSquared();
+                Fix32 lengthSquared = penetrationAxis.LengthSquared();
                 if (lengthSquared > Toolbox.Epsilon)
                 {
-                    Vector3.Divide(ref penetrationAxis, Fix64Ext.Sqrt(lengthSquared), out rayCastDirection);// (Vector3.Normalize(localDirection) + Vector3.Normalize(collidableB.worldTransform.Position - collidableA.worldTransform.Position)) / 2;
+                    Vector3.Divide(ref penetrationAxis, Fix32Ext.Sqrt(lengthSquared), out rayCastDirection);// (Vector3.Normalize(localDirection) + Vector3.Normalize(collidableB.worldTransform.Position - collidableA.worldTransform.Position)) / 2;
                     MPRToolbox.LocalSurfaceCast(shapeA, shapeB, ref localTransformB, ref rayCastDirection, out contact.PenetrationDepth, out contact.Normal);
                 }
                 else
                 {
-                    contact.PenetrationDepth = Fix64.MaxValue;
+                    contact.PenetrationDepth = Fix32.MaxValue;
                     contact.Normal = Toolbox.UpVector;
                 }
                 //Try the offset between the origins as a second option.  Sometimes this is a better choice than the relative velocity.
                 //TODO: Could use the position-finding MPR iteration to find the A-B direction hit by continuing even after the origin has been found (optimization).
                 Vector3 normalCandidate;
-                Fix64 depthCandidate;
+                Fix32 depthCandidate;
                 lengthSquared = localTransformB.Position.LengthSquared();
                 if (lengthSquared > Toolbox.Epsilon)
                 {
-                    Vector3.Divide(ref localTransformB.Position, Fix64Ext.Sqrt(lengthSquared), out rayCastDirection);
+                    Vector3.Divide(ref localTransformB.Position, Fix32Ext.Sqrt(lengthSquared), out rayCastDirection);
                     MPRToolbox.LocalSurfaceCast(shapeA, shapeB, ref localTransformB, ref rayCastDirection, out depthCandidate, out normalCandidate);
                     if (depthCandidate < contact.PenetrationDepth)
                     {
@@ -1280,13 +1280,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         /// <param name="penetrationDepth">Refined penetration depth.</param>
         /// <param name="refinedNormal">Refined normal.</param>
         /// <param name="position">Refined position.</param>
-        public static void RefinePenetration(ConvexShape shapeA, ConvexShape shapeB, ref RigidTransform localTransformB, Fix64 initialDepth, ref Vector3 initialNormal, out Fix64 penetrationDepth, out Vector3 refinedNormal, out Vector3 position)
+        public static void RefinePenetration(ConvexShape shapeA, ConvexShape shapeB, ref RigidTransform localTransformB, Fix32 initialDepth, ref Vector3 initialNormal, out Fix32 penetrationDepth, out Vector3 refinedNormal, out Vector3 position)
         {
             //The local casting can optionally continue.  Eventually, it will converge to the local minimum.
             int optimizingCount = 0;
             refinedNormal = initialNormal;
             penetrationDepth = initialDepth;
-            Fix64 candidateDepth;
+            Fix32 candidateDepth;
             Vector3 candidateNormal;
 
             while (true)
@@ -1365,15 +1365,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //First: Compute the sweep amount along the sweep direction.
             //This sweep amount needs to expand the minkowski difference to fully intersect the plane defined by the sweep direction and origin.
 
-            Fix64 rayLengthSquared = localDirection.LengthSquared();
-            Fix64 sweepLength;
+            Fix32 rayLengthSquared = localDirection.LengthSquared();
+            Fix32 sweepLength;
             if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
             {
                 Vector3.Dot(ref localTransformB.Position, ref localDirection, out sweepLength);
 				sweepLength = sweepLength.Div(rayLengthSquared);
 				//Scale the sweep length by the margins.  Divide by the length to pull the margin into terms of the length of the ray.
 				sweepLength =
-sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sqrt(rayLengthSquared)));
+sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix32Ext.Sqrt(rayLengthSquared)));
             }
             else
             {
@@ -1394,7 +1394,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
             if (!AreSweptShapesIntersecting(shapeA, shapeB, ref sweep, ref localTransformB, out hit.Location)) //Computes a hit location to be used if the early-outs due to being in contact.
             {
                 //The origin is not contained within the sweep volume.  The raycast definitely misses.
-                hit.T = Fix64.MaxValue;
+                hit.T = Fix32.MaxValue;
                 hit.Normal = new Vector3();
                 hit.Location = new Vector3();
                 return false;
@@ -1434,7 +1434,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
 
         }
 
-        private static bool LocalSweepCast(ConvexShape shape, ConvexShape shapeB, Fix64 sweepLength, Fix64 rayLengthSquared, ref Vector3 localDirection, ref Vector3 sweep, ref RigidTransform localTransformB, out RayHit hit)
+        private static bool LocalSweepCast(ConvexShape shape, ConvexShape shapeB, Fix32 sweepLength, Fix32 rayLengthSquared, ref Vector3 localDirection, ref Vector3 sweep, ref RigidTransform localTransformB, out RayHit hit)
         {
             //By now, the ray is known to be within the swept shape and facing the right direction for a normal raycast.
 
@@ -1468,13 +1468,13 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
 
                 if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
-                    Vector3.Divide(ref localDirection, Fix64Ext.Sqrt(rayLengthSquared), out hit.Normal);
+                    Vector3.Divide(ref localDirection, Fix32Ext.Sqrt(rayLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
 
-                Fix64 rate;
+                Fix32 rate;
                 Vector3.Dot(ref  hit.Normal, ref localDirection, out rate);
-                Fix64 distance;
+                Fix32 distance;
                 Vector3.Dot(ref  hit.Normal, ref v1, out distance);
                 if (rate > F64.C0)
                     hit.T = sweepLength.Sub(distance.Div(rate));
@@ -1504,7 +1504,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
 
             //It's possible that v1 and v2 were constructed in such a way that 'n' is not properly calibrated
             //relative to the direction vector.
-            Fix64 dot;
+            Fix32 dot;
             Vector3.Dot(ref n, ref localDirection, out dot);
             if (dot > F64.C0)
             {
@@ -1529,7 +1529,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
                 {
                     //Can't enclose the origin! That's a bit odd.  Something is wrong; the preparation for this raycast
                     //guarantees that the origin is enclosed.  Could be a numerical problem.
-                    hit.T = Fix64.MaxValue;
+                    hit.T = Fix32.MaxValue;
                     hit.Normal = new Vector3();
                     hit.Location = new Vector3();
                     return false;
@@ -1585,16 +1585,16 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
 
                 //If the plane which generated the normal is very close to the extreme point, then we're at the surface.
                 Vector3.Dot(ref n, ref v1, out dot);
-                Fix64 supportDot;
+                Fix32 supportDot;
                 Vector3.Dot(ref v4, ref n, out supportDot);
 
                 if (supportDot.Sub(dot) < rayCastSurfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
                 {
                     //The portal is now on the surface.  The algorithm can now compute the TOI and exit.
-                    Fix64 lengthSquared = n.LengthSquared();
+                    Fix32 lengthSquared = n.LengthSquared();
                     if (lengthSquared > Toolbox.Epsilon.Mul(F64.C1em5))
                     {
-                        Vector3.Divide(ref n, Fix64Ext.Sqrt(lengthSquared), out hit.Normal);
+                        Vector3.Divide(ref n, Fix32Ext.Sqrt(lengthSquared), out hit.Normal);
 
                         //The plane is very close to the surface, and the ray is known to pass through it.
                         //dot is the rate.
@@ -1738,7 +1738,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
                 //If the origin is within this extreme point, then there is an intersection.
                 //For this test, we already guarantee that the point is extremely close to the A-B shape or inside of it, so don't bother
                 //trying to return false.
-                Fix64 dot = Vector3.Dot(v1 - minkowskiPosition, rayDirection);
+                Fix32 dot = Vector3.Dot(v1 - minkowskiPosition, rayDirection);
                 //Vector3.Dot(ref v1, ref rayDirection, out dot);
                 //if (dot < 0) //if we were trying to return false here (in a IsPointContained style test), then the '0' should actually be a dot between the minkowskiPoint and rayDirection (simplified by a subtraction and then a dot).
                 //{
@@ -1748,10 +1748,10 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
                 //}
                 //Origin is inside.
                 //Compute barycentric coordinates along simplex (segment).
-                Fix64 dotv0 = Vector3.Dot(v0 - minkowskiPosition, rayDirection);
+                Fix32 dotv0 = Vector3.Dot(v0 - minkowskiPosition, rayDirection);
                 //Dot > 0, so dotv0 starts out negative.
                 //Vector3.Dot(ref v0, ref rayDirection, out dotv0);
-                Fix64 barycentricCoordinate = (dotv0.Neg()).Div((dot.Sub(dotv0)));
+                Fix32 barycentricCoordinate = (dotv0.Neg()).Div((dot.Sub(dotv0)));
                 //Vector3.Subtract(ref v1A, ref v0A, out offset); //'v0a' is just the zero vector, so there's no need to calculate the offset.
                 Vector3.Multiply(ref v1A, barycentricCoordinate, out position);
                 Vector3 offset;
@@ -1787,7 +1787,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
                 Vector3.Subtract(ref v1, ref v0, out v0v1);
                 Vector3.Subtract(ref v3, ref v0, out v0v3);
                 Vector3.Cross(ref v0v1, ref v0v3, out temp);
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref temp, ref pointToV0, out dot);
                 if (dot < F64.C0)
                 {
@@ -1830,7 +1830,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
                 Vector3.Subtract(ref v3, ref v2, out v2v3);
                 Vector3.Subtract(ref v1, ref v2, out v2v1);
                 Vector3.Cross(ref v2v3, ref v2v1, out n);
-                Fix64 dot;
+                Fix32 dot;
                 Vector3 pointToV1;
                 Vector3.Subtract(ref v1, ref minkowskiPosition, out pointToV1);
                 Vector3.Dot(ref pointToV1, ref n, out dot);
@@ -1886,7 +1886,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
                 Vector3 v4, v4A, v4B;
                 MinkowskiToolbox.GetLocalMinkowskiExtremePoint(shapeA, shapeB, ref n, ref localTransformB, out v4A, out v4B, out v4);
                 //If the origin is further along the direction than the extreme point, it's not inside the shape.
-                Fix64 dot2;
+                Fix32 dot2;
                 Vector3 pointToV4;
                 Vector3.Subtract(ref v4, ref minkowskiPosition, out pointToV4);
                 Vector3.Dot(ref pointToV4, ref n, out dot2);
@@ -1905,7 +1905,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
                     //required by this method.
                     //The ray intersection with the plane defined by our final portal should be extremely close to the actual minkowski point.
                     //In fact, it is probably close enough such that the barycentric coordinates can be computed using the minkowski point directly!
-                    Fix64 weight1, weight2, weight3;
+                    Fix32 weight1, weight2, weight3;
                     Toolbox.GetBarycentricCoordinates(ref minkowskiPosition, ref v1, ref v2, ref v3, out weight1, out weight2, out weight3);
                     Vector3.Multiply(ref v1A, weight1, out position);
                     Vector3.Multiply(ref v2A, weight2, out v2A);
@@ -2011,7 +2011,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
                 //If the origin is further along this direction than the extreme point, then there is no intersection.
                 //If the origin is within this extreme point, then there is an intersection.
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref v1, ref localTransformB.Position, out dot);
                 if (dot < F64.C0)
                 {
@@ -2021,10 +2021,10 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
                 }
                 //Origin is inside.
                 //Compute barycentric coordinates along simplex (segment).
-                Fix64 dotv0;
+                Fix32 dotv0;
                 //Dot > 0, so dotv0 starts out negative.
                 Vector3.Dot(ref v0, ref localTransformB.Position, out dotv0);
-                Fix64 barycentricCoordinate = (dotv0.Neg()).Div((dot.Sub(dotv0)));
+                Fix32 barycentricCoordinate = (dotv0.Neg()).Div((dot.Sub(dotv0)));
                 //Vector3.Subtract(ref v1A, ref v0A, out offset); //'v0a' is just the zero vector, so there's no need to calculate the offset.
                 Vector3.Multiply(ref v1A, barycentricCoordinate, out position);
                 return true;
@@ -2055,7 +2055,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
 
                 // If the origin is outside the plane defined by v1,v0,v3, then the portal is invalid.
                 Vector3.Cross(ref v1, ref v3, out temp1);
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref temp1, ref v0, out dot);
                 if (dot < F64.C0)
                 {
@@ -2098,7 +2098,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
                 Vector3.Subtract(ref v3, ref v2, out temp1);
                 Vector3.Subtract(ref v1, ref v2, out temp2);
                 Vector3.Cross(ref temp1, ref temp2, out n);
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref n, ref v1, out dot);
                 if (dot >= F64.C0)
                 {
@@ -2114,27 +2114,27 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
 
                     Vector3 cross;
                     Vector3.Cross(ref temp1, ref temp2, out cross);
-                    Fix64 v0v1v2v3volume;
+                    Fix32 v0v1v2v3volume;
                     Vector3.Dot(ref cross, ref temp3, out v0v1v2v3volume);
 
                     Vector3.Cross(ref v1, ref v2, out cross);
-                    Fix64 ov1v2v3volume;
+                    Fix32 ov1v2v3volume;
                     Vector3.Dot(ref cross, ref v3, out ov1v2v3volume);
 
                     Vector3.Cross(ref localTransformB.Position, ref temp2, out cross);
-                    Fix64 v0ov2v3volume;
+                    Fix32 v0ov2v3volume;
                     Vector3.Dot(ref cross, ref temp3, out v0ov2v3volume);
 
                     Vector3.Cross(ref temp1, ref localTransformB.Position, out cross);
-                    Fix64 v0v1ov3volume;
+                    Fix32 v0v1ov3volume;
                     Vector3.Dot(ref cross, ref temp3, out v0v1ov3volume);
 
 
-                    Fix64 inverseTotalVolume = F64.C1.Div(v0v1v2v3volume);
-                    Fix64 v0Weight = ov1v2v3volume.Mul(inverseTotalVolume);
-                    Fix64 v1Weight = v0ov2v3volume.Mul(inverseTotalVolume);
-                    Fix64 v2Weight = v0v1ov3volume.Mul(inverseTotalVolume);
-                    Fix64 v3Weight = ((F64.C1.Sub(v0Weight)).Sub(v1Weight)).Sub(v2Weight);
+                    Fix32 inverseTotalVolume = F64.C1.Div(v0v1v2v3volume);
+                    Fix32 v0Weight = ov1v2v3volume.Mul(inverseTotalVolume);
+                    Fix32 v1Weight = v0ov2v3volume.Mul(inverseTotalVolume);
+                    Fix32 v2Weight = v0v1ov3volume.Mul(inverseTotalVolume);
+                    Fix32 v3Weight = ((F64.C1.Sub(v0Weight)).Sub(v1Weight)).Sub(v2Weight);
                     position = v1Weight * v1A + v2Weight * v2A + v3Weight * v3A;
                     //DEBUGlastPosition = position;
                     return true;
@@ -2146,7 +2146,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
                 GetSweptExtremePoint(shapeA, shapeB, ref localTransformB, ref sweep, ref n, out v4A, out v4);
 
                 //If the origin is further along the direction than the extreme point, it's not inside the shape.
-                Fix64 dot2;
+                Fix32 dot2;
                 Vector3.Dot(ref v4, ref n, out dot2);
                 if (dot2 < F64.C0)
                 {
@@ -2211,7 +2211,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
         {
             Vector3 b;
             MinkowskiToolbox.GetLocalMinkowskiExtremePoint(shapeA, shapeB, ref extremePointDirection, ref localTransformB, out extremePointA, out b, out extremePoint);
-            Fix64 dot;
+            Fix32 dot;
             Vector3.Dot(ref extremePointDirection, ref sweep, out dot);
             if (dot > F64.C0)
             {
@@ -2229,7 +2229,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
         /// <param name="transform">Transform to apply to the shape.</param>
         /// <param name="hit">Hit data of the ray on the shape, if any.</param>
         /// <returns>Whether or not the swept shapes hit each other.</returns>
-        public static bool RayCast(Ray ray, Fix64 maximumLength, ConvexShape shape, ref RigidTransform transform, out RayHit hit)
+        public static bool RayCast(Ray ray, Fix32 maximumLength, ConvexShape shape, ref RigidTransform transform, out RayHit hit)
         {
             //Compute the local origin and direction of the ray.
             Ray localRay;
@@ -2284,7 +2284,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
             else
             {
                 //If the ray cast doesn't hit the bounding sphere, it's impossible for the ray to hit the shape itself.
-                hit.T = Fix64.MaxValue;
+                hit.T = Fix32.MaxValue;
                 hit.Normal = new Vector3();
                 hit.Location = new Vector3();
                 return false;
@@ -2295,8 +2295,8 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
             //First: Compute the sweep amount along the sweep direction.
             //This sweep amount needs to expand the minkowski difference to fully intersect the plane defined by the sweep direction and origin.
 
-            Fix64 rayLengthSquared = localRay.Direction.LengthSquared();
-            Fix64 sweepLength;
+            Fix32 rayLengthSquared = localRay.Direction.LengthSquared();
+            Fix32 sweepLength;
             if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
             {
                 Vector3.Dot(ref localRay.Position, ref localRay.Direction, out sweepLength);
@@ -2305,7 +2305,7 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix64Ext.Sq
 sweepLength.Div(rayLengthSquared);
 				//Scale the sweep length by the margins.  Divide by the length to pull the margin into terms of the length of the ray.
 				sweepLength =
-sweepLength.Add(shape.MaximumRadius.Div(Fix64Ext.Sqrt(rayLengthSquared)));
+sweepLength.Add(shape.MaximumRadius.Div(Fix32Ext.Sqrt(rayLengthSquared)));
             }
             else
             {
@@ -2326,7 +2326,7 @@ sweepLength.Add(shape.MaximumRadius.Div(Fix64Ext.Sqrt(rayLengthSquared)));
             if (!SweptShapeContainsPoint(shape, ref sweep, ref localRay.Position))
             {
                 //The origin is not contained within the sweep volume.  The raycast definitely misses.
-                hit.T = Fix64.MaxValue;
+                hit.T = Fix32.MaxValue;
                 hit.Normal = new Vector3();
                 hit.Location = new Vector3();
                 return false;
@@ -2399,7 +2399,7 @@ sweepLength.Add(shape.MaximumRadius.Div(Fix64Ext.Sqrt(rayLengthSquared)));
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
                 //If the origin is further along this direction than the extreme point, then there is no intersection.
                 //If the origin is within this extreme point, then there is an intersection.
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref v1, ref localPoint, out dot);
                 if (dot < F64.C0)
                 {
@@ -2434,7 +2434,7 @@ sweepLength.Add(shape.MaximumRadius.Div(Fix64Ext.Sqrt(rayLengthSquared)));
 
                 // If the origin is outside the plane defined by v1,v0,v3, then the portal is invalid.
                 Vector3.Cross(ref v1, ref v3, out temp1);
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref temp1, ref v0, out dot);
                 if (dot < F64.C0)
                 {
@@ -2475,7 +2475,7 @@ sweepLength.Add(shape.MaximumRadius.Div(Fix64Ext.Sqrt(rayLengthSquared)));
                 Vector3.Subtract(ref v3, ref v2, out temp1);
                 Vector3.Subtract(ref v1, ref v2, out temp2);
                 Vector3.Cross(ref temp1, ref temp2, out n);
-                Fix64 dot;
+                Fix32 dot;
                 Vector3.Dot(ref n, ref v1, out dot);
                 if (dot >= F64.C0)
                 {
@@ -2488,7 +2488,7 @@ sweepLength.Add(shape.MaximumRadius.Div(Fix64Ext.Sqrt(rayLengthSquared)));
                 GetSweptExtremePoint(shape, ref localPoint, ref sweep, ref n, out v4);
 
                 //If the origin is further along the direction than the extreme point, it's not inside the shape.
-                Fix64 dot2;
+                Fix32 dot2;
                 Vector3.Dot(ref v4, ref n, out dot2);
                 if (dot2 < F64.C0)
                 {
@@ -2543,7 +2543,7 @@ sweepLength.Add(shape.MaximumRadius.Div(Fix64Ext.Sqrt(rayLengthSquared)));
         }
 
 
-        private static bool LocalSweepCast(ConvexShape shape, Fix64 sweepLength, Fix64 rayLengthSquared, ref Vector3 localDirection, ref Vector3 sweep, ref Vector3 rayOrigin, out RayHit hit)
+        private static bool LocalSweepCast(ConvexShape shape, Fix32 sweepLength, Fix32 rayLengthSquared, ref Vector3 localDirection, ref Vector3 sweep, ref Vector3 rayOrigin, out RayHit hit)
         {
             //By now, the ray is known to be within the swept shape and facing the right direction for a normal raycast.
 
@@ -2577,13 +2577,13 @@ sweepLength.Add(shape.MaximumRadius.Div(Fix64Ext.Sqrt(rayLengthSquared)));
                 //In other words, if the raycast is followed out to the surface, it will arrive at the extreme point!
 
                 if (rayLengthSquared > Toolbox.Epsilon.Mul(F64.C0p01))
-                    Vector3.Divide(ref localDirection, Fix64Ext.Sqrt(rayLengthSquared), out hit.Normal);
+                    Vector3.Divide(ref localDirection, Fix32Ext.Sqrt(rayLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
 
-                Fix64 rate;
+                Fix32 rate;
                 Vector3.Dot(ref  hit.Normal, ref localDirection, out rate);
-                Fix64 distance;
+                Fix32 distance;
                 Vector3.Dot(ref  hit.Normal, ref v1, out distance);
                 if (rate > F64.C0)
                     hit.T = sweepLength.Sub(distance.Div(rate));
@@ -2613,7 +2613,7 @@ sweepLength.Add(shape.MaximumRadius.Div(Fix64Ext.Sqrt(rayLengthSquared)));
 
             //It's possible that v1 and v2 were constructed in such a way that 'n' is not properly calibrated
             //relative to the direction vector.
-            Fix64 dot;
+            Fix32 dot;
             Vector3.Dot(ref n, ref localDirection, out dot);
             if (dot > F64.C0)
             {
@@ -2635,7 +2635,7 @@ sweepLength.Add(shape.MaximumRadius.Div(Fix64Ext.Sqrt(rayLengthSquared)));
                 {
                     //Can't enclose the origin! That's a bit odd.  Something is wrong; the preparation for this raycast
                     //guarantees that the origin is enclosed.  Could be a numerical problem.
-                    hit.T = Fix64.MaxValue;
+                    hit.T = Fix32.MaxValue;
                     hit.Normal = new Vector3();
                     hit.Location = new Vector3();
                     return false;
@@ -2689,16 +2689,16 @@ sweepLength.Add(shape.MaximumRadius.Div(Fix64Ext.Sqrt(rayLengthSquared)));
 
                 //If the plane which generated the normal is very close to the extreme point, then we're at the surface.
                 Vector3.Dot(ref n, ref v1, out dot);
-                Fix64 supportDot;
+                Fix32 supportDot;
                 Vector3.Dot(ref v4, ref n, out supportDot);
 
                 if (supportDot.Sub(dot) < rayCastSurfaceEpsilon || count > MPRToolbox.InnerIterationLimit) // TODO: Could use a dynamic epsilon for possibly better behavior.
                 {
                     //The portal is now on the surface.  The algorithm can now compute the TOI and exit.
-                    Fix64 lengthSquared = n.LengthSquared();
+                    Fix32 lengthSquared = n.LengthSquared();
                     if (lengthSquared > Toolbox.Epsilon.Mul(F64.C1em5))
                     {
-                        Vector3.Divide(ref n, Fix64Ext.Sqrt(lengthSquared), out hit.Normal);
+                        Vector3.Divide(ref n, Fix32Ext.Sqrt(lengthSquared), out hit.Normal);
 
                         //The plane is very close to the surface, and the ray is known to pass through it.
                         //dot is the rate.
@@ -2770,7 +2770,7 @@ sweepLength.Add(shape.MaximumRadius.Div(Fix64Ext.Sqrt(rayLengthSquared)));
         {
             shape.GetExtremePoint(extremePointDirection, ref Toolbox.RigidIdentity, out extremePoint);
             Vector3.Subtract(ref extremePoint, ref point, out extremePoint);
-            Fix64 dot;
+            Fix32 dot;
             Vector3.Dot(ref extremePointDirection, ref sweep, out dot);
             if (dot > F64.C0)
             {

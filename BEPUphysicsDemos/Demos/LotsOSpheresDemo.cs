@@ -1,6 +1,6 @@
 ﻿using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -22,9 +22,9 @@ namespace BEPUphysicsDemos.Demos
             int numColumns = 5;
             int numRows = 5;
             int numHigh = 5;
-            Fix64 xSpacing = 2.09m.ToFix();
-            Fix64 ySpacing = 2.08m.ToFix();
-            Fix64 zSpacing = 2.09m.ToFix();
+            Fix32 xSpacing = 2.09m.ToFix();
+            Fix32 ySpacing = 2.08m.ToFix();
+            Fix32 zSpacing = 2.09m.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)

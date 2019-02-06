@@ -3,7 +3,7 @@ using BEPUphysics.CollisionTests;
 using BEPUphysics.CollisionTests.Manifolds;
 using BEPUphysics.Constraints.Collision;
 using BEPUphysics.Materials;
-using FixMath.NET;
+
 
 namespace BEPUphysics.NarrowPhaseSystems.Pairs
 {
@@ -131,7 +131,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         /// Updates the pair handler.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void UpdateCollision(Fix64 dt)
+        public override void UpdateCollision(Fix32 dt)
         {
             //Cache some properties.
             var a = CollidableA;

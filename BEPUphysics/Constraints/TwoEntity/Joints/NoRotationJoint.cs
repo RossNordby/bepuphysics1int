@@ -1,7 +1,7 @@
 ﻿using System;
 using BEPUphysics.Entities;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Constraints.TwoEntity.Joints
 {
@@ -163,7 +163,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Applies the corrective impulses required by the constraint.
         /// </summary>
-        public override Fix64 SolveIteration()
+        public override Fix32 SolveIteration()
         {
             Vector3 velocityDifference;
             Vector3.Subtract(ref connectionB.angularVelocity, ref connectionA.angularVelocity, out velocityDifference);
@@ -187,14 +187,14 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 connectionB.ApplyAngularImpulse(ref torqueB);
             }
 
-            return (Fix64Ext.Abs(lambda.X).Add(Fix64Ext.Abs(lambda.Y))).Add(Fix64Ext.Abs(lambda.Z));
+            return (Fix32Ext.Abs(lambda.X).Add(Fix32Ext.Abs(lambda.Y))).Add(Fix32Ext.Abs(lambda.Z));
         }
 
         /// <summary>
         /// Initializes the constraint for the current frame.
         /// </summary>
         /// <param name="dt">Time between frames.</param>
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             Quaternion quaternionA;
             Quaternion.Multiply(ref connectionA.orientation, ref initialQuaternionConjugateA, out quaternionA);
@@ -205,7 +205,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Quaternion.Multiply(ref quaternionA, ref quaternionB, out intermediate);
 
 
-            Fix64 angle;
+            Fix32 angle;
             Vector3 axis;
             Quaternion.GetAxisAngleFromQuaternion(ref intermediate, out axis, out angle);
 
@@ -213,7 +213,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             error.Y = axis.Y.Mul(angle);
             error.Z = axis.Z.Mul(angle);
 
-            Fix64 errorReduction;
+            Fix32 errorReduction;
             springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReduction, out softness);
             errorReduction = errorReduction.Neg();
             biasVelocity.X = errorReduction.Mul(error.X);
@@ -221,10 +221,10 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             biasVelocity.Z = errorReduction.Mul(error.Z);
 
             //Ensure that the corrective velocity doesn't exceed the max.
-            Fix64 length = biasVelocity.LengthSquared();
+            Fix32 length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                Fix64 multiplier = maxCorrectiveVelocity.Div(Fix64Ext.Sqrt(length));
+                Fix32 multiplier = maxCorrectiveVelocity.Div(Fix32Ext.Sqrt(length));
 				biasVelocity.X = biasVelocity.X.Mul(multiplier);
 				biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
 				biasVelocity.Z = biasVelocity.Z.Mul(multiplier);

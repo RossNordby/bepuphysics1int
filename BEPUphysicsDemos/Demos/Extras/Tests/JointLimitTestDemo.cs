@@ -7,7 +7,7 @@ using BEPUphysics.Constraints.TwoEntity.JointLimits;
 using BEPUphysics.Constraints.TwoEntity.Joints;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -16,9 +16,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         public JointLimitTestDemo(DemosGame game)
             : base(game)
         {
-            Fix64 bounciness = 1.ToFix();
-            Fix64 baseMass = 100.ToFix();
-            Fix64 armMass = 10.ToFix();
+            Fix32 bounciness = 1.ToFix();
+            Fix32 baseMass = 100.ToFix();
+            Fix32 armMass = 10.ToFix();
             //DistanceLimit
             Box boxA = new Box(new Vector3((-21).ToFix(), 4.ToFix(), 0.ToFix()), 3.ToFix(), 3.ToFix(), 3.ToFix(), baseMass);
             Box boxB = new Box(boxA.Position + new Vector3(0.ToFix(), 5.ToFix(), 0.ToFix()), 1.ToFix(), 4.ToFix(), 1.ToFix(), armMass);

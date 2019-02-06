@@ -13,7 +13,7 @@ using BEPUphysics.CollisionTests;
 
 using Microsoft.Xna.Framework.Input;
 using ConversionHelper;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -41,7 +41,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             Vector3 overlap;
             bool overlapped = MPRToolbox.GetLocalOverlapPosition(shapeA, shapeB, ref transformB, out overlap);
             Vector3 normal;
-            Fix64 depth;
+            Fix32 depth;
             Vector3 direction = new Vector3(0.ToFix(), (-1).ToFix(), 0.ToFix());
             MPRToolbox.LocalSurfaceCast(shapeA, shapeB, ref transformB, ref direction, out depth, out normal);
 
@@ -113,13 +113,13 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
         Entity a;
         Entity b;
-        Fix64 groundWidth, groundHeight, groundLength;
-        Fix64 boxWidth, boxHeight, boxLength;
+        Fix32 groundWidth, groundHeight, groundLength;
+        Fix32 boxWidth, boxHeight, boxLength;
 
 
         Vector3 rayCastDirection = Vector3.Up;
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
 
             if (Game.KeyboardInput.IsKeyDown(Keys.Left))
@@ -145,9 +145,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             if (MPRToolbox.GetLocalOverlapPosition((a.CollisionInformation.Shape as ConvexShape), (b.CollisionInformation.Shape as ConvexShape), ref localTransformB, out position))
             {
                 //Vector3 rayCastDirection = new Vector3(1,0,0);// (Vector3.Normalize(localDirection) + Vector3.Normalize(collidableB.worldTransform.Position - collidableA.worldTransform.Position)) / 2;
-                Fix64 previousT;
+                Fix32 previousT;
                 Vector3 previousNormal;
-                Fix64 t;
+                Fix32 t;
                 Vector3 normal;
 
                 rayCastDirection = localTransformB.Position;
@@ -253,19 +253,19 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             Vector3 max;
             var direction = new Vector3();
             int NumSamples = 16;
-            Fix64 angleChange = MathHelper.TwoPi.Div(NumSamples.ToFix());
+            Fix32 angleChange = MathHelper.TwoPi.Div(NumSamples.ToFix());
 
             for (int i = 1; i < NumSamples / 2 - 1; i++)
             {
-                Fix64 phi = MathHelper.PiOver2.Sub(i.ToFix().Mul(angleChange));
-                var sinPhi = Fix64Ext.Sin(phi);
-                var cosPhi = Fix64Ext.Cos(phi);
+                Fix32 phi = MathHelper.PiOver2.Sub(i.ToFix().Mul(angleChange));
+                var sinPhi = Fix32Ext.Sin(phi);
+                var cosPhi = Fix32Ext.Cos(phi);
                 for (int j = 0; j < NumSamples; j++)
                 {
-                    Fix64 theta = j.ToFix().Mul(angleChange);
-                    direction.X = Fix64Ext.Cos(theta).Mul(cosPhi);
+                    Fix32 theta = j.ToFix().Mul(angleChange);
+                    direction.X = Fix32Ext.Cos(theta).Mul(cosPhi);
                     direction.Y = sinPhi;
-                    direction.Z = Fix64Ext.Sin(theta).Mul(cosPhi);
+                    direction.Z = Fix32Ext.Sin(theta).Mul(cosPhi);
 
 
                     MinkowskiToolbox.GetLocalMinkowskiExtremePoint(a.CollisionInformation.Shape as ConvexShape, b.CollisionInformation.Shape as ConvexShape, ref direction, ref localTransformB, out max);
@@ -327,7 +327,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         List<VertexPositionColor> minkowskiLines = new List<VertexPositionColor>();
 
         Vector3 contactNormal;
-        Fix64 contactDepth;
+        Fix32 contactDepth;
 
         VertexPositionColor[] lines = new VertexPositionColor[12];
         public override void Draw()

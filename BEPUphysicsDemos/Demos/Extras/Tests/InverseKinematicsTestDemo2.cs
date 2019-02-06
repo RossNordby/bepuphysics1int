@@ -5,7 +5,7 @@ using BEPUphysics.CollisionRuleManagement;
 using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -80,7 +80,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             int boneCount = 10;
             BuildStick(new Vector3(0.ToFix(), 0.5m.ToFix(), 0.ToFix()), boneCount, out bones, out boneEntities);
 
-            DragControl dragger = new DragControl { TargetBone = bones[boneCount - 1], MaximumForce = Fix64.MaxValue };
+            DragControl dragger = new DragControl { TargetBone = bones[boneCount - 1], MaximumForce = Fix32.MaxValue };
             dragger.LinearMotor.Rigidity = 16.ToFix();
             dragger.LinearMotor.LocalOffset = new Vector3(0.ToFix(), 0.5m.ToFix(), 0.ToFix());
             dragger.LinearMotor.TargetPosition = new Vector3(10.ToFix(), 0.ToFix(), 0.ToFix());

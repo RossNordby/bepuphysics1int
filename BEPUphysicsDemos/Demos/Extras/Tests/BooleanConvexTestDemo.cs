@@ -5,7 +5,7 @@ using System;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUphysics.CollisionTests.CollisionAlgorithms;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -29,7 +29,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             int numberOfTestsPerConfiguration = 10000;
 
 
-            Fix64 size = 2.ToFix();
+            Fix32 size = 2.ToFix();
             var aPositionBounds = new BoundingBox(new Vector3(size.Neg(), size.Neg(), size.Neg()), new Vector3(size, size, size));
             var bPositionBounds = new BoundingBox(new Vector3(size.Neg(), size.Neg(), size.Neg()), new Vector3(size, size, size));
 

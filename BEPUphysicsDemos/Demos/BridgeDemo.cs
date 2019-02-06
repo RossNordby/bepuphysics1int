@@ -4,7 +4,7 @@ using BEPUphysics.Entities.Prefabs;
 using BEPUphysics.Constraints.SolverGroups;
 using BEPUutilities;
 using ConversionHelper;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {

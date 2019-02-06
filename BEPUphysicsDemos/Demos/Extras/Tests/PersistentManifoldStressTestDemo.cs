@@ -7,7 +7,7 @@ using BEPUphysics.Materials;
 using BEPUphysics.NarrowPhaseSystems;
 using BEPUphysics.Settings;
 using BEPUutilities;
-using FixMath.NET;
+
 using Microsoft.Xna.Framework.Input;
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests

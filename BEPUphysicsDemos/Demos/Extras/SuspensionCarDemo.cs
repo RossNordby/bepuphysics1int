@@ -8,7 +8,7 @@ using BEPUphysics.Constraints.TwoEntity.Joints;
 using BEPUphysics.Constraints.TwoEntity.JointLimits;
 using Microsoft.Xna.Framework.Input;
 using System;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras
 {
@@ -27,8 +27,8 @@ namespace BEPUphysicsDemos.Demos.Extras
         private readonly RevoluteMotor steeringMotor1;
         private readonly RevoluteMotor steeringMotor2;
 
-        private Fix64 driveSpeed = 70.ToFix();
-        private Fix64 maximumTurnAngle = MathHelper.Pi.Mul(.2m.ToFix());
+        private Fix32 driveSpeed = 70.ToFix();
+        private Fix32 maximumTurnAngle = MathHelper.Pi.Mul(.2m.ToFix());
 
         /// <summary>
         /// Constructs a new demo.
@@ -60,17 +60,17 @@ namespace BEPUphysicsDemos.Demos.Extras
             int xLength = 180;
             int zLength = 180;
 
-            Fix64 xSpacing = 8.ToFix();
-            Fix64 zSpacing = 8.ToFix();
-            var heights = new Fix64[xLength, zLength];
+            Fix32 xSpacing = 8.ToFix();
+            Fix32 zSpacing = 8.ToFix();
+            var heights = new Fix32[xLength, zLength];
             for (int i = 0; i < xLength; i++)
             {
                 for (int j = 0; j < zLength; j++)
                 {
-                    Fix64 x = (i - xLength / 2).ToFix();
-                    Fix64 z = (j - zLength / 2).ToFix();
+                    Fix32 x = (i - xLength / 2).ToFix();
+                    Fix32 z = (j - zLength / 2).ToFix();
                     //heights[i,j] = (Fix64)(x * y / 1000f);
-                    heights[i, j] = 10.ToFix().Mul((Fix64Ext.Sin(x.Div(8.ToFix())).Add(Fix64Ext.Sin(z.Div(8.ToFix())))));
+                    heights[i, j] = 10.ToFix().Mul((Fix32Ext.Sin(x.Div(8.ToFix())).Add(Fix32Ext.Sin(z.Div(8.ToFix())))));
                     //heights[i,j] = 3 * (Fix64)Math.Sin(x * y / 100f);
                     //heights[i,j] = (x * x * x * y - y * y * y * x) / 1000f;
                 }
@@ -196,7 +196,7 @@ namespace BEPUphysicsDemos.Demos.Extras
             get { return "Suspension Car Demo"; }
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
 
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad8))

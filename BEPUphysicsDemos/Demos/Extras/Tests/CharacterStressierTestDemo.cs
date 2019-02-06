@@ -8,7 +8,7 @@ using BEPUutilities;
 using System.Collections.Generic;
 using System;
 using Microsoft.Xna.Framework.Graphics;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -59,7 +59,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             //Start with a whole bunch of boxes.  These are entity collidables, but without entities!
             xSpacing = 25;
             ySpacing = 16;
-            Fix64 zSpacing = 25.ToFix();
+            Fix32 zSpacing = 25.ToFix();
 
             xCount = 25;
             yCount = 7;
@@ -95,7 +95,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             var numColumns = 16;
             var numRows = 16;
             var numHigh = 16;
-            Fix64 separation = 24.ToFix();
+            Fix32 separation = 24.ToFix();
 
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
@@ -151,7 +151,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             get { return "Character Stressier Test"; }
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             //Tell all the characters to run around randomly.
             for (int i = 0; i < characters.Count; i++)

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using BEPUphysics;
 using BEPUphysics.Entities.Prefabs;
 using ConversionHelper;
-using FixMath.NET;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -74,7 +74,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             get { return "Ray Cast Test"; }
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             base.Update(dt);
 

@@ -3,7 +3,7 @@ using BEPUphysics.Entities;
  
 using BEPUphysics.Materials;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Vehicle
 {
@@ -32,35 +32,35 @@ namespace BEPUphysics.Vehicle
         /// <param name="usingKineticFriction">True if the friction coefficients passed into the blender are kinetic coefficients, false otherwise.</param>
         /// <param name="wheel">Wheel being blended.</param>
         /// <returns>Blended friction coefficient.</returns>
-        public static Fix64 BlendFriction(Fix64 wheelFriction, Fix64 materialFriction, bool usingKineticFriction, Wheel wheel)
+        public static Fix32 BlendFriction(Fix32 wheelFriction, Fix32 materialFriction, bool usingKineticFriction, Wheel wheel)
         {
             return wheelFriction.Mul(materialFriction);
         }
 
         #endregion
 
-        internal Fix64 accumulatedImpulse;
+        internal Fix32 accumulatedImpulse;
 
         //Fix64 linearBX, linearBY, linearBZ;
-        internal Fix64 angularAX, angularAY, angularAZ;
-        internal Fix64 angularBX, angularBY, angularBZ;
+        internal Fix32 angularAX, angularAY, angularAZ;
+        internal Fix32 angularBX, angularBY, angularBZ;
         internal bool isActive = true;
-        internal Fix64 linearAX, linearAY, linearAZ;
-        private Fix64 currentFrictionCoefficient;
+        internal Fix32 linearAX, linearAY, linearAZ;
+        private Fix32 currentFrictionCoefficient;
         internal Vector3 forceAxis;
-        private Fix64 gripFriction;
+        private Fix32 gripFriction;
         private WheelFrictionBlender gripFrictionBlender = DefaultGripFrictionBlender;
-        private Fix64 maxMotorForceDt;
-        private Fix64 maximumBackwardForce = Fix64.MaxValue;
-        private Fix64 maximumForwardForce = Fix64.MaxValue;
+        private Fix32 maxMotorForceDt;
+        private Fix32 maximumBackwardForce = Fix32.MaxValue;
+        private Fix32 maximumForwardForce = Fix32.MaxValue;
         internal SolverSettings solverSettings = new SolverSettings();
-        private Fix64 targetSpeed;
+        private Fix32 targetSpeed;
         private Wheel wheel;
         internal int numIterationsAtZeroImpulse;
         private Entity vehicleEntity, supportEntity;
 
         //Inverse effective mass matrix
-        internal Fix64 velocityToImpulse;
+        internal Fix32 velocityToImpulse;
         private bool supportIsDynamic;
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace BEPUphysics.Vehicle
         /// <param name="gripFriction">Friction coefficient of the wheel.  Blended with the ground's friction coefficient and normal force to determine a maximum force.</param>
         /// <param name="maximumForwardForce">Maximum force that the wheel motor can apply when driving forward (a target speed greater than zero).</param>
         /// <param name="maximumBackwardForce">Maximum force that the wheel motor can apply when driving backward (a target speed less than zero).</param>
-        public WheelDrivingMotor(Fix64 gripFriction, Fix64 maximumForwardForce, Fix64 maximumBackwardForce)
+        public WheelDrivingMotor(Fix32 gripFriction, Fix32 maximumForwardForce, Fix32 maximumBackwardForce)
         {
             GripFriction = gripFriction;
             MaximumForwardForce = maximumForwardForce;
@@ -85,7 +85,7 @@ namespace BEPUphysics.Vehicle
         /// Gets the coefficient of grip friction between the wheel and support.
         /// This coefficient is the blended result of the supporting entity's friction and the wheel's friction.
         /// </summary>
-        public Fix64 BlendedCoefficient
+        public Fix32 BlendedCoefficient
         {
             get { return currentFrictionCoefficient; }
         }
@@ -103,7 +103,7 @@ namespace BEPUphysics.Vehicle
         /// This coefficient and the supporting entity's coefficient of friction will be 
         /// taken into account to determine the used coefficient at any given time.
         /// </summary>
-        public Fix64 GripFriction
+        public Fix32 GripFriction
         {
             get { return gripFriction; }
             set { gripFriction = MathHelper.Max(value, F64.C0); }
@@ -121,7 +121,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the maximum force that the wheel motor can apply when driving backward (a target speed less than zero).
         /// </summary>
-        public Fix64 MaximumBackwardForce
+        public Fix32 MaximumBackwardForce
         {
             get { return maximumBackwardForce; }
             set { maximumBackwardForce = value; }
@@ -130,7 +130,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the maximum force that the wheel motor can apply when driving forward (a target speed greater than zero).
         /// </summary>
-        public Fix64 MaximumForwardForce
+        public Fix32 MaximumForwardForce
         {
             get { return maximumForwardForce; }
             set { maximumForwardForce = value; }
@@ -139,7 +139,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the target speed of this wheel.
         /// </summary>
-        public Fix64 TargetSpeed
+        public Fix32 TargetSpeed
         {
             get { return targetSpeed; }
             set { targetSpeed = value; }
@@ -148,7 +148,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets the force this wheel's motor is applying.
         /// </summary>
-        public Fix64 TotalImpulse
+        public Fix32 TotalImpulse
         {
             get { return accumulatedImpulse; }
         }
@@ -178,11 +178,11 @@ namespace BEPUphysics.Vehicle
         /// Gets the relative velocity between the ground and wheel.
         /// </summary>
         /// <returns>Relative velocity between the ground and wheel.</returns>
-        public Fix64 RelativeVelocity
+        public Fix32 RelativeVelocity
         {
             get
             {
-                Fix64 velocity = F64.C0;
+                Fix32 velocity = F64.C0;
                 if (vehicleEntity != null)
 					velocity = velocity.Add((((((vehicleEntity.linearVelocity.X.Mul(linearAX)).Add(vehicleEntity.linearVelocity.Y.Mul(linearAY))).Add(vehicleEntity.linearVelocity.Z.Mul(linearAZ))).Add(vehicleEntity.angularVelocity.X.Mul(angularAX))).Add(vehicleEntity.angularVelocity.Y.Mul(angularAY))).Add(vehicleEntity.angularVelocity.Z.Mul(angularAZ)));
                 if (supportEntity != null)
@@ -191,14 +191,14 @@ namespace BEPUphysics.Vehicle
             }
         }
 
-        internal Fix64 ApplyImpulse()
+        internal Fix32 ApplyImpulse()
         {
             //Compute relative velocity
-            Fix64 lambda = (RelativeVelocity.Sub(targetSpeed)).Mul(velocityToImpulse); //convert to impulse
+            Fix32 lambda = (RelativeVelocity.Sub(targetSpeed)).Mul(velocityToImpulse); //convert to impulse
 
 
             //Clamp accumulated impulse
-            Fix64 previousAccumulatedImpulse = accumulatedImpulse;
+            Fix32 previousAccumulatedImpulse = accumulatedImpulse;
 			accumulatedImpulse = accumulatedImpulse.Add(lambda);
             //Don't brake, and take into account the motor's maximum force.
             if (targetSpeed > F64.C0)
@@ -208,7 +208,7 @@ namespace BEPUphysics.Vehicle
             else
                 accumulatedImpulse = F64.C0;
             //Friction
-            Fix64 maxForce = currentFrictionCoefficient.Mul(wheel.suspension.accumulatedImpulse);
+            Fix32 maxForce = currentFrictionCoefficient.Mul(wheel.suspension.accumulatedImpulse);
             accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse, maxForce, maxForce.Neg());
             lambda = accumulatedImpulse.Sub(previousAccumulatedImpulse);
 
@@ -246,7 +246,7 @@ namespace BEPUphysics.Vehicle
             return lambda;
         }
 
-        internal void PreStep(Fix64 dt)
+        internal void PreStep(Fix32 dt)
         {
             vehicleEntity = wheel.Vehicle.Body;
             supportEntity = wheel.SupportingEntity;
@@ -271,10 +271,10 @@ namespace BEPUphysics.Vehicle
             angularBZ = (linearAX.Mul(wheel.rb.Y)).Sub((linearAY.Mul(wheel.rb.X)));
 
             //Compute inverse effective mass matrix
-            Fix64 entryA, entryB;
+            Fix32 entryA, entryB;
 
             //these are the transformed coordinates
-            Fix64 tX, tY, tZ;
+            Fix32 tX, tY, tZ;
             if (vehicleEntity.isDynamic)
             {
                 tX = ((angularAX.Mul(vehicleEntity.inertiaTensorInverse.M11)).Add(angularAY.Mul(vehicleEntity.inertiaTensorInverse.M21))).Add(angularAZ.Mul(vehicleEntity.inertiaTensorInverse.M31));

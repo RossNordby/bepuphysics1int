@@ -5,7 +5,7 @@ using BEPUutilities;
  
 using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
-using FixMath.NET;
+
 
 namespace BEPUphysics.CollisionShapes.ConvexShapes
 {
@@ -214,7 +214,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             var triangles = CommonResources.GetIntList();
             ConvexHullHelper.GetConvexHull(samples, triangles);
 
-            Fix64 volume;
+            Fix32 volume;
             InertiaHelper.ComputeShapeDistribution(samples, triangles, out center, out volume, out volumeDistribution);
             Volume = volume;
 
@@ -271,11 +271,11 @@ boundingBox.Max.X.Add(collisionMargin);
         public override void GetLocalExtremePointWithoutMargin(ref Vector3 direction, out Vector3 extremePoint)
         {
             shapes.WrappedList.Elements[0].CollisionShape.GetExtremePoint(direction, ref shapes.WrappedList.Elements[0].Transform, out extremePoint);
-            Fix64 maxDot;
+            Fix32 maxDot;
             Vector3.Dot(ref extremePoint, ref direction, out maxDot);
             for (int i = 1; i < shapes.WrappedList.Count; i++)
             {
-                Fix64 dot;
+                Fix32 dot;
                 Vector3 temp;
 
                 shapes.WrappedList.Elements[i].CollisionShape.GetExtremePoint(direction, ref shapes.WrappedList.Elements[i].Transform, out temp);
@@ -295,13 +295,13 @@ boundingBox.Max.X.Add(collisionMargin);
         /// it is simply an approximation that avoids underestimating.
         /// </summary>
         /// <returns>Maximum radius of the shape.</returns>
-        public Fix64 ComputeMaximumRadius()
+        public Fix32 ComputeMaximumRadius()
         {
             //This can overestimate the actual maximum radius, but such is the defined behavior of the ComputeMaximumRadius function.  It's not exact; it's an upper bound on the actual maximum.
-            Fix64 maxRadius = F64.C0;
+            Fix32 maxRadius = F64.C0;
             for (int i = 0; i < shapes.Count; i++)
             {
-                Fix64 radius = shapes.WrappedList.Elements[i].CollisionShape.MaximumRadius.Add(shapes.WrappedList.Elements[i].Transform.Position.Length());
+                Fix32 radius = shapes.WrappedList.Elements[i].CollisionShape.MaximumRadius.Add(shapes.WrappedList.Elements[i].Transform.Position.Length());
                 if (radius > maxRadius)
                     maxRadius = radius;
             }
@@ -313,13 +313,13 @@ boundingBox.Max.X.Add(collisionMargin);
         /// it is simply an approximation that avoids overestimating.
         /// </summary>
         /// <returns>Minimum radius of the shape.</returns>
-        public Fix64 ComputeMinimumRadius()
+        public Fix32 ComputeMinimumRadius()
         {
             //Could also use the tetrahedron approximation approach.
-            Fix64 minRadius = F64.C0;
+            Fix32 minRadius = F64.C0;
             for (int i = 0; i < shapes.Count; i++)
             {
-                Fix64 radius = shapes.WrappedList.Elements[i].CollisionShape.MinimumRadius;
+                Fix32 radius = shapes.WrappedList.Elements[i].CollisionShape.MinimumRadius;
                 if (radius < minRadius)
                     minRadius = radius;
             }

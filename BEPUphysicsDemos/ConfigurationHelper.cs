@@ -7,7 +7,7 @@ using BEPUphysics.NarrowPhaseSystems.Pairs;
 using BEPUphysics.PositionUpdating;
 using BEPUphysics.Settings;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos
 {
@@ -135,7 +135,7 @@ namespace BEPUphysicsDemos
         /// </summary>
         /// <param name="space">Space to configure.</param>
         /// <param name="scale">Scale to apply to relevant configuration settings.</param>
-        public static void ApplyScale(Space space, Fix64 scale)
+        public static void ApplyScale(Space space, Fix32 scale)
         {
             //Set all values to default values * scale.
             space.DeactivationManager.VelocityLowerLimit = (0.26m.ToFix()).Mul(scale);

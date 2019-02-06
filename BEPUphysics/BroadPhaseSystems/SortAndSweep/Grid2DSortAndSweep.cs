@@ -4,7 +4,7 @@ using BEPUutilities;
 using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
 using BEPUutilities.Threading;
-using FixMath.NET;
+
 
 namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
 {
@@ -22,7 +22,7 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
         /// Gets or sets the width of cells in the 2D grid.  For sparser, larger scenes, increasing this can help performance.
         /// For denser scenes, decreasing this may help.
         /// </summary>
-        public static Fix64 CellSize
+        public static Fix32 CellSize
         {
             get
             {
@@ -34,12 +34,12 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
             }
         }
         //TODO: Try different values for this.
-        internal static Fix64 cellSizeInverse = F64.OneEighth; 
+        internal static Fix32 cellSizeInverse = F64.OneEighth; 
 
         internal static void ComputeCell(ref Vector3 v, out Int2 cell)
         {
-            cell.Y = (int)Fix64Ext.Floor(v.Y.Mul(cellSizeInverse)).ToInt();
-            cell.Z = (int)Fix64Ext.Floor(v.Z.Mul(cellSizeInverse)).ToInt();
+            cell.Y = (int)Fix32Ext.Floor(v.Y.Mul(cellSizeInverse)).ToInt();
+            cell.Z = (int)Fix32Ext.Floor(v.Z.Mul(cellSizeInverse)).ToInt();
         }
 
         

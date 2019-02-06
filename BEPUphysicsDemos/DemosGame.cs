@@ -9,7 +9,7 @@ using BEPUphysicsDrawer.Font;
 using BEPUphysicsDrawer.Lines;
 using BEPUphysicsDrawer.Models;
 using ConversionHelper;
-using FixMath.NET;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

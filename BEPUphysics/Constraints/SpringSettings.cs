@@ -1,6 +1,6 @@
 ﻿using System;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Constraints
 {
@@ -11,16 +11,16 @@ namespace BEPUphysics.Constraints
     /// </summary>
     public class SpringAdvancedSettings
     {
-        internal Fix64 errorReductionFactor = .1m.ToFix();
+        internal Fix32 errorReductionFactor = .1m.ToFix();
 
-        internal Fix64 softness = .00001m.ToFix();
+        internal Fix32 softness = .00001m.ToFix();
 
         internal bool useAdvancedSettings;
 
         /// <summary>
         /// Gets or sets the error reduction parameter of the spring.
         /// </summary>
-        public Fix64 ErrorReductionFactor
+        public Fix32 ErrorReductionFactor
         {
             get { return errorReductionFactor; }
             set { errorReductionFactor = MathHelper.Clamp(value, F64.C0, F64.C1); }
@@ -29,7 +29,7 @@ namespace BEPUphysics.Constraints
         /// <summary>
         /// Gets or sets the softness of the joint.  Higher values allow the constraint to be violated more.
         /// </summary>
-        public Fix64 Softness
+        public Fix32 Softness
         {
             get { return softness; }
             set { softness = MathHelper.Max(F64.C0, value); }
@@ -55,8 +55,8 @@ namespace BEPUphysics.Constraints
     {
         private readonly SpringAdvancedSettings advanced = new SpringAdvancedSettings();
 
-        internal Fix64 damping = F64.C90000;
-        internal Fix64 stiffness = F64.C600000;
+        internal Fix32 damping = F64.C90000;
+        internal Fix32 stiffness = F64.C600000;
 
         /// <summary>
         /// Gets an object containing the solver's direct view of the spring behavior.
@@ -69,7 +69,7 @@ namespace BEPUphysics.Constraints
         /// <summary>
         /// Gets or sets the damping coefficient of this spring.  Higher values reduce oscillation more.
         /// </summary>
-        public Fix64 Damping
+        public Fix32 Damping
         {
             get { return damping; }
             set { damping = MathHelper.Max(F64.C0, value); }
@@ -78,7 +78,7 @@ namespace BEPUphysics.Constraints
         /// <summary>
         /// Gets or sets the stiffness coefficient of this spring.  Higher values make the spring stiffer.
         /// </summary>
-        public Fix64 Stiffness
+        public Fix32 Stiffness
         {
             get { return stiffness; }
             set { stiffness = MathHelper.Max(F64.C0, value); }
@@ -92,7 +92,7 @@ namespace BEPUphysics.Constraints
         /// <param name="updateRate">Inverse simulation timestep.</param>
         /// <param name="errorReduction">Error reduction factor to use this frame.</param>
         /// <param name="softness">Adjusted softness of the constraint for this frame.</param>
-        public void ComputeErrorReductionAndSoftness(Fix64 dt, Fix64 updateRate, out Fix64 errorReduction, out Fix64 softness)
+        public void ComputeErrorReductionAndSoftness(Fix32 dt, Fix32 updateRate, out Fix32 errorReduction, out Fix32 softness)
         {
             if (advanced.useAdvancedSettings)
             {
@@ -103,7 +103,7 @@ namespace BEPUphysics.Constraints
             {
                 if (stiffness == F64.C0 && damping == F64.C0)
                     throw new InvalidOperationException("Constraints cannot have both 0 stiffness and 0 damping.");
-                Fix64 multiplier = F64.C1.Div(((dt.Mul(stiffness)).Add(damping)));
+                Fix32 multiplier = F64.C1.Div(((dt.Mul(stiffness)).Add(damping)));
                 errorReduction = stiffness.Mul(multiplier);
                 softness = updateRate.Mul(multiplier);
             }

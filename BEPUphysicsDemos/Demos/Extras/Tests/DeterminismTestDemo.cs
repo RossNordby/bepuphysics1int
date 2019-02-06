@@ -7,7 +7,7 @@ using BEPUphysics.CollisionShapes.ConvexShapes;
 using Microsoft.Xna.Framework.Graphics;
 using BEPUphysics;
 using BEPUphysicsDrawer.Models;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -114,7 +114,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         }
 
         int frameIndex;
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             base.Update(dt);
             testSpace0.Update();

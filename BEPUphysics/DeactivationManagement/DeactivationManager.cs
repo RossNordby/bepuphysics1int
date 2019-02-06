@@ -4,7 +4,7 @@ using BEPUutilities;
 using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
 using BEPUutilities.Threading;
-using FixMath.NET;
+
 
 namespace BEPUphysics.DeactivationManagement
 {
@@ -16,9 +16,9 @@ namespace BEPUphysics.DeactivationManagement
         private int maximumDeactivationAttemptsPerFrame = 100;
         private int deactivationIslandIndex;
 
-        internal Fix64 velocityLowerLimit = .26m.ToFix();
-        internal Fix64 velocityLowerLimitSquared = (.26m * .26m).ToFix();
-        internal Fix64 lowVelocityTimeMinimum = F64.C1;
+        internal Fix32 velocityLowerLimit = .26m.ToFix();
+        internal Fix32 velocityLowerLimitSquared = (.26m * .26m).ToFix();
+        internal Fix32 lowVelocityTimeMinimum = F64.C1;
 
         ///<summary>
         /// Gets or sets the velocity under which the deactivation system will consider 
@@ -26,7 +26,7 @@ namespace BEPUphysics.DeactivationManagement
         /// for the LowVelocityTimeMinimum).
         /// Defaults to 0.26.
         ///</summary>
-        public Fix64 VelocityLowerLimit
+        public Fix32 VelocityLowerLimit
         {
             get
             {
@@ -44,7 +44,7 @@ namespace BEPUphysics.DeactivationManagement
         /// objects to be deactivation candidates (if their velocity stays below the VelocityLowerLimit for the duration).
         /// Defaults to 1.
         /// </summary>
-        public Fix64 LowVelocityTimeMinimum
+        public Fix32 LowVelocityTimeMinimum
         {
             get
             {
@@ -228,13 +228,13 @@ namespace BEPUphysics.DeactivationManagement
 
         ConcurrentDeque<SimulationIslandConnection> splitAttempts = new ConcurrentDeque<SimulationIslandConnection>();
 
-        static Fix64 maximumSplitAttemptsFraction = .01m.ToFix();
+        static Fix32 maximumSplitAttemptsFraction = .01m.ToFix();
         /// <summary>
         /// Gets or sets the fraction of splits that the deactivation manager will attempt in a single frame.
         /// The total splits queued multiplied by this value results in the number of splits managed.
         /// Defaults to .04f.
         /// </summary>
-        public static Fix64 MaximumSplitAttemptsFraction
+        public static Fix32 MaximumSplitAttemptsFraction
         {
             get
             {

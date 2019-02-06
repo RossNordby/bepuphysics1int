@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using BEPUphysics.CollisionShapes;
 using BEPUphysics.CollisionRuleManagement;
 using BEPUphysics.Materials;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {

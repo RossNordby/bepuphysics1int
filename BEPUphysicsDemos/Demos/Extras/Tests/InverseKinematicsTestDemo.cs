@@ -22,7 +22,7 @@ using Quaternion = BEPUutilities.Quaternion;
 using Ray = BEPUutilities.Ray;
 using Vector2 = BEPUutilities.Vector2;
 using Vector3 = BEPUutilities.Vector3;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -34,7 +34,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             internal StateControl Control;
         }
 
-        private Fix64 distanceToTarget;
+        private Fix32 distanceToTarget;
         private Camera camera;
         public List<Control> Controls { get; set; }
 
@@ -118,7 +118,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         private FreeCameraControlScheme cameraControl;
 
         private DragControl dragControl = new DragControl();
-        private Fix64 distanceToGrabbedBone;
+        private Fix32 distanceToGrabbedBone;
         private StateControlGroup stateControlGroup;
 
 
@@ -185,10 +185,10 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         void BuildStick(Vector3 position)
         {
             //Set up a bone chain.
-            Fix64 fullLength = 20.ToFix();
+            Fix32 fullLength = 20.ToFix();
             int linkCount = 20;
-            Fix64 linkLength = fullLength.Div(linkCount.ToFix());
-            Fix64 linkRadius = linkLength.Mul(0.2m.ToFix());
+            Fix32 linkLength = fullLength.Div(linkCount.ToFix());
+            Fix32 linkRadius = linkLength.Mul(0.2m.ToFix());
             var previousBoneEntity = new Cylinder(position, linkLength, linkRadius, 100.ToFix());
             var previousBone = new Bone(previousBoneEntity.Position, previousBoneEntity.Orientation, previousBoneEntity.Radius, previousBoneEntity.Height);
             bones.Add(new BoneRelationship(previousBone, previousBoneEntity));
@@ -711,8 +711,8 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         void BuildRing(Vector3 position)
         {
             int incrementCount = 20;
-            Fix64 radius = 5.ToFix();
-            Fix64 anglePerIncrement = MathHelper.TwoPi.Div(incrementCount.ToFix());
+            Fix32 radius = 5.ToFix();
+            Fix32 anglePerIncrement = MathHelper.TwoPi.Div(incrementCount.ToFix());
             Bone[] bonesList = new Bone[incrementCount];
             for (int i = 0; i < incrementCount; i++)
             {
@@ -720,9 +720,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 #if !WINDOWS
                 bonePosition = new Vector3();
 #endif
-                bonePosition.X = Fix64Ext.Cos(anglePerIncrement.Mul(i.ToFix()));
+                bonePosition.X = Fix32Ext.Cos(anglePerIncrement.Mul(i.ToFix()));
                 bonePosition.Y = 0.ToFix();
-                bonePosition.Z = Fix64Ext.Sin(anglePerIncrement.Mul(i.ToFix()));
+                bonePosition.Z = Fix32Ext.Sin(anglePerIncrement.Mul(i.ToFix()));
                 bonePosition = bonePosition * radius + position;
                 bonesList[i] = new Bone(bonePosition,
                                      Quaternion.Concatenate(Quaternion.CreateFromAxisAngle(Vector3.Right, MathHelper.PiOver2), Quaternion.CreateFromAxisAngle(Vector3.Up, anglePerIncrement.Neg().Mul(i.ToFix()))),
@@ -813,7 +813,7 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
 
             solver.ActiveSet.UseAutomass = true;
             solver.AutoscaleControlImpulses = true;
-            solver.AutoscaleControlMaximumForce = Fix64.MaxValue;
+            solver.AutoscaleControlMaximumForce = Fix32.MaxValue;
             solver.TimeStepDuration = .1m.ToFix();
             solver.ControlIterationCount = 100;
             solver.FixerIterationCount = 10;
@@ -853,7 +853,7 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
             }
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             cameraControl.Update(dt);
 
@@ -1031,7 +1031,7 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
 
         private bool RayCastBones(Ray ray, out BoneRelationship hitBone, out Vector3 hitPosition)
         {
-            Fix64 t = Fix64.MaxValue;
+            Fix32 t = Fix32.MaxValue;
             hitBone = new BoneRelationship();
             hitPosition = new Vector3();
             for (int i = 0; i < bones.Count; i++)
@@ -1045,7 +1045,7 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
                     hitBone = bones[i];
                 }
             }
-            return t < Fix64.MaxValue;
+            return t < Fix32.MaxValue;
         }
         public bool RayCast(Bone bone, Ray ray, out RayHit hit)
         {
@@ -1067,9 +1067,9 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
                 hit.T = 0.ToFix();
                 hit.Location = localRay.Position;
                 hit.Normal = new Vector3(hit.Location.X, 0.ToFix(), hit.Location.Z);
-                Fix64 normalLengthSquared = hit.Normal.LengthSquared();
+                Fix32 normalLengthSquared = hit.Normal.LengthSquared();
                 if (normalLengthSquared > 1e-9m.ToFix())
-                    Vector3.Divide(ref hit.Normal, Fix64Ext.Sqrt(normalLengthSquared), out hit.Normal);
+                    Vector3.Divide(ref hit.Normal, Fix32Ext.Sqrt(normalLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
                 //Pull the hit into world space.
@@ -1082,7 +1082,7 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
             //The projected ray is then tested against the circle to compute the time of impact.
             //That time of impact is used to compute the 3d hit location.
             Vector2 planeDirection = new Vector2(localRay.Direction.X, localRay.Direction.Z);
-            Fix64 planeDirectionLengthSquared = planeDirection.LengthSquared();
+            Fix32 planeDirectionLengthSquared = planeDirection.LengthSquared();
 
             if (planeDirectionLengthSquared < Toolbox.Epsilon)
             {
@@ -1100,15 +1100,15 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
 
             }
             Vector2 planeOrigin = new Vector2(localRay.Position.X, localRay.Position.Z);
-            Fix64 dot;
+            Fix32 dot;
             Vector2.Dot(ref planeDirection, ref planeOrigin, out dot);
-            Fix64 closestToCenterT = dot.Neg().Div(planeDirectionLengthSquared);
+            Fix32 closestToCenterT = dot.Neg().Div(planeDirectionLengthSquared);
 
             Vector2 closestPoint;
             Vector2.Multiply(ref planeDirection, closestToCenterT, out closestPoint);
             Vector2.Add(ref planeOrigin, ref closestPoint, out closestPoint);
             //How close does the ray come to the circle?
-            Fix64 squaredDistance = closestPoint.LengthSquared();
+            Fix32 squaredDistance = closestPoint.LengthSquared();
             if (squaredDistance > radius.Mul(radius))
             {
                 //It's too far!  The ray cannot possibly hit the capsule.
@@ -1119,8 +1119,8 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
 
 
             //With the squared distance, compute the distance backward along the ray from the closest point on the ray to the axis.
-            Fix64 backwardsDistance = radius.Mul(Fix64Ext.Sqrt(1.ToFix().Sub(squaredDistance.Div((radius.Mul(radius))))));
-            Fix64 tOffset = backwardsDistance.Div(Fix64Ext.Sqrt(planeDirectionLengthSquared));
+            Fix32 backwardsDistance = radius.Mul(Fix32Ext.Sqrt(1.ToFix().Sub(squaredDistance.Div((radius.Mul(radius))))));
+            Fix32 tOffset = backwardsDistance.Div(Fix32Ext.Sqrt(planeDirectionLengthSquared));
 
             hit.T = closestToCenterT.Sub(tOffset);
 
@@ -1133,9 +1133,9 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
             {
                 //Yup!
                 hit.Normal = new Vector3(hit.Location.X, 0.ToFix(), hit.Location.Z);
-                Fix64 normalLengthSquared = hit.Normal.LengthSquared();
+                Fix32 normalLengthSquared = hit.Normal.LengthSquared();
                 if (normalLengthSquared > 1e-9m.ToFix())
-                    Vector3.Divide(ref hit.Normal, Fix64Ext.Sqrt(normalLengthSquared), out hit.Normal);
+                    Vector3.Divide(ref hit.Normal, Fix32Ext.Sqrt(normalLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
                 //Pull the hit into world space.
@@ -1155,7 +1155,7 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
                 hit = new RayHit();
                 return false;
             }
-            Fix64 t = (halfHeight.Sub(localRay.Position.Y)).Div(localRay.Direction.Y);
+            Fix32 t = (halfHeight.Sub(localRay.Position.Y)).Div(localRay.Direction.Y);
             Vector3 planeIntersection;
             Vector3.Multiply(ref localRay.Direction, t, out planeIntersection);
             Vector3.Add(ref localRay.Position, ref planeIntersection, out planeIntersection);

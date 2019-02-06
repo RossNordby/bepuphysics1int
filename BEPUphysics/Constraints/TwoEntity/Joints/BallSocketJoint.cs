@@ -3,7 +3,7 @@ using BEPUphysics.Entities;
 using BEPUutilities;
  
 using System.Diagnostics;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Constraints.TwoEntity.Joints
 {
@@ -208,13 +208,13 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Called by preStep(Fix64 dt)
         /// </summary>
         /// <param name="dt">Time in seconds since the last update.</param>
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             Matrix3x3.Transform(ref localAnchorA, ref connectionA.orientationMatrix, out worldOffsetA);
             Matrix3x3.Transform(ref localAnchorB, ref connectionB.orientationMatrix, out worldOffsetB);
 
 
-            Fix64 errorReductionParameter;
+            Fix32 errorReductionParameter;
             springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReductionParameter, out softness);
 
             //Mass Matrix
@@ -266,10 +266,10 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Multiply(ref error, errorReductionParameter.Neg(), out biasVelocity);
 
             //Ensure that the corrective velocity doesn't exceed the max.
-            Fix64 length = biasVelocity.LengthSquared();
+            Fix32 length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                Fix64 multiplier = maxCorrectiveVelocity.Div(Fix64Ext.Sqrt(length));
+                Fix32 multiplier = maxCorrectiveVelocity.Div(Fix32Ext.Sqrt(length));
 				biasVelocity.X = biasVelocity.X.Mul(multiplier);
 				biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
 				biasVelocity.Z = biasVelocity.Z.Mul(multiplier);
@@ -316,7 +316,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Calculates and applies corrective impulses.
         /// Called automatically by space.
         /// </summary>
-        public override Fix64 SolveIteration()
+        public override Fix32 SolveIteration()
         {
 #if !WINDOWS
             Vector3 lambda = new Vector3();
@@ -367,7 +367,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 connectionB.ApplyAngularImpulse(ref tbImpulse);
             }
 
-            return ((Fix64Ext.Abs(lambda.X).Add(Fix64Ext.Abs(lambda.Y))).Add(Fix64Ext.Abs(lambda.Z)));
+            return ((Fix32Ext.Abs(lambda.X).Add(Fix32Ext.Abs(lambda.Y))).Add(Fix32Ext.Abs(lambda.Z)));
         }
     }
 }

@@ -5,7 +5,7 @@ using BEPUphysics.Entities;
 using BEPUphysics.CollisionRuleManagement;
 using BEPUutilities;
 using BEPUphysics.Materials;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Vehicle
 {
@@ -36,7 +36,7 @@ namespace BEPUphysics.Vehicle
         /// This transform is applied first when creating the shape's worldTransform.</param>
         /// <param name="includeSteeringTransformInCast">Whether or not to include the steering transform in the wheel shape cast. If false, the casted wheel shape will always point straight forward.
         /// If true, it will rotate with steering. Sometimes, setting this to false is helpful when the cast shape would otherwise become exposed when steering.</param>
-        public CylinderCastWheelShape(Fix64 radius, Fix64 width, Quaternion localWheelOrientation, Matrix localGraphicTransform, bool includeSteeringTransformInCast)
+        public CylinderCastWheelShape(Fix32 radius, Fix32 width, Quaternion localWheelOrientation, Matrix localGraphicTransform, bool includeSteeringTransformInCast)
         {
             shape = new CylinderShape(width, radius);
             this.LocalWheelOrientation = localWheelOrientation;
@@ -47,7 +47,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the radius of the wheel.
         /// </summary>
-        public override sealed Fix64 Radius
+        public override sealed Fix32 Radius
         {
             get { return shape.Radius; }
             set
@@ -60,7 +60,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the width of the wheel.
         /// </summary>
-        public Fix64 Width
+        public Fix32 Width
         {
             get { return shape.Height; }
             set
@@ -100,7 +100,7 @@ namespace BEPUphysics.Vehicle
             Vector3 worldDirection;
             Matrix.Transform(ref wheel.suspension.localDirection, ref worldTransform, out worldDirection);
 
-            Fix64 length = wheel.suspension.currentLength;
+            Fix32 length = wheel.suspension.currentLength;
             newPosition.X = worldAttachmentPoint.X.Add(worldDirection.X.Mul(length));
             newPosition.Y = worldAttachmentPoint.Y.Add(worldDirection.Y.Mul(length));
             newPosition.Z = worldAttachmentPoint.Z.Add(worldDirection.Z.Mul(length));
@@ -130,9 +130,9 @@ namespace BEPUphysics.Vehicle
         /// <param name="entity">Supporting object.</param>
         /// <param name="material">Material of the wheel.</param>
         /// <returns>Whether or not any support was found.</returns>
-        protected internal override bool FindSupport(out Vector3 location, out Vector3 normal, out Fix64 suspensionLength, out Collidable supportingCollidable, out Entity entity, out Material material)
+        protected internal override bool FindSupport(out Vector3 location, out Vector3 normal, out Fix32 suspensionLength, out Collidable supportingCollidable, out Entity entity, out Material material)
         {
-            suspensionLength = Fix64.MaxValue;
+            suspensionLength = Fix32.MaxValue;
             location = Toolbox.NoVector;
             supportingCollidable = null;
             entity = null;
@@ -189,7 +189,7 @@ rayHit.T.Mul(wheel.suspension.restLength) < suspensionLength)
             {
                 if (suspensionLength > F64.C0)
                 {
-                    Fix64 dot;
+                    Fix32 dot;
                     Vector3.Dot(ref normal, ref wheel.suspension.worldDirection, out dot);
                     if (dot > F64.C0)
                     {

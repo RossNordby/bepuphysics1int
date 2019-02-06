@@ -4,7 +4,7 @@ using BEPUphysics;
 using System.Collections.Generic;
 using BEPUphysics.Entities;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -46,7 +46,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         }
 
         Random random = new Random();
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             base.Update(dt);
             for (int i = 0; i < entities.Count; i++)
@@ -76,7 +76,7 @@ timeSinceLastReset.Add(dt);
             }   
         }
         static int resets;
-        Fix64 timeSinceLastReset;
+        Fix32 timeSinceLastReset;
 
         /// <summary>
         /// Gets the name of the simulation.

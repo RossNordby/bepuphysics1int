@@ -2,7 +2,7 @@
 using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -28,7 +28,7 @@ namespace BEPUphysicsDemos.Demos
             int numColumns = 15;
             int numRows = 15;
             int numHigh = 15;
-			Fix64 separation = 3.ToFix();
+			Fix32 separation = 3.ToFix();
 
             Entity toAdd;
 

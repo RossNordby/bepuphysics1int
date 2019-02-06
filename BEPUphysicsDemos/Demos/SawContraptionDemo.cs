@@ -4,7 +4,7 @@ using BEPUphysics.Constraints.SolverGroups;
 using BEPUphysics.Constraints.TwoEntity.Motors;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -83,9 +83,9 @@ namespace BEPUphysicsDemos.Demos
             Space.Add(new Box(new Vector3(0.ToFix(), (-3).ToFix(), 0.ToFix()), 20.ToFix(), 1.ToFix(), 20.ToFix()));
 
             //Make some debris for the saw to chop.
-            for (Fix64 k = 0.ToFix(); k < MathHelper.Pi.Mul(2.ToFix()); k = k.Add(MathHelper.Pi.Div(20.ToFix())))
+            for (Fix32 k = 0.ToFix(); k < MathHelper.Pi.Mul(2.ToFix()); k = k.Add(MathHelper.Pi.Div(20.ToFix())))
             {
-                Space.Add(new Box(new Vector3(Fix64Ext.Cos(k).Mul(4.ToFix()), (-2).ToFix(), Fix64Ext.Sin(k).Mul(6.5m.ToFix())), .5m.ToFix(), 1.ToFix(), .5m.ToFix(), 10.ToFix()));
+                Space.Add(new Box(new Vector3(Fix32Ext.Cos(k).Mul(4.ToFix()), (-2).ToFix(), Fix32Ext.Sin(k).Mul(6.5m.ToFix())), .5m.ToFix(), 1.ToFix(), .5m.ToFix(), 10.ToFix()));
             }
 
 

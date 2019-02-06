@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System;
 using BEPUutilities;
 using BEPUphysics.Constraints;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -47,9 +47,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
             int width = 15;
             int height = 15;
-            Fix64 blockWidth = 2.ToFix();
-            Fix64 blockHeight = 1.ToFix();
-            Fix64 blockLength = 1.ToFix();
+            Fix32 blockWidth = 2.ToFix();
+            Fix32 blockHeight = 1.ToFix();
+            Fix32 blockLength = 1.ToFix();
 
 
 

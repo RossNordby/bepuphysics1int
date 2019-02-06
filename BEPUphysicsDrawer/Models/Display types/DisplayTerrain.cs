@@ -8,7 +8,7 @@ using System;
 using Matrix = Microsoft.Xna.Framework.Matrix;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDrawer.Models
 {

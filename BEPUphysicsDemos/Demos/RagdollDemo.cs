@@ -10,7 +10,7 @@ using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -28,8 +28,8 @@ namespace BEPUphysicsDemos.Demos
         {
             int numRows = 8;
             int numColumns = 3;
-            Fix64 xSpacing = 5.ToFix();
-            Fix64 zSpacing = 5.ToFix();
+            Fix32 xSpacing = 5.ToFix();
+            Fix32 zSpacing = 5.ToFix();
             for (int i = 0; i < numRows; i++)
             {
                 for (int j = 0; j < numColumns; j++)

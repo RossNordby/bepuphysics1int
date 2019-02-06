@@ -2,7 +2,7 @@
 using BEPUphysics.Entities;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
-using FixMath.NET;
+
 
 namespace BEPUphysics.DeactivationManagement
 {
@@ -15,8 +15,8 @@ namespace BEPUphysics.DeactivationManagement
         //This system could be expanded to allow non-entity simulation island members.
         //However, there are no such objects on the near horizon, and it is unlikely that anyone will be interested in developing custom simulation island members.
         Entity owner;
-		Fix64 previousVelocity;
-        internal Fix64 velocityTimeBelowLimit;
+		Fix32 previousVelocity;
+        internal Fix32 velocityTimeBelowLimit;
         internal bool isSlowing;
 
         /// <summary>
@@ -51,10 +51,10 @@ namespace BEPUphysics.DeactivationManagement
         /// Updates the member's deactivation state.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public void UpdateDeactivationCandidacy(Fix64 dt)
+        public void UpdateDeactivationCandidacy(Fix32 dt)
         {
             //Get total velocity, and see if the entity is losing energy.
-            Fix64 velocity = owner.linearVelocity.LengthSquared().Add(owner.angularVelocity.LengthSquared());
+            Fix32 velocity = owner.linearVelocity.LengthSquared().Add(owner.angularVelocity.LengthSquared());
 
             bool isActive = IsActive;
             if (isActive)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
 using BEPUphysics.CollisionShapes.ConvexShapes;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {

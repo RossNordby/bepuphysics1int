@@ -1,5 +1,5 @@
 ﻿using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUik
 {
@@ -51,7 +51,7 @@ namespace BEPUik
             Quaternion.Concatenate(ref bTargetConjugate, ref ConnectionB.Orientation, out error);
 
             //Convert the error into an axis-angle vector usable for bias velocity.
-            Fix64 angle;
+            Fix32 angle;
             Vector3 axis;
             Quaternion.GetAxisAngleFromQuaternion(ref error, out axis, out angle);
 

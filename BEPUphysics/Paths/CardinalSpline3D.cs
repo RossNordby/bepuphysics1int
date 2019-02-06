@@ -1,7 +1,7 @@
 ﻿
 
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Paths
 {
@@ -11,14 +11,14 @@ namespace BEPUphysics.Paths
     /// </summary>
     public class CardinalSpline3D : HermiteCurve3D
     {
-        private Fix64 tension;
+        private Fix32 tension;
 
         /// <summary>
         /// Gets or sets the tension parameter of the cardinal spline.
         /// A value of 0 acts like a Catmull-Rom spline, while a 
         /// value of 1 produces 0-length tangents.
         /// </summary>
-        public Fix64 Tension
+        public Fix32 Tension
         {
             get { return tension; }
             set { tension = MathHelper.Clamp(value, F64.C0, F64.C1); }

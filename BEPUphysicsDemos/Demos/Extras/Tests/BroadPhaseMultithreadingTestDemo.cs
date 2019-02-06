@@ -9,7 +9,7 @@ using BEPUphysics.CollisionRuleManagement;
 using BEPUphysics.BroadPhaseSystems;
 using BEPUphysics.BroadPhaseSystems.Hierarchies;
 using BEPUutilities.Threading;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -269,7 +269,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 #endregion
                 #region Ray cast timing
                 case Test.RayCast:
-                    Fix64 rayLength = 100.ToFix();
+                    Fix32 rayLength = 100.ToFix();
                     RawList<Ray> rays = new RawList<Ray>();
                     for (int i = 0; i < numRuns; i++)
                     {
@@ -301,7 +301,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
                 #endregion
                 #region Bounding box query timing
                 case Test.BoundingBoxQuery:
-                    Fix64 boundingBoxSize = 10.ToFix();
+                    Fix32 boundingBoxSize = 10.ToFix();
                     var boundingBoxes = new RawList<BoundingBox>();
                     Vector3 offset = new Vector3(boundingBoxSize.Div(2.ToFix()), boundingBoxSize.Div(2.ToFix()), boundingBoxSize.Div(2.ToFix()));
                     for (int i = 0; i < numRuns; i++)
@@ -343,7 +343,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         {
             for (int i = 0; i < entities.Count; i++)
             {
-                Fix64 speed = .1m.ToFix();
+                Fix32 speed = .1m.ToFix();
                 //entities[i].Position += new Vector3((Fix64)rand.NextDouble() * speed - speed * .5m, (Fix64)rand.NextDouble() * speed - speed * .5m, (Fix64)rand.NextDouble() * speed - speed * .5m);
                 entities[i].Position += new Vector3(0.ToFix(), speed, 0.ToFix());
                 entities[i].CollisionInformation.UpdateBoundingBox(0.ToFix());

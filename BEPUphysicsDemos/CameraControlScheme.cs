@@ -1,4 +1,4 @@
-﻿using FixMath.NET;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +31,7 @@ namespace BEPUphysicsDemos
         /// Updates the camera state according to the control scheme.
         /// </summary>
         /// <param name="dt">Time elapsed since previous frame.</param>
-        public virtual void Update(Fix64 dt)
+        public virtual void Update(Fix32 dt)
         {
 #if XBOX360
             Yaw += Game.GamePadInput.ThumbSticks.Right.X * -1.5m * dt;

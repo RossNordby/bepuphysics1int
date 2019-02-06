@@ -2,7 +2,7 @@
 using BEPUphysics.Entities;
  
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Constraints.TwoEntity.Joints
 {
@@ -12,15 +12,15 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
     /// </summary>
     public class SwivelHingeAngularJoint : Joint, I1DImpulseConstraintWithError, I1DJacobianConstraint
     {
-        private Fix64 accumulatedImpulse;
-        private Fix64 biasVelocity;
+        private Fix32 accumulatedImpulse;
+        private Fix32 biasVelocity;
         private Vector3 jacobianA, jacobianB;
-        private Fix64 error;
+        private Fix32 error;
         private Vector3 localHingeAxis;
         private Vector3 localTwistAxis;
         private Vector3 worldHingeAxis;
         private Vector3 worldTwistAxis;
-        private Fix64 velocityToImpulse;
+        private Fix32 velocityToImpulse;
 
         /// <summary>
         /// Constructs a new constraint which allows relative angular motion around a hinge axis and a twist axis.
@@ -111,11 +111,11 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Gets the current relative velocity between the connected entities with respect to the constraint.
         /// </summary>
-        public Fix64 RelativeVelocity
+        public Fix32 RelativeVelocity
         {
             get
             {
-                Fix64 velocityA, velocityB;
+                Fix32 velocityA, velocityB;
                 //Find the velocity contribution from each connection
                 Vector3.Dot(ref connectionA.angularVelocity, ref jacobianA, out velocityA);
                 Vector3.Dot(ref connectionB.angularVelocity, ref jacobianB, out velocityB);
@@ -126,7 +126,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Gets the total impulse applied by this constraint.
         /// </summary>
-        public Fix64 TotalImpulse
+        public Fix32 TotalImpulse
         {
             get { return accumulatedImpulse; }
         }
@@ -134,7 +134,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Gets the current constraint error.
         /// </summary>
-        public Fix64 Error
+        public Fix32 Error
         {
             get { return error; }
         }
@@ -183,7 +183,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Gets the mass matrix of the constraint.
         /// </summary>
         /// <param name="outputMassMatrix">Constraint's mass matrix.</param>
-        public void GetMassMatrix(out Fix64 outputMassMatrix)
+        public void GetMassMatrix(out Fix32 outputMassMatrix)
         {
             outputMassMatrix = velocityToImpulse;
         }
@@ -193,14 +193,14 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Solves for velocity.
         /// </summary>
-        public override Fix64 SolveIteration()
+        public override Fix32 SolveIteration()
         {
-            Fix64 velocityA, velocityB;
+            Fix32 velocityA, velocityB;
             //Find the velocity contribution from each connection
             Vector3.Dot(ref connectionA.angularVelocity, ref jacobianA, out velocityA);
             Vector3.Dot(ref connectionB.angularVelocity, ref jacobianB, out velocityB);
             //Add in the constraint space bias velocity
-            Fix64 lambda = ((velocityA.Add(velocityB).Neg()).Sub(biasVelocity)).Sub(softness.Mul(accumulatedImpulse));
+            Fix32 lambda = ((velocityA.Add(velocityB).Neg()).Sub(biasVelocity)).Sub(softness.Mul(accumulatedImpulse));
 
 			//Transform to an impulse
 			lambda =
@@ -223,14 +223,14 @@ accumulatedImpulse.Add(lambda);
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return (Fix64Ext.Abs(lambda));
+            return (Fix32Ext.Abs(lambda));
         }
 
         /// <summary>
         /// Do any necessary computations to prepare the constraint for this frame.
         /// </summary>
         /// <param name="dt">Simulation step length.</param>
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             //Transform the axes into world space.
             Matrix3x3.Transform(ref localHingeAxis, ref connectionA.orientationMatrix, out worldHingeAxis);
@@ -240,16 +240,16 @@ accumulatedImpulse.Add(lambda);
             Vector3.Dot(ref worldHingeAxis, ref worldTwistAxis, out error);
             //Compute the correction velocity.
 
-            Fix64 errorReduction;
+            Fix32 errorReduction;
             springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReduction, out softness);
 
             biasVelocity = MathHelper.Clamp(error.Mul(errorReduction), maxCorrectiveVelocity.Neg(), maxCorrectiveVelocity);
 
             //Compute the jacobian
             Vector3.Cross(ref worldHingeAxis, ref worldTwistAxis, out jacobianA);
-            Fix64 length = jacobianA.LengthSquared();
+            Fix32 length = jacobianA.LengthSquared();
             if (length > Toolbox.Epsilon)
-                Vector3.Divide(ref jacobianA, Fix64Ext.Sqrt(length), out jacobianA);
+                Vector3.Divide(ref jacobianA, Fix32Ext.Sqrt(length), out jacobianA);
             else
                 jacobianA = new Vector3();
             jacobianB.X = jacobianA.X.Neg();
@@ -259,7 +259,7 @@ accumulatedImpulse.Add(lambda);
 
             //****** EFFECTIVE MASS MATRIX ******//
             //Connection A's contribution to the mass matrix
-            Fix64 entryA;
+            Fix32 entryA;
             Vector3 transformedAxis;
             if (connectionA.isDynamic)
             {
@@ -270,7 +270,7 @@ accumulatedImpulse.Add(lambda);
                 entryA = F64.C0;
 
             //Connection B's contribution to the mass matrix
-            Fix64 entryB;
+            Fix32 entryB;
             if (connectionB.isDynamic)
             {
                 Matrix3x3.Transform(ref jacobianB, ref connectionB.inertiaTensorInverse, out transformedAxis);

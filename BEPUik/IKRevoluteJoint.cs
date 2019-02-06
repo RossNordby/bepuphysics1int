@@ -1,6 +1,6 @@
 ﻿using System;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUik
 {
@@ -69,13 +69,13 @@ namespace BEPUik
         {
             Vector3 worldAxisA = WorldFreeAxisA;
             Vector3 error = Vector3.Cross(worldAxisA, WorldFreeAxisB);
-            Fix64 lengthSquared = error.LengthSquared();
+            Fix32 lengthSquared = error.LengthSquared();
             Vector3 worldConstrainedAxis1, worldConstrainedAxis2;
             //Find the first constrained axis.
             if (lengthSquared > Toolbox.Epsilon)
             {
                 //The error direction can be used as the first axis!
-                Vector3.Divide(ref error, Fix64Ext.Sqrt(lengthSquared), out worldConstrainedAxis1);
+                Vector3.Divide(ref error, Fix32Ext.Sqrt(lengthSquared), out worldConstrainedAxis1);
             }
             else
             {
@@ -86,7 +86,7 @@ namespace BEPUik
                 if (lengthSquared > Toolbox.Epsilon)
                 {
                     //The up vector worked!
-                    Vector3.Divide(ref worldConstrainedAxis1, Fix64Ext.Sqrt(lengthSquared), out worldConstrainedAxis1);
+                    Vector3.Divide(ref worldConstrainedAxis1, Fix32Ext.Sqrt(lengthSquared), out worldConstrainedAxis1);
                 }
                 else
                 {

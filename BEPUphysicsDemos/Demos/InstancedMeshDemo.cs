@@ -4,7 +4,7 @@ using BEPUphysics.CollisionShapes;
 using BEPUphysics.DataStructures;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using FixMath.NET;
+
 using Microsoft.Xna.Framework.Graphics;
 
 namespace BEPUphysicsDemos.Demos

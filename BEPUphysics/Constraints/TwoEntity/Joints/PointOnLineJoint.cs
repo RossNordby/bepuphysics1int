@@ -1,7 +1,7 @@
 using System;
 using BEPUphysics.Entities;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysics.Constraints.TwoEntity.Joints
 {
@@ -273,7 +273,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Calculates and applies corrective impulses.
         /// Called automatically by space.
         /// </summary>
-        public override Fix64 SolveIteration()
+        public override Fix32 SolveIteration()
         {
             #region Theory
 
@@ -351,8 +351,8 @@ lambda.X.Add(biasVelocity.X.Add(softness.Mul(accumulatedImpulse.X)));
 
             Vector2.Add(ref lambda, ref accumulatedImpulse, out accumulatedImpulse);
 
-            Fix64 x = lambda.X;
-            Fix64 y = lambda.Y;
+            Fix32 x = lambda.X;
+            Fix32 y = lambda.Y;
             //Apply impulse
 #if !WINDOWS
             Vector3 impulse = new Vector3();
@@ -386,14 +386,14 @@ lambda.X.Add(biasVelocity.X.Add(softness.Mul(accumulatedImpulse.X)));
                 connectionB.ApplyLinearImpulse(ref impulse);
                 connectionB.ApplyAngularImpulse(ref torque);
             }
-            return (Fix64Ext.Abs(lambda.X).Add(Fix64Ext.Abs(lambda.Y)));
+            return (Fix32Ext.Abs(lambda.X).Add(Fix32Ext.Abs(lambda.Y)));
         }
 
         ///<summary>
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             //Transform local axes into world space
             Matrix3x3.Transform(ref localRestrictedAxis1, ref connectionA.orientationMatrix, out worldRestrictedAxis1);
@@ -409,7 +409,7 @@ lambda.X.Add(biasVelocity.X.Add(softness.Mul(accumulatedImpulse.X)));
             //Find the point on the line closest to the world point.
             Vector3 offset;
             Vector3.Subtract(ref worldPoint, ref worldLineAnchor, out offset);
-            Fix64 distanceAlongAxis;
+            Fix32 distanceAlongAxis;
             Vector3.Dot(ref offset, ref worldLineDirection, out distanceAlongAxis);
 
             Vector3 worldNearPoint;
@@ -424,19 +424,19 @@ lambda.X.Add(biasVelocity.X.Add(softness.Mul(accumulatedImpulse.X)));
             Vector3.Dot(ref error3D, ref worldRestrictedAxis1, out error.X);
             Vector3.Dot(ref error3D, ref worldRestrictedAxis2, out error.Y);
 
-            Fix64 errorReduction;
+            Fix32 errorReduction;
             springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReduction, out softness);
-            Fix64 bias = errorReduction.Neg();
+            Fix32 bias = errorReduction.Neg();
 
 
             biasVelocity.X = bias.Mul(error.X);
             biasVelocity.Y = bias.Mul(error.Y);
 
             //Ensure that the corrective velocity doesn't exceed the max.
-            Fix64 length = biasVelocity.LengthSquared();
+            Fix32 length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                Fix64 multiplier = maxCorrectiveVelocity.Div(Fix64Ext.Sqrt(length));
+                Fix32 multiplier = maxCorrectiveVelocity.Div(Fix32Ext.Sqrt(length));
 				biasVelocity.X = biasVelocity.X.Mul(multiplier);
 				biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
             }
@@ -447,8 +447,8 @@ lambda.X.Add(biasVelocity.X.Add(softness.Mul(accumulatedImpulse.X)));
             Vector3.Cross(ref rA, ref worldRestrictedAxis2, out angularA2);
             Vector3.Cross(ref worldRestrictedAxis2, ref rB, out angularB2);
 
-            Fix64 m11 = F64.C0, m22 = F64.C0, m1221 = F64.C0;
-            Fix64 inverseMass;
+            Fix32 m11 = F64.C0, m22 = F64.C0, m1221 = F64.C0;
+            Fix32 inverseMass;
             Vector3 intermediate;
             //Compute the effective mass matrix.
             if (connectionA.isDynamic)
@@ -467,7 +467,7 @@ lambda.X.Add(biasVelocity.X.Add(softness.Mul(accumulatedImpulse.X)));
 
             if (connectionB.isDynamic)
             {
-                Fix64 extra;
+                Fix32 extra;
                 inverseMass = connectionB.inverseMass;
                 Matrix3x3.Transform(ref angularB1, ref connectionB.inertiaTensorInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref angularB1, out extra);
@@ -506,8 +506,8 @@ lambda.X.Add(biasVelocity.X.Add(softness.Mul(accumulatedImpulse.X)));
             Vector3 impulse;
             Vector3 torque;
 #endif
-            Fix64 x = accumulatedImpulse.X;
-            Fix64 y = accumulatedImpulse.Y;
+            Fix32 x = accumulatedImpulse.X;
+            Fix32 y = accumulatedImpulse.Y;
             impulse.X = (worldRestrictedAxis1.X.Mul(x)).Add(worldRestrictedAxis2.X.Mul(y));
             impulse.Y = (worldRestrictedAxis1.Y.Mul(x)).Add(worldRestrictedAxis2.Y.Mul(y));
             impulse.Z = (worldRestrictedAxis1.Z.Mul(x)).Add(worldRestrictedAxis2.Z.Mul(y));

@@ -5,7 +5,7 @@ using BEPUphysics.Entities.Prefabs;
 using BEPUphysics.Materials;
 using BEPUphysics.Settings;
 using BEPUutilities;
-using FixMath.NET;
+
 using Microsoft.Xna.Framework.Input;
 
 namespace BEPUphysicsDemos.Demos.Extras
@@ -22,20 +22,20 @@ namespace BEPUphysicsDemos.Demos.Extras
         public SolidPyramidDemo(DemosGame game)
             : base(game)
         {
-            Fix64 boxSize = 1.ToFix();
+            Fix32 boxSize = 1.ToFix();
             int bottomBoxCount = 10;
 
             var ground = new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), 40.ToFix(), 1.ToFix(), 40.ToFix());
             Space.Add(ground);
 
-            Fix64 spacing = 0.05m.ToFix();
+            Fix32 spacing = 0.05m.ToFix();
 
-            Fix64 offset = (-0.5m).ToFix().Mul((((bottomBoxCount - 1).ToFix()).Mul((boxSize.Add(spacing)))));
+            Fix32 offset = (-0.5m).ToFix().Mul((((bottomBoxCount - 1).ToFix()).Mul((boxSize.Add(spacing)))));
             var origin = new Vector3(offset, boxSize.Neg().Mul(0.5m.ToFix()), offset);
             for (int heightIndex = 0; heightIndex < bottomBoxCount - 2; ++heightIndex)
             {
                 var levelWidth = bottomBoxCount - heightIndex;
-                Fix64 perBoxWidth = boxSize.Add(spacing);
+                Fix32 perBoxWidth = boxSize.Add(spacing);
 				//Move the origin for this level.
 				origin.X =
 origin.X.Add(perBoxWidth.Mul(0.5m.ToFix()));

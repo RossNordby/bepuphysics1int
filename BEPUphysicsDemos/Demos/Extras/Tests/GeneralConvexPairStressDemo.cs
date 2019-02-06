@@ -3,7 +3,7 @@ using System;
 using BEPUphysics.CollisionShapes;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos.Extras.Tests
 {
@@ -15,9 +15,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
 
         Random random = new Random();
-        Fix64 width = 45.ToFix();
-        Fix64 height = 45.ToFix();
-        Fix64 length = 45.ToFix();
+        Fix32 width = 45.ToFix();
+        Fix32 height = 45.ToFix();
+        Fix32 length = 45.ToFix();
         /// <summary>
         /// Constructs a new demo.
         /// </summary>
@@ -69,19 +69,19 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 (random.NextDouble().ToFix().Mul(2.ToFix())).Sub(1.ToFix()),
 (random.NextDouble().ToFix().Mul(2.ToFix())).Sub(1.ToFix()))),
 random.NextDouble().ToFix().Mul(50.ToFix()));
-            Fix64 linearFactor = 0.5m.ToFix();
+            Fix32 linearFactor = 0.5m.ToFix();
             entity.LinearVelocity = new Vector3(
 (random.NextDouble().ToFix().Mul(2.ToFix()).Sub(1.ToFix())).Mul(linearFactor),
 (random.NextDouble().ToFix().Mul(2.ToFix()).Sub(1.ToFix())).Mul(linearFactor),
 ((random.NextDouble().ToFix().Mul(2.ToFix())).Sub(1.ToFix())).Mul(linearFactor));
-            Fix64 angularFactor = 0.5m.ToFix();
+            Fix32 angularFactor = 0.5m.ToFix();
             entity.AngularVelocity = new Vector3(
 (random.NextDouble().ToFix().Mul(2.ToFix()).Sub(1.ToFix())).Mul(angularFactor),
 (random.NextDouble().ToFix().Mul(2.ToFix()).Sub(1.ToFix())).Mul(angularFactor),
 ((random.NextDouble().ToFix().Mul(2.ToFix())).Sub(1.ToFix())).Mul(angularFactor));
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             for (int i = 0; i < 10; i++)
             {

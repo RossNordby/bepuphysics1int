@@ -5,7 +5,7 @@ using BEPUphysics.UpdateableSystems.ForceFields;
 using BEPUphysicsDemos.SampleCode;
 using BEPUphysics.NarrowPhaseSystems;
 using BEPUutilities;
-using FixMath.NET;
+
 
 namespace BEPUphysicsDemos.Demos
 {
@@ -39,7 +39,7 @@ namespace BEPUphysicsDemos.Demos
             int numColumns = 10;
             int numRows = 10;
             int numHigh = 10;
-            Fix64 separation = 5.ToFix();
+            Fix32 separation = 5.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
@@ -64,7 +64,7 @@ namespace BEPUphysicsDemos.Demos
             get { return "Planet"; }
         }
 
-        public override void Update(Fix64 dt)
+        public override void Update(Fix32 dt)
         {
             //Orient the character and camera as needed.
             if (character.IsActive)

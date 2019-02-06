@@ -1,4 +1,4 @@
-﻿using FixMath.NET;
+﻿
 using System;
 
 namespace BEPUutilities
@@ -11,22 +11,22 @@ namespace BEPUutilities
         /// <summary>
         /// Approximate value of Pi.
         /// </summary>
-        public static readonly Fix64 Pi = Fix64.Pi;
+        public static readonly Fix32 Pi = Fix32.Pi;
 
     /// <summary>
     /// Approximate value of Pi multiplied by two.
     /// </summary>
-    public static readonly Fix64 TwoPi = Fix64.PiTimes2;
+    public static readonly Fix32 TwoPi = Fix32.PiTimes2;
 
     /// <summary>
     /// Approximate value of Pi divided by two.
     /// </summary>
-    public static readonly Fix64 PiOver2 = Fix64.PiOver2;
+    public static readonly Fix32 PiOver2 = Fix32.PiOver2;
 
     /// <summary>
     /// Approximate value of Pi divided by four.
     /// </summary>
-    public static readonly Fix64 PiOver4 = Fix64.Pi.Div((4.ToFix()));
+    public static readonly Fix32 PiOver4 = Fix32.Pi.Div((4.ToFix()));
 
     /// <summary>
     /// Calculate remainder of of Fix64 division using same algorithm
@@ -35,9 +35,9 @@ namespace BEPUutilities
     /// <param name="dividend">Dividend</param>
     /// <param name="divisor">Divisor</param>
     /// <returns>Remainder</returns>
-    public static Fix64 IEEERemainder(Fix64 dividend, Fix64 divisor)
+    public static Fix32 IEEERemainder(Fix32 dividend, Fix32 divisor)
     {
-		return dividend.Sub((divisor.Mul(Fix64Ext.Round(dividend.Div(divisor)))));
+		return dividend.Sub((divisor.Mul(Fix32Ext.Round(dividend.Div(divisor)))));
     }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="angle">Angle to wrap.</param>
         /// <returns>Wrapped angle.</returns>
-        public static Fix64 WrapAngle(Fix64 angle)
+        public static Fix32 WrapAngle(Fix32 angle)
         {
             angle = IEEERemainder(angle, TwoPi);
             if (angle < Pi.Neg())
@@ -68,7 +68,7 @@ namespace BEPUutilities
         /// <param name="min">Minimum value.  If the value is less than this, the minimum is returned instead.</param>
         /// <param name="max">Maximum value.  If the value is more than this, the maximum is returned instead.</param>
         /// <returns>Clamped value.</returns>
-        public static Fix64 Clamp(Fix64 value, Fix64 min, Fix64 max)
+        public static Fix32 Clamp(Fix32 value, Fix32 min, Fix32 max)
         {
             if (value < min)
                 return min;
@@ -84,7 +84,7 @@ namespace BEPUutilities
         /// <param name="a">First value.</param>
         /// <param name="b">Second value.</param>
         /// <returns>Higher value of the two parameters.</returns>
-        public static Fix64 Max(Fix64 a, Fix64 b)
+        public static Fix32 Max(Fix32 a, Fix32 b)
         {
             return a > b ? a : b;
         }
@@ -95,7 +95,7 @@ namespace BEPUutilities
         /// <param name="a">First value.</param>
         /// <param name="b">Second value.</param>
         /// <returns>Lower value of the two parameters.</returns>
-        public static Fix64 Min(Fix64 a, Fix64 b)
+        public static Fix32 Min(Fix32 a, Fix32 b)
         {
             return a < b ? a : b;
         }
@@ -105,7 +105,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="degrees">Degrees to convert.</param>
         /// <returns>Radians equivalent to the input degrees.</returns>
-        public static Fix64 ToRadians(Fix64 degrees)
+        public static Fix32 ToRadians(Fix32 degrees)
         {
             return degrees.Mul((Pi.Div(F64.C180)));
         }
@@ -115,7 +115,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="radians">Radians to convert.</param>
         /// <returns>Degrees equivalent to the input radians.</returns>
-        public static Fix64 ToDegrees(Fix64 radians)
+        public static Fix32 ToDegrees(Fix32 radians)
         {
             return radians.Mul((F64.C180.Div(Pi)));
         }

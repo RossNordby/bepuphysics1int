@@ -5,7 +5,7 @@ using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
 using BEPUutilities;
 using BEPUutilities.Threading;
-using FixMath.NET;
+
 
 namespace BEPUphysics.BroadPhaseSystems.Hierarchies
 {
@@ -226,7 +226,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
             //Entities do not set up their own bounding box before getting stuck in here.  If they're all zeroed out, the tree will be horrible.
             Vector3 offset;
             Vector3.Subtract(ref entry.boundingBox.Max, ref entry.boundingBox.Min, out offset);
-            if (Fix64Ext.SafeMul(Fix64Ext.SafeMul(offset.X, offset.Y), offset.Z) == F64.C0)
+            if (Fix32Ext.MulSafe(Fix32Ext.MulSafe(offset.X, offset.Y), offset.Z) == F64.C0)
                 entry.UpdateBoundingBox();
             //Could buffer additions to get a better construction in the tree.
             var node = leafNodes.Take();
@@ -245,7 +245,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
                     BoundingBox.CreateMerged(ref node.BoundingBox, ref root.BoundingBox, out root.BoundingBox);
                     var internalNode = (InternalNode)root;
                     Vector3.Subtract(ref root.BoundingBox.Max, ref root.BoundingBox.Min, out offset);
-                    internalNode.currentVolume = Fix64Ext.SafeMul(Fix64Ext.SafeMul(offset.X, offset.Y), offset.Z);
+                    internalNode.currentVolume = Fix32Ext.MulSafe(Fix32Ext.MulSafe(offset.X, offset.Y), offset.Z);
                     //internalNode.maximumVolume = internalNode.currentVolume * InternalNode.MaximumVolumeScale;
                     //The caller is responsible for the merge.
                     var treeNode = root;
@@ -327,12 +327,12 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
         /// Useful for comparing against other trees.
         /// </summary>
         /// <returns>Cost of the tree.</returns>
-        public Fix64 MeasureCostMetric()
+        public Fix32 MeasureCostMetric()
         {
             if (root != null)
             {
                 var offset = root.BoundingBox.Max - root.BoundingBox.Min;
-                var volume = Fix64Ext.SafeMul(Fix64Ext.SafeMul(offset.X, offset.Y), offset.Z);
+                var volume = Fix32Ext.MulSafe(Fix32Ext.MulSafe(offset.X, offset.Y), offset.Z);
                 if (volume < F64.C1em9)
                     return F64.C0;
                 return root.MeasureSubtreeCost().Div(volume);
