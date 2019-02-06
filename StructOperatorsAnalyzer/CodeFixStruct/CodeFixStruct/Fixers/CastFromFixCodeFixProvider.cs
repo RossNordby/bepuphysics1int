@@ -45,39 +45,40 @@ namespace CodeFixStruct {
 			var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 			var generator = editor.Generator;
 
-			var operationA = semanticModel.GetOperation(nodeToFix, cancellationToken);
-			if (operationA.Kind == OperationKind.Conversion) {
-				string castMethod;
-				var binOp = (IConversionOperation)operationA;
-				switch (binOp.Type.SpecialType) {
-					case SpecialType.System_Int32:
-						castMethod = "ToInt";
-						break;
-					case SpecialType.System_Int64:
-						castMethod = "ToLong";
-						break;
-					case SpecialType.System_Single:
-						castMethod = "ToFloat";
-						break;
-					case SpecialType.System_Double:
-						castMethod = "ToDouble";
-						break;
-					case SpecialType.System_Decimal:
-						castMethod = "ToDecimal";
-						break;
-					default:
-						return document;
-				}
-
-				CastExpressionSyntax bes = nodeToFix as CastExpressionSyntax;
-				var replacement = generator.InvocationExpression(
-					generator.MemberAccessExpression(bes.Expression.WithoutTrivia(), castMethod));
-
-				editor.ReplaceNode(nodeToFix, replacement);
-				return editor.GetChangedDocument();
+			var operationA = semanticModel.GetTypeInfo(nodeToFix, cancellationToken);
+			string castMethod;
+			switch (operationA.ConvertedType.SpecialType) {
+				case SpecialType.System_Int32:
+					castMethod = "ToInt";
+					break;
+				case SpecialType.System_Int64:
+					castMethod = "ToLong";
+					break;
+				case SpecialType.System_Single:
+					castMethod = "ToFloat";
+					break;
+				case SpecialType.System_Double:
+					castMethod = "ToDouble";
+					break;
+				case SpecialType.System_Decimal:
+					castMethod = "ToDecimal";
+					break;
+				default:
+					return document;
 			}
 
-			return document;
+			SyntaxNode replacement;
+			if (nodeToFix is CastExpressionSyntax bes) {
+				replacement = generator.InvocationExpression(
+					generator.MemberAccessExpression(bes.Expression.WithoutTrivia(), castMethod));
+			}
+			else {
+				replacement = generator.InvocationExpression(
+					generator.MemberAccessExpression(nodeToFix.WithoutTrivia(), castMethod));
+			}
+
+			editor.ReplaceNode(nodeToFix, replacement);
+			return editor.GetChangedDocument();
 		}
 	}
 }
