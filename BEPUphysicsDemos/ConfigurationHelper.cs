@@ -58,13 +58,13 @@ namespace BEPUphysicsDemos
             SolverSettings.DefaultMinimumImpulse = 0.001m.ToFix();
 
             //Adjust epsilons back to defaults.
-            Toolbox.Epsilon = 1e-7m.ToFix();
-            Toolbox.BigEpsilon = 1e-5m.ToFix();
-            MPRToolbox.DepthRefinementEpsilon = 1e-4m.ToFix();
-            MPRToolbox.RayCastSurfaceEpsilon = 1e-9m.ToFix();
-            MPRToolbox.SurfaceEpsilon = 1e-7m.ToFix();
-            PairSimplex.DistanceConvergenceEpsilon = 1e-7m.ToFix();
-            PairSimplex.ProgressionEpsilon = 1e-8m.ToFix();
+            Toolbox.Epsilon = 1e-4m.ToFix();
+            Toolbox.BigEpsilon = 1e-3m.ToFix();
+            MPRToolbox.DepthRefinementEpsilon = 1e-3m.ToFix();
+            MPRToolbox.RayCastSurfaceEpsilon = 1e-4m.ToFix();
+            MPRToolbox.SurfaceEpsilon = 1e-4m.ToFix();
+            PairSimplex.DistanceConvergenceEpsilon = 1e-4m.ToFix();
+            PairSimplex.ProgressionEpsilon = 1e-4m.ToFix();
 
         }
 

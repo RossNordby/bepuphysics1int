@@ -1068,7 +1068,7 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
                 hit.Location = localRay.Position;
                 hit.Normal = new Vector3(hit.Location.X, 0.ToFix(), hit.Location.Z);
                 Fix32 normalLengthSquared = hit.Normal.LengthSquared();
-                if (normalLengthSquared > 1e-9m.ToFix())
+                if (normalLengthSquared > 1e-4m.ToFix())
                     Vector3.Divide(ref hit.Normal, Fix32Ext.Sqrt(normalLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
@@ -1134,7 +1134,7 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
                 //Yup!
                 hit.Normal = new Vector3(hit.Location.X, 0.ToFix(), hit.Location.Z);
                 Fix32 normalLengthSquared = hit.Normal.LengthSquared();
-                if (normalLengthSquared > 1e-9m.ToFix())
+                if (normalLengthSquared > 1e-4m.ToFix())
                     Vector3.Divide(ref hit.Normal, Fix32Ext.Sqrt(normalLengthSquared), out hit.Normal);
                 else
                     hit.Normal = new Vector3();
@@ -1149,7 +1149,7 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
         upperTest:
             //Nope! It may be intersecting the ends of the cylinder though.
             //We're above the cylinder, so cast a ray against the upper cap.
-            if (localRay.Direction.Y > (-1e-9m).ToFix())
+            if (localRay.Direction.Y > (-1e-4m).ToFix())
             {
                 //Can't hit the upper cap if the ray isn't pointing down.
                 hit = new RayHit();
@@ -1173,7 +1173,7 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
 
         lowerTest:
             //Is it intersecting the bottom cap?
-            if (localRay.Direction.Y < 1e-9m.ToFix())
+            if (localRay.Direction.Y < 1e-4m.ToFix())
             {
                 //Can't hit the bottom cap if the ray isn't pointing up.
                 hit = new RayHit();
@@ -1182,7 +1182,7 @@ MathHelper.Pi.Mul(radius).Mul(2.ToFix()).Div(incrementCount.ToFix()));
             t = (halfHeight.Neg().Sub(localRay.Position.Y)).Div(localRay.Direction.Y);
             Vector3.Multiply(ref localRay.Direction, t, out planeIntersection);
             Vector3.Add(ref localRay.Position, ref planeIntersection, out planeIntersection);
-            if ((planeIntersection.X.Mul(planeIntersection.X)).Add(planeIntersection.Z.Mul(planeIntersection.Z)) < (radius.Mul(radius)).Add(1e-9m.ToFix()))
+            if ((planeIntersection.X.Mul(planeIntersection.X)).Add(planeIntersection.Z.Mul(planeIntersection.Z)) < (radius.Mul(radius)).Add(1e-4m.ToFix()))
             {
                 //Pull the hit into world space.
                 Quaternion.Transform(ref Toolbox.DownVector, ref transform.Orientation, out hit.Normal);

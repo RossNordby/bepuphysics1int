@@ -18,12 +18,13 @@ namespace BEPUutilities
         /// <summary>
         /// Large tolerance value. Defaults to 1e-5f.
         /// </summary>
-        public static Fix32 BigEpsilon = 1e-5m.ToFix();
+        public static Fix32 BigEpsilon = Fix32Ext.Precision.ToFix().Mul(128.ToFix());
 
-        /// <summary>
-        /// Tolerance value. Defaults to 1e-7f.
-        /// </summary>
-        public static Fix32 Epsilon = 1e-7m.ToFix();
+		/// <summary>
+		/// Tolerance value. Defaults to 1e-7f.
+		/// </summary>
+		public static Fix32 Epsilon = Fix32Ext.Precision.ToFix().Mul(2.ToFix());
+
 		public static Fix32 MinusEpsilon = Epsilon.Neg();
 		public static Fix32 MinusBigEpsilon = BigEpsilon.Neg();
 
