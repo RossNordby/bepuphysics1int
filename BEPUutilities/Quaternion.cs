@@ -6,6 +6,7 @@ namespace BEPUutilities
     /// <summary>
     /// Provides XNA-like quaternion support.
     /// </summary>
+    [Serializable]
     public struct Quaternion : IEquatable<Quaternion>
     {
         /// <summary>
@@ -159,37 +160,33 @@ namespace BEPUutilities
             if (trace >= F64.C0)
             {
                 var S = Fix32Ext.Sqrt(trace.Add(F64.C1)).Mul(F64.C2); // S=4*qw 
-                var inverseS = F64.C1.Div(S);
                 q.W = F64.C0p25.Mul(S);
-                q.X = (r.M23.Sub(r.M32)).Mul(inverseS);
-                q.Y = (r.M31.Sub(r.M13)).Mul(inverseS);
-                q.Z = (r.M12.Sub(r.M21)).Mul(inverseS);
+                q.X = (r.M23.Sub(r.M32)).Div(S);
+                q.Y = (r.M31.Sub(r.M13)).Div(S);
+                q.Z = (r.M12.Sub(r.M21)).Div(S);
             }
             else if ((r.M11 > r.M22) & (r.M11 > r.M33))
             {
                 var S = Fix32Ext.Sqrt(((F64.C1.Add(r.M11)).Sub(r.M22)).Sub(r.M33)).Mul(F64.C2); // S=4*qx 
-                var inverseS = F64.C1.Div(S);
-                q.W = (r.M23.Sub(r.M32)).Mul(inverseS);
+                q.W = (r.M23.Sub(r.M32)).Div(S);
                 q.X = F64.C0p25.Mul(S);
-                q.Y = (r.M21.Add(r.M12)).Mul(inverseS);
-                q.Z = (r.M31.Add(r.M13)).Mul(inverseS);
+                q.Y = (r.M21.Add(r.M12)).Div(S);
+                q.Z = (r.M31.Add(r.M13)).Div(S);
             }
             else if (r.M22 > r.M33)
             {
                 var S = Fix32Ext.Sqrt(((F64.C1.Add(r.M22)).Sub(r.M11)).Sub(r.M33)).Mul(F64.C2); // S=4*qy
-                var inverseS = F64.C1.Div(S);
-                q.W = (r.M31.Sub(r.M13)).Mul(inverseS);
-                q.X = (r.M21.Add(r.M12)).Mul(inverseS);
+                q.W = (r.M31.Sub(r.M13)).Div(S);
+                q.X = (r.M21.Add(r.M12)).Div(S);
                 q.Y = F64.C0p25.Mul(S);
-                q.Z = (r.M32.Add(r.M23)).Mul(inverseS);
+                q.Z = (r.M32.Add(r.M23)).Div(S);
             }
             else
             {
                 var S = Fix32Ext.Sqrt(((F64.C1.Add(r.M33)).Sub(r.M11)).Sub(r.M22)).Mul(F64.C2); // S=4*qz
-                var inverseS = F64.C1.Div(S);
-                q.W = (r.M12.Sub(r.M21)).Mul(inverseS);
-                q.X = (r.M31.Add(r.M13)).Mul(inverseS);
-                q.Y = (r.M32.Add(r.M23)).Mul(inverseS);
+                q.W = (r.M12.Sub(r.M21)).Div(S);
+                q.X = (r.M31.Add(r.M13)).Div(S);
+                q.Y = (r.M32.Add(r.M23)).Div(S);
                 q.Z = F64.C0p25.Mul(S);
             }
         }
@@ -250,11 +247,11 @@ namespace BEPUutilities
         /// <param name="toReturn">Normalized quaternion.</param>
         public static void Normalize(ref Quaternion quaternion, out Quaternion toReturn)
         {
-            Fix32 inverse = F64.C1.Div(Fix32Ext.Sqrt((((quaternion.X.Mul(quaternion.X)).Add(quaternion.Y.Mul(quaternion.Y))).Add(quaternion.Z.Mul(quaternion.Z))).Add(quaternion.W.Mul(quaternion.W))));
-            toReturn.X = quaternion.X.Mul(inverse);
-            toReturn.Y = quaternion.Y.Mul(inverse);
-            toReturn.Z = quaternion.Z.Mul(inverse);
-            toReturn.W = quaternion.W.Mul(inverse);
+            Fix32 l = Fix32Ext.Sqrt((((quaternion.X.Mul(quaternion.X)).Add(quaternion.Y.Mul(quaternion.Y))).Add(quaternion.Z.Mul(quaternion.Z))).Add(quaternion.W.Mul(quaternion.W)));
+            toReturn.X = quaternion.X.Div(l);
+            toReturn.Y = quaternion.Y.Div(l);
+            toReturn.Z = quaternion.Z.Div(l);
+            toReturn.W = quaternion.W.Div(l);
         }
 
         /// <summary>
@@ -262,11 +259,11 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            Fix32 inverse = F64.C1.Div(Fix32Ext.Sqrt((((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))).Add(W.Mul(W))));
-			X = X.Mul(inverse);
-			Y = Y.Mul(inverse);
-			Z = Z.Mul(inverse);
-			W = W.Mul(inverse);
+            Fix32 l = Fix32Ext.Sqrt((((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))).Add(W.Mul(W)));
+			X = X.Div(l);
+			Y = Y.Div(l);
+			Z = Z.Div(l);
+			W = W.Div(l);
         }
 
         /// <summary>
@@ -498,7 +495,7 @@ namespace BEPUutilities
         /// <filterpriority>2</filterpriority>
         public override int GetHashCode()
         {
-            return X.GetHashCode() + Y.GetHashCode() + Z.GetHashCode() + W.GetHashCode();
+            return (int) X ^ (int) Y ^ (int) Z ^ (int) W;
         }
 
         /// <summary>
@@ -861,7 +858,7 @@ namespace BEPUutilities
         /// <returns>String representing the quaternion.</returns>
         public override string ToString()
         {
-            return "{ X: " + X + ", Y: " + Y + ", Z: " + Z + ", W: " + W + "}";
+            return "{ X: " + X.ToStringExt() + ", Y: " + Y.ToStringExt() + ", Z: " + Z.ToStringExt() + ", W: " + W.ToStringExt() + "}";
         }
     }
 }

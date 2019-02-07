@@ -146,11 +146,11 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            Fix32 inverse = F64.C1.Div(Fix32Ext.Sqrt((((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))).Add(W.Mul(W))));
-			X = X.Mul(inverse);
-			Y = Y.Mul(inverse);
-			Z = Z.Mul(inverse);
-			W = W.Mul(inverse);
+            Fix32 length = Length();
+            X = X.Div(length);
+            Y = Y.Div(length);
+            Z = Z.Div(length);
+            W = W.Div(length);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace BEPUutilities
         /// <returns>String representing the vector.</returns>
         public override string ToString()
         {
-            return "{" + X + ", " + Y + ", " + Z + ", " + W + "}";
+            return "{" + X.ToStringExt() + ", " + Y.ToStringExt() + ", " + Z.ToStringExt() + ", " + W.ToStringExt() + "}";
         }
 
         /// <summary>
@@ -247,11 +247,10 @@ namespace BEPUutilities
         /// <param name="result">Result of the division.</param>
         public static void Divide(ref Vector4 v, Fix32 divisor, out Vector4 result)
         {
-            Fix32 inverse = F64.C1.Div(divisor);
-            result.X = v.X.Mul(inverse);
-            result.Y = v.Y.Mul(inverse);
-            result.Z = v.Z.Mul(inverse);
-            result.W = v.W.Mul(inverse);
+            result.X = v.X.Div(divisor);
+            result.Y = v.Y.Div(divisor);
+            result.Z = v.Z.Div(divisor);
+            result.W = v.W.Div(divisor);
         }
         /// <summary>
         /// Scales a vector.
@@ -308,11 +307,10 @@ namespace BEPUutilities
         public static Vector4 operator /(Vector4 v, Fix32 f)
         {
             Vector4 toReturn;
-            f = F64.C1.Div(f);
-            toReturn.X = v.X.Mul(f);
-            toReturn.Y = v.Y.Mul(f);
-            toReturn.Z = v.Z.Mul(f);
-            toReturn.W = v.W.Mul(f);
+            toReturn.X = v.X.Div(f);
+            toReturn.Y = v.Y.Div(f);
+            toReturn.Z = v.Z.Div(f);
+            toReturn.W = v.W.Div(f);
             return toReturn;
         }
         /// <summary>
@@ -418,7 +416,7 @@ namespace BEPUutilities
         /// <filterpriority>2</filterpriority>
         public override int GetHashCode()
         {
-            return X.GetHashCode() + Y.GetHashCode() + Z.GetHashCode() + W.GetHashCode();
+            return (int) X ^ (int) Y ^ (int) Z ^ (int) W;
         }
 
         /// <summary>
@@ -466,45 +464,27 @@ namespace BEPUutilities
         /// <summary>
         /// Gets the zero vector.
         /// </summary>
-        public static Vector4 Zero
-        {
-            get
-            {
-                return new Vector4();
-            }
-        }
+        public static readonly Vector4 Zero = new Vector4();
 
         /// <summary>
         /// Gets a vector pointing along the X axis.
         /// </summary>
-        public static Vector4 UnitX
-        {
-            get { return new Vector4 { X = F64.C1 }; }
-        }
+        public static readonly Vector4 UnitX = new Vector4 { X = F64.C1 };
 
         /// <summary>
         /// Gets a vector pointing along the Y axis.
         /// </summary>
-        public static Vector4 UnitY
-        {
-            get { return new Vector4 { Y = F64.C1 }; }
-        }
+        public static readonly Vector4 UnitY = new Vector4 { Y = F64.C1 };
 
         /// <summary>
         /// Gets a vector pointing along the Z axis.
         /// </summary>
-        public static Vector4 UnitZ
-        {
-            get { return new Vector4 { Z = F64.C1 }; }
-        }
+        public static readonly Vector4 UnitZ = new Vector4 { Z = F64.C1 };
 
         /// <summary>
         /// Gets a vector pointing along the W axis.
         /// </summary>
-        public static Vector4 UnitW
-        {
-            get { return new Vector4 { W = F64.C1 }; }
-        }
+        public static readonly Vector4 UnitW = new Vector4 { W = F64.C1 };
 
         /// <summary>
         /// Normalizes the given vector.
@@ -525,11 +505,11 @@ namespace BEPUutilities
         /// <param name="result">Normalized vector.</param>
         public static void Normalize(ref Vector4 v, out Vector4 result)
         {
-            Fix32 inverse = F64.C1.Div(Fix32Ext.Sqrt((((v.X.Mul(v.X)).Add(v.Y.Mul(v.Y))).Add(v.Z.Mul(v.Z))).Add(v.W.Mul(v.W))));
-            result.X = v.X.Mul(inverse);
-            result.Y = v.Y.Mul(inverse);
-            result.Z = v.Z.Mul(inverse);
-            result.W = v.W.Mul(inverse);
+            Fix32 length = v.Length();
+            result.X = v.X.Div(length);
+            result.Y = v.Y.Div(length);
+            result.Z = v.Z.Div(length);
+            result.W = v.W.Div(length);
         }
 
         /// <summary>
@@ -553,22 +533,10 @@ namespace BEPUutilities
         /// <param name="result">Vector with nonnegative elements.</param>
         public static void Abs(ref Vector4 v, out Vector4 result)
         {
-            if (v.X < F64.C0)
-                result.X = v.X.Neg();
-            else
-                result.X = v.X;
-            if (v.Y < F64.C0)
-                result.Y = v.Y.Neg();
-            else
-                result.Y = v.Y;
-            if (v.Z < F64.C0)
-                result.Z = v.Z.Neg();
-            else
-                result.Z = v.Z;
-            if (v.W < F64.C0)
-                result.W = v.W.Neg();
-            else
-                result.W = v.W;
+			result.X = v.X.Abs();
+			result.Y = v.Y.Abs();
+			result.Z = v.Z.Abs();
+			result.W = v.W.Abs();
         }
 
         /// <summary>

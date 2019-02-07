@@ -52,7 +52,7 @@ namespace BEPUutilities
         /// <returns>String representing the vector.</returns>
         public override string ToString()
         {
-            return "{" + X + ", " + Y + "}";
+            return "{" + X.ToStringExt() + ", " + Y.ToStringExt() + "}";
         }
 
         /// <summary>
@@ -141,29 +141,17 @@ namespace BEPUutilities
         /// <summary>
         /// Gets the zero vector.
         /// </summary>
-        public static Vector2 Zero
-        {
-            get
-            {
-                return new Vector2();
-            }
-        }
+        public static readonly Vector2 Zero = new Vector2();
 
         /// <summary>
         /// Gets a vector pointing along the X axis.
         /// </summary>
-        public static Vector2 UnitX
-        {
-            get { return new Vector2 { X = F64.C1 }; }
-        }
+        public static readonly Vector2 UnitX = new Vector2 { X = F64.C1 };
 
         /// <summary>
         /// Gets a vector pointing along the Y axis.
         /// </summary>
-        public static Vector2 UnitY
-        {
-            get { return new Vector2 { Y = F64.C1 }; }
-        }
+        public static readonly Vector2 UnitY = new Vector2 { Y = F64.C1 };
 
 
         /// <summary>
@@ -185,9 +173,9 @@ namespace BEPUutilities
         /// <param name="result">Normalized vector.</param>
         public static void Normalize(ref Vector2 v, out Vector2 result)
         {
-            Fix32 inverse = F64.C1.Div(Fix32Ext.Sqrt((v.X.Mul(v.X)).Add(v.Y.Mul(v.Y))));
-            result.X = v.X.Mul(inverse);
-            result.Y = v.Y.Mul(inverse);
+            Fix32 length = v.Length();
+            result.X = v.X.Div(length);
+            result.Y = v.Y.Div(length);
         }
 
         /// <summary>
@@ -208,14 +196,8 @@ namespace BEPUutilities
         /// <param name="result">Vector with nonnegative elements.</param>
         public static void Abs(ref Vector2 v, out Vector2 result)
         {
-            if (v.X < F64.C0)
-                result.X = v.X.Neg();
-            else
-                result.X = v.X;
-            if (v.Y < F64.C0)
-                result.Y = v.Y.Neg();
-            else
-                result.Y = v.Y;
+			result.X = v.X.Abs();
+			result.Y = v.Y.Abs();
         }
 
         /// <summary>
@@ -286,9 +268,9 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            Fix32 inverse = F64.C1.Div(Fix32Ext.Sqrt((X.Mul(X)).Add(Y.Mul(Y))));
-			X = X.Mul(inverse);
-			Y = Y.Mul(inverse);
+            Fix32 length = Length();
+            X = X.Div(length);
+            Y = Y.Div(length);
         }
 
         /// <summary>
@@ -340,9 +322,8 @@ namespace BEPUutilities
         public static Vector2 operator /(Vector2 v, Fix32 f)
         {
             Vector2 toReturn;
-            f = F64.C1.Div(f);
-            toReturn.X = v.X.Mul(f);
-            toReturn.Y = v.Y.Mul(f);
+            toReturn.X = v.X.Div(f);
+            toReturn.Y = v.Y.Div(f);
             return toReturn;
         }
 
@@ -444,7 +425,7 @@ namespace BEPUutilities
         /// <filterpriority>2</filterpriority>
         public override int GetHashCode()
         {
-            return X.GetHashCode() + Y.GetHashCode();
+            return (int) X ^ (int) Y;
         }
 
 

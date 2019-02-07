@@ -25,10 +25,10 @@ namespace BEPUutilities
         /// </summary>
         public static Fix32 Epsilon = 1e-7m.ToFix();
 
-        /// <summary>
-        /// Represents an invalid Vector3.
-        /// </summary>
-        public static readonly Vector3 NoVector = new Vector3(Fix32.MaxValue.Neg(), Fix32.MaxValue.Neg(), Fix32.MaxValue.Neg());
+		/// <summary>
+		/// Represents an invalid Vector3.
+		/// </summary>
+		public static readonly Vector3 NoVector = new Vector3(Fix32.MaxValue.Neg(), Fix32.MaxValue.Neg(), Fix32.MaxValue.Neg());
 
         /// <summary>
         /// Reference for a vector with dimensions (0,0,1).

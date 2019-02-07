@@ -9,7 +9,7 @@ namespace BEPUutilities.DataStructures
     /// Stores a maximum of 8 entries.
     /// </summary>
     /// <typeparam name="T">Struct type to use.</typeparam>
-    public struct TinyList<T>
+    public struct TinyList<T> where T : struct
     {
         private T entry1;
         private T entry2;

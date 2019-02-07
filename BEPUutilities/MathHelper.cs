@@ -8,37 +8,38 @@ namespace BEPUutilities
     /// </summary>
     public static class MathHelper
     {
-        /// <summary>
-        /// Approximate value of Pi.
-        /// </summary>
-        public static readonly Fix32 Pi = Fix32.Pi;
+		/// <summary>
+		/// Approximate value of Pi.
+		/// </summary>
+		public const Fix32 Pi = Fix32.Pi;
+		public const Fix32 MinusPi = (Fix32) (-(int) Fix32.Pi);
 
-    /// <summary>
-    /// Approximate value of Pi multiplied by two.
-    /// </summary>
-    public static readonly Fix32 TwoPi = Fix32.PiTimes2;
+		/// <summary>
+		/// Approximate value of Pi multiplied by two.
+		/// </summary>
+		public const Fix32 TwoPi = Fix32.PiTimes2;
 
-    /// <summary>
-    /// Approximate value of Pi divided by two.
-    /// </summary>
-    public static readonly Fix32 PiOver2 = Fix32.PiOver2;
+		/// <summary>
+		/// Approximate value of Pi divided by two.
+		/// </summary>
+		public const Fix32 PiOver2 = Fix32.PiOver2;
 
-    /// <summary>
-    /// Approximate value of Pi divided by four.
-    /// </summary>
-    public static readonly Fix32 PiOver4 = Fix32.Pi.Div((4.ToFix()));
+		/// <summary>
+		/// Approximate value of Pi divided by four.
+		/// </summary>
+		public const Fix32 PiOver4 = Fix32.PiOver4;
 
-    /// <summary>
-    /// Calculate remainder of of Fix32 division using same algorithm
-    /// as Math.IEEERemainder
-    /// </summary>
-    /// <param name="dividend">Dividend</param>
-    /// <param name="divisor">Divisor</param>
-    /// <returns>Remainder</returns>
-    public static Fix32 IEEERemainder(Fix32 dividend, Fix32 divisor)
-    {
-		return dividend.Sub((divisor.Mul(Fix32Ext.Round(dividend.Div(divisor)))));
-    }
+		/// <summary>
+		/// Calculate remainder of of Fix32 division using same algorithm
+		/// as Math.IEEERemainder
+		/// </summary>
+		/// <param name="dividend">Dividend</param>
+		/// <param name="divisor">Divisor</param>
+		/// <returns>Remainder</returns>
+		public static Fix32 IEEERemainder(Fix32 dividend, Fix32 divisor)
+		{
+			return dividend .Sub (divisor .Mul ((dividend .Div (divisor)).Round()));
+		}
 
         /// <summary>
         /// Reduces the angle into a range from -Pi to Pi.
@@ -48,14 +49,14 @@ namespace BEPUutilities
         public static Fix32 WrapAngle(Fix32 angle)
         {
             angle = IEEERemainder(angle, TwoPi);
-            if (angle < Pi.Neg())
+            if (angle < MinusPi)
             {
                 angle = angle.Add(TwoPi);
                 return angle;
             }
             if (angle >= Pi)
             {
-                angle -= TwoPi;
+                angle = angle .Sub (TwoPi);
             }
             return angle;
 
@@ -100,6 +101,8 @@ namespace BEPUutilities
             return a < b ? a : b;
         }
 
+		static readonly Fix32 PiOverC180 = Pi.Div(F64.C180);
+
         /// <summary>
         /// Converts degrees to radians.
         /// </summary>
@@ -107,17 +110,19 @@ namespace BEPUutilities
         /// <returns>Radians equivalent to the input degrees.</returns>
         public static Fix32 ToRadians(Fix32 degrees)
         {
-            return degrees.Mul((Pi.Div(F64.C180)));
+            return degrees.Mul(PiOverC180);
         }
 
-        /// <summary>
-        /// Converts radians to degrees.
-        /// </summary>
-        /// <param name="radians">Radians to convert.</param>
-        /// <returns>Degrees equivalent to the input radians.</returns>
-        public static Fix32 ToDegrees(Fix32 radians)
+		static readonly Fix32 C180OverPi = F64.C180.Div(Pi);
+
+		/// <summary>
+		/// Converts radians to degrees.
+		/// </summary>
+		/// <param name="radians">Radians to convert.</param>
+		/// <returns>Degrees equivalent to the input radians.</returns>
+		public static Fix32 ToDegrees(Fix32 radians)
         {
-            return radians.Mul((F64.C180.Div(Pi)));
+            return radians.Mul(C180OverPi);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace BEPUik
         /// <remarks>
         /// This is used over independent coefficients because IK usages of the constraints don't really vary in behavior, just strength.
         /// </remarks>
-        private readonly Fix32 StiffnessOverDamping = 0.25m.ToFix();
+        private readonly Fix32 StiffnessOverDamping = F64.C0p25;
 
         private Fix32 rigidity = F64.C16;
         /// <summary>

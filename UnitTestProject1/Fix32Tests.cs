@@ -74,7 +74,7 @@ public class Fix32Tests {
 	}
 
 	[Test]
-	public void T001_IntToFix32AndBack() {
+	public void T001_IntToFixAndBack() {
 		List<int> sources = new List<int>() {
 			int.MinValue,
 			-1000000,
@@ -110,7 +110,7 @@ public class Fix32Tests {
 	}
 
 	[Test]
-	public void T002_DoubleToFix32AndBack() {
+	public void T002_DoubleToFixAndBack() {
 		List<double> sources = new List<double>() {
 			-int.MaxValue * 100d,
 			-int.MaxValue * 2d,

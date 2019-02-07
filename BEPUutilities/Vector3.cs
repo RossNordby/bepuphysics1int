@@ -6,6 +6,7 @@ namespace BEPUutilities
     /// <summary>
     /// Provides XNA-like 3D vector math.
     /// </summary>
+    [Serializable]
     public struct Vector3 : IEquatable<Vector3>
     {
         /// <summary>
@@ -81,10 +82,10 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            Fix32 inverse = F64.C1.Div(Fix32Ext.Sqrt(((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))));
-			X = X.Mul(inverse);
-			Y = Y.Mul(inverse);
-			Z = Z.Mul(inverse);
+            Fix32 length = Length();
+            X = X.Div(length);
+            Y = Y.Div(length);
+            Z = Z.Div(length);
         }
 
         /// <summary>
@@ -93,7 +94,7 @@ namespace BEPUutilities
         /// <returns>String representing the vector.</returns>
         public override string ToString()
         {
-            return "{" + X + ", " + Y + ", " + Z + "}";
+            return "{" + X.ToStringExt() + ", " + Y.ToStringExt() + ", " + Z.ToStringExt() + "}";
         }
 
         /// <summary>
@@ -175,10 +176,9 @@ namespace BEPUutilities
         /// <param name="result">Result of the division.</param>
         public static void Divide(ref Vector3 v, Fix32 divisor, out Vector3 result)
         {
-            Fix32 inverse = F64.C1.Div(divisor);
-            result.X = v.X.Mul(inverse);
-            result.Y = v.Y.Mul(inverse);
-            result.Z = v.Z.Mul(inverse);
+            result.X = v.X.Div(divisor);
+            result.Y = v.Y.Div(divisor);
+            result.Z = v.Z.Div(divisor);
         }
         /// <summary>
         /// Scales a vector.
@@ -232,10 +232,9 @@ namespace BEPUutilities
         public static Vector3 operator /(Vector3 v, Fix32 f)
         {
             Vector3 toReturn;
-            f = F64.C1.Div(f);
-            toReturn.X = v.X.Mul(f);
-            toReturn.Y = v.Y.Mul(f);
-            toReturn.Z = v.Z.Mul(f);
+            toReturn.X = v.X.Div(f);
+            toReturn.Y = v.Y.Div(f);
+            toReturn.Z = v.Z.Div(f);
             return toReturn;
         }
         /// <summary>
@@ -338,7 +337,7 @@ namespace BEPUutilities
         /// <filterpriority>2</filterpriority>
         public override int GetHashCode()
         {
-            return X.GetHashCode() + Y.GetHashCode() + Z.GetHashCode();
+            return (int) X ^ (int) Y ^ (int) Z;
         }
 
         
@@ -400,133 +399,82 @@ namespace BEPUutilities
         /// <summary>
         /// Gets the zero vector.
         /// </summary>
-        public static Vector3 Zero
-        {
-            get
-            {
-                return new Vector3();
-            }
-        }
+        public static readonly Vector3 Zero = new Vector3();
 
         /// <summary>
         /// Gets the up vector (0,1,0).
         /// </summary>
-        public static Vector3 Up
-        {
-            get
+        public static readonly Vector3 Up = new Vector3()
             {
-                return new Vector3()
-                {
-                    X = F64.C0,
-                    Y = F64.C1,
-                    Z = F64.C0
-				};
-            }
-        }
+                X = Fix32.Zero,
+                Y = Fix32.One,
+                Z = Fix32.Zero
+			};
 
         /// <summary>
         /// Gets the down vector (0,-1,0).
         /// </summary>
-        public static Vector3 Down
-        {
-            get
+        public static readonly Vector3 Down = new Vector3()
             {
-                return new Vector3()
-                {
-                    X = F64.C0,
-                    Y = F64.C1.Neg(),
-                    Z = F64.C0
-				};
-            }
-        }
+                X = Fix32.Zero,
+                Y = Fix32.MinusOne,
+                Z = Fix32.Zero
+			};
 
         /// <summary>
         /// Gets the right vector (1,0,0).
         /// </summary>
-        public static Vector3 Right
-        {
-            get
+        public static readonly Vector3 Right = new Vector3()
             {
-                return new Vector3()
-                {
-                    X = F64.C1,
-                    Y = F64.C0,
-                    Z = F64.C0
-				};
-            }
-        }
+                X = Fix32.One,
+                Y = Fix32.Zero,
+                Z = Fix32.Zero
+			};
 
         /// <summary>
         /// Gets the left vector (-1,0,0).
         /// </summary>
-        public static Vector3 Left
-        {
-            get
+        public static readonly Vector3 Left =  new Vector3()
             {
-                return new Vector3()
-                {
-                    X = F64.C1.Neg(),
-                    Y = F64.C0,
-                    Z = F64.C0
-				};
-            }
-        }
+                X = Fix32.MinusOne,
+                Y = Fix32.Zero,
+                Z = Fix32.Zero
+			};
 
         /// <summary>
         /// Gets the forward vector (0,0,-1).
         /// </summary>
-        public static Vector3 Forward
-        {
-            get
+        public static readonly Vector3 Forward = new Vector3()
             {
-                return new Vector3()
-                {
-                    X = F64.C0,
-                    Y = F64.C0,
-                    Z = F64.C1.Neg()
-				};
-            }
-        }
+                X = Fix32.Zero,
+                Y = Fix32.Zero,
+                Z = Fix32.MinusOne
+			};
 
         /// <summary>
         /// Gets the back vector (0,0,1).
         /// </summary>
-        public static Vector3 Backward
-        {
-            get
+        public static readonly Vector3 Backward = new Vector3()
             {
-                return new Vector3()
-                {
-                    X = F64.C0,
-                    Y = F64.C0,
-                    Z = F64.C1
-				};
-            }
-        }
+                X = Fix32.Zero,
+                Y = Fix32.Zero,
+                Z = Fix32.One
+			};
 
         /// <summary>
         /// Gets a vector pointing along the X axis.
         /// </summary>
-        public static Vector3 UnitX
-        {
-            get { return new Vector3 { X = F64.C1 }; }
-        }
+        public static readonly Vector3 UnitX = new Vector3 { X = Fix32.One };
 
         /// <summary>
         /// Gets a vector pointing along the Y axis.
         /// </summary>
-        public static Vector3 UnitY
-        {
-            get { return new Vector3 { Y = F64.C1 }; }
-        }
+        public static readonly Vector3 UnitY = new Vector3 { Y = Fix32.One };
 
         /// <summary>
         /// Gets a vector pointing along the Z axis.
         /// </summary>
-        public static Vector3 UnitZ
-        {
-            get { return new Vector3 { Z = F64.C1 }; }
-        }
+        public static readonly Vector3 UnitZ = new Vector3 { Z = Fix32.One };
 
         /// <summary>
         /// Computes the cross product between two vectors.
@@ -575,10 +523,10 @@ namespace BEPUutilities
         /// <param name="result">Normalized vector.</param>
         public static void Normalize(ref Vector3 v, out Vector3 result)
         {
-            Fix32 inverse = F64.C1.Div(Fix32Ext.Sqrt(((v.X.Mul(v.X)).Add(v.Y.Mul(v.Y))).Add(v.Z.Mul(v.Z))));
-            result.X = v.X.Mul(inverse);
-            result.Y = v.Y.Mul(inverse);
-            result.Z = v.Z.Mul(inverse);
+            Fix32 length = v.Length();
+            result.X = v.X.Div(length);
+            result.Y = v.Y.Div(length);
+            result.Z = v.Z.Div(length);
         }
 
         /// <summary>
@@ -598,20 +546,10 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="v">Vector to take the absolute value of.</param>
         /// <param name="result">Vector with nonnegative elements.</param>
-        public static void Abs(ref Vector3 v, out Vector3 result)
-        {
-            if (v.X < F64.C0)
-                result.X = v.X.Neg();
-            else
-                result.X = v.X;
-            if (v.Y < F64.C0)
-                result.Y = v.Y.Neg();
-            else
-                result.Y = v.Y;
-            if (v.Z < F64.C0)
-                result.Z = v.Z.Neg();
-            else
-                result.Z = v.Z;
+        public static void Abs(ref Vector3 v, out Vector3 result) {
+			result.X = v.X.Abs();
+			result.Y = v.Y.Abs();
+			result.Z = v.Z.Abs();
         }
 
         /// <summary>

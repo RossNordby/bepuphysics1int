@@ -50,7 +50,7 @@ namespace BEPUik
         {
             linearJacobianA = Matrix3x3.Identity;
             //The jacobian entries are is [ La, Aa, -Lb, -Ab ] because the relative velocity is computed using A-B. So, negate B's jacobians!
-            linearJacobianB = new Matrix3x3 { M11 = F64.C1.Neg(), M22 = F64.C1.Neg(), M33 = F64.C1.Neg() };
+            linearJacobianB = new Matrix3x3 { M11 = Fix32.MinusOne, M22 = Fix32.MinusOne, M33 = Fix32.MinusOne };
             Vector3 rA;
             Quaternion.Transform(ref LocalOffsetA, ref ConnectionA.Orientation, out rA);
             Matrix3x3.CreateCrossProduct(ref rA, out angularJacobianA);

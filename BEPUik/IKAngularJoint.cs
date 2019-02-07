@@ -33,7 +33,7 @@ namespace BEPUik
         {
             linearJacobianA = linearJacobianB = new Matrix3x3();
             angularJacobianA = new Matrix3x3 { M11 = F64.C1, M22 = F64.C1, M33 = F64.C1 };
-            angularJacobianB = new Matrix3x3 { M11 = F64.C1.Neg(), M22 = F64.C1.Neg(), M33 = F64.C1.Neg() };
+            angularJacobianB = new Matrix3x3 { M11 = Fix32.MinusOne, M22 = Fix32.MinusOne, M33 = Fix32.MinusOne };
 
             //The error is computed using this equation:
             //GoalRelativeOrientation * ConnectionA.Orientation * Error = ConnectionB.Orientation

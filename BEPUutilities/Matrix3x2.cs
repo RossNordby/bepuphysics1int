@@ -250,9 +250,9 @@ namespace BEPUutilities
         /// <returns>A string representation of the matrix.</returns>
         public override string ToString()
         {
-            return "{" + M11 + ", " + M12 + "} " +
-                   "{" + M21 + ", " + M22 + "} " +
-                   "{" + M31 + ", " + M32 + "}";
+            return "{" + M11.ToStringExt() + ", " + M12.ToStringExt() + "} " +
+                   "{" + M21.ToStringExt() + ", " + M22.ToStringExt() + "} " +
+                   "{" + M31.ToStringExt() + ", " + M32.ToStringExt() + "}";
         }
     }
 }

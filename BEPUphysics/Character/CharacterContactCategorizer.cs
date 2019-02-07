@@ -30,7 +30,7 @@ namespace BEPUphysics.Character
             set
             {
                 if (value < Toolbox.BigEpsilon || value > F64.C1)
-                    throw new ArgumentException("Traction threshold values must range from " + Toolbox.BigEpsilon + " to 1, inclusive.");
+                    throw new ArgumentException("Traction threshold values must range from " + Toolbox.BigEpsilon.ToStringExt() + " to 1, inclusive.");
                 tractionThreshold = value;
             }
         }
@@ -47,7 +47,7 @@ namespace BEPUphysics.Character
             set
             {
                 if (value < Toolbox.BigEpsilon || value > F64.C1)
-                    throw new ArgumentException("Support threshold values must range from " + Toolbox.BigEpsilon + " to 1, inclusive.");
+                    throw new ArgumentException("Support threshold values must range from " + Toolbox.BigEpsilon.ToStringExt() + " to 1, inclusive.");
                 supportThreshold = value;
             }
         }
@@ -62,8 +62,8 @@ namespace BEPUphysics.Character
             get { return headThreshold; }
             set
             {
-                if (value < F64.C1.Neg() || value > Toolbox.BigEpsilon.Neg())
-                    throw new ArgumentException("Head threshold values must range from -1 to " + Toolbox.BigEpsilon.Neg() + ", inclusive.");
+                if (value < Fix32.MinusOne || value > Toolbox.MinusBigEpsilon)
+                    throw new ArgumentException("Head threshold values must range from -1 to " + Toolbox.MinusBigEpsilon.ToStringExt() + ", inclusive.");
                 headThreshold = value;
             }
         }
