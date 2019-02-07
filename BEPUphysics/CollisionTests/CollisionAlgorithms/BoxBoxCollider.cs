@@ -882,7 +882,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             #endregion
 
-            Fix32 axisLengthInverse;
+            Fix32 axisLength;
             Vector3 tempAxis;
 
             #region A.X x B.()
@@ -913,14 +913,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((aO.M12.Mul(bO.M13)).Sub(aO.M13.Mul(bO.M12)),
 (aO.M13.Mul(bO.M11)).Sub(aO.M11.Mul(bO.M13)),
 (aO.M11.Mul(bO.M12)).Sub(aO.M12.Mul(bO.M11)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -929,14 +929,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M12.Mul(aO.M13)).Sub(bO.M13.Mul(aO.M12)),
 (bO.M13.Mul(aO.M11)).Sub(bO.M11.Mul(aO.M13)),
 (bO.M11.Mul(aO.M12)).Sub(bO.M12.Mul(aO.M11)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = (tempAxis.Length());
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -966,14 +966,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((aO.M12.Mul(bO.M23)).Sub(aO.M13.Mul(bO.M22)),
 (aO.M13.Mul(bO.M21)).Sub(aO.M11.Mul(bO.M23)),
 (aO.M11.Mul(bO.M22)).Sub(aO.M12.Mul(bO.M21)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -982,14 +982,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M22.Mul(aO.M13)).Sub(bO.M23.Mul(aO.M12)),
 (bO.M23.Mul(aO.M11)).Sub(bO.M21.Mul(aO.M13)),
 (bO.M21.Mul(aO.M12)).Sub(bO.M22.Mul(aO.M11)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1019,14 +1019,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((aO.M12.Mul(bO.M33)).Sub(aO.M13.Mul(bO.M32)),
 (aO.M13.Mul(bO.M31)).Sub(aO.M11.Mul(bO.M33)),
 (aO.M11.Mul(bO.M32)).Sub(aO.M12.Mul(bO.M31)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1035,14 +1035,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M32.Mul(aO.M13)).Sub(bO.M33.Mul(aO.M12)),
 (bO.M33.Mul(aO.M11)).Sub(bO.M31.Mul(aO.M13)),
 (bO.M31.Mul(aO.M12)).Sub(bO.M32.Mul(aO.M11)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1076,14 +1076,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((aO.M22.Mul(bO.M13)).Sub(aO.M23.Mul(bO.M12)),
 (aO.M23.Mul(bO.M11)).Sub(aO.M21.Mul(bO.M13)),
 (aO.M21.Mul(bO.M12)).Sub(aO.M22.Mul(bO.M11)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1092,14 +1092,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M12.Mul(aO.M23)).Sub(bO.M13.Mul(aO.M22)),
 (bO.M13.Mul(aO.M21)).Sub(bO.M11.Mul(aO.M23)),
 (bO.M11.Mul(aO.M22)).Sub(bO.M12.Mul(aO.M21)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1129,14 +1129,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((aO.M22.Mul(bO.M23)).Sub(aO.M23.Mul(bO.M22)),
 (aO.M23.Mul(bO.M21)).Sub(aO.M21.Mul(bO.M23)),
 (aO.M21.Mul(bO.M22)).Sub(aO.M22.Mul(bO.M21)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1145,14 +1145,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M22.Mul(aO.M23)).Sub(bO.M23.Mul(aO.M22)),
 (bO.M23.Mul(aO.M21)).Sub(bO.M21.Mul(aO.M23)),
 (bO.M21.Mul(aO.M22)).Sub(bO.M22.Mul(aO.M21)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1182,14 +1182,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((aO.M22.Mul(bO.M33)).Sub(aO.M23.Mul(bO.M32)),
 (aO.M23.Mul(bO.M31)).Sub(aO.M21.Mul(bO.M33)),
 (aO.M21.Mul(bO.M32)).Sub(aO.M22.Mul(bO.M31)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1198,14 +1198,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M32.Mul(aO.M23)).Sub(bO.M33.Mul(aO.M22)),
 (bO.M33.Mul(aO.M21)).Sub(bO.M31.Mul(aO.M23)),
 (bO.M31.Mul(aO.M22)).Sub(bO.M32.Mul(aO.M21)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1239,14 +1239,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((aO.M32.Mul(bO.M13)).Sub(aO.M33.Mul(bO.M12)),
 (aO.M33.Mul(bO.M11)).Sub(aO.M31.Mul(bO.M13)),
 (aO.M31.Mul(bO.M12)).Sub(aO.M32.Mul(bO.M11)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1255,14 +1255,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M12.Mul(aO.M33)).Sub(bO.M13.Mul(aO.M32)),
 (bO.M13.Mul(aO.M31)).Sub(bO.M11.Mul(aO.M33)),
 (bO.M11.Mul(aO.M32)).Sub(bO.M12.Mul(aO.M31)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1292,14 +1292,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((aO.M32.Mul(bO.M23)).Sub(aO.M33.Mul(bO.M22)),
 (aO.M33.Mul(bO.M21)).Sub(aO.M31.Mul(bO.M23)),
 (aO.M31.Mul(bO.M22)).Sub(aO.M32.Mul(bO.M21)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1308,14 +1308,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M22.Mul(aO.M33)).Sub(bO.M23.Mul(aO.M32)),
 (bO.M23.Mul(aO.M31)).Sub(bO.M21.Mul(aO.M33)),
 (bO.M21.Mul(aO.M32)).Sub(bO.M22.Mul(aO.M31)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1345,14 +1345,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((aO.M32.Mul(bO.M33)).Sub(aO.M33.Mul(bO.M32)),
 (aO.M33.Mul(bO.M31)).Sub(aO.M31.Mul(bO.M33)),
 (aO.M31.Mul(bO.M32)).Sub(aO.M32.Mul(bO.M31)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1361,14 +1361,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M32.Mul(aO.M33)).Sub(bO.M33.Mul(aO.M32)),
 (bO.M33.Mul(aO.M31)).Sub(bO.M31.Mul(aO.M33)),
 (bO.M31.Mul(aO.M32)).Sub(bO.M32.Mul(aO.M31)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1719,7 +1719,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             Fix32 antiEdgeBias = F64.C0p01;
 			minimumDistance = minimumDistance.Add(antiEdgeBias);
-            Fix32 axisLengthInverse;
+            Fix32 axisLength;
             Vector3 tempAxis;
 
             #region A.X x B.()
@@ -1751,15 +1751,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 (bO.M13.Mul(aO.M11)).Sub(bO.M11.Mul(aO.M13)),
 (bO.M11.Mul(aO.M12)).Sub(bO.M12.Mul(aO.M11)));
 
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1768,15 +1768,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((aO.M12.Mul(bO.M13)).Sub(aO.M13.Mul(bO.M12)),
 (aO.M13.Mul(bO.M11)).Sub(aO.M11.Mul(bO.M13)),
 (aO.M11.Mul(bO.M12)).Sub(aO.M12.Mul(bO.M11)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1808,15 +1808,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 (bO.M23.Mul(aO.M11)).Sub(bO.M21.Mul(aO.M13)),
 (bO.M21.Mul(aO.M12)).Sub(bO.M22.Mul(aO.M11)));
 
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1825,15 +1825,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((aO.M12.Mul(bO.M23)).Sub(aO.M13.Mul(bO.M22)),
 (aO.M13.Mul(bO.M21)).Sub(aO.M11.Mul(bO.M23)),
 (aO.M11.Mul(bO.M22)).Sub(aO.M12.Mul(bO.M21)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1864,15 +1864,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M32.Mul(aO.M13)).Sub(bO.M33.Mul(aO.M12)),
 (bO.M33.Mul(aO.M11)).Sub(bO.M31.Mul(aO.M13)),
 (bO.M31.Mul(aO.M12)).Sub(bO.M32.Mul(aO.M11)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1882,15 +1882,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 (aO.M13.Mul(bO.M31)).Sub(aO.M11.Mul(bO.M33)),
 (aO.M11.Mul(bO.M32)).Sub(aO.M12.Mul(bO.M31)));
 
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1925,15 +1925,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M12.Mul(aO.M23)).Sub(bO.M13.Mul(aO.M22)),
 (bO.M13.Mul(aO.M21)).Sub(bO.M11.Mul(aO.M23)),
 (bO.M11.Mul(aO.M22)).Sub(bO.M12.Mul(aO.M21)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1943,15 +1943,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 (aO.M23.Mul(bO.M11)).Sub(aO.M21.Mul(bO.M13)),
 (aO.M21.Mul(bO.M12)).Sub(aO.M22.Mul(bO.M11)));
 
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -1982,15 +1982,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M22.Mul(aO.M23)).Sub(bO.M23.Mul(aO.M22)),
 (bO.M23.Mul(aO.M21)).Sub(bO.M21.Mul(aO.M23)),
 (bO.M21.Mul(aO.M22)).Sub(bO.M22.Mul(aO.M21)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -2000,15 +2000,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 (aO.M23.Mul(bO.M21)).Sub(aO.M21.Mul(bO.M23)),
 (aO.M21.Mul(bO.M22)).Sub(aO.M22.Mul(bO.M21)));
 
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -2039,15 +2039,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M32.Mul(aO.M23)).Sub(bO.M33.Mul(aO.M22)),
 (bO.M33.Mul(aO.M21)).Sub(bO.M31.Mul(aO.M23)),
 (bO.M31.Mul(aO.M22)).Sub(bO.M32.Mul(aO.M21)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -2057,15 +2057,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 (aO.M23.Mul(bO.M31)).Sub(aO.M21.Mul(bO.M33)),
 (aO.M21.Mul(bO.M32)).Sub(aO.M22.Mul(bO.M31)));
 
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -2100,15 +2100,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M12.Mul(aO.M33)).Sub(bO.M13.Mul(aO.M32)),
 (bO.M13.Mul(aO.M31)).Sub(bO.M11.Mul(aO.M33)),
 (bO.M11.Mul(aO.M32)).Sub(bO.M12.Mul(aO.M31)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -2117,15 +2117,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((aO.M32.Mul(bO.M13)).Sub(aO.M33.Mul(bO.M12)),
 (aO.M33.Mul(bO.M11)).Sub(aO.M31.Mul(bO.M13)),
 (aO.M31.Mul(bO.M12)).Sub(aO.M32.Mul(bO.M11)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -2156,15 +2156,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M22.Mul(aO.M33)).Sub(bO.M23.Mul(aO.M32)),
 (bO.M23.Mul(aO.M31)).Sub(bO.M21.Mul(aO.M33)),
 (bO.M21.Mul(aO.M32)).Sub(bO.M22.Mul(aO.M31)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -2173,15 +2173,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((aO.M32.Mul(bO.M23)).Sub(aO.M33.Mul(bO.M22)),
 (aO.M33.Mul(bO.M21)).Sub(aO.M31.Mul(bO.M23)),
 (aO.M31.Mul(bO.M22)).Sub(aO.M32.Mul(bO.M21)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -2211,15 +2211,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 tempAxis = new Vector3((bO.M32.Mul(aO.M33)).Sub(bO.M33.Mul(aO.M32)),
 (bO.M33.Mul(aO.M31)).Sub(bO.M31.Mul(aO.M33)),
 (bO.M31.Mul(aO.M32)).Sub(bO.M32.Mul(aO.M31)));
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = (tl.Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = (tl.Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -2229,15 +2229,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 (aO.M33.Mul(bO.M31)).Sub(aO.M31.Mul(bO.M33)),
 (aO.M31.Mul(bO.M32)).Sub(aO.M32.Mul(bO.M31)));
 
-                axisLengthInverse = F64.C1.Div(tempAxis.Length());
-                tempDistance = ((tl.Neg()).Sub(rarb)).Mul(axisLengthInverse);
+                axisLength = tempAxis.Length();
+                tempDistance = ((tl.Neg()).Sub(rarb)).Div(axisLength);
                 if (tempDistance > minimumDistance)
                 {
                     minimumFeature = 2;
                     minimumDistance = tempDistance;
-					tempAxis.X = tempAxis.X.Mul(axisLengthInverse);
-					tempAxis.Y = tempAxis.Y.Mul(axisLengthInverse);
-					tempAxis.Z = tempAxis.Z.Mul(axisLengthInverse);
+					tempAxis.X = tempAxis.X.Div(axisLength);
+					tempAxis.Y = tempAxis.Y.Div(axisLength);
+					tempAxis.Z = tempAxis.Z.Div(axisLength);
                     minimumAxis = tempAxis;
                 }
             }
@@ -3646,31 +3646,31 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3 clipX, clipY;
             Vector3.Subtract(ref clipFace.V4, ref clipFace.V3, out clipX);
             Vector3.Subtract(ref clipFace.V2, ref clipFace.V3, out clipY);
-            Fix32 inverseClipWidth = F64.C1.Div(clipFace.Width);
-            Fix32 inverseClipHeight = F64.C1.Div(clipFace.Height);
-            Fix32 inverseClipWidthSquared = inverseClipWidth.Mul(inverseClipWidth);
-			clipX.X = clipX.X.Mul(inverseClipWidthSquared);
-			clipX.Y = clipX.Y.Mul(inverseClipWidthSquared);
-			clipX.Z = clipX.Z.Mul(inverseClipWidthSquared);
-            Fix32 inverseClipHeightSquared = inverseClipHeight.Mul(inverseClipHeight);
-			clipY.X = clipY.X.Mul(inverseClipHeightSquared);
-			clipY.Y = clipY.Y.Mul(inverseClipHeightSquared);
-			clipY.Z = clipY.Z.Mul(inverseClipHeightSquared);
+            Fix32 clipWidth = clipFace.Width;
+            Fix32 clipHeight = clipFace.Height;
+            Fix32 clipWidthSquared = clipWidth.Mul(clipWidth);
+			clipX.X = clipX.X.Div(clipWidthSquared);
+			clipX.Y = clipX.Y.Div(clipWidthSquared);
+			clipX.Z = clipX.Z.Div(clipWidthSquared);
+            Fix32 clipHeightSquared = clipHeight.Mul(clipHeight);
+			clipY.X = clipY.X.Div(clipHeightSquared);
+			clipY.Y = clipY.Y.Div(clipHeightSquared);
+			clipY.Z = clipY.Z.Div(clipHeightSquared);
 
             //Local directions on the opposing face.  Their length is equal to the length of an edge.
             Vector3 faceX, faceY;
             Vector3.Subtract(ref face.V4, ref face.V3, out faceX);
             Vector3.Subtract(ref face.V2, ref face.V3, out faceY);
-            Fix32 inverseFaceWidth = F64.C1.Div(face.Width);
-            Fix32 inverseFaceHeight = F64.C1.Div(face.Height);
-            Fix32 inverseFaceWidthSquared = inverseFaceWidth.Mul(inverseFaceWidth);
-			faceX.X = faceX.X.Mul(inverseFaceWidthSquared);
-			faceX.Y = faceX.Y.Mul(inverseFaceWidthSquared);
-			faceX.Z = faceX.Z.Mul(inverseFaceWidthSquared);
-            Fix32 inverseFaceHeightSquared = inverseFaceHeight.Mul(inverseFaceHeight);
-			faceY.X = faceY.X.Mul(inverseFaceHeightSquared);
-			faceY.Y = faceY.Y.Mul(inverseFaceHeightSquared);
-			faceY.Z = faceY.Z.Mul(inverseFaceHeightSquared);
+            Fix32 faceWidth = face.Width;
+            Fix32 faceHeight = face.Height;
+            Fix32 faceWidthSquared = faceWidth.Mul(faceWidth);
+			faceX.X = faceX.X.Div(faceWidthSquared);
+			faceX.Y = faceX.Y.Div(faceWidthSquared);
+			faceX.Z = faceX.Z.Div(faceWidthSquared);
+            Fix32 faceHeightSquared = faceHeight.Mul(faceHeight);
+			faceY.X = faceY.X.Div(faceHeightSquared);
+			faceY.Y = faceY.Y.Div(faceHeightSquared);
+			faceY.Z = faceY.Z.Div(faceHeightSquared);
 
             Vector3 clipCenter;
             Vector3.Add(ref clipFace.V1, ref clipFace.V3, out clipCenter);
@@ -3694,8 +3694,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Going from the center to the max or min goes half of the length of X edge, or +/- 0.5.
             //Bias could be added here.
             //const Fix32 extent = .5f; //.5f is the default, extra could be added for robustness or speed.
-            Fix32 extentX = F64.C0p5.Add(F64.C0p01.Mul(inverseClipWidth));
-            Fix32 extentY = F64.C0p5.Add(F64.C0p01.Mul(inverseClipHeight));
+            Fix32 extentX = F64.C0p5.Add(F64.C0p01.Div(clipWidth));
+            Fix32 extentY = F64.C0p5.Add(F64.C0p01.Div(clipHeight));
             //Fix32 extentX = .5f + .01f * inverseClipXLength;
             //Fix32 extentY = .5f + .01f * inverseClipYLength;
             Fix32 clipCenterMaxX = clipCenterX.Add(extentX);
@@ -3703,8 +3703,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Fix32 clipCenterMinX = clipCenterX.Sub(extentX);
             Fix32 clipCenterMinY = clipCenterY.Sub(extentY);
 
-            extentX = F64.C0p5.Add(F64.C0p01.Mul(inverseFaceWidth));
-            extentY = F64.C0p5.Add(F64.C0p01.Mul(inverseFaceHeight));
+            extentX = F64.C0p5.Add(F64.C0p01.Div(faceWidth));
+            extentY = F64.C0p5.Add(F64.C0p01.Div(faceHeight));
             //extentX = .5f + .01f * inverseFaceXLength;
             //extentY = .5f + .01f * inverseFaceYLength;
             Fix32 faceCenterMaxX = faceCenterX.Add(extentX);

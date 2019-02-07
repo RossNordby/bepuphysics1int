@@ -24,6 +24,8 @@ namespace BEPUutilities
         /// Tolerance value. Defaults to 1e-7f.
         /// </summary>
         public static Fix32 Epsilon = 1e-7m.ToFix();
+		public static Fix32 MinusEpsilon = Epsilon.Neg();
+		public static Fix32 MinusBigEpsilon = BigEpsilon.Neg();
 
 		/// <summary>
 		/// Represents an invalid Vector3.
@@ -132,9 +134,9 @@ namespace BEPUutilities
             Vector3.Dot(ref ac, ref ac, out ACdotAC);
             Vector3.Dot(ref ac, ref ap, out ACdotAP);
 
-            Fix32 denom = F64.C1.Div(((ABdotAB.Mul(ACdotAC)).Sub(ABdotAC.Mul(ABdotAC))));
-            Fix32 u = ((ACdotAC.Mul(ABdotAP)).Sub(ABdotAC.Mul(ACdotAP))).Mul(denom);
-            Fix32 v = ((ABdotAB.Mul(ACdotAP)).Sub(ABdotAC.Mul(ABdotAP))).Mul(denom);
+            Fix32 denom = ((ABdotAB.Mul(ACdotAC)).Sub(ABdotAC.Mul(ABdotAC)));
+            Fix32 u = ((ACdotAC.Mul(ABdotAP)).Sub(ABdotAC.Mul(ACdotAP))).Div(denom);
+            Fix32 v = ((ABdotAB.Mul(ACdotAP)).Sub(ABdotAC.Mul(ABdotAP))).Div(denom);
 
             return (u >= BigEpsilon.Neg()) && (v >= BigEpsilon.Neg()) && (u.Add(v) <= F64.C1.Add(Toolbox.BigEpsilon));
 
@@ -209,9 +211,9 @@ namespace BEPUutilities
             Vector3.Dot(ref ac, ref ac, out ACdotAC);
             Vector3.Dot(ref ac, ref ap, out ACdotAP);
 
-            Fix32 denom = F64.C1.Div(((ABdotAB.Mul(ACdotAC)).Sub(ABdotAC.Mul(ABdotAC))));
-            Fix32 u = ((ACdotAC.Mul(ABdotAP)).Sub(ABdotAC.Mul(ACdotAP))).Mul(denom);
-            Fix32 v = ((ABdotAB.Mul(ACdotAP)).Sub(ABdotAC.Mul(ABdotAP))).Mul(denom);
+            Fix32 denom = (ABdotAB.Mul(ACdotAC)).Sub(ABdotAC.Mul(ABdotAC));
+            Fix32 u = ((ACdotAC.Mul(ABdotAP)).Sub(ABdotAC.Mul(ACdotAP))).Div(denom);
+            Fix32 v = ((ABdotAB.Mul(ACdotAP)).Sub(ABdotAC.Mul(ABdotAP))).Div(denom);
 
             return (u >= BigEpsilon.Neg()) && (v >= BigEpsilon.Neg()) && (u.Add(v) <= F64.C1.Add(Toolbox.BigEpsilon));
 
@@ -408,9 +410,9 @@ namespace BEPUutilities
                 return VoronoiRegion.BC;
             }
             //Inside triangle?
-            Fix32 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
-            v = vb.Mul(denom);
-            w = vc.Mul(denom);
+            Fix32 denom = (va.Add(vb)).Add(vc);
+            v = vb.Div(denom);
+            w = vc.Div(denom);
             Vector3 abv;
             Vector3.Multiply(ref ab, v, out abv);
             Vector3 acw;
@@ -515,9 +517,9 @@ namespace BEPUutilities
             subsimplex.Add(a);
             subsimplex.Add(b);
             subsimplex.Add(c);
-            Fix32 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
-            v = vb.Mul(denom);
-            w = vc.Mul(denom);
+            Fix32 denom = (va.Add(vb)).Add(vc);
+            v = vb.Div(denom);
+            w = vc.Div(denom);
             Vector3 abv;
             Vector3.Multiply(ref ab, v, out abv);
             Vector3 acw;
@@ -636,9 +638,9 @@ namespace BEPUutilities
             subsimplex.Add(i);
             subsimplex.Add(j);
             subsimplex.Add(k);
-            Fix32 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
-            v = vb.Mul(denom);
-            w = vc.Mul(denom);
+            Fix32 denom = (va.Add(vb)).Add(vc);
+            v = vb.Div(denom);
+            w = vc.Div(denom);
             baryCoords.Add((F64.C1.Sub(v)).Sub(w));
             baryCoords.Add(v);
             baryCoords.Add(w);
@@ -1394,10 +1396,9 @@ namespace BEPUutilities
                                          tetrahedron[1].X, tetrahedron[1].Y, tetrahedron[1].Z, F64.C1,
                                          p.X, p.Y, p.Z, F64.C1,
                                          tetrahedron[3].X, tetrahedron[3].Y, tetrahedron[3].Z, F64.C1)).Determinant();
-                abcd = F64.C1.Div(abcd);
-                baryCoords.Add(pbcd.Mul(abcd)); //u
-                baryCoords.Add(apcd.Mul(abcd)); //v
-                baryCoords.Add(abpd.Mul(abcd)); //w
+                baryCoords.Add(pbcd.Div(abcd)); //u
+                baryCoords.Add(apcd.Div(abcd)); //v
+                baryCoords.Add(abpd.Div(abcd)); //w
                 baryCoords.Add(((F64.C1.Sub(baryCoords[0])).Sub(baryCoords[1])).Sub(baryCoords[2])); //x = 1-u-v-w
             }
             CommonResources.GiveBack(subsimplexCandidate);
@@ -1699,9 +1700,8 @@ namespace BEPUutilities
 
             if (denominator < F64.Cm1em9 || denominator > F64.C1em9)
             {
-                denominator = F64.C1.Div(denominator);
-                aWeight = numeratorU.Mul(denominator);
-                bWeight = numeratorV.Mul(denominator);
+                aWeight = numeratorU.Div(denominator);
+                bWeight = numeratorV.Div(denominator);
                 cWeight = (F64.C1.Sub(aWeight)).Sub(bWeight);
             }
             else

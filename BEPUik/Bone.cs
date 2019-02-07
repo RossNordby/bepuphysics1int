@@ -36,7 +36,7 @@ namespace BEPUik
         internal Vector3 linearVelocity;
 
 
-        internal Fix32 inverseMass;
+        internal Fix32 mass;
 
         /// <summary>
         /// Gets or sets the mass of the bone.
@@ -45,16 +45,16 @@ namespace BEPUik
         /// </summary>
         public Fix32 Mass
         {
-            get { return F64.C1.Div(inverseMass); }
+            get { return mass; }
             set
             {
                 //Long chains could produce exceptionally small values.
                 //Attempting to invert them would result in NaNs.
                 //Clamp the lowest mass to 1e-7f.
                 if (value > Toolbox.Epsilon)
-                    inverseMass = F64.C1.Div(value);
+					mass = value;
                 else
-                    inverseMass = 1e7m.ToFix();
+                    mass = Toolbox.Epsilon;
                 ComputeLocalInertiaTensor();
             }
         }
@@ -219,7 +219,7 @@ namespace BEPUik
         internal void ApplyLinearImpulse(ref Vector3 impulse)
         {
             Vector3 velocityChange;
-            Vector3.Multiply(ref impulse, inverseMass, out velocityChange);
+            Vector3.Divide(ref impulse, mass, out velocityChange);
             Vector3.Add(ref linearVelocity, ref velocityChange, out linearVelocity);
         }
 

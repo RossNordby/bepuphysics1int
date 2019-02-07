@@ -364,20 +364,19 @@ namespace BEPUik
             }
 
             //Normalize the masses of objects so that the heaviest bones have AutomassTarget mass.
-            Fix32 lowestInverseMass = Fix32.MaxValue;
+            Fix32 lowestMass = (Fix32)1;
             foreach (var bone in bones)
             {
-                if (bone.inverseMass < lowestInverseMass)
-                    lowestInverseMass = bone.inverseMass;
+                if (bone.mass > lowestMass)
+                    lowestMass = bone.mass;
             }
 
-            Fix32 inverseMassScale = F64.C1.Div((AutomassTarget.Mul(lowestInverseMass)));
+            Fix32 massScale = AutomassTarget.Div(lowestMass);
 
             foreach (var bone in bones)
             {
 				//Normalize the mass to the AutomassTarget.
-				bone.inverseMass =
-bone.inverseMass.Mul(inverseMassScale);
+				bone.mass = bone.mass.Mul(massScale);
 
                 //Also clear the traversal flags while we're at it.
                 bone.IsActive = false;

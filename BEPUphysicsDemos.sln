@@ -21,8 +21,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FixPointCS", "FixPointCS-ma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FixPointCSTest", "FixPointCS-master\FixPointCSTest\FixPointCSTest.csproj", "{9BDCDAF4-3D43-46C2-8085-E59749AB0592}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "UnitTestProject1\Tests.csproj", "{CCB19185-83DF-48C0-9EF9-B0FEF012FB62}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,18 +139,6 @@ Global
 		{9BDCDAF4-3D43-46C2-8085-E59749AB0592}.Release|x64.Build.0 = Release|x64
 		{9BDCDAF4-3D43-46C2-8085-E59749AB0592}.Release|x86.ActiveCfg = Release|x86
 		{9BDCDAF4-3D43-46C2-8085-E59749AB0592}.Release|x86.Build.0 = Release|x86
-		{CCB19185-83DF-48C0-9EF9-B0FEF012FB62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CCB19185-83DF-48C0-9EF9-B0FEF012FB62}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CCB19185-83DF-48C0-9EF9-B0FEF012FB62}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{CCB19185-83DF-48C0-9EF9-B0FEF012FB62}.Debug|x64.Build.0 = Debug|Any CPU
-		{CCB19185-83DF-48C0-9EF9-B0FEF012FB62}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{CCB19185-83DF-48C0-9EF9-B0FEF012FB62}.Debug|x86.Build.0 = Debug|Any CPU
-		{CCB19185-83DF-48C0-9EF9-B0FEF012FB62}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CCB19185-83DF-48C0-9EF9-B0FEF012FB62}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CCB19185-83DF-48C0-9EF9-B0FEF012FB62}.Release|x64.ActiveCfg = Release|Any CPU
-		{CCB19185-83DF-48C0-9EF9-B0FEF012FB62}.Release|x64.Build.0 = Release|Any CPU
-		{CCB19185-83DF-48C0-9EF9-B0FEF012FB62}.Release|x86.ActiveCfg = Release|Any CPU
-		{CCB19185-83DF-48C0-9EF9-B0FEF012FB62}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

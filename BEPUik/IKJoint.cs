@@ -80,7 +80,7 @@ namespace BEPUik
 
             if (!ConnectionA.Pinned)
             {
-                Matrix3x3.CreateScale(ConnectionA.inverseMass, out linearW);
+                Matrix3x3.CreateScale(Fix32.One.Div(ConnectionA.mass), out linearW);
                 Matrix3x3.Multiply(ref linearJacobianA, ref linearW, out linearA); //Compute J * M^-1 for linear component
                 Matrix3x3.MultiplyByTransposed(ref linearA, ref linearJacobianA, out linearA); //Compute (J * M^-1) * JT for linear component
 
@@ -96,7 +96,7 @@ namespace BEPUik
 
             if (!ConnectionB.Pinned)
             {
-                Matrix3x3.CreateScale(ConnectionB.inverseMass, out linearW);
+                Matrix3x3.CreateScale(Fix32.One.Div(ConnectionB.mass), out linearW);
                 Matrix3x3.Multiply(ref linearJacobianB, ref linearW, out linearB); //Compute J * M^-1 for linear component
                 Matrix3x3.MultiplyByTransposed(ref linearB, ref linearJacobianB, out linearB); //Compute (J * M^-1) * JT for linear component
 

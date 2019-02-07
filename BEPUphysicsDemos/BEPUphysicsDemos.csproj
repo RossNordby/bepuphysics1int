@@ -121,7 +121,6 @@
     <Compile Include="Demos\Extras\GraphicMatchingDemo.cs" />
     <Compile Include="Demos\Extras\IncomingDemo.cs" />
     <Compile Include="Demos\Extras\ReverseTrikeDemo.cs" />
-    <Compile Include="Demos\Extras\ScaleDemo.cs" />
     <Compile Include="Demos\Extras\SimpleVoxelCollidableDemo.cs" />
     <Compile Include="Demos\Extras\SolidPyramidDemo.cs" />
     <Compile Include="Demos\Extras\Solver Type Tests\Constraint.cs" />

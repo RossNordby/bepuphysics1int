@@ -371,13 +371,18 @@ namespace BEPUphysics.Entities
             }
         }
 
-        internal Fix32 mass;
-        ///<summary>
-        /// Gets or sets the mass of the entity.  Setting this to an invalid value, such as a non-positive number, NaN, or infinity, makes the entity kinematic.
-        /// Setting it to a valid positive number will also scale the inertia tensor if it was already dynamic, or force the calculation of a new inertia tensor
-        /// if it was previously kinematic.
-        ///</summary>
-        public Fix32 Mass
+		internal Fix32 mass, inverseMass;
+
+		public Fix32 InverseMass {
+			get {
+				return inverseMass;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the inverse mass of the entity.
+		/// </summary>
+		public Fix32 Mass
         {
             get
             {
@@ -404,25 +409,6 @@ namespace BEPUphysics.Entities
                         BecomeDynamic(value);
                     }
                 }
-            }
-        }
-
-        internal Fix32 inverseMass;
-        /// <summary>
-        /// Gets or sets the inverse mass of the entity.
-        /// </summary>
-        public Fix32 InverseMass
-        {
-            get
-            {
-                return inverseMass;
-            }
-            set
-            {
-                if (value > F64.C0)
-                    Mass = F64.C1.Div(value);
-                else
-                    Mass = F64.C0;
             }
         }
 

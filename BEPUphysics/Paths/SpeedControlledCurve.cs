@@ -217,7 +217,7 @@ namespace BEPUphysics.Paths
             TValue currentValue = Curve.ControlPoints[minIndex].Value;
             TValue previousValue = currentValue;
 
-            Fix32 inverseSampleCount = F64.C1.Div((SamplesPerInterval + 1).ToFix());
+            Fix32 sampleCount = (SamplesPerInterval + 1).ToFix();
 
             Fix32 speed = GetSpeedAtCurveTime(Curve.ControlPoints[minIndex].Time);
             Fix32 previousSpeed = speed;
@@ -239,7 +239,7 @@ namespace BEPUphysics.Paths
                 for (int j = 1; j <= SamplesPerInterval; j++)
                 {
                     previousValue = currentValue;
-                    Curve.Evaluate(i, j.ToFixFast().Mul(inverseSampleCount), out currentValue);
+                    Curve.Evaluate(i, j.ToFixFast().Div(sampleCount), out currentValue);
 
 					curveTime =
 curveTime.Add(curveTimePerSample);

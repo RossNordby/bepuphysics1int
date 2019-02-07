@@ -47,7 +47,7 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
             while (true)
             {
 
-                Fix32 cellWidth = F64.C1.Div(Grid2DSortAndSweep.cellSizeInverse);
+                Fix32 cellWidth = Grid2DSortAndSweep.CellSize;
                 Fix32 nextT; //Distance along ray to next boundary.
                 Fix32 nextTy; //Distance along ray to next boundary along y axis.
                 Fix32 nextTz; //Distance along ray to next boundary along z axis.

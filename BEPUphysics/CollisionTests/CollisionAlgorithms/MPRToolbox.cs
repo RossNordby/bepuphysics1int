@@ -303,10 +303,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
                     if (v0v1v2v3volume > Toolbox.Epsilon.Mul(F64.C0p01))
                     {
-                        Fix32 inverseTotalVolume = F64.C1.Div(v0v1v2v3volume);
-                        Fix32 v0Weight = ov1v2v3volume.Mul(inverseTotalVolume);
-                        Fix32 v1Weight = v0ov2v3volume.Mul(inverseTotalVolume);
-                        Fix32 v2Weight = v0v1ov3volume.Mul(inverseTotalVolume);
+                        Fix32 totalVolume = v0v1v2v3volume;
+                        Fix32 v0Weight = ov1v2v3volume.Div(totalVolume);
+                        Fix32 v1Weight = v0ov2v3volume.Div(totalVolume);
+                        Fix32 v2Weight = v0v1ov3volume.Div(totalVolume);
                         Fix32 v3Weight = ((F64.C1.Sub(v0Weight)).Sub(v1Weight)).Sub(v2Weight);
                         position = v1Weight * v1A + v2Weight * v2A + v3Weight * v3A;
                     }
@@ -2130,10 +2130,10 @@ sweepLength.Add((shapeA.MaximumRadius.Add(shapeB.MaximumRadius)).Div(Fix32Ext.Sq
                     Vector3.Dot(ref cross, ref temp3, out v0v1ov3volume);
 
 
-                    Fix32 inverseTotalVolume = F64.C1.Div(v0v1v2v3volume);
-                    Fix32 v0Weight = ov1v2v3volume.Mul(inverseTotalVolume);
-                    Fix32 v1Weight = v0ov2v3volume.Mul(inverseTotalVolume);
-                    Fix32 v2Weight = v0v1ov3volume.Mul(inverseTotalVolume);
+                    Fix32 totalVolume = v0v1v2v3volume;
+                    Fix32 v0Weight = ov1v2v3volume.Div(totalVolume);
+                    Fix32 v1Weight = v0ov2v3volume.Div(totalVolume);
+                    Fix32 v2Weight = v0v1ov3volume.Div(totalVolume);
                     Fix32 v3Weight = ((F64.C1.Sub(v0Weight)).Sub(v1Weight)).Sub(v2Weight);
                     position = v1Weight * v1A + v2Weight * v2A + v3Weight * v3A;
                     //DEBUGlastPosition = position;

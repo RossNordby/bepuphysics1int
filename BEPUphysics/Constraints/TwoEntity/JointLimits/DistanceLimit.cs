@@ -428,8 +428,6 @@ lambda.Mul(velocityToImpulse);
 				relativeVelocity = relativeVelocity.Add(dot);
                 biasVelocity = MathHelper.Max(biasVelocity, ComputeBounceVelocity(relativeVelocity.Neg()));
             }
-
-
         }
 
         /// <summary>

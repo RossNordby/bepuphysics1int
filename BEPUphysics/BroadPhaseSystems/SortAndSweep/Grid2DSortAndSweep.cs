@@ -18,28 +18,17 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
     /// </remarks>
     public class Grid2DSortAndSweep : BroadPhase
     {
-        /// <summary>
-        /// Gets or sets the width of cells in the 2D grid.  For sparser, larger scenes, increasing this can help performance.
-        /// For denser scenes, decreasing this may help.
-        /// </summary>
-        public static Fix32 CellSize
-        {
-            get
-            {
-                return F64.C1.Div(cellSizeInverse);
-            }
-            set
-            {
-                cellSizeInverse = F64.C1.Div(value);
-            }
-        }
-        //TODO: Try different values for this.
-        internal static Fix32 cellSizeInverse = F64.OneEighth; 
+		/// <summary>
+		/// Gets or sets the width of cells in the 2D grid.  For sparser, larger scenes, increasing this can help performance.
+		/// For denser scenes, decreasing this may help.
+		/// </summary>
+		//TODO: Try different values for this.
+		public static Fix32 CellSize = F64.OneEighth;
 
         internal static void ComputeCell(ref Vector3 v, out Int2 cell)
         {
-            cell.Y = (int)Fix32Ext.Floor(v.Y.Mul(cellSizeInverse)).ToInt();
-            cell.Z = (int)Fix32Ext.Floor(v.Z.Mul(cellSizeInverse)).ToInt();
+            cell.Y = (int)Fix32Ext.Floor(v.Y.Div(CellSize)).ToInt();
+            cell.Z = (int)Fix32Ext.Floor(v.Z.Div(CellSize)).ToInt();
         }
 
         

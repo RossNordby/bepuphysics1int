@@ -232,18 +232,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
 
 
             //On the face of the triangle.
-            Fix32 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
-            Fix32 v = vb.Mul(denom);
-            Fix32 w = vc.Mul(denom);
+            Fix32 denom = (va.Add(vb)).Add(vc);
+            Fix32 v = vb.Div(denom);
+            Fix32 w = vc.Div(denom);
             Vector3.Multiply(ref ab, v, out point);
             Vector3 acw;
             Vector3.Multiply(ref ac, w, out acw);
             Vector3.Add(ref A, ref point, out point);
             Vector3.Add(ref point, ref acw, out point);
-
-
-
-
         }
 
         ///<summary>
@@ -463,9 +459,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 simplex.A = simplexA;
                 simplex.B = simplexB;
                 simplex.C = simplexC;
-                Fix32 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
-                Fix32 w = vc.Mul(denom);
-                Fix32 v = vb.Mul(denom);
+                Fix32 denom = (va.Add(vb)).Add(vc);
+                Fix32 w = vc.Div(denom);
+                Fix32 v = vb.Div(denom);
                 Vector3.Multiply(ref ab, v, out point);
                 Vector3 acw;
                 Vector3.Multiply(ref ac, w, out acw);

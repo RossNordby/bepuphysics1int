@@ -38,12 +38,12 @@ namespace BEPUutilities
 				}
 
 				// Divide row by pivot
-				Fix32 pivotInverse = F64.C1.Div(M[k, k]);
+				Fix32 pivot = M[k, k];
 
 				M[k, k] = F64.C1;
 				for (int j = k + 1; j < n; j++)
 				{
-					M[k, j] = M[k, j].Mul(pivotInverse);
+					M[k, j] = M[k, j].Div(pivot);
 				}
 
 				// Subtract row k from other rows

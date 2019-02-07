@@ -111,9 +111,8 @@ namespace BEPUutilities
         /// <param name="result">Result of the division.</param>
         public static void Divide(ref Vector2 v, Fix32 divisor, out Vector2 result)
         {
-            Fix32 inverse = F64.C1.Div(divisor);
-            result.X = v.X.Mul(inverse);
-            result.Y = v.Y.Mul(inverse);
+            result.X = v.X.Div(divisor);
+            result.Y = v.Y.Div(divisor);
         }
 
         /// <summary>

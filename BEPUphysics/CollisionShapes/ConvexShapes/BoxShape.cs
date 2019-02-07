@@ -212,10 +212,10 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 
             if (Fix32Ext.Abs(localDirection.X) < Toolbox.Epsilon && (localOrigin.X < halfWidth.Neg() || localOrigin.X > halfWidth))
                 return false;
-            Fix32 inverseDirection = F64.C1.Div(localDirection.X);
+            Fix32 direction = localDirection.X;
 			// inverseDirection might be Infinity (Fix32.MaxValue), so use SafeMul here to handle overflow
-            Fix32 t1 = Fix32Ext.MulSafe(((halfWidth.Neg()).Sub(localOrigin.X)), inverseDirection);
-            Fix32 t2 = Fix32Ext.MulSafe((halfWidth.Sub(localOrigin.X)), inverseDirection);
+            Fix32 t1 = Fix32Ext.DivSafe(((halfWidth.Neg()).Sub(localOrigin.X)), direction);
+            Fix32 t2 = Fix32Ext.DivSafe((halfWidth.Sub(localOrigin.X)), direction);
             var tempNormal = new Vector3(F64.C1.Neg(), F64.C0, F64.C0);
             if (t1 > t2)
             {
@@ -233,9 +233,9 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 return false;
             if (Fix32Ext.Abs(localDirection.Y) < Toolbox.Epsilon && (localOrigin.Y < halfHeight.Neg() || localOrigin.Y > halfHeight))
                 return false;
-            inverseDirection = F64.C1.Div(localDirection.Y);
-            t1 = Fix32Ext.MulSafe(((halfHeight.Neg()).Sub(localOrigin.Y)), inverseDirection);
-            t2 = Fix32Ext.MulSafe((halfHeight.Sub(localOrigin.Y)), inverseDirection);
+            direction = localDirection.Y;
+            t1 = Fix32Ext.DivSafe(((halfHeight.Neg()).Sub(localOrigin.Y)), direction);
+            t2 = Fix32Ext.DivSafe((halfHeight.Sub(localOrigin.Y)), direction);
             tempNormal = new Vector3(F64.C0, F64.C1.Neg(), F64.C0);
             if (t1 > t2)
             {
@@ -253,9 +253,9 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 return false;
             if (Fix32Ext.Abs(localDirection.Z) < Toolbox.Epsilon && (localOrigin.Z < halfLength.Neg() || localOrigin.Z > halfLength))
                 return false;
-            inverseDirection = F64.C1.Div(localDirection.Z);
-            t1 = Fix32Ext.MulSafe(((halfLength.Neg()).Sub(localOrigin.Z)), inverseDirection);
-            t2 = Fix32Ext.MulSafe((halfLength.Sub(localOrigin.Z)), inverseDirection);
+            direction = localDirection.Z;
+            t1 = Fix32Ext.DivSafe(((halfLength.Neg()).Sub(localOrigin.Z)), direction);
+            t2 = Fix32Ext.DivSafe((halfLength.Sub(localOrigin.Z)), direction);
             tempNormal = new Vector3(F64.C0, F64.C0, F64.C1.Neg());
             if (t1 > t2)
             {

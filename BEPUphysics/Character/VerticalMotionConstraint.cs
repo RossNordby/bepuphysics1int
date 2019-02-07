@@ -199,8 +199,7 @@ namespace BEPUphysics.Character
                     Fix32 effectiveMassContribution;
                     Vector3.Dot(ref angularComponentB, ref angularJacobianB, out effectiveMassContribution);
 
-					inverseEffectiveMass =
-inverseEffectiveMass.Add(supportForceFactor.Mul((effectiveMassContribution.Add(supportEntity.InverseMass))));
+					inverseEffectiveMass = inverseEffectiveMass.Add(supportForceFactor.Mul((effectiveMassContribution.Add(supportEntity.InverseMass))));
                 }
             }
             effectiveMass = F64.C1.Div((inverseEffectiveMass));

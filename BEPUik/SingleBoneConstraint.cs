@@ -28,7 +28,7 @@ namespace BEPUik
             //For single bone constraints, J has 2 3x3 matrices. M^-1 (W below) is a 6x6 matrix with 2 3x3 block diagonal matrices.
             //To compute the whole denominator,
             Matrix3x3 linearW;
-            Matrix3x3.CreateScale(TargetBone.inverseMass, out linearW);
+            Matrix3x3.CreateScale(Fix32.One.Div(TargetBone.mass), out linearW);
             Matrix3x3 linear;
             Matrix3x3.Multiply(ref linearJacobian, ref linearW, out linear); //Compute J * M^-1 for linear component
             Matrix3x3.MultiplyByTransposed(ref linear, ref linearJacobian, out linear); //Compute (J * M^-1) * JT for linear component

@@ -181,8 +181,7 @@ namespace BEPUphysics.Constraints.Collision
             //Fortunately, we're already computing the necessary values: the raw, unsoftened effective mass inverse shall be used to compute the softness.
 
             Fix32 effectiveMassInverse = entryA.Add(entryB);
-            Fix32 updateRate = F64.C1.Div(dt);
-            softness = (CollisionResponseSettings.Softness.Mul(effectiveMassInverse)).Mul(updateRate);
+            softness = (CollisionResponseSettings.Softness.Mul(effectiveMassInverse)).Div(dt);
             velocityToImpulse = (F64.C1.Neg()).Div((softness.Add(effectiveMassInverse)));
 
 
@@ -190,7 +189,7 @@ namespace BEPUphysics.Constraints.Collision
             if (contact.PenetrationDepth >= F64.C0)
             {
                 bias = MathHelper.Min(
-(MathHelper.Max(F64.C0, contact.PenetrationDepth.Sub(CollisionDetectionSettings.AllowedPenetration)).Mul(CollisionResponseSettings.PenetrationRecoveryStiffness)).Mul(updateRate),
+(MathHelper.Max(F64.C0, contact.PenetrationDepth.Sub(CollisionDetectionSettings.AllowedPenetration)).Mul(CollisionResponseSettings.PenetrationRecoveryStiffness)).Div(dt),
                     CollisionResponseSettings.MaximumPenetrationRecoverySpeed);
 
                 if (contactManifoldConstraint.materialInteraction.Bounciness > F64.C0)
@@ -210,7 +209,7 @@ namespace BEPUphysics.Constraints.Collision
             {
                 //The contact is actually separated right now.  Allow the solver to target a position that is just barely in collision.
                 //If the solver finds that an accumulated negative impulse is required to hit this target, then no work will be done.
-                bias = contact.PenetrationDepth.Mul(updateRate);
+                bias = contact.PenetrationDepth.Div(dt);
 
                 //This implementation is going to ignore bounciness for now.
                 //Since it's not being used for CCD, these negative-depth contacts

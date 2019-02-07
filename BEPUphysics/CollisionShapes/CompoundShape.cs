@@ -239,9 +239,8 @@ namespace BEPUphysics.CollisionShapes
             }
             if (totalWeight <= F64.C0)
                 throw new NotFiniteNumberException("Cannot compute distribution; the total weight of a compound shape must be positive.");
-            Fix32 totalWeightInverse = F64.C1.Div(totalWeight);
-            totalWeightInverse.Validate();
-            center *= totalWeightInverse;
+            totalWeight.Validate();
+            center /= totalWeight;
 
             volumeDistribution = new Matrix3x3();
             for (int i = 0; i < entries.Count; i++)
@@ -251,7 +250,7 @@ namespace BEPUphysics.CollisionShapes
                 TransformContribution(ref transform, ref center, ref entries[i].Shape.volumeDistribution, entries[i].Weight, out contribution);
                 Matrix3x3.Add(ref volumeDistribution, ref contribution, out volumeDistribution);
             }
-            Matrix3x3.Multiply(ref volumeDistribution, totalWeightInverse, out volumeDistribution);
+            Matrix3x3.Divide(ref volumeDistribution, totalWeight, out volumeDistribution);
             volumeDistribution.Validate();
         }
 

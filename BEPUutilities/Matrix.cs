@@ -1006,7 +1006,6 @@ namespace BEPUutilities
             perspective.M42 = F64.C0;
             perspective.M44 = F64.C0;
             perspective.M43 = nearClip.Mul(perspective.M33);
-
         }
 
         /// <summary>

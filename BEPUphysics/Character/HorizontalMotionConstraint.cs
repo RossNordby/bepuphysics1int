@@ -415,7 +415,7 @@ namespace BEPUphysics.Character
                 Matrix3x3 inertiaInverse = supportEntity.InertiaTensorInverse;
                 Matrix3x3.Multiply(ref inertiaInverse, supportForceFactor, out inertiaInverse);
                 Fix32 extra;
-                inverseMass = supportForceFactor.Mul(supportEntity.InverseMass);
+                inverseMass = supportForceFactor.Div(supportEntity.mass);
                 Matrix3x3.Transform(ref angularJacobianB1, ref inertiaInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref angularJacobianB1, out extra);
 				m11 = m11.Add(inverseMass.Add(extra));

@@ -113,7 +113,7 @@ namespace BEPUphysics.Character
                 }
                 else
                 {
-                    Vector3.Multiply(ref supportData.Normal, F64.C1.Div(Fix32Ext.Sqrt(length)), out supportData.Normal);
+                    Vector3.Divide(ref supportData.Normal, Fix32Ext.Sqrt(length), out supportData.Normal);
                 }
             }
             //Now that we have the normal, cycle through all the contacts again and find the deepest projected depth.

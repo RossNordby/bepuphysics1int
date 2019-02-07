@@ -550,9 +550,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
 
 
             //On the face of the triangle.
-            Fix32 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
-            V = vb.Mul(denom);
-            W = vc.Mul(denom);
+            Fix32 denom = (va.Add(vb)).Add(vc);
+            V = vb.Div(denom);
+            W = vc.Div(denom);
             U = (F64.C1.Sub(V)).Sub(W);
             Vector3.Multiply(ref ab, V, out point);
             Vector3 acw;

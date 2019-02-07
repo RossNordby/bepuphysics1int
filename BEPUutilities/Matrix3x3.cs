@@ -533,17 +533,17 @@ namespace BEPUutilities
 				return;
 
 			int submatrix;
-            Fix32 determinantInverse = F64.C1.Div(matrix.AdaptiveDeterminant(out submatrix));
+            Fix32 determinant = matrix.AdaptiveDeterminant(out submatrix);
             Fix32 m11, m12, m13, m21, m22, m23, m31, m32, m33;
             switch (submatrix)
             {
                 case 1: //Upper left matrix, m11, m12, m21, m22.
-                    m11 = matrix.M22.Mul(determinantInverse);
-                    m12 = (matrix.M12.Neg()).Mul(determinantInverse);
+                    m11 = matrix.M22.Div(determinant);
+                    m12 = (matrix.M12.Neg()).Div(determinant);
                     m13 = F64.C0;
 
-                    m21 = (matrix.M21.Neg()).Mul(determinantInverse);
-                    m22 = matrix.M11.Mul(determinantInverse);
+                    m21 = (matrix.M21.Neg()).Div(determinant);
+                    m22 = matrix.M11.Div(determinant);
                     m23 = F64.C0;
 
                     m31 = F64.C0;
@@ -556,25 +556,25 @@ namespace BEPUutilities
                     m13 = F64.C0;
 
                     m21 = F64.C0;
-                    m22 = matrix.M33.Mul(determinantInverse);
-                    m23 = (matrix.M23.Neg()).Mul(determinantInverse);
+                    m22 = matrix.M33.Div(determinant);
+                    m23 = (matrix.M23.Neg()).Div(determinant);
 
                     m31 = F64.C0;
-                    m32 = (matrix.M32.Neg()).Mul(determinantInverse);
-                    m33 = matrix.M22.Mul(determinantInverse);
+                    m32 = (matrix.M32.Neg()).Div(determinant);
+                    m33 = matrix.M22.Div(determinant);
                     break;
                 case 3: //Corners, m11, m31, m13, m33.
-                    m11 = matrix.M33.Mul(determinantInverse);
+                    m11 = matrix.M33.Div(determinant);
                     m12 = F64.C0;
-                    m13 = (matrix.M13.Neg()).Mul(determinantInverse);
+                    m13 = (matrix.M13.Neg()).Div(determinant);
 
                     m21 = F64.C0;
                     m22 = F64.C0;
                     m23 = F64.C0;
 
-                    m31 = (matrix.M31.Neg()).Mul(determinantInverse);
+                    m31 = (matrix.M31.Neg()).Div(determinant);
                     m32 = F64.C0;
-                    m33 = matrix.M11.Mul(determinantInverse);
+                    m33 = matrix.M11.Div(determinant);
                     break;
                 case 4: //M11
                     m11 = F64.C1.Div(matrix.M11);
@@ -913,6 +913,25 @@ namespace BEPUutilities
             result.M32 = matrix.M32.Mul(scale);
             result.M33 = matrix.M33.Mul(scale);
         }
+		/// <summary>
+		/// Scales all components of the matrix.
+		/// </summary>
+		/// <param name="matrix">Matrix to scale.</param>
+		/// <param name="scale">Amount to scale.</param>
+		/// <param name="result">Scaled matrix.</param>
+		public static void Divide(ref Matrix3x3 matrix, Fix32 scale, out Matrix3x3 result) {
+			result.M11 = matrix.M11.Div(scale);
+			result.M12 = matrix.M12.Div(scale);
+			result.M13 = matrix.M13.Div(scale);
+
+			result.M21 = matrix.M21.Div(scale);
+			result.M22 = matrix.M22.Div(scale);
+			result.M23 = matrix.M23.Div(scale);
+
+			result.M31 = matrix.M31.Div(scale);
+			result.M32 = matrix.M32.Div(scale);
+			result.M33 = matrix.M33.Div(scale);
+		}
 
         /// <summary>
         /// Negates every element in the matrix.

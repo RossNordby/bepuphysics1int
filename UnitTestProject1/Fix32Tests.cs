@@ -66,7 +66,7 @@ public class Fix32Tests {
 		for (int i = 0; i < 250; i++)
 			TestCases.Add(r.Next());
 
-		const bool BENCHMARK = true;
+		const bool BENCHMARK = false;
 		if (BENCHMARK) {
 			for (int i = 0; i < 1000; i++)
 				TestCases.Add(r.Next());
@@ -217,25 +217,6 @@ public class Fix32Tests {
 				var expected = -((decimal) f);
 				var actual = (decimal) (f.Neg());
 				Assert.AreEqual(expected, actual);
-			}
-		}
-	}
-
-	[Test]
-	public void T007_EqualityInequalityComparisonOperators() {
-		List<Fix32> sources = TestCases.Select(t => (Fix32) t).ToList();
-		foreach (var op1 in sources) {
-			foreach (var op2 in sources) {
-				var d1 = op1.ToDouble();
-				var d2 = op2.ToDouble();
-				Assert.AreEqual(d1 == d2, (int) op1 == (int) op2);
-				Assert.AreEqual(d1.Equals(d2), op1.Equals(op2));
-				Assert.AreEqual(d1 != d2, (int) op1 != (int) op2);
-				Assert.AreNotEqual((int) op1 != (int) op2, (int) op1 == (int) op2);
-				Assert.AreEqual(d1 < d2, (int) op1 < (int) op2);
-				Assert.AreEqual(d1 <= d2, (int) op1 <= (int) op2);
-				Assert.AreEqual(d1 > d2, (int) op1 > (int) op2);
-				Assert.AreEqual(d1 >= d2, (int) op1 >= (int) op2);
 			}
 		}
 	}

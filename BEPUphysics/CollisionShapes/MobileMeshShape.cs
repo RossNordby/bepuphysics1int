@@ -472,7 +472,7 @@ namespace BEPUphysics.CollisionShapes
             shapeInformation.Center /= totalWeight;
 
             //The extra factor of 2 is used because the cross product length was twice the actual area.
-            Matrix3x3.Multiply(ref shapeInformation.VolumeDistribution, F64.C1.Div((F64.C2.Mul(totalWeight))), out shapeInformation.VolumeDistribution);
+            Matrix3x3.Divide(ref shapeInformation.VolumeDistribution, F64.C2.Mul(totalWeight), out shapeInformation.VolumeDistribution);
 
             //Move the inertia tensor into position according to the center.
             Matrix3x3 additionalInertia;

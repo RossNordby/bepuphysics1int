@@ -68,9 +68,9 @@ namespace BEPUik
         {
             Fix32 stiffness = StiffnessOverDamping.Mul(rigidity);
             Fix32 damping = rigidity;
-            Fix32 multiplier = F64.C1.Div(((dt.Mul(stiffness)).Add(damping)));
-            errorCorrectionFactor = stiffness.Mul(multiplier);
-            softness = updateRate.Mul(multiplier);
+            Fix32 divider = (dt.Mul(stiffness)).Add(damping);
+            errorCorrectionFactor = stiffness.Div(divider);
+            softness = updateRate.Div(divider);
             maximumImpulse = maximumForce.Mul(dt);
             maximumImpulseSquared = Fix32Ext.MulSafe(maximumImpulse, maximumImpulse);
 

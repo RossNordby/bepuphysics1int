@@ -161,12 +161,12 @@ namespace BEPUutilities
         /// <param name="result">Inverted matrix.</param>
         public static void Invert(ref Matrix2x2 matrix, out Matrix2x2 result)
         {
-            Fix32 determinantInverse = F64.C1.Div(((matrix.M11.Mul(matrix.M22)).Sub(matrix.M12.Mul(matrix.M21))));
-            Fix32 m11 = matrix.M22.Mul(determinantInverse);
-            Fix32 m12 = (matrix.M12.Neg()).Mul(determinantInverse);
+            Fix32 determinant = (matrix.M11.Mul(matrix.M22)).Sub(matrix.M12.Mul(matrix.M21));
+            Fix32 m11 = matrix.M22.Div(determinant);
+            Fix32 m12 = (matrix.M12.Neg()).Div(determinant);
 
-            Fix32 m21 = (matrix.M21.Neg()).Mul(determinantInverse);
-            Fix32 m22 = matrix.M11.Mul(determinantInverse);
+            Fix32 m21 = (matrix.M21.Neg()).Div(determinant);
+            Fix32 m22 = matrix.M11.Div(determinant);
 
             result.M11 = m11;
             result.M12 = m12;

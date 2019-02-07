@@ -52,9 +52,9 @@ namespace BEPUutilities
             }
             else
             {
-                var inverseDirection = F64.C1.Div(Direction.X);
-                var t1 = (boundingBox.Min.X.Sub(Position.X)).Mul(inverseDirection);
-                var t2 = (boundingBox.Max.X.Sub(Position.X)).Mul(inverseDirection);
+                var direction = Direction.X;
+                var t1 = (boundingBox.Min.X.Sub(Position.X)).Div(direction);
+                var t2 = (boundingBox.Max.X.Sub(Position.X)).Div(direction);
                 if (t1 > t2)
                 {
 					Fix32 temp = t1;
@@ -81,9 +81,9 @@ namespace BEPUutilities
             }
             else
             {
-                var inverseDirection = F64.C1.Div(Direction.Y);
-                var t1 = (boundingBox.Min.Y.Sub(Position.Y)).Mul(inverseDirection);
-                var t2 = (boundingBox.Max.Y.Sub(Position.Y)).Mul(inverseDirection);
+                var direction = Direction.Y;
+                var t1 = (boundingBox.Min.Y.Sub(Position.Y)).Div(direction);
+                var t2 = (boundingBox.Max.Y.Sub(Position.Y)).Div(direction);
                 if (t1 > t2)
                 {
 					Fix32 temp = t1;
@@ -110,9 +110,9 @@ namespace BEPUutilities
             }
             else
             {
-                var inverseDirection = F64.C1.Div(Direction.Z);
-                var t1 = (boundingBox.Min.Z.Sub(Position.Z)).Mul(inverseDirection);
-                var t2 = (boundingBox.Max.Z.Sub(Position.Z)).Mul(inverseDirection);
+                var direction = Direction.Z;
+                var t1 = (boundingBox.Min.Z.Sub(Position.Z)).Div(direction);
+                var t2 = (boundingBox.Max.Z.Sub(Position.Z)).Div(direction);
                 if (t1 > t2)
                 {
 					Fix32 temp = t1;

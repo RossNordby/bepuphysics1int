@@ -125,42 +125,6 @@ namespace BEPUphysicsDemos
             MotionSettings.UseExtraExpansionForContinuousBoundingBoxes = true;
             SolverSettings.DefaultMinimumIterationCount = 5;
             space.Solver.IterationLimit = 50;
-
-        }
-
-        /// <summary>
-        /// Scales the configuration settings for collision detection and response to handle
-        /// a different scale interpretation.  For example, if you want to increase your gravity to -100 from -10 and consider a 5 unit wide box to be tiny,
-        /// apply a scale of 10 to get the collision response and detection systems to match expectations.
-        /// </summary>
-        /// <param name="space">Space to configure.</param>
-        /// <param name="scale">Scale to apply to relevant configuration settings.</param>
-        public static void ApplyScale(Space space, Fix32 scale)
-        {
-            //Set all values to default values * scale.
-            space.DeactivationManager.VelocityLowerLimit = (0.26m.ToFix()).Mul(scale);
-            CollisionResponseSettings.MaximumPenetrationRecoverySpeed = 2.ToFix().Mul(scale);
-            CollisionResponseSettings.BouncinessVelocityThreshold = 1.ToFix().Mul(scale);
-            CollisionResponseSettings.StaticFrictionVelocityThreshold = (.2m.ToFix()).Mul(scale);
-            CollisionDetectionSettings.ContactInvalidationLength = (.1m.ToFix()).Mul(scale);
-            CollisionDetectionSettings.ContactMinimumSeparationDistance = (.03m.ToFix()).Mul(scale);
-            CollisionDetectionSettings.MaximumContactDistance = (.1m.ToFix()).Mul(scale);
-            CollisionDetectionSettings.DefaultMargin = (.04m.ToFix()).Mul(scale);
-            CollisionDetectionSettings.AllowedPenetration = (.01m.ToFix()).Mul(scale);
-
-            //Adjust epsilons, too.
-            Toolbox.Epsilon = (1e-7m.ToFix()).Mul(scale);
-            Toolbox.BigEpsilon = (1e-5m.ToFix()).Mul(scale);
-            MPRToolbox.DepthRefinementEpsilon = (1e-4m.ToFix()).Mul(scale);
-            MPRToolbox.RayCastSurfaceEpsilon = (1e-9m.ToFix()).Mul(scale);
-            MPRToolbox.SurfaceEpsilon = (1e-7m.ToFix()).Mul(scale);
-            PairSimplex.DistanceConvergenceEpsilon = (1e-7m.ToFix()).Mul(scale);
-            PairSimplex.ProgressionEpsilon = (1e-8m.ToFix()).Mul(scale);
-
-            //While not fully a size-related parameter, you may find that adjusting the SolverSettings.DefaultMinimumImpulse can help the simulation quality.
-            //It is related to 'mass scale' instead of 'size scale.'
-            //Heavy or effectively heavy objects will produce higher impulses and early out slower, taking more time than needed.
-            //Light or effectively light objects will produce smaller impulses and early out faster, producing a lower quality result.
         }
     }
 }

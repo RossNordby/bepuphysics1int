@@ -103,9 +103,9 @@ namespace BEPUphysics.Constraints
             {
                 if (stiffness == F64.C0 && damping == F64.C0)
                     throw new InvalidOperationException("Constraints cannot have both 0 stiffness and 0 damping.");
-                Fix32 multiplier = F64.C1.Div(((dt.Mul(stiffness)).Add(damping)));
-                errorReduction = stiffness.Mul(multiplier);
-                softness = updateRate.Mul(multiplier);
+                Fix32 divider = (dt.Mul(stiffness)).Add(damping);
+                errorReduction = stiffness.Div(divider);
+                softness = updateRate.Div(divider);
             }
         }
     }

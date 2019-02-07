@@ -283,8 +283,8 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             }
 
             //Normalize the volume distribution.
-            Matrix3x3.Multiply(ref distributionInfoA.VolumeDistribution, F64.C1.Div(weightA), out distributionInfoA.VolumeDistribution);
-            Matrix3x3.Multiply(ref distributionInfoB.VolumeDistribution, F64.C1.Div(weightB), out distributionInfoB.VolumeDistribution);
+            Matrix3x3.Divide(ref distributionInfoA.VolumeDistribution, weightA, out distributionInfoA.VolumeDistribution);
+            Matrix3x3.Divide(ref distributionInfoB.VolumeDistribution, weightB, out distributionInfoB.VolumeDistribution);
 
             //Update the hierarchies of the compounds.
             //TODO: Create a new method that does this quickly without garbage.  Requires a new Reconstruct method which takes a pool which stores the appropriate node types.
@@ -462,7 +462,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             }
 
             //Normalize the volume distribution.
-            Matrix3x3.Multiply(ref distributionInfo.VolumeDistribution, F64.C1.Div(weight), out distributionInfo.VolumeDistribution);
+            Matrix3x3.Divide(ref distributionInfo.VolumeDistribution, weight, out distributionInfo.VolumeDistribution);
 
             //Update the hierarchies of the compounds.
             //TODO: Create a new method that does this quickly without garbage.  Requires a new Reconstruct method which takes a pool which stores the appropriate node types.
