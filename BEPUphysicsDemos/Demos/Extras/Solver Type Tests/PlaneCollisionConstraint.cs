@@ -114,16 +114,5 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         {
             Dynamic.Constraints.Add(this);
         }
-
-        public override void EnterLock()
-        {
-            Dynamic.SolverSpinLock.Enter();
-        }
-
-        public override void ExitLock()
-        {
-            Dynamic.SolverSpinLock.Exit();
-        }
-
     }
 }

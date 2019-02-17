@@ -136,7 +136,6 @@ namespace BEPUphysics.DeactivationManagement
                                 //The change locker must be obtained before attempting to access the SimulationIsland.
                                 //Path compression can force the simulation island to evaluate to null briefly.
                                 //Do not permit the object to undergo path compression during this (brief) operation.
-                                connectedMembers.Elements[j].Member.simulationIslandChangeLocker.Enter();
                                 var island = connectedMembers.Elements[j].Member.SimulationIsland;
                                 if (island != null)
                                 {
@@ -148,7 +147,6 @@ namespace BEPUphysics.DeactivationManagement
                                     island.IsActive = true;
                                     island.allowDeactivation = false;
                                 }
-                                connectedMembers.Elements[j].Member.simulationIslandChangeLocker.Exit();
                             }
                         }
                     }
@@ -191,7 +189,6 @@ namespace BEPUphysics.DeactivationManagement
             }
         }
 
-        internal BEPUutilities.SpinLock simulationIslandChangeLocker = new BEPUutilities.SpinLock();
         void TryToCompressIslandHierarchy()
         {
 
@@ -203,14 +200,12 @@ namespace BEPUphysics.DeactivationManagement
                     //Only remove ourselves from the owning simulation island, not all the way up the chain.
                     //The change locker must be obtained first to prevent kinematic notifications in the candidacy update 
                     //from attempting to evaluate the SimulationIsland while we are reorganizing things.
-                    simulationIslandChangeLocker.Enter();
                     lock (currentSimulationIsland)
                         currentSimulationIsland.Remove(this);
                     currentSimulationIsland = currentSimulationIsland.Parent;
                     //Add ourselves to the new owner.
                     lock (currentSimulationIsland)
                         currentSimulationIsland.Add(this);
-                    simulationIslandChangeLocker.Exit();
                     //TODO: Should it activate the new island?  This might avoid a possible corner case.
                     //It could interfere with the activated event meaningfulness, since that is triggered
                     //at the end of the update candidacy loop..

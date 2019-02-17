@@ -164,11 +164,11 @@ namespace BEPUphysics.BroadPhaseEntries.Events
                    base.EventsAreInactive();
         }
 
-        readonly ConcurrentDeque<EventStorageContactCreated> eventStorageContactCreated = new ConcurrentDeque<EventStorageContactCreated>(0);
-        readonly ConcurrentDeque<EventStorageInitialCollisionDetected> eventStorageInitialCollisionDetected = new ConcurrentDeque<EventStorageInitialCollisionDetected>(0);
-        readonly ConcurrentDeque<EventStorageContactRemoved> eventStorageContactRemoved = new ConcurrentDeque<EventStorageContactRemoved>(0);
-        readonly ConcurrentDeque<EventStorageCollisionEnded> eventStorageCollisionEnded = new ConcurrentDeque<EventStorageCollisionEnded>(0);
-        readonly ConcurrentDeque<EventStoragePairTouched> eventStoragePairTouched = new ConcurrentDeque<EventStoragePairTouched>(0);
+        readonly Deque<EventStorageContactCreated> eventStorageContactCreated = new Deque<EventStorageContactCreated>(0);
+        readonly Deque<EventStorageInitialCollisionDetected> eventStorageInitialCollisionDetected = new Deque<EventStorageInitialCollisionDetected>(0);
+        readonly Deque<EventStorageContactRemoved> eventStorageContactRemoved = new Deque<EventStorageContactRemoved>(0);
+        readonly Deque<EventStorageCollisionEnded> eventStorageCollisionEnded = new Deque<EventStorageCollisionEnded>(0);
+        readonly Deque<EventStoragePairTouched> eventStoragePairTouched = new Deque<EventStoragePairTouched>(0);
 
         protected override void DispatchEvents()
         {

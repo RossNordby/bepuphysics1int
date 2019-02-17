@@ -5,7 +5,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
 {
     public class TerrainSphereContactManifold : TerrainContactManifold
     {
-        static LockingResourcePool<TriangleSpherePairTester> testerPool = new LockingResourcePool<TriangleSpherePairTester>();
+        static ResourcePool<TriangleSpherePairTester> testerPool = new UnsafeResourcePool<TriangleSpherePairTester>();
         protected override TrianglePairTester GetTester()
         {
             return testerPool.Take();

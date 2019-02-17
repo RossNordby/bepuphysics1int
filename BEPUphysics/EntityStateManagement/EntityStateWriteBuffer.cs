@@ -46,7 +46,7 @@ namespace BEPUphysics.EntityStateManagement
         }
 #endif
 
-        private ConcurrentDeque<EntityStateChange> stateChanges = new ConcurrentDeque<EntityStateChange>();
+        private Deque<EntityStateChange> stateChanges = new Deque<EntityStateChange>();
 
         ///<summary>
         /// Constructs the write buffer.

@@ -24,6 +24,8 @@ namespace BEPUutilities
         /// Tolerance value. Defaults to 1e-7f.
         /// </summary>
         public static Fix32 Epsilon = 1e-7m.ToFix();
+		public static Fix32 MinusEpsilon = Epsilon.Neg();
+		public static Fix32 MinusBigEpsilon = BigEpsilon.Neg();
 
 		/// <summary>
 		/// Represents an invalid Vector3.

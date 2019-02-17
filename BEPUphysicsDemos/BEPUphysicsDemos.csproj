@@ -121,7 +121,6 @@
     <Compile Include="Demos\Extras\GraphicMatchingDemo.cs" />
     <Compile Include="Demos\Extras\IncomingDemo.cs" />
     <Compile Include="Demos\Extras\ReverseTrikeDemo.cs" />
-    <Compile Include="Demos\Extras\ScaleDemo.cs" />
     <Compile Include="Demos\Extras\SimpleVoxelCollidableDemo.cs" />
     <Compile Include="Demos\Extras\SolidPyramidDemo.cs" />
     <Compile Include="Demos\Extras\Solver Type Tests\Constraint.cs" />
@@ -138,7 +137,6 @@
     <Compile Include="Demos\Extras\Tests\AddRemoveStressDemo.cs" />
     <Compile Include="Demos\Extras\Tests\BooleanConvexTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\BoxBoxTestDemo.cs" />
-    <Compile Include="Demos\Extras\Tests\BroadPhaseMultithreadingTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\BroadPhaseRemovalTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\BroadPhasesTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\CharacterAddRemoveStressTestDemo.cs" />
@@ -156,7 +154,6 @@
     <Compile Include="Demos\Extras\Tests\MoreConstraintsTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\MPRCastingDemo.cs" />
     <Compile Include="Demos\Extras\Tests\MPRTestDemo.cs" />
-    <Compile Include="Demos\Extras\Tests\MultithreadedScalingTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\MutableCompoundDemo.cs" />
     <Compile Include="Demos\Extras\Tests\MutableStaticGroupTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\ParallelSpaceTestDemo.cs" />
@@ -166,8 +163,6 @@
     <Compile Include="Demos\Extras\Tests\SimulationIslandStressTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\StackDemo.cs" />
     <Compile Include="Demos\Extras\Tests\TerrainTestDemo.cs" />
-    <Compile Include="Demos\Extras\Tests\ThreadingTestDemo.cs" />
-    <Compile Include="Demos\Extras\Tests\ThreadManagerTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\TwistTestDemo.cs" />
     <Compile Include="Demos\Extras\UnfortunateGuyDemo.cs" />
     <Compile Include="Demos\FancyShapesDemo.cs" />

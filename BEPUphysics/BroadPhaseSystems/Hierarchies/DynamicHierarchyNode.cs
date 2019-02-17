@@ -189,7 +189,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
 
         }
 
-        internal static LockingResourcePool<InternalNode> nodePool = new LockingResourcePool<InternalNode>();
+        internal static ResourcePool<InternalNode> nodePool = new UnsafeResourcePool<InternalNode>();
         internal override bool TryToInsert(LeafNode node, out Node treeNode)
         {
             //Since we are an internal node, we know we have two children.
@@ -299,7 +299,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
             //    Debug.WriteLine(":Break>:)");
         }
 
-        internal static LockingResourcePool<RawList<LeafNode>> nodeListPool = new LockingResourcePool<RawList<LeafNode>>();
+        internal static ResourcePool<RawList<LeafNode>> nodeListPool = new UnsafeResourcePool<RawList<LeafNode>>();
         internal void Revalidate()
         {
             //The revalidation procedure 'reconstructs' a portion of the tree that has expanded beyond its old limits.

@@ -75,13 +75,7 @@ namespace BEPUphysics.OtherSpaceStages
             if (dynamicObjects.Elements[i].IsActive)
                 dynamicObjects.Elements[i].UpdateForForces(timeStepSettings.TimeStepDuration);
         }
-
-        protected override void UpdateMultithreaded()
-        {
-            Vector3.Multiply(ref gravity, timeStepSettings.TimeStepDuration, out gravityDt);
-            ParallelLooper.ForLoop(0, dynamicObjects.Count, multithreadedLoopBodyDelegate);
-        }
-
+		
         protected override void UpdateSingleThreaded()
         {
             Vector3.Multiply(ref gravity, timeStepSettings.TimeStepDuration, out gravityDt);

@@ -143,60 +143,6 @@ namespace BEPUphysics.Constraints
             simulationIslandConnection.Owner = this;
         }
 
-
-
-
-        /// <summary>
-        /// Acquires exclusive access to all entities involved in the solver updateable.
-        /// </summary>
-        public void EnterLock()
-        {
-            for (int i = 0; i < numberOfInvolvedEntities; i++)
-            {
-                if (involvedEntities.Elements[i].isDynamic) //Only need to lock dynamic entities.
-                {
-                    involvedEntities.Elements[i].locker.Enter();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Releases exclusive access to the updateable's entities.
-        /// This should be called within a 'finally' block following a 'try' block containing the locked operations.
-        /// </summary>
-        public void ExitLock()
-        {
-            for (int i = numberOfInvolvedEntities - 1; i >= 0; i--)
-            {
-                if (involvedEntities.Elements[i].isDynamic) //Only need to lock dynamic entities.
-                    involvedEntities.Elements[i].locker.Exit();
-            }
-        }
-
-        /// <summary>
-        /// Attempts to acquire exclusive access to all entities involved in the solver updateable.
-        /// If it is contested, the lock attempt is aborted.
-        /// </summary>
-        /// <returns>True if the lock was entered successfully, false otherwise.</returns>
-        public bool TryEnterLock()
-        {
-            for (int i = 0; i < numberOfInvolvedEntities; i++)
-            {
-                if (involvedEntities.Elements[i].isDynamic) //Only need to lock dynamic entities.
-                    if (!involvedEntities.Elements[i].locker.TryEnter())
-                    {
-                        //Turns out we can't take all the resources! Immediately drop everything.
-                        for (i = i - 1 /*failed on the ith element, so start at the previous*/; i >= 0; i--)
-                        {
-                            if (involvedEntities[i].isDynamic)
-                                involvedEntities.Elements[i].locker.Exit();
-                        }
-                        return false;
-                    }
-            }
-            return true;
-        }
-
         /// <summary>
         /// Updates the activity state of the solver updateable based on its members.
         /// </summary>

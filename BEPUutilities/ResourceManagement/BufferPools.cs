@@ -13,7 +13,7 @@ namespace BEPUutilities.ResourceManagement
     {
         /// <summary>
         /// Gets a buffer pool for this type which provides thread safe resource acquisition and return.</summary>
-        public static LockingBufferPool<T> Locking { get; private set; }
+        public static BufferPool<T> Locking { get; private set; }
 
         [ThreadStatic]
         private static BufferPool<T> threadPool;
@@ -27,7 +27,7 @@ namespace BEPUutilities.ResourceManagement
 
         static BufferPools()
         {
-            Locking = new LockingBufferPool<T>();
+            Locking = new BufferPool<T>();
         }
     }
 }

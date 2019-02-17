@@ -6,21 +6,20 @@ namespace BEPUutilities.DataStructures
     /// Locked queue supporting dequeues from both ends.
     /// </summary>
     /// <typeparam name="T">Type of contained elements.</typeparam>
-    public class ConcurrentDeque<T>
+    public class Deque<T>
     {
-        private readonly SpinLock locker = new SpinLock();
         internal T[] array;
 
         private int count;
         internal int firstIndex;
         internal int lastIndex = -1;
 
-        public ConcurrentDeque(int capacity)
+        public Deque(int capacity)
         {
             array = new T[capacity];
         }
 
-        public ConcurrentDeque()
+        public Deque()
             : this(16)
         {
         }
@@ -49,37 +48,30 @@ namespace BEPUutilities.DataStructures
         {
             //bool taken = false;
             //locker.Enter(ref taken);
-            locker.Enter();
-            try
+
+            //Enqueues go to the tail only; it's like a queue.
+            //head ----> tail
+
+            if (count == array.Length)
             {
-                //Enqueues go to the tail only; it's like a queue.
-                //head ----> tail
-
-                if (count == array.Length)
-                {
-                    //Resize
-                    //TODO: Better shift-resize
-                    T[] oldArray = array;
-                    array = new T[Math.Max(4, oldArray.Length * 2)];
-                    //Copy the old first-end to the first part of the new array.
-                    Array.Copy(oldArray, firstIndex, array, 0, oldArray.Length - firstIndex);
-                    //Copy the old begin-first to the second part of the new array.
-                    Array.Copy(oldArray, 0, array, oldArray.Length - firstIndex, firstIndex);
-                    firstIndex = 0;
-                    lastIndex = count - 1;
-                }
-
-
-                lastIndex++;
-                if (lastIndex == array.Length)
-                    lastIndex = 0;
-                array[lastIndex] = item;
-                count++;
+                //Resize
+                //TODO: Better shift-resize
+                T[] oldArray = array;
+                array = new T[Math.Max(4, oldArray.Length * 2)];
+                //Copy the old first-end to the first part of the new array.
+                Array.Copy(oldArray, firstIndex, array, 0, oldArray.Length - firstIndex);
+                //Copy the old begin-first to the second part of the new array.
+                Array.Copy(oldArray, 0, array, oldArray.Length - firstIndex, firstIndex);
+                firstIndex = 0;
+                lastIndex = count - 1;
             }
-            finally
-            {
-                locker.Exit();
-            }
+
+
+            lastIndex++;
+            if (lastIndex == array.Length)
+                lastIndex = 0;
+            array[lastIndex] = item;
+            count++;
         }
 
         /// <summary>
@@ -91,28 +83,19 @@ namespace BEPUutilities.DataStructures
         {
             //bool taken = false;
             //locker.Enter(ref taken);
-            locker.Enter();
 
-            try
+            if (count > 0)
             {
-                if (count > 0)
-                {
-                    item = array[firstIndex];
-                    array[firstIndex] = default(T);
-                    firstIndex++;
-                    if (firstIndex == array.Length)
-                        firstIndex = 0;
-                    count--;
-                    return true;
-                }
-                item = default(T);
-                return false;
+                item = array[firstIndex];
+                array[firstIndex] = default(T);
+                firstIndex++;
+                if (firstIndex == array.Length)
+                    firstIndex = 0;
+                count--;
+                return true;
             }
-            finally
-            {
-                locker.Exit();
-                //locker.Exit();
-            }
+            item = default(T);
+            return false;
         }
 
         /// <summary>
@@ -124,28 +107,19 @@ namespace BEPUutilities.DataStructures
         {
             //bool taken = false;
             //locker.Enter(ref taken);
-            locker.Enter();
-
-            try
+			
+            if (count > 0)
             {
-                if (count > 0)
-                {
-                    item = array[lastIndex];
-                    array[lastIndex] = default(T);
-                    lastIndex--;
-                    if (lastIndex < 0)
-                        lastIndex += array.Length;
-                    count--;
-                    return true;
-                }
-                item = default(T);
-                return false;
+                item = array[lastIndex];
+                array[lastIndex] = default(T);
+                lastIndex--;
+                if (lastIndex < 0)
+                    lastIndex += array.Length;
+                count--;
+                return true;
             }
-            finally
-            {
-                locker.Exit();
-                //locker.Exit();
-            }
+            item = default(T);
+            return false;
         }
 
         /// <summary>

@@ -530,19 +530,8 @@ namespace BEPUphysics.Character
                 {
                     //It's possible for the support's velocity to change due to another character jumping if the support is dynamic.
                     //Don't let that happen while the character is computing a relative velocity!
-                    Vector3 entityVelocity;
-                    bool locked;
-                    if (locked = entityCollidable.Entity.IsDynamic)
-                        entityCollidable.Entity.Locker.Enter();
-                    try
-                    {
-                        entityVelocity = Toolbox.GetVelocityOfPoint(supportData.Position, entityCollidable.Entity.Position, entityCollidable.Entity.LinearVelocity, entityCollidable.Entity.AngularVelocity);
-                    }
-                    finally
-                    {
-                        if (locked)
-                            entityCollidable.Entity.Locker.Exit();
-                    }
+                    Vector3 entityVelocity = Toolbox.GetVelocityOfPoint(supportData.Position, entityCollidable.Entity.Position, entityCollidable.Entity.LinearVelocity, entityCollidable.Entity.AngularVelocity);
+
                     Vector3.Subtract(ref relativeVelocity, ref entityVelocity, out relativeVelocity);
                 }
             }
@@ -565,15 +554,7 @@ namespace BEPUphysics.Character
                 {
                     Vector3 change = velocityChange * jumpForceFactor;
                     //Multiple characters cannot attempt to modify another entity's velocity at the same time.
-                    entityCollidable.Entity.Locker.Enter();
-                    try
-                    {
-                        entityCollidable.Entity.LinearMomentum += change * Body.Mass.Neg();
-                    }
-                    finally
-                    {
-                        entityCollidable.Entity.Locker.Exit();
-                    }
+                    entityCollidable.Entity.LinearMomentum += change * Body.Mass.Neg();
                     velocityChange += change;
                 }
             }

@@ -112,14 +112,7 @@ namespace BEPUphysics.EntityStateManagement
             backBuffer[i].LinearVelocity = entity.linearVelocity;
             backBuffer[i].AngularVelocity = entity.angularVelocity;
         }
-
-
-        protected override void UpdateMultithreaded()
-        {
-            ParallelLooper.ForLoop(0, manager.entities.Count, multithreadedStateUpdateDelegate);
-            FlipBuffers();
-        }
-
+		
         protected override void UpdateSingleThreaded()
         {
             for (int i = 0; i < manager.entities.Count; i++)

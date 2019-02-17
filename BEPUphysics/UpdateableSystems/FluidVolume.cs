@@ -284,13 +284,10 @@ namespace BEPUphysics.UpdateableSystems
 
             //Don't always multithread.  For small numbers of objects, the overhead of using multithreading isn't worth it.
             //Could tune this value depending on platform for better performance.
-            if (broadPhaseEntries.Count > 30 && ParallelLooper != null && ParallelLooper.ThreadCount > 1)
-                ParallelLooper.ForLoop(0, broadPhaseEntries.Count, analyzeCollisionEntryDelegate);
-            else
-                for (int i = 0; i < broadPhaseEntries.Count; i++)
-                {
-                    AnalyzeEntry(i);
-                }
+            for (int i = 0; i < broadPhaseEntries.Count; i++)
+            {
+                AnalyzeEntry(i);
+            }
 
             broadPhaseEntries.Clear();
 

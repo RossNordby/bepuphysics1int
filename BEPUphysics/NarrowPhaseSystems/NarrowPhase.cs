@@ -102,7 +102,7 @@ namespace BEPUphysics.NarrowPhaseSystems
         /// </summary>
         public Solver Solver { get; set; }
 
-        ConcurrentDeque<NarrowPhasePair> newNarrowPhasePairs = new ConcurrentDeque<NarrowPhasePair>();
+        Deque<NarrowPhasePair> newNarrowPhasePairs = new Deque<NarrowPhasePair>();
 
 
         ///<summary>
@@ -217,40 +217,7 @@ namespace BEPUphysics.NarrowPhaseSystems
         private long endFlushNew;
 
 #endif
-
-        protected override void UpdateMultithreaded()
-        {
-
-#if PROFILE
-            startPairs = Stopwatch.GetTimestamp();
-#endif
-
-            ParallelLooper.ForLoop(0, broadPhaseOverlaps.Count, updateBroadPhaseOverlapDelegate);
-
-#if PROFILE
-            endPairs = Stopwatch.GetTimestamp();
-#endif
-
-            //Remove stale objects BEFORE adding new objects. This ensures that simulation islands which will be activated 
-            //by new narrow phase pairs will not be momentarily considered stale.
-            //(The RemoveStale only considers islands that are active to be potentially stale.)
-            //If that happened, all the pairs would be remove and immediately recreated. Very wasteful!
-            RemoveStaleOverlaps();
-#if PROFILE
-            endStale = Stopwatch.GetTimestamp();
-#endif
-            //This sets NeedsUpdate to true for all new objects, ensuring that they are considered for staleness next time.
-            AddNewNarrowPhaseObjects();
-
-#if PROFILE
-            endFlushNew = Stopwatch.GetTimestamp();
-#endif
-
-
-
-        }
-
-
+		
         protected override void UpdateSingleThreaded()
         {
 #if PROFILE

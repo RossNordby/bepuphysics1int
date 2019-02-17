@@ -9,7 +9,6 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
 {
     abstract class Constraint
     {
-
         public Fix32 Softness = 0.ToFix();
         public Fix32 BiasFactor = 0.2m.ToFix();
 
@@ -26,8 +25,5 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         public abstract void ApplyAccumulatedImpulses();
 
         internal abstract void AddToConnections();
-
-        public abstract void EnterLock();
-        public abstract void ExitLock();
     }
 }

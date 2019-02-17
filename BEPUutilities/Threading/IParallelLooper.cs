@@ -19,13 +19,5 @@ namespace BEPUutilities.Threading
         /// <param name="endIndex">Exclusive ending index.</param>
         /// <param name="loopBody">Function that handles an individual iteration of the loop.</param>
         void ForLoop(int startIndex, int endIndex, Action<int> loopBody);
-
-        /// <summary>
-        /// Gets the number of threads available to the loop.
-        /// This is used to configure job sizes where applicable.
-        /// It does not have to be exactly correct; an estimate will work.
-        /// Better estimates should result in better performance.
-        /// </summary>
-        int ThreadCount { get; }
     }
 }

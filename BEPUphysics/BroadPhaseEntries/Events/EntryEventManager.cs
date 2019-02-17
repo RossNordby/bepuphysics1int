@@ -210,9 +210,9 @@ namespace BEPUphysics.BroadPhaseEntries.Events
             }
         }
 
-        readonly ConcurrentDeque<EventStoragePairCreated> eventStoragePairCreated = new ConcurrentDeque<EventStoragePairCreated>(0);
-        readonly ConcurrentDeque<EventStoragePairRemoved> eventStoragePairRemoved = new ConcurrentDeque<EventStoragePairRemoved>(0);
-        readonly ConcurrentDeque<EventStoragePairUpdated> eventStoragePairUpdated = new ConcurrentDeque<EventStoragePairUpdated>(0);
+        readonly Deque<EventStoragePairCreated> eventStoragePairCreated = new Deque<EventStoragePairCreated>(0);
+        readonly Deque<EventStoragePairRemoved> eventStoragePairRemoved = new Deque<EventStoragePairRemoved>(0);
+        readonly Deque<EventStoragePairUpdated> eventStoragePairUpdated = new Deque<EventStoragePairUpdated>(0);
 
         void IDeferredEventCreator.DispatchEvents()
         {

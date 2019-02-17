@@ -24,7 +24,6 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
         public SortAndSweep1D(IParallelLooper parallelLooper)
             : base(parallelLooper)
         {
-            sweepSegment = Sweep;
             backbuffer = new RawList<BroadPhaseEntry>();
         }
 
@@ -33,8 +32,6 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
         /// </summary>
         public SortAndSweep1D()
         {
-
-            sweepSegment = Sweep;
             backbuffer = new RawList<BroadPhaseEntry>();
         }
 
@@ -78,64 +75,6 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
         {
             base.Remove(entry);
             entries.Remove(entry);
-        }
-
-        Action<int> sweepSegment;
-        protected override void UpdateMultithreaded()
-        {
-            if (backbuffer.Count != entries.Count)
-            {
-                backbuffer.Capacity = entries.Capacity;
-                backbuffer.Count = entries.Count;
-            }
-            Overlaps.Clear();
-            //Sort along x axis using insertion sort; the list will be nearly sorted, so very few swaps are necessary.
-            for (int i = 1; i < entries.Count; i++)
-            {
-                var entry = entries.Elements[i];
-                for (int j = i - 1; j >= 0; j--)
-                {
-                    if (entry.boundingBox.Min.X < entries.Elements[j].boundingBox.Min.X)
-                    {
-                        entries.Elements[j + 1] = entries.Elements[j];
-                        entries.Elements[j] = entry;
-                    }
-                    else
-                        break;
-                }
-
-            }
-
-            //TODO: Multithreaded sorting could help in some large cases.
-            //The overhead involved in this implementation is way too high for reasonable object counts.
-            //for (int i = 0; i < sortSegmentCount; i++)
-            //    SortSection(i);
-
-            ////MergeSections(0, 1);
-            ////MergeSections(2, 3);
-            ////MergeSections(0, 2);
-            ////MergeSections(1, 3);
-
-            //MergeSections(0, 1);
-            //MergeSections(2, 3);
-            //MergeSections(4, 5);
-            //MergeSections(6, 7);
-
-            //MergeSections(0, 2);
-            //MergeSections(1, 3);
-            //MergeSections(4, 6);
-            //MergeSections(5, 7);
-
-            //MergeSections(0, 4);
-            //MergeSections(1, 5);
-            //MergeSections(2, 6);
-            //MergeSections(3, 7);
-
-            //var temp = backbuffer;
-            //backbuffer = entries;
-            //entries = temp;
-
-            ParallelLooper.ForLoop(0, sweepSegmentCount, sweepSegment);
         }
 
         protected override void UpdateSingleThreaded()

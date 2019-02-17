@@ -24,21 +24,6 @@ namespace BEPUphysicsDemos.Demos
             parallelLooper = new ParallelLooper();
             //This section lets the engine know that it can make use of multithreaded systems
             //by adding threads to its thread pool.
-#if XBOX360
-            parallelLooper.AddThread(delegate { Thread.CurrentThread.SetProcessorAffinity(new[] { 1 }); });
-            parallelLooper.AddThread(delegate { Thread.CurrentThread.SetProcessorAffinity(new[] { 3 }); });
-            parallelLooper.AddThread(delegate { Thread.CurrentThread.SetProcessorAffinity(new[] { 4 }); });
-            parallelLooper.AddThread(delegate { Thread.CurrentThread.SetProcessorAffinity(new[] { 5 }); });
-
-#else
-            if (Environment.ProcessorCount > 1)
-            {
-                for (int i = 0; i < Environment.ProcessorCount; i++)
-                {
-                    parallelLooper.AddThread();
-                }
-            }
-#endif
 
             Space = new Space(parallelLooper);
 

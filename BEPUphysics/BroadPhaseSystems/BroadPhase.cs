@@ -12,15 +12,11 @@ namespace BEPUphysics.BroadPhaseSystems
     ///</summary>
     public abstract class BroadPhase : MultithreadedProcessingStage
     {
-        readonly SpinLock overlapAddLock = new SpinLock();
-
         ///<summary>
         /// Gets the object which is locked by the broadphase during synchronized update processes.
         ///</summary>
-        public object Locker { get; protected set; }
         protected BroadPhase()
         {
-            Locker = new object();
             Enabled = true;
         }
 
@@ -73,9 +69,7 @@ namespace BEPUphysics.BroadPhaseSystems
 
         protected internal void AddOverlap(BroadPhaseOverlap overlap)
         {
-            overlapAddLock.Enter();
             overlaps.Add(overlap);
-            overlapAddLock.Exit();
         }
 
         /// <summary>
@@ -88,9 +82,7 @@ namespace BEPUphysics.BroadPhaseSystems
             CollisionRule rule;
             if ((rule = GetCollisionRule(entryA, entryB)) < CollisionRule.NoBroadPhase)
             {
-                overlapAddLock.Enter();
                 overlaps.Add(new BroadPhaseOverlap(entryA, entryB, rule));
-                overlapAddLock.Exit();
             }
         }
 

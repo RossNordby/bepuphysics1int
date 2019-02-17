@@ -344,7 +344,6 @@ namespace BEPUphysics.BroadPhaseEntries
         /// <summary>
         /// Used to protect against containment changes coming in from multithreaded narrowphase contexts.
         /// </summary>
-        SpinLock locker = new SpinLock();
         struct ContainmentChange
         {
             public Entity Entity;
@@ -360,46 +359,38 @@ namespace BEPUphysics.BroadPhaseEntries
         private Queue<ContainmentChange> containmentChanges = new Queue<ContainmentChange>();
         internal void BeganTouching(DetectorVolumePairHandler pair)
         {
-            locker.Enter();
             containmentChanges.Enqueue(new ContainmentChange
             {
                 Change = ContainmentChangeType.BeganTouching,
                 Entity = pair.Collidable.entity
             });
-            locker.Exit();
         }
 
         internal void StoppedTouching(DetectorVolumePairHandler pair)
         {
-            locker.Enter();
             containmentChanges.Enqueue(new ContainmentChange
             {
                 Change = ContainmentChangeType.StoppedTouching,
                 Entity = pair.Collidable.entity
             });
-            locker.Exit();
         }
 
         internal void BeganContaining(DetectorVolumePairHandler pair)
         {
-            locker.Enter();
             containmentChanges.Enqueue(new ContainmentChange
             {
                 Change = ContainmentChangeType.BeganContaining,
                 Entity = pair.Collidable.entity
             });
-            locker.Exit();
         }
 
         internal void StoppedContaining(DetectorVolumePairHandler pair)
         {
-            locker.Enter();
             containmentChanges.Enqueue(new ContainmentChange
             {
                 Change = ContainmentChangeType.StoppedContaining,
                 Entity = pair.Collidable.entity
             });
-            locker.Exit();
         }
 
 

@@ -137,15 +137,7 @@ namespace BEPUphysics.EntityStateManagement
             Vector3.Lerp(ref manager.ReadBuffers.backBuffer[i].Position, ref entity.position, blendAmount, out backBuffer[i].Position);
             Quaternion.Slerp(ref manager.ReadBuffers.backBuffer[i].Orientation, ref entity.orientation, blendAmount, out backBuffer[i].Orientation);
         }
-
-
-
-        protected override void UpdateMultithreaded()
-        {
-            ParallelLooper.ForLoop(0, manager.entities.Count, multithreadedWithReadBuffersDelegate);
-            FlipBuffers();
-        }
-
+		
         protected override void UpdateSingleThreaded()
         {
             for (int i = 0; i < manager.entities.Count; i++)

@@ -97,40 +97,6 @@ namespace BEPUphysics.PositionUpdating
             }
         }
 
-        protected override void UpdateMultithreaded()
-        {
-
-            //Go through the list of all updateables which do not permit motion clamping.
-            //Since these do not care about CCD, just update them as if they were discrete.
-            //In addition, go through the remaining non-discrete objects and perform their prestep.
-            //This usually involves updating their angular motion, but not their linear motion.
-            int count = discreteUpdateables.Count + passiveUpdateables.Count + continuousUpdateables.Count;
-            ParallelLooper.ForLoop(0, count, preUpdate);
-
-            //Now go through the list of all full CCD objects.  These are responsible
-            //for determining the TOI of collision pairs, if existent.
-            if (continuousUpdateables.Count > MultithreadingThreshold)
-                ParallelLooper.ForLoop(0, continuousUpdateables.Count, updateTimeOfImpact);
-            else
-                for (int i = 0; i < continuousUpdateables.Count; i++)
-                    UpdateTimeOfImpact(i);
-
-            //The TOI's are now computed, so we can integrate all of the CCD or allow-motionclampers 
-            //to their new positions.
-            count = passiveUpdateables.Count + continuousUpdateables.Count;
-            if (count > MultithreadingThreshold)
-                ParallelLooper.ForLoop(0, count, updateContinuous);
-            else
-                for (int i = 0; i < count; i++)
-                    UpdateContinuousItem(i);
-
-            //The above process is the same as the UpdateSingleThreaded version, but 
-            //it doesn't always use multithreading.  Sometimes, a simulation can have
-            //very few continuous objects.  In this case, there's no point in having the 
-            //multithreaded overhead.
-
-        }
-
         protected override void UpdateSingleThreaded()
         {
             //Go through the list of all updateables which do not permit motion clamping.

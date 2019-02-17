@@ -23,7 +23,7 @@ namespace BEPUphysics.OtherSpaceStages
                 ShouldAdd = shouldAdd;
             }
         }
-        private ConcurrentDeque<SpaceObjectChange> objectsToChange = new ConcurrentDeque<SpaceObjectChange>();
+        private Deque<SpaceObjectChange> objectsToChange = new Deque<SpaceObjectChange>();
 
         private Space space;
         ///<summary>

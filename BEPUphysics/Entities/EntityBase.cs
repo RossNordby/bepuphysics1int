@@ -468,19 +468,6 @@ namespace BEPUphysics.Entities
         //    }
         //}
 
-        protected internal SpinLock locker = new SpinLock();
-        ///<summary>
-        /// Gets the synchronization object used by systems that need
-        /// exclusive access to the entity's properties.
-        ///</summary>
-        public SpinLock Locker
-        {
-            get
-            {
-                return locker;
-            }
-        }
-
         internal Material material;
         //NOT thread safe due to material change pair update.
         ///<summary>

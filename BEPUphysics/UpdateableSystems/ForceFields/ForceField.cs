@@ -90,20 +90,13 @@ namespace BEPUphysics.UpdateableSystems.ForceFields
         {
             PreUpdate();
             affectedEntities = Shape.GetPossiblyAffectedEntities();
-            if (AllowMultithreading && ParallelLooper != null && ParallelLooper.ThreadCount > 1)
+
+            currentTimestep = dt;
+            //No multithreading, so do it directly.
+            int count = affectedEntities.Count;
+            for (int i = 0; i < count; i++)
             {
-                currentTimestep = dt;
-                ParallelLooper.ForLoop(0, affectedEntities.Count, subfunction);
-            }
-            else
-            {
-                currentTimestep = dt;
-                //No multithreading, so do it directly.
-                int count = affectedEntities.Count;
-                for (int i = 0; i < count; i++)
-                {
-                    CalculateImpulsesSubfunction(i);
-                }
+                CalculateImpulsesSubfunction(i);
             }
         }
 

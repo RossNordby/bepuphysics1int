@@ -84,8 +84,6 @@ namespace BEPUphysics.Constraints
             AllowMultithreading = true;
         }
 
-        private SpinLock addRemoveLocker = new SpinLock();
-
         ///<summary>
         /// Adds a solver updateable to the solver.
         ///</summary>
@@ -97,10 +95,8 @@ namespace BEPUphysics.Constraints
             {
                 item.Solver = this;
 
-                addRemoveLocker.Enter();
                 item.solverIndex = solverUpdateables.Count;
                 solverUpdateables.Add(item);
-                addRemoveLocker.Exit();
 
                 DeactivationManager.Add(item.simulationIslandConnection);
                 item.OnAdditionToSolver(this);
@@ -122,7 +118,6 @@ namespace BEPUphysics.Constraints
                 item.Solver = null;
 
 
-                addRemoveLocker.Enter();
                 solverUpdateables.Count--;
                 if (item.solverIndex < solverUpdateables.Count)
                 {
@@ -132,7 +127,6 @@ namespace BEPUphysics.Constraints
                     solverUpdateables.Elements[item.solverIndex].solverIndex = item.solverIndex;
                 }
                 solverUpdateables.Elements[solverUpdateables.Count] = null;
-                addRemoveLocker.Exit();
 
                 DeactivationManager.Remove(item.simulationIslandConnection);
                 item.OnRemovalFromSolver(this);
@@ -165,15 +159,7 @@ namespace BEPUphysics.Constraints
             var updateable = solverUpdateables.Elements[i];
             if (updateable.isActiveInSolver)
             {
-                updateable.EnterLock();
-                try
-                {
-                    updateable.ExclusiveUpdate();
-                }
-                finally
-                {
-                    updateable.ExitLock();
-                }
+                updateable.ExclusiveUpdate();
             }
         }
 
@@ -193,7 +179,6 @@ namespace BEPUphysics.Constraints
             if (updateable.isActiveInSolver)
             {
                 int incrementedIterations = -1;
-                updateable.EnterLock();
                 //This duplicate test protects against the possibility that the updateable went inactive between the first check and the lock.
                 if (updateable.isActiveInSolver)
                 {
@@ -211,7 +196,6 @@ namespace BEPUphysics.Constraints
                     //Increment the iteration count.
                     incrementedIterations = solverSettings.currentIterations++;
                 }
-                updateable.ExitLock();
                 //Since the updateables only ever go from active to inactive, it's safe to check outside of the lock.
                 //Keeping this if statement out of the lock allows other waiters to get to work a few nanoseconds faster.
                 if (incrementedIterations > iterationLimit ||
@@ -221,21 +205,8 @@ namespace BEPUphysics.Constraints
                 }
 
             }
-
-
-
         }
-
-        protected override void UpdateMultithreaded()
-        {
-            ParallelLooper.ForLoop(0, solverUpdateables.Count, multithreadedPrestepDelegate);
-            //By performing all velocity modifications after the prestep, the prestep is free to read velocities consistently.
-            //If the exclusive update was performed in the same call as the prestep, the velocities would enter inconsistent states based on update order.
-            ParallelLooper.ForLoop(0, solverUpdateables.Count, multithreadedExclusiveUpdateDelegate);
-            ++PermutationMapper.PermutationIndex;
-            ParallelLooper.ForLoop(0, iterationLimit * solverUpdateables.Count, multithreadedIterationDelegate);
-        }
-
+		
         protected override void UpdateSingleThreaded()
         {
 

@@ -2,8 +2,6 @@
 using BEPUutilities;
 using BEPUutilities.DataStructures;
 
-using SpinLock = BEPUutilities.SpinLock;
-
 namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
 {
     class LinearDynamic
@@ -39,8 +37,6 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         /// Used to determine lock order in the locking simulator type.
         /// </summary>
         public readonly long Id;
-
-        public readonly SpinLock SolverSpinLock = new SpinLock();
 
         public LinearDynamic(Fix32 mass)
         {

@@ -24,25 +24,25 @@ namespace BEPUphysics
         public static void ResetPools()
         {
 
-            SubPoolRayCastResultList = new LockingResourcePool<RawList<RayCastResult>>();
-            SubPoolBroadPhaseEntryList = new LockingResourcePool<RawList<BroadPhaseEntry>>();
-            SubPoolCollidableList = new LockingResourcePool<RawList<Collidable>>();
-            SubPoolCompoundChildList = new LockingResourcePool<RawList<CompoundChild>>();
+            SubPoolRayCastResultList = new UnsafeResourcePool<RawList<RayCastResult>>();
+            SubPoolBroadPhaseEntryList = new UnsafeResourcePool<RawList<BroadPhaseEntry>>();
+            SubPoolCollidableList = new UnsafeResourcePool<RawList<Collidable>>();
+            SubPoolCompoundChildList = new UnsafeResourcePool<RawList<CompoundChild>>();
 
-            SubPoolEntityRawList = new LockingResourcePool<RawList<Entity>>(16);
-            SubPoolTriangleShape = new LockingResourcePool<TriangleShape>();
-            SubPoolTriangleCollidables = new LockingResourcePool<TriangleCollidable>();
-            SimulationIslandConnections = new LockingResourcePool<SimulationIslandConnection>();
+            SubPoolEntityRawList = new UnsafeResourcePool<RawList<Entity>>(16);
+            SubPoolTriangleShape = new UnsafeResourcePool<TriangleShape>();
+            SubPoolTriangleCollidables = new UnsafeResourcePool<TriangleCollidable>();
+            SimulationIslandConnections = new UnsafeResourcePool<SimulationIslandConnection>();
         }
 
-        static LockingResourcePool<RawList<RayCastResult>> SubPoolRayCastResultList;
-        static LockingResourcePool<RawList<BroadPhaseEntry>> SubPoolBroadPhaseEntryList;
-        static LockingResourcePool<RawList<Collidable>> SubPoolCollidableList;
-        static LockingResourcePool<RawList<Entity>> SubPoolEntityRawList;
-        static LockingResourcePool<TriangleShape> SubPoolTriangleShape;
-        static LockingResourcePool<RawList<CompoundChild>> SubPoolCompoundChildList;
-        static LockingResourcePool<TriangleCollidable> SubPoolTriangleCollidables;
-        static LockingResourcePool<SimulationIslandConnection> SimulationIslandConnections;
+        static ResourcePool<RawList<RayCastResult>> SubPoolRayCastResultList;
+        static ResourcePool<RawList<BroadPhaseEntry>> SubPoolBroadPhaseEntryList;
+        static ResourcePool<RawList<Collidable>> SubPoolCollidableList;
+        static ResourcePool<RawList<Entity>> SubPoolEntityRawList;
+        static ResourcePool<TriangleShape> SubPoolTriangleShape;
+        static ResourcePool<RawList<CompoundChild>> SubPoolCompoundChildList;
+        static ResourcePool<TriangleCollidable> SubPoolTriangleCollidables;
+        static ResourcePool<SimulationIslandConnection> SimulationIslandConnections;
         //#endif
         /// <summary>
         /// Retrieves a ray cast result list from the resource pool.

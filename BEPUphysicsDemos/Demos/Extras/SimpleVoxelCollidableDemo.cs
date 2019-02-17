@@ -196,8 +196,8 @@ namespace BEPUphysicsDemos.Demos.Extras
     {
 
 
-        static LockingResourcePool<ReusableBoxCollidable> boxCollidablePool = new LockingResourcePool<ReusableBoxCollidable>();
-        static LockingResourcePool<GeneralConvexPairTester> testerPool = new LockingResourcePool<GeneralConvexPairTester>();
+        static ResourcePool<ReusableBoxCollidable> boxCollidablePool = new UnsafeResourcePool<ReusableBoxCollidable>();
+        static ResourcePool<GeneralConvexPairTester> testerPool = new UnsafeResourcePool<GeneralConvexPairTester>();
 
         private VoxelGrid voxelGrid;
         private ConvexCollidable convex;

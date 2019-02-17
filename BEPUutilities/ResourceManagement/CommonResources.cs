@@ -17,19 +17,19 @@ namespace BEPUutilities.ResourceManagement
 
         public static void ResetPools()
         {
-            SubPoolIntList = new LockingResourcePool<RawList<int>>();
-            SubPoolIntSet = new LockingResourcePool<HashSet<int>>();
-            SubPoolFloatList = new LockingResourcePool<RawList<Fix32>>();
-            SubPoolVectorList = new LockingResourcePool<RawList<Vector3>>();
-            SubPoolRayHitList = new LockingResourcePool<RawList<RayHit>>();
+            SubPoolIntList = new UnsafeResourcePool<RawList<int>>();
+            SubPoolIntSet = new UnsafeResourcePool<HashSet<int>>();
+            SubPoolFloatList = new UnsafeResourcePool<RawList<Fix32>>();
+            SubPoolVectorList = new UnsafeResourcePool<RawList<Vector3>>();
+            SubPoolRayHitList = new UnsafeResourcePool<RawList<RayHit>>();
 
         }
 
-        static LockingResourcePool<RawList<RayHit>> SubPoolRayHitList;
-        static LockingResourcePool<RawList<int>> SubPoolIntList;
-        static LockingResourcePool<HashSet<int>> SubPoolIntSet;
-        static LockingResourcePool<RawList<Fix32>> SubPoolFloatList;
-        static LockingResourcePool<RawList<Vector3>> SubPoolVectorList;
+        static ResourcePool<RawList<RayHit>> SubPoolRayHitList;
+        static ResourcePool<RawList<int>> SubPoolIntList;
+        static ResourcePool<HashSet<int>> SubPoolIntSet;
+        static ResourcePool<RawList<Fix32>> SubPoolFloatList;
+        static ResourcePool<RawList<Vector3>> SubPoolVectorList;
 
         /// <summary>
         /// Retrieves a ray hit list from the resource pool.

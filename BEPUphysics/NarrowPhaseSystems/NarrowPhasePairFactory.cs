@@ -74,7 +74,7 @@ namespace BEPUphysics.NarrowPhaseSystems
     /// <typeparam name="T">Type of the pair to manufacture.</typeparam>
     public class NarrowPhasePairFactory<T> : NarrowPhasePairFactory where T : NarrowPhasePair, new()
     {
-        LockingResourcePool<T> pool = new LockingResourcePool<T>();
+        ResourcePool<T> pool = new UnsafeResourcePool<T>();
         /// <summary>
         /// Get a resource from the factory.
         /// </summary>

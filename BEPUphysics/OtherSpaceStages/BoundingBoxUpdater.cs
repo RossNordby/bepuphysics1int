@@ -70,10 +70,6 @@ namespace BEPUphysics.OtherSpaceStages
         {
             entries.Remove(entry);
         }
-        protected override void UpdateMultithreaded()
-        {
-            ParallelLooper.ForLoop(0, entries.Count, multithreadedLoopBodyDelegate);
-        }
 
         protected override void UpdateSingleThreaded()
         {

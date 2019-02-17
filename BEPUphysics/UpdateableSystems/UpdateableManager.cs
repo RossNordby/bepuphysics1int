@@ -139,16 +139,7 @@ namespace BEPUphysics.UpdateableSystems
             }
 
         }
-
-        protected override void UpdateMultithreaded()
-        {
-            for (int i = 0; i < sequentiallyUpdatedUpdateables.Count; i++)
-            {
-                SequentialUpdate(i);
-            }
-            ParallelLooper.ForLoop(0, simultaneouslyUpdatedUpdateables.Count, multithreadedUpdateDelegate);
-        }
-
+		
         protected override void UpdateSingleThreaded()
         {
             for (int i = 0; i < sequentiallyUpdatedUpdateables.Count; i++)
@@ -160,10 +151,5 @@ namespace BEPUphysics.UpdateableSystems
                 MultithreadedUpdate(i);
             }
         }
-   
-
     }
-
-
-
 }

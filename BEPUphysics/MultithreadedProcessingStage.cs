@@ -33,14 +33,6 @@ namespace BEPUphysics
         /// </summary>
         public event Action Finishing;
 
-        protected bool ShouldUseMultithreading
-        {
-            get
-            {
-                return AllowMultithreading && ParallelLooper != null && ParallelLooper.ThreadCount > 1;
-            }
-        }
-
 #if PROFILE
         /// <summary>
         /// Gets the time elapsed in the previous execution of this stage, not including any hooked Starting or Finishing events.
@@ -77,21 +69,13 @@ namespace BEPUphysics
 #if PROFILE
             StartClock();
 #endif
-            if (ShouldUseMultithreading)
-            {
-                UpdateMultithreaded();
-            }
-            else
-            {
-                UpdateSingleThreaded();
-            }
+            UpdateSingleThreaded();
 #if PROFILE
             StopClock();
 #endif
             if (Finishing != null)
                 Finishing();
         }
-        protected abstract void UpdateMultithreaded();
         protected abstract void UpdateSingleThreaded();
     }
 }

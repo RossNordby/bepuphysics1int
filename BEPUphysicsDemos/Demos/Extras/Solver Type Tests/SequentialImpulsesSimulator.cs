@@ -15,10 +15,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
 
         private void ApplyAccumulatedImpulses(int i)
         {
-            var constraint = constraints.Elements[i];
-            constraint.EnterLock();
-            constraint.ApplyAccumulatedImpulses();
-            constraint.ExitLock();
+            constraints.Elements[i].ApplyAccumulatedImpulses();
         }
 
         private void ApplyAccumulatedImpulsesToDynamic(int i)
@@ -35,10 +32,8 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         private void SolveIteration(int i)
         {
             var constraint = constraints.Elements[permutationMapper.GetMappedIndex(i, constraints.Count)];
-            constraint.EnterLock();
             constraint.SolveIteration();
             constraint.ApplyImpulses();
-            constraint.ExitLock();
         }
 
         private void UpdatePosition(int i)

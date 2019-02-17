@@ -5,7 +5,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
 {
     public class TerrainConvexContactManifold : TerrainContactManifold
     {
-        static LockingResourcePool<TriangleConvexPairTester> testerPool = new LockingResourcePool<TriangleConvexPairTester>();
+        static ResourcePool<TriangleConvexPairTester> testerPool = new UnsafeResourcePool<TriangleConvexPairTester>();
         protected override TrianglePairTester GetTester()
         {
             return testerPool.Take();

@@ -116,10 +116,8 @@
     <Compile Include="PermutationMapper.cs" />
     <Compile Include="ResourceManagement\BufferPool.cs" />
     <Compile Include="ResourceManagement\BufferPools.cs" />
-    <Compile Include="ResourceManagement\LockingBufferPool.cs" />
     <Compile Include="Threading\IParallelLooper.cs" />
     <Compile Include="Threading\ParallelLooper.cs" />
-    <Compile Include="Threading\ParallelLoopWorker.cs" />
     <Compile Include="Vector4.cs" />
     <Compile Include="DataStructures\ConcurrentDeque.cs" />
     <Compile Include="AffineTransform.cs" />
@@ -151,11 +149,9 @@
     <Compile Include="DataStructures\ReadOnlyList.cs" />
     <Compile Include="DataStructures\TinyList.cs" />
     <Compile Include="DataStructures\TinyStructList.cs" />
-    <Compile Include="ResourceManagement\LockingResourcePool.cs" />
     <Compile Include="ResourceManagement\ResourcePool.cs" />
     <Compile Include="ResourceManagement\UnsafeResourcePool.cs" />
     <Compile Include="ResourceManagement\CommonResources.cs" />
-    <Compile Include="SpinLock.cs" />
     <Compile Include="Toolbox.cs" />
   </ItemGroup>
   <ItemGroup>

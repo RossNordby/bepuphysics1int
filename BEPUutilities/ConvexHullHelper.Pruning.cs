@@ -40,7 +40,7 @@ namespace BEPUutilities
 		/// Contains and manufactures cell sets used by the redundant point remover.  To minimize memory usage, this can be cleared
 		/// after using the RemoveRedundantPoints if it isn't going to be used again.
 		/// </summary>
-		public static LockingResourcePool<HashSet<BlockedCell>> BlockedCellSets = new LockingResourcePool<HashSet<BlockedCell>>();
+		public static ResourcePool<HashSet<BlockedCell>> BlockedCellSets = new UnsafeResourcePool<HashSet<BlockedCell>>();
 
         /// <summary>
         /// Removes redundant points.  Two points are redundant if they occupy the same hash grid cell of size 0.001.

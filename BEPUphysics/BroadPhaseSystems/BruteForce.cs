@@ -20,11 +20,6 @@ namespace BEPUphysics.BroadPhaseSystems
             entries.Remove(entry);
         }
 
-        protected override void UpdateMultithreaded()
-        {
-            UpdateSingleThreaded();
-        }
-
         protected override void UpdateSingleThreaded()
         {
             Overlaps.Clear();

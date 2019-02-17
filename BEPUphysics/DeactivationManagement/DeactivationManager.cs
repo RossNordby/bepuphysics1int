@@ -203,16 +203,7 @@ namespace BEPUphysics.DeactivationManagement
         {
             simulationIslandMembers.Elements[i].UpdateDeactivationCandidacy(timeStepSettings.TimeStepDuration);
         }
-
-        protected override void UpdateMultithreaded()
-        {
-            FlushSplits();
-
-            ParallelLooper.ForLoop(0, simulationIslandMembers.Count, multithreadedCandidacyLoopDelegate);
-
-            DeactivateObjects();
-        }
-
+		
         //RawList<SimulationIslandConnection> debugConnections = new RawList<SimulationIslandConnection>();
         protected override void UpdateSingleThreaded()
         {
@@ -222,11 +213,10 @@ namespace BEPUphysics.DeactivationManagement
                 simulationIslandMembers.Elements[i].UpdateDeactivationCandidacy(timeStepSettings.TimeStepDuration);
 
             DeactivateObjects();
-
         }
 
 
-        ConcurrentDeque<SimulationIslandConnection> splitAttempts = new ConcurrentDeque<SimulationIslandConnection>();
+        Deque<SimulationIslandConnection> splitAttempts = new Deque<SimulationIslandConnection>();
 
         static Fix32 maximumSplitAttemptsFraction = .01m.ToFix();
         /// <summary>
@@ -336,9 +326,6 @@ namespace BEPUphysics.DeactivationManagement
             }
         }
 
-        //Merges must be performed sequentially.
-        private SpinLock addLocker = new SpinLock();
-
         ///<summary>
         /// Adds a simulation island connection to the deactivation manager.
         ///</summary>
@@ -349,7 +336,6 @@ namespace BEPUphysics.DeactivationManagement
             //DO A MERGE IF NECESSARY
             if (connection.DeactivationManager == null)
             {
-                addLocker.Enter();
                 connection.DeactivationManager = this;
                 if (connection.entries.Count > 0)
                 {
@@ -379,8 +365,6 @@ namespace BEPUphysics.DeactivationManagement
                         connection.AddReferencesToConnectedMembers();
                     }
                 }
-
-                addLocker.Exit();
             }
             else
             {

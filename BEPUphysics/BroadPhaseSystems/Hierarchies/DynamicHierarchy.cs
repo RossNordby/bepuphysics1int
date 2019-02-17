@@ -42,17 +42,6 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
             QueryAccelerator = new DynamicHierarchyQueryAccelerator(this);
         }
 
-        /// <summary>
-        /// This is a few test-based values which help threaded scaling.
-        /// By going deeper into the trees, a better distribution of work is achieved.
-        /// Going above the tested core count theoretically benefits from a '0 if power of 2, 2 otherwise' rule of thumb.
-        /// </summary>
-        private int[] threadSplitOffsets = new[]
-#if WINDOWS
-        { 0, 0, 4, 1, 2, 2, 2, 0, 2, 2, 2, 2 };
-#else
-        { 2, 2, 2, 1};
-#endif
 #if PROFILE
         /// <summary>
         /// Gets the time used in refitting the acceleration structure and making any necessary incremental improvements.
@@ -119,44 +108,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
                 SingleThreadedOverlapPhase();
             }
         }
-
-        public int GetSplitDepth()
-        {
-            //To multithread the tree traversals, we have to do a little single threaded work.
-            //Dive down into the tree far enough that there are enough nodes to split amongst all the threads in the thread manager.
-            //The depth to which we dive is offset by some precomputed values (when available) or a guess based on whether or not the 
-            //thread count is a power of 2.  Thread counts which are a power of 2 match well to the binary tree, while other thread counts
-            //require going deeper for better distributions.
-            int offset = ParallelLooper.ThreadCount <= threadSplitOffsets.Length
-                             ? threadSplitOffsets[ParallelLooper.ThreadCount - 1]
-                             : (ParallelLooper.ThreadCount & (ParallelLooper.ThreadCount - 1)) == 0 ? 0 : 2;
-            return offset + (int)Math.Ceiling(Math.Log(ParallelLooper.ThreadCount, 2));
-        }
-
-        protected override void UpdateMultithreaded()
-        {
-            lock (Locker)
-            {
-                Overlaps.Clear();
-                if (root != null)
-                {
-                    var splitDepth = GetSplitDepth();
-#if PROFILE
-                    startRefit = Stopwatch.GetTimestamp();
-#endif
-                    MultithreadedRefitPhase(splitDepth);
-#if PROFILE
-                    endRefit = Stopwatch.GetTimestamp();
-#endif
-                    MultithreadedOverlapPhase(splitDepth);
-#if PROFILE
-                    endOverlap = Stopwatch.GetTimestamp();
-#endif
-                }
-            }
-
-        }
-
+		
         internal struct NodePair
         {
             internal Node a;
@@ -194,23 +146,20 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
 
         protected override void UpdateSingleThreaded()
         {
-            lock (Locker)
+            Overlaps.Clear();
+            if (root != null)
             {
-                Overlaps.Clear();
-                if (root != null)
-                {
 #if PROFILE
-                    startRefit = Stopwatch.GetTimestamp();
+                startRefit = Stopwatch.GetTimestamp();
 #endif
-                    SingleThreadedRefitPhase();
+                SingleThreadedRefitPhase();
 #if PROFILE
-                    endRefit = Stopwatch.GetTimestamp();
+                endRefit = Stopwatch.GetTimestamp();
 #endif
-                    SingleThreadedOverlapPhase();
+                SingleThreadedOverlapPhase();
 #if PROFILE
-                    endOverlap = Stopwatch.GetTimestamp();
+                endOverlap = Stopwatch.GetTimestamp();
 #endif
-                }
             }
         }
 

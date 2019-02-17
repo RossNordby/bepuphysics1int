@@ -125,33 +125,5 @@ accumulatedImpulse.Add(impulse);
             A.Constraints.Add(this);
             B.Constraints.Add(this);
         }
-
-        public override void EnterLock()
-        {
-            if (A.Id <= B.Id)
-            {
-                A.SolverSpinLock.Enter();
-                B.SolverSpinLock.Enter();
-            }
-            else
-            {
-                B.SolverSpinLock.Enter();
-                A.SolverSpinLock.Enter();
-            }
-        }
-
-        public override void ExitLock()
-        {
-            if (A.Id <= B.Id)
-            {
-                B.SolverSpinLock.Exit();
-                A.SolverSpinLock.Exit();
-            }
-            else
-            {
-                A.SolverSpinLock.Exit();
-                B.SolverSpinLock.Exit();
-            }
-        }
     }
 }
