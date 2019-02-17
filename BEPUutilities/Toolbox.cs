@@ -356,6 +356,7 @@ namespace BEPUutilities
                 closestPoint = a;
                 return VoronoiRegion.A;
             }
+
             //Vertex region B?
             Vector3 bp;
             Vector3.Subtract(ref p, ref b, out bp);
@@ -367,6 +368,7 @@ namespace BEPUutilities
                 closestPoint = b;
                 return VoronoiRegion.B;
             }
+
             //Edge region AB?
             Fix32 vc = (d1.Mul(d4)).Sub(d3.Mul(d2));
             if (d1 >= F64.C0 && d3 <= F64.C0 && vc <= F64.C0)
@@ -376,6 +378,7 @@ namespace BEPUutilities
                 Vector3.Add(ref closestPoint, ref a, out closestPoint);
                 return VoronoiRegion.AB;
             }
+
             //Vertex region C?
             Vector3 cp;
             Vector3.Subtract(ref p, ref c, out cp);
@@ -387,6 +390,7 @@ namespace BEPUutilities
                 closestPoint = c;
                 return VoronoiRegion.C;
             }
+
             //Edge region AC?
             Fix32 vb = (d5.Mul(d2)).Sub(d1.Mul(d6));
             if (vb <= F64.C0 && d2 >= F64.C0 && d6 <= F64.C0)
@@ -396,6 +400,7 @@ namespace BEPUutilities
                 Vector3.Add(ref closestPoint, ref a, out closestPoint);
                 return VoronoiRegion.AC;
             }
+
             //Edge region BC?
             Fix32 va = (d3.Mul(d6)).Sub(d5.Mul(d4));
             if (va <= F64.C0 && d4.Sub(d3) >= F64.C0 && d5.Sub(d6) >= F64.C0)
@@ -406,6 +411,7 @@ namespace BEPUutilities
                 Vector3.Add(ref closestPoint, ref b, out closestPoint);
                 return VoronoiRegion.BC;
             }
+
             //Inside triangle?
             Fix32 denom = F64.C1.Div(va.Add(vb).Add(vc));
             v = vb.Mul(denom);

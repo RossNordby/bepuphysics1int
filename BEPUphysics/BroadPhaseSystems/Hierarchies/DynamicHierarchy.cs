@@ -175,7 +175,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
             //Entities do not set up their own bounding box before getting stuck in here.  If they're all zeroed out, the tree will be horrible.
             Vector3 offset;
             Vector3.Subtract(ref entry.boundingBox.Max, ref entry.boundingBox.Min, out offset);
-            if (Fix32Ext.MulSafe(Fix32Ext.MulSafe(offset.X, offset.Y), offset.Z) == F64.C0)
+            if (offset.X == Fix32.Zero || offset.Y == Fix32.Zero || offset.Z == Fix32.Zero)
                 entry.UpdateBoundingBox();
             //Could buffer additions to get a better construction in the tree.
             var node = leafNodes.Take();

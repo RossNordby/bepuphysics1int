@@ -38,6 +38,8 @@ public enum Fix32 : int {
 	Ln2 = Fix32Ext.LN2,
 	Log2Max = Fix32Ext.LOG2MAX,
 	Log2Min = Fix32Ext.LOG2MIN,
+
+	Precision = 1,
 }
 
 /// <summary>
