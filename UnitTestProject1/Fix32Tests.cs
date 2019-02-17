@@ -351,7 +351,7 @@ public class Fix32Tests {
 		var expecteds = new double[] { 0, 16, -16, 80, -80, 8, -8, 1 };
 		for (int i = 0; i < term1s.Length; ++i) {
 			var expected = expecteds[i];
-			var actual = term1s[i].ToFix().MulFast(term2s[i].ToFix()).ToDouble();
+			var actual = term1s[i].ToFix().Mul(term2s[i].ToFix()).ToDouble();
 			Assert.AreEqual(expected, actual, term1s[i] + " * " + term2s[i]);
 		}
 	}
@@ -400,7 +400,7 @@ public class Fix32Tests {
 				if (expectedF > Fix32.MaxValue.ToDouble() || expectedF < Fix32.MinValue.ToDouble())
 					continue; // Fast mult version doesn't saturate
 				swF.Start();
-				var actualF = x.MulFast(y);
+				var actualF = x.Mul(y);
 				swF.Stop();
 				var expected = expectedF.ToFix().ToDouble();
 				var actual = actualF.ToDouble();

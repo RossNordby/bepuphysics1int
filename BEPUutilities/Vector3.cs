@@ -65,7 +65,7 @@ namespace BEPUutilities
         /// <returns>Squared length of the vector.</returns>
         public Fix32 LengthSquared()
         {
-            return ((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z));
+            return ((X.MulSafe(X)).AddSafe(Y.MulSafe(Y))).AddSafe(Z.MulSafe(Z));
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace BEPUutilities
         /// <returns>Length of the vector.</returns>
         public Fix32 Length()
         {
-            return Fix32Ext.Sqrt(((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z)));
+            return Fix32Ext.Sqrt(LengthSquared());
         }
 
         /// <summary>

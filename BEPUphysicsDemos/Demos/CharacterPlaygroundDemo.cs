@@ -194,13 +194,11 @@ namespace BEPUphysicsDemos.Demos
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
-                    {
                         Space.Add(new Box(new Vector3(
-(5.ToFix().Add(xSpacing.Mul(i.ToFix()))).Sub((((numRows - 1).ToFix()).Mul(xSpacing)).Div(2m.ToFix())),
-1.58m.ToFix().Add(k.ToFix().Mul((ySpacing))),
-(45.ToFix().Add(zSpacing.Mul(j.ToFix()))).Sub((((numColumns - 1).ToFix()).Mul(zSpacing)).Div(2m.ToFix()))),
-.5m.ToFix(), .5m.ToFix(), .5m.ToFix(), 5.ToFix()));
-                    }
+(Fix32.Five.Add(xSpacing.Mul(i.ToFix()))).Sub((((numRows - 1).ToFix()).Mul(xSpacing)).Div(Fix32.Two)),
+1.58m.ToFix().Add(k.ToFix().Mul(ySpacing)),
+(45.ToFix().Add(zSpacing.Mul(j.ToFix()))).Sub((((numColumns - 1).ToFix()).Mul(zSpacing)).Div(Fix32.Two))),
+Fix32.Half, Fix32.Half, Fix32.Half, Fix32.Five));
 
 
 

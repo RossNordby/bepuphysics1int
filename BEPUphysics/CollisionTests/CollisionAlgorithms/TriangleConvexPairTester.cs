@@ -691,8 +691,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
 
             //Check to see if it's outside AB.
-            Fix32 vc = (APdotAB.Mul(BPdotAC)).Sub(BPdotAB.Mul(APdotAC));
-            if (vc <= F64.C0 && APdotAB > F64.C0 && BPdotAB < F64.C0) //Note > and < instead of => <=; avoids possibly division by zero
+            if (APdotAB > F64.C0 && BPdotAB < F64.C0 && APdotAB.Mul(BPdotAC).Sub(BPdotAB.Mul(APdotAC)) <= F64.C0) //Note > and < instead of => <=; avoids possibly division by zero
             {
                 return VoronoiRegion.AB;
             }
@@ -710,15 +709,13 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
 
             //Check if it's outside AC.    
-            Fix32 vb = (CPdotAB.Mul(APdotAC)).Sub(APdotAB.Mul(CPdotAC));
-            if (vb <= F64.C0 && APdotAC > F64.C0 && CPdotAC < F64.C0) //Note > instead of >= and < instead of <=; prevents bad denominator
+            if (APdotAC > F64.C0 && CPdotAC < F64.C0 && CPdotAB.Mul(APdotAC).Sub(APdotAB.Mul(CPdotAC)) <= F64.C0) //Note > instead of >= and < instead of <=; prevents bad denominator
             {
                 return VoronoiRegion.AC;
             }
 
             //Check if it's outside BC.
-            Fix32 va = (BPdotAB.Mul(CPdotAC)).Sub(CPdotAB.Mul(BPdotAC));
-            if (va <= F64.C0 && (BPdotAC.Sub(BPdotAB)) > F64.C0 && (CPdotAB.Sub(CPdotAC)) > F64.C0)//Note > instead of >= and < instead of <=; prevents bad denominator
+            if (BPdotAC.Sub(BPdotAB) > F64.C0 && CPdotAB.Sub(CPdotAC) > F64.C0 && BPdotAB.Mul(CPdotAC).Sub(CPdotAB.Mul(BPdotAC)) <= F64.C0)//Note > instead of >= and < instead of <=; prevents bad denominator
             {
                 return VoronoiRegion.BC;
             }
@@ -726,8 +723,6 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             //On the face of the triangle.
             return VoronoiRegion.ABC;
-
-
         }
 
         ///<summary>

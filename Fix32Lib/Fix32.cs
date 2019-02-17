@@ -1,4 +1,5 @@
 ﻿//#define USE_DOUBLES // Used for testing
+#define CHECK_OVERFLOW
 
 using FixPointCS;
 using System;
@@ -94,11 +95,27 @@ public static partial class Fix32Ext {
 
 
 	/// <summary>
-	/// Adds x and y. Performs saturating addition, i.e. in case of overflow, 
-	/// rounds to MinValue or MaxValue depending on sign of operands.
+	/// Adds x and y. Overflows.
 	/// </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 Add(this Fix32 x, Fix32 y) {
+#if USE_DOUBLES
+		return (x.ToDouble() + y.ToDouble()).ToFix();
+#endif
+#if CHECK_OVERFLOW
+		if ((long) x + (long) y < int.MinValue || (long) x + (long) y > int.MaxValue) {
+			Console.WriteLine("Overflow " + x.ToStringExt() + " + " + y.ToStringExt() + ".\n" + new System.Diagnostics.StackTrace(true));
+			System.Diagnostics.Debugger.Break();
+		}
+#endif
+		return (Fix32) ((int) x + (int) y);
+	}
+
+	/// <summary>
+	/// Adds x and y. Saturates.
+	/// </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32 AddSafe(this Fix32 x, Fix32 y) {
 #if USE_DOUBLES
 		return (x.ToDouble() + y.ToDouble()).ToFix();
 #endif
@@ -116,19 +133,27 @@ public static partial class Fix32Ext {
 	}
 
 	/// <summary>
-	/// Adds x and y. Doesn't saturate, wraps around when overflows.
-	/// </summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static Fix32 AddFast(this Fix32 x, Fix32 y) {
-		return (Fix32) ((int) x + (int) y);
-	}
-
-	/// <summary>
-	/// Subtracts y from x. Performs saturating substraction, i.e. in case of overflow, 
-	/// rounds to MinValue or MaxValue depending on sign of operands.
+	/// Subtracts y from x. Overflows.
 	/// </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 Sub(this Fix32 x, Fix32 y) {
+#if USE_DOUBLES
+		return (x.ToDouble() - y.ToDouble()).ToFix();
+#endif
+#if CHECK_OVERFLOW
+		if ((long) x - (long) y < int.MinValue || (long) x - (long) y > int.MaxValue) {
+			Console.WriteLine("Overflow " + x.ToStringExt() + " - " + y.ToStringExt() + ".\n" + new System.Diagnostics.StackTrace(true));
+			System.Diagnostics.Debugger.Break();
+		}
+#endif
+		return (Fix32) ((int) x - (int) y);
+	}
+
+	/// <summary>
+	/// Subtracts y from x. Saturates.
+	/// </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32 SubSafe(this Fix32 x, Fix32 y) {
 #if USE_DOUBLES
 		return (x.ToDouble() - y.ToDouble()).ToFix();
 #endif
@@ -136,13 +161,6 @@ public static partial class Fix32Ext {
 		return (Fix32) (((int) sub) != sub ? (int) ((((uint) x >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE)) : (int) sub);
 	}
 
-	/// <summary>
-	/// Subtracts y from x. Doesn't saturate, wraps around when overflows.
-	/// </summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static Fix32 SubFast(this Fix32 x, Fix32 y) {
-		return (Fix32) ((int) x - (int) y);
-	}
 	/// <summary>
 	/// Negate
 	/// </summary>
@@ -272,10 +290,27 @@ public static partial class Fix32Ext {
 	}
 
 	/// <summary>
-	/// Multiply. Saturates when overflows. May change to Fast in the future
+	/// Multiply. No saturation (overflows)
 	/// </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 Mul(this Fix32 x, Fix32 y) {
+#if USE_DOUBLES
+		return Math.Round(x.ToDouble() * y.ToDouble()).ToFix();
+#endif
+#if CHECK_OVERFLOW
+		if (x.ToDouble() * y.ToDouble() < Fix32.MinValue.ToDouble() || x.ToDouble() * y.ToDouble() > Fix32.MaxValue.ToDouble()) {
+			Console.WriteLine("Overflow " + x.ToStringExt() + " * " + y.ToStringExt() + ".\n" + new System.Diagnostics.StackTrace(true));
+			System.Diagnostics.Debugger.Break();
+		}
+#endif
+		return (Fix32) (((long) x * (long) y) >> FRACTIONAL_BITS);
+	}
+
+	/// <summary>
+	/// Multiply. Saturates when overflows.
+	/// </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32 MulSafe(this Fix32 x, Fix32 y) {
 #if USE_DOUBLES
 		return Math.Round(x.ToDouble() * y.ToDouble()).ToFix();
 #endif
@@ -286,22 +321,6 @@ public static partial class Fix32Ext {
 		return (Fix32) (((finalSign ^ multLong) & SIGN_MASK) != 0 && multLong != 0 ?
 			(int) ((((uint) finalSign >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE)) :
 			(int) multLong);
-	}
-
-	/// <summary>
-	/// Multiply. No saturation (overflows)
-	/// </summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static Fix32 MulFast(this Fix32 x, Fix32 y) {
-		return (Fix32) (((long) x * (long) y) >> FRACTIONAL_BITS);
-	}
-
-	/// <summary>
-	/// Multiply. Saturates when overflows.
-	/// </summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static Fix32 MulSafe(this Fix32 x, Fix32 y) {
-		return Mul(x, y);
 	}
 
 	/// <summary>
@@ -578,7 +597,7 @@ public static partial class Fix32Ext {
 		while ((int) term != 0) {
 			term = x.Mul(term).Mul(Fix32.Ln2.Div(i));
 			result = result.Add(term);
-			i = i.AddFast(Fix32.One);
+			i = i.Add(Fix32.One);
 		}
 
 		result = (Fix32) ((int) result << integerPart);
