@@ -437,7 +437,7 @@ namespace BEPUphysicsDemos
                     double avg = FPStotalSinceLast / FPStotalFramesSinceLast;
                     FPSlastTime = gameTime.TotalGameTime.TotalSeconds;
                     FPStoDisplay = Math.Round(1 / avg, 1);
-                    averagePhysicsTime = Math.Round(1000 * currentSimulation.PhysicsTime.ToFloat(), 1);
+                    averagePhysicsTime = Math.Round(1000 * currentSimulation.PhysicsTime, 1);
                     FPStotalSinceLast = 0;
                     FPStotalFramesSinceLast = 0;
                 }

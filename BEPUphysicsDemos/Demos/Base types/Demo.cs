@@ -14,7 +14,7 @@ namespace BEPUphysicsDemos.Demos
     public abstract class Demo
     {
         private int accumulatedPhysicsFrames;
-        private Fix32 accumulatedPhysicsTime;
+        private double accumulatedPhysicsTime;
         private Fix32 previousTimeMeasurement;
         private ParallelLooper parallelLooper;
 
@@ -36,7 +36,7 @@ namespace BEPUphysicsDemos.Demos
         /// <summary>
         /// Gets the average time spent per frame in the physics simulation.
         /// </summary>
-        public Fix32 PhysicsTime { get; private set; }
+        public double PhysicsTime { get; private set; }
 
         /// <summary>
         /// Gets the name of the demo.
@@ -80,14 +80,14 @@ namespace BEPUphysicsDemos.Demos
 
 
             long endTime = Stopwatch.GetTimestamp();
-			accumulatedPhysicsTime = accumulatedPhysicsTime.Add(((endTime - startTime).ToFix()).Div(Stopwatch.Frequency.ToFix()));
+			accumulatedPhysicsTime += (endTime - startTime) / (double) Stopwatch.Frequency;
             accumulatedPhysicsFrames++;
 			previousTimeMeasurement = previousTimeMeasurement.Add(dt);
             if (previousTimeMeasurement > .3m.ToFix())
             {
 				previousTimeMeasurement = previousTimeMeasurement.Sub(.3m.ToFix());
-                PhysicsTime = accumulatedPhysicsTime.Div(accumulatedPhysicsFrames.ToFix());
-                accumulatedPhysicsTime = 0.ToFix();
+                PhysicsTime = accumulatedPhysicsTime / accumulatedPhysicsFrames;
+                accumulatedPhysicsTime = 0;
                 accumulatedPhysicsFrames = 0;
             }
 
