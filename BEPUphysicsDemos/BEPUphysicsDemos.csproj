@@ -157,7 +157,6 @@
     <Compile Include="Demos\Extras\Tests\MutableCompoundDemo.cs" />
     <Compile Include="Demos\Extras\Tests\MutableStaticGroupTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\ParallelSpaceTestDemo.cs" />
-    <Compile Include="Demos\Extras\Tests\PermutationTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\PersistentManifoldStressTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\RayCastTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\SimulationIslandStressTestDemo.cs" />

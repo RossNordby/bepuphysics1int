@@ -65,10 +65,6 @@ namespace BEPUik
             }
         }
 
-
-
-        private PermutationMapper permutationMapper = new PermutationMapper();
-
         /// <summary>
         /// Constructs a new IKSolver.
         /// </summary>
@@ -88,9 +84,6 @@ namespace BEPUik
         public void Solve(List<IKJoint> joints)
         {
             ActiveSet.UpdateActiveSet(joints);
-
-            //Reset the permutation index; every solve should proceed in exactly the same order.
-            permutationMapper.PermutationIndex = 0;
 
             Fix32 updateRate = F64.C1.Div(TimeStepDuration);
             foreach (var joint in ActiveSet.joints)
@@ -119,11 +112,8 @@ namespace BEPUik
                     //A permuted version of the indices is used. The randomization tends to avoid issues with solving order in corner cases.
                     for (int jointIndex = 0; jointIndex < ActiveSet.joints.Count; ++jointIndex)
                     {
-                        int remappedIndex = permutationMapper.GetMappedIndex(jointIndex, ActiveSet.joints.Count);
-                        ActiveSet.joints[remappedIndex].SolveVelocityIteration();
+                        ActiveSet.joints[jointIndex].SolveVelocityIteration();
                     }
-                    //Increment to use the next permutation.
-                    ++permutationMapper.PermutationIndex;
                 }
 
                 //Integrate the positions of the bones forward.
@@ -158,9 +148,6 @@ namespace BEPUik
                     control.MaximumForce = control.TargetBone.Mass.Mul(AutoscaleControlMaximumForce);
                 }
             }
-
-            //Reset the permutation index; every solve should proceed in exactly the same order.
-            permutationMapper.PermutationIndex = 0;
 
             Fix32 updateRate = F64.C1.Div(TimeStepDuration);
             foreach (var joint in ActiveSet.joints)
@@ -209,13 +196,8 @@ namespace BEPUik
                     //A permuted version of the indices is used. The randomization tends to avoid issues with solving order in corner cases.
                     for (int jointIndex = 0; jointIndex < ActiveSet.joints.Count; ++jointIndex)
                     {
-                        int remappedIndex = permutationMapper.GetMappedIndex(jointIndex, ActiveSet.joints.Count);
-                        ActiveSet.joints[remappedIndex].SolveVelocityIteration();
+                        ActiveSet.joints[jointIndex].SolveVelocityIteration();
                     }
-                    //Increment to use the next permutation.
-                    ++permutationMapper.PermutationIndex;
-
-
                 }
 
                 //Integrate the positions of the bones forward.
@@ -260,12 +242,8 @@ namespace BEPUik
                     //A permuted version of the indices is used. The randomization tends to avoid issues with solving order in corner cases.
                     for (int jointIndex = 0; jointIndex < ActiveSet.joints.Count; ++jointIndex)
                     {
-                        int remappedIndex = permutationMapper.GetMappedIndex(jointIndex, ActiveSet.joints.Count);
-                        ActiveSet.joints[remappedIndex].SolveVelocityIteration();
+                        ActiveSet.joints[jointIndex].SolveVelocityIteration();
                     }
-                    //Increment to use the next permutation.
-                    ++permutationMapper.PermutationIndex;
-
                 }
 
                 //Integrate the positions of the bones forward.

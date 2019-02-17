@@ -113,7 +113,6 @@
     <Compile Include="Int2.cs" />
     <Compile Include="Matrix4x8.cs" />
     <Compile Include="Matrix3x6.cs" />
-    <Compile Include="PermutationMapper.cs" />
     <Compile Include="ResourceManagement\BufferPool.cs" />
     <Compile Include="ResourceManagement\BufferPools.cs" />
     <Compile Include="Threading\IParallelLooper.cs" />

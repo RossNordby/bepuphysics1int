@@ -28,10 +28,9 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             }
         }
 
-        private PermutationMapper permutationMapper = new PermutationMapper();
         private void SolveIteration(int i)
         {
-            var constraint = constraints.Elements[permutationMapper.GetMappedIndex(i, constraints.Count)];
+            var constraint = constraints.Elements[i];
             constraint.SolveIteration();
             constraint.ApplyImpulses();
         }

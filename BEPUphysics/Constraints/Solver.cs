@@ -51,11 +51,6 @@ namespace BEPUphysics.Constraints
         ///</summary>
         public DeactivationManager DeactivationManager { get; set; }
 
-        /// <summary>
-        /// Gets the permutation mapper used by the solver.
-        /// </summary>
-        public PermutationMapper PermutationMapper { get; private set; }
-
         ///<summary>
         /// Constructs a Solver.
         ///</summary>
@@ -65,11 +60,7 @@ namespace BEPUphysics.Constraints
         {
             TimeStepSettings = timeStepSettings;
             DeactivationManager = deactivationManager;
-            multithreadedPrestepDelegate = MultithreadedPrestep;
-            multithreadedExclusiveUpdateDelegate = MultithreadedExclusiveUpdate;
-            multithreadedIterationDelegate = MultithreadedIteration;
             Enabled = true;
-            PermutationMapper = new PermutationMapper();
         }
         ///<summary>
         /// Constructs a Solver.
@@ -136,76 +127,6 @@ namespace BEPUphysics.Constraints
                 throw new ArgumentException("Solver updateable doesn't belong to this solver; it can't be removed.", "item");
 
         }
-
-
-
-
-        Action<int> multithreadedPrestepDelegate;
-        void MultithreadedPrestep(int i)
-        {
-            var updateable = solverUpdateables.Elements[i];
-            updateable.UpdateSolverActivity();
-            if (updateable.isActiveInSolver)
-            {
-                updateable.SolverSettings.currentIterations = 0;
-                updateable.SolverSettings.iterationsAtZeroImpulse = 0;
-                updateable.Update(timeStepSettings.TimeStepDuration);
-            }
-        }
-
-        private Action<int> multithreadedExclusiveUpdateDelegate;
-        void MultithreadedExclusiveUpdate(int i)
-        {
-            var updateable = solverUpdateables.Elements[i];
-            if (updateable.isActiveInSolver)
-            {
-                updateable.ExclusiveUpdate();
-            }
-        }
-
-
-        Action<int> multithreadedIterationDelegate;
-        void MultithreadedIteration(int i)
-        {
-            //'i' is currently an index into an implicit array of solver updateables that goes from 0 to solverUpdateables.count * iterationLimit.
-            //It includes iterationLimit copies of each updateable.
-            //Permute the entire set with duplicates.
-            var updateable = solverUpdateables.Elements[PermutationMapper.GetMappedIndex(i, solverUpdateables.Count)];
-
-
-            SolverSettings solverSettings = updateable.solverSettings;
-            //Updateables only ever go from active to inactive during iterations,
-            //so it's safe to check for activity before we do hard (synchronized) work.
-            if (updateable.isActiveInSolver)
-            {
-                int incrementedIterations = -1;
-                //This duplicate test protects against the possibility that the updateable went inactive between the first check and the lock.
-                if (updateable.isActiveInSolver)
-                {
-                    if (updateable.SolveIteration() < solverSettings.minimumImpulse)
-                    {
-                        solverSettings.iterationsAtZeroImpulse++;
-                        if (solverSettings.iterationsAtZeroImpulse > solverSettings.minimumIterationCount)
-                            updateable.isActiveInSolver = false;
-                    }
-                    else
-                    {
-                        solverSettings.iterationsAtZeroImpulse = 0;
-                    }
-
-                    //Increment the iteration count.
-                    incrementedIterations = solverSettings.currentIterations++;
-                }
-                //Since the updateables only ever go from active to inactive, it's safe to check outside of the lock.
-                //Keeping this if statement out of the lock allows other waiters to get to work a few nanoseconds faster.
-                if (incrementedIterations > iterationLimit ||
-                    incrementedIterations > solverSettings.maximumIterationCount)
-                {
-                    updateable.isActiveInSolver = false;
-                }
-
-            }
-        }
 		
         protected override void UpdateSingleThreaded()
         {
@@ -222,16 +143,13 @@ namespace BEPUphysics.Constraints
             {
                 UnsafeExclusiveUpdate(solverUpdateables.Elements[i]);
             }
-
-            int totalCount = iterationLimit * totalUpdateableCount;
-            ++PermutationMapper.PermutationIndex;
-            for (int i = 0; i < totalCount; i++)
-            {
-                UnsafeSolveIteration(solverUpdateables.Elements[PermutationMapper.GetMappedIndex(i, totalUpdateableCount)]);
-            }
-
-
-        }
+			
+			for (int j = 0; j < iterationLimit; j++) {
+				for (int i = 0; i < totalUpdateableCount; i++) {
+					UnsafeSolveIteration(solverUpdateables.Elements[i]);
+				}
+			}
+		}
 
         protected internal void UnsafePrestep(SolverUpdateable updateable)
         {
