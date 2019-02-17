@@ -194,7 +194,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
                     BoundingBox.CreateMerged(ref node.BoundingBox, ref root.BoundingBox, out root.BoundingBox);
                     var internalNode = (InternalNode)root;
                     Vector3.Subtract(ref root.BoundingBox.Max, ref root.BoundingBox.Min, out offset);
-                    internalNode.currentVolume = Fix32Ext.MulSafe(Fix32Ext.MulSafe(offset.X, offset.Y), offset.Z);
+                    internalNode.currentVolume = offset.X.MulSafe(offset.Y).MulSafe(offset.Z);
                     //internalNode.maximumVolume = internalNode.currentVolume * InternalNode.MaximumVolumeScale;
                     //The caller is responsible for the merge.
                     var treeNode = root;

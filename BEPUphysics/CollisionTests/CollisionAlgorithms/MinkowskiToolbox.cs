@@ -47,8 +47,6 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             ExpandMinkowskiSum(shapeA.collisionMargin, shapeB.collisionMargin, ref direction, out v);
             Vector3.Add(ref extremePoint, ref v, out extremePoint);
-
-
         }
 
         ///<summary>

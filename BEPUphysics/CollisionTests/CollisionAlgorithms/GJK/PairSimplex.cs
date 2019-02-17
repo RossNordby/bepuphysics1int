@@ -445,7 +445,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 //It is A!
                 State = SimplexState.Point;
                 U = F64.C1;
-                point = A;
+                point = this.A;
                 return;
             }
 
@@ -460,11 +460,11 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             {
                 //It is B!
                 State = SimplexState.Point;
-                A = B;
+                this.A = this.B;
                 U = F64.C1;
                 SimplexA.A = SimplexA.B;
                 SimplexB.A = SimplexB.B;
-                point = B;
+                point = this.B;
                 return;
             }
 
@@ -492,11 +492,11 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             {
                 //It is C!
                 State = SimplexState.Point;
-                A = C;
+                this.A = this.C;
                 SimplexA.A = SimplexA.C;
                 SimplexB.A = SimplexB.C;
                 U = F64.C1;
-                point = A;
+                point = this.A;
                 return;
             }
 
@@ -511,10 +511,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             {
                 //Get rid of B.  Compress C into B.
                 State = SimplexState.Segment;
-                B = C;
+                this.B = this.C;
                 SimplexA.B = SimplexA.C;
                 SimplexB.B = SimplexB.C;
-                V = AdotAC.Div((AdotAC.Sub(CdotAC)));
+                V = AdotAC.Div(AdotAC.Sub(CdotAC));
                 U = F64.C1.Sub(V);
                 Vector3.Multiply(ref ac, V, out point);
                 Vector3.Add(ref point, ref A, out point);
@@ -535,10 +535,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 //Throw away A.  C->A.
                 //TODO: Does B->A, C->B work better?
                 State = SimplexState.Segment;
-                A = C;
+                this.A = this.C;
                 SimplexA.A = SimplexA.C;
                 SimplexB.A = SimplexB.C;
-                U = d3d4.Div((d3d4.Add(d6d5)));
+                U = d3d4.Div(d3d4.Add(d6d5));
                 V = F64.C1.Sub(U);
 
                 Vector3 bc;
@@ -550,7 +550,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
 
 
             //On the face of the triangle.
-            Fix32 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
+            Fix32 denom = F64.C1.Div(va.Add(vb).Add(vc));
             V = vb.Mul(denom);
             W = vc.Mul(denom);
             U = (F64.C1.Sub(V)).Sub(W);
@@ -559,10 +559,6 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             Vector3.Multiply(ref ac, W, out acw);
             Vector3.Add(ref A, ref point, out point);
             Vector3.Add(ref point, ref acw, out point);
-
-
-
-
         }
 
         ///<summary>

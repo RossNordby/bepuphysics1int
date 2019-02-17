@@ -341,16 +341,15 @@ namespace BEPUutilities
         public static VoronoiRegion GetClosestPointOnTriangleToPoint(ref Vector3 a, ref Vector3 b, ref Vector3 c, ref Vector3 p, out Vector3 closestPoint)
         {
             Fix32 v, w;
-            Vector3 ab;
+            Vector3 ab, ac, ap;
             Vector3.Subtract(ref b, ref a, out ab);
-            Vector3 ac;
             Vector3.Subtract(ref c, ref a, out ac);
-            //Vertex region A?
-            Vector3 ap;
             Vector3.Subtract(ref p, ref a, out ap);
+
+            //Vertex region A?
             Fix32 d1;
-            Vector3.Dot(ref ab, ref ap, out d1);
             Fix32 d2;
+            Vector3.Dot(ref ab, ref ap, out d1);
             Vector3.Dot(ref ac, ref ap, out d2);
             if (d1 <= F64.C0 && d2 < F64.C0)
             {
@@ -360,9 +359,8 @@ namespace BEPUutilities
             //Vertex region B?
             Vector3 bp;
             Vector3.Subtract(ref p, ref b, out bp);
-            Fix32 d3;
+            Fix32 d3, d4;
             Vector3.Dot(ref ab, ref bp, out d3);
-            Fix32 d4;
             Vector3.Dot(ref ac, ref bp, out d4);
             if (d3 >= F64.C0 && d4 <= d3)
             {
@@ -371,9 +369,9 @@ namespace BEPUutilities
             }
             //Edge region AB?
             Fix32 vc = (d1.Mul(d4)).Sub(d3.Mul(d2));
-            if (vc <= F64.C0 && d1 >= F64.C0 && d3 <= F64.C0)
+            if (d1 >= F64.C0 && d3 <= F64.C0 && vc <= F64.C0)
             {
-                v = d1.Div((d1.Sub(d3)));
+                v = d1.Div(d1.Sub(d3));
                 Vector3.Multiply(ref ab, v, out closestPoint);
                 Vector3.Add(ref closestPoint, ref a, out closestPoint);
                 return VoronoiRegion.AB;
@@ -381,9 +379,8 @@ namespace BEPUutilities
             //Vertex region C?
             Vector3 cp;
             Vector3.Subtract(ref p, ref c, out cp);
-            Fix32 d5;
+            Fix32 d5, d6;
             Vector3.Dot(ref ab, ref cp, out d5);
-            Fix32 d6;
             Vector3.Dot(ref ac, ref cp, out d6);
             if (d6 >= F64.C0 && d5 <= d6)
             {
@@ -394,28 +391,28 @@ namespace BEPUutilities
             Fix32 vb = (d5.Mul(d2)).Sub(d1.Mul(d6));
             if (vb <= F64.C0 && d2 >= F64.C0 && d6 <= F64.C0)
             {
-                w = d2.Div((d2.Sub(d6)));
+                w = d2.Div(d2.Sub(d6));
                 Vector3.Multiply(ref ac, w, out closestPoint);
                 Vector3.Add(ref closestPoint, ref a, out closestPoint);
                 return VoronoiRegion.AC;
             }
             //Edge region BC?
             Fix32 va = (d3.Mul(d6)).Sub(d5.Mul(d4));
-            if (va <= F64.C0 && (d4.Sub(d3)) >= F64.C0 && (d5.Sub(d6)) >= F64.C0)
+            if (va <= F64.C0 && d4.Sub(d3) >= F64.C0 && d5.Sub(d6) >= F64.C0)
             {
-                w = (d4.Sub(d3)).Div(((d4.Sub(d3)).Add((d5.Sub(d6)))));
+                w = (d4.Sub(d3)).Div((d4.Sub(d3)).Add(d5.Sub(d6)));
                 Vector3.Subtract(ref c, ref b, out closestPoint);
                 Vector3.Multiply(ref closestPoint, w, out closestPoint);
                 Vector3.Add(ref closestPoint, ref b, out closestPoint);
                 return VoronoiRegion.BC;
             }
             //Inside triangle?
-            Fix32 denom = F64.C1.Div(((va.Add(vb)).Add(vc)));
+            Fix32 denom = F64.C1.Div(va.Add(vb).Add(vc));
             v = vb.Mul(denom);
             w = vc.Mul(denom);
             Vector3 abv;
-            Vector3.Multiply(ref ab, v, out abv);
             Vector3 acw;
+            Vector3.Multiply(ref ab, v, out abv);
             Vector3.Multiply(ref ac, w, out acw);
             Vector3.Add(ref a, ref abv, out closestPoint);
             Vector3.Add(ref closestPoint, ref acw, out closestPoint);

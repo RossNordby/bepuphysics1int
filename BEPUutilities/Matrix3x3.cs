@@ -533,11 +533,13 @@ namespace BEPUutilities
 				return;
 
 			int submatrix;
-            Fix32 determinantInverse = F64.C1.Div(matrix.AdaptiveDeterminant(out submatrix));
+            Fix32 determinant = matrix.AdaptiveDeterminant(out submatrix);
+            Fix32 determinantInverse;
             Fix32 m11, m12, m13, m21, m22, m23, m31, m32, m33;
             switch (submatrix)
             {
                 case 1: //Upper left matrix, m11, m12, m21, m22.
+                    determinantInverse = F64.C1.Div(determinant);
                     m11 = matrix.M22.Mul(determinantInverse);
                     m12 = (matrix.M12.Neg()).Mul(determinantInverse);
                     m13 = F64.C0;
@@ -551,6 +553,7 @@ namespace BEPUutilities
                     m33 = F64.C0;
                     break;
                 case 2: //Lower right matrix, m22, m23, m32, m33.
+                    determinantInverse = F64.C1.Div(determinant);
                     m11 = F64.C0;
                     m12 = F64.C0;
                     m13 = F64.C0;
@@ -564,6 +567,7 @@ namespace BEPUutilities
                     m33 = matrix.M22.Mul(determinantInverse);
                     break;
                 case 3: //Corners, m11, m31, m13, m33.
+                    determinantInverse = F64.C1.Div(determinant);
                     m11 = matrix.M33.Mul(determinantInverse);
                     m12 = F64.C0;
                     m13 = (matrix.M13.Neg()).Mul(determinantInverse);
