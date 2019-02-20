@@ -95,12 +95,12 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
         /// The baseline amount that a GJK iteration must progress through to avoid exiting.
         /// Defaults to 1e-8f.
         ///</summary>
-        public static Fix32 ProgressionEpsilon = 1e-8m.ToFix();
+        public static Fix32 ProgressionEpsilon = 1e-4m.ToFix();
         /// <summary>
         /// The baseline amount that an iteration must converge with its distance to avoid exiting.
         /// Defaults to 1e-7f.
         /// </summary>
-        public static Fix32 DistanceConvergenceEpsilon = 1e-7m.ToFix();
+        public static Fix32 DistanceConvergenceEpsilon = 1e-3m.ToFix();
 
         ///<summary>
         /// Simplex as viewed from the local space of A.
@@ -426,6 +426,27 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
         ///<param name="point">Point closest to origin.</param>
         public void GetPointOnTriangleClosestToOrigin(out Vector3 point)
         {
+			var A = this.A;
+			var B = this.B;
+			var C = this.C;
+			var D = this.D;
+			
+			// Extra added step to allow Fix32 precision to be enough
+			// Divide all vectors by the largest component to avoid overflows
+			// To speed up the process, or all the absolute values to get a number large enough
+			Fix32 largestComponent =
+				A.X.Abs() | A.Y.Abs() | A.Z.Abs() |
+				B.X.Abs() | B.Y.Abs() | B.Z.Abs() |
+				C.X.Abs() | C.Y.Abs() | C.Z.Abs() |
+				D.X.Abs() | D.Y.Abs() | D.Z.Abs() |
+				Fix32.One;
+			Fix32 largestComponentInv = Fix32.One.Div(largestComponent);
+			Vector3.Multiply(ref A, largestComponentInv, out A);
+			Vector3.Multiply(ref B, largestComponentInv, out B);
+			Vector3.Multiply(ref C, largestComponentInv, out C);
+			Vector3.Multiply(ref D, largestComponentInv, out D);
+
+
             Vector3 ab, ac;
             Vector3.Subtract(ref B, ref A, out ab);
             Vector3.Subtract(ref C, ref A, out ac);
@@ -478,6 +499,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
 
                 Vector3.Multiply(ref ab, V, out point);
                 Vector3.Add(ref point, ref A, out point);
+
+				// Extra added step to allow Fix32 precision to be enough
+				Vector3.Multiply(ref point, largestComponent, out point);
                 return;
             }
 
@@ -518,6 +542,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 U = F64.C1.Sub(V);
                 Vector3.Multiply(ref ac, V, out point);
                 Vector3.Add(ref point, ref A, out point);
+
+				// Extra added step to allow Fix32 precision to be enough
+				Vector3.Multiply(ref point, largestComponent, out point);
                 return;
             }
 
@@ -545,6 +572,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 Vector3.Subtract(ref C, ref B, out bc);
                 Vector3.Multiply(ref bc, U, out point);
                 Vector3.Add(ref point, ref B, out point);
+
+				// Extra added step to allow Fix32 precision to be enough
+				Vector3.Multiply(ref point, largestComponent, out point);
                 return;
             }
 
@@ -559,6 +589,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             Vector3.Multiply(ref ac, W, out acw);
             Vector3.Add(ref A, ref point, out point);
             Vector3.Add(ref point, ref acw, out point);
+
+			// Extra added step to allow Fix32 precision to be enough
+			Vector3.Multiply(ref point, largestComponent, out point);
         }
 
         ///<summary>

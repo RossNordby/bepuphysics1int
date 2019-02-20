@@ -668,6 +668,19 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3.Subtract(ref triangle.vC, ref triangle.vA, out ac);
             Vector3.Subtract(ref p, ref triangle.vA, out ap);
 
+			// Extra added step to allow Fix32 precision to be enough
+			// Divide all vectors by the largest component to avoid overflows
+			// To speed up the process, or all the absolute values to get a number large enough
+			Fix32 largestComponentApprox =
+				ab.X.Abs() | ab.Y.Abs() | ab.Z.Abs() |
+				ac.X.Abs() | ac.Y.Abs() | ac.Z.Abs() |
+				ap.X.Abs() | ap.Y.Abs() | ap.Z.Abs() |
+				Fix32.One;
+			Fix32 largestComponentInv = Fix32.One.Div(largestComponentApprox);
+			Vector3.Multiply(ref ab, largestComponentInv, out ab);
+			Vector3.Multiply(ref ac, largestComponentInv, out ac);
+			Vector3.Multiply(ref ap, largestComponentInv, out ap);
+
             //Check to see if it's outside A.
             Fix32 APdotAB, APdotAC;
             Vector3.Dot(ref ap, ref ab, out APdotAB);
@@ -682,6 +695,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Fix32 BPdotAB, BPdotAC;
             Vector3 bp;
             Vector3.Subtract(ref p, ref triangle.vB, out bp);
+
+			// Extra step to fix Fix32 precision
+			Vector3.Multiply(ref bp, largestComponentInv, out bp);
+
             Vector3.Dot(ref ab, ref bp, out BPdotAB);
             Vector3.Dot(ref ac, ref bp, out BPdotAC);
             if (BPdotAB >= Fix32.Zero && BPdotAC <= BPdotAB)
@@ -700,6 +717,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Fix32 CPdotAB, CPdotAC;
             Vector3 cp;
             Vector3.Subtract(ref p, ref triangle.vC, out cp);
+
+			// Extra step to fix Fix32 precision
+			Vector3.Multiply(ref cp, largestComponentInv, out cp);
+
             Vector3.Dot(ref ab, ref cp, out CPdotAB);
             Vector3.Dot(ref ac, ref cp, out CPdotAC);
             if (CPdotAC >= Fix32.Zero && CPdotAB <= CPdotAC)

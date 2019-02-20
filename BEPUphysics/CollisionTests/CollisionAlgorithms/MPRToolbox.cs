@@ -28,7 +28,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         /// </summary>
         public static int OuterIterationLimit = 15;
 
-        private static Fix32 surfaceEpsilon = 1e-7m.ToFix();
+        private static Fix32 surfaceEpsilon = 1e-4m.ToFix();
         /// <summary>
         /// Gets or sets how close surface-finding based MPR methods have to get before exiting.
         /// Defaults to 1e-7.
@@ -70,7 +70,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
         }
 
-        private static Fix32 rayCastSurfaceEpsilon = 1e-9m.ToFix();
+        private static Fix32 rayCastSurfaceEpsilon = 1e-4m.ToFix();
         /// <summary>
         /// Gets or sets how close surface-finding ray casts have to get before exiting.
         /// Defaults to 1e-9.

@@ -1,8 +1,10 @@
 ﻿//#define USE_DOUBLES // Used for testing
-#define CHECK_OVERFLOW
+//#define CHECK_OVERFLOW
+// + ".\n" + new System.Diagnostics.StackTrace(true)
 
 using FixPointCS;
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 /// <summary>
@@ -106,10 +108,11 @@ public static partial class Fix32Ext {
 #endif
 #if CHECK_OVERFLOW
 		if ((long) x + (long) y < int.MinValue || (long) x + (long) y > int.MaxValue) {
-			Console.WriteLine("Overflow " + x.ToStringExt() + " + " + y.ToStringExt() + ".\n" + new System.Diagnostics.StackTrace(true));
-			System.Diagnostics.Debugger.Break();
+			ReportOverflowDebug("Overflow " + x.ToStringExt() + " + " + y.ToStringExt() + " = " + (x.ToDouble() + y.ToDouble()));
+			//System.Diagnostics.Debugger.Break();
 		}
 #endif
+		return AddSafe(x, y);
 		return (Fix32) ((int) x + (int) y);
 	}
 
@@ -120,6 +123,12 @@ public static partial class Fix32Ext {
 	public static Fix32 AddSafe(this Fix32 x, Fix32 y) {
 #if USE_DOUBLES
 		return (x.ToDouble() + y.ToDouble()).ToFix();
+#endif
+#if CHECK_OVERFLOW
+		if ((long) x + (long) y < int.MinValue || (long) x + (long) y > int.MaxValue) {
+			ReportOverflowDebug("Overflow " + x.ToStringExt() + " + " + y.ToStringExt() + " = " + (x.ToDouble() + y.ToDouble()));
+			//System.Diagnostics.Debugger.Break();
+		}
 #endif
 		// https://stackoverflow.com/questions/17580118/signed-saturated-add-of-64-bit-ints/17587197#17587197
 		// determine the lower or upper bound of the result
@@ -144,10 +153,11 @@ public static partial class Fix32Ext {
 #endif
 #if CHECK_OVERFLOW
 		if ((long) x - (long) y < int.MinValue || (long) x - (long) y > int.MaxValue) {
-			Console.WriteLine("Overflow " + x.ToStringExt() + " - " + y.ToStringExt() + ".\n" + new System.Diagnostics.StackTrace(true));
-			System.Diagnostics.Debugger.Break();
+			ReportOverflowDebug("Overflow " + x.ToStringExt() + " - " + y.ToStringExt() + " = " + (x.ToDouble() - y.ToDouble()));
+			//System.Diagnostics.Debugger.Break();
 		}
 #endif
+		return SubSafe(x, y);
 		return (Fix32) ((int) x - (int) y);
 	}
 
@@ -158,6 +168,12 @@ public static partial class Fix32Ext {
 	public static Fix32 SubSafe(this Fix32 x, Fix32 y) {
 #if USE_DOUBLES
 		return (x.ToDouble() - y.ToDouble()).ToFix();
+#endif
+#if CHECK_OVERFLOW
+		if ((long) x - (long) y < int.MinValue || (long) x - (long) y > int.MaxValue) {
+			ReportOverflowDebug("Overflow " + x.ToStringExt() + " - " + y.ToStringExt() + " = " + (x.ToDouble() - y.ToDouble()));
+			//System.Diagnostics.Debugger.Break();
+		}
 #endif
 		long sub = (long) x - (long) y; // TO TEST: Shift and operate to check overflow
 		return (Fix32) (((int) sub) != sub ? (int) ((((uint) x >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE)) : (int) sub);
@@ -194,7 +210,6 @@ public static partial class Fix32Ext {
 		const int RS = NUM_BITS_MINUS_ONE - FRACTIONAL_BITS;
 		return (Fix32) ((((int) x >> RS) | (int) (((uint) -(int) x) >> RS)) & INTEGER_MASK);
 	}
-
 
 	/// <summary>
 	/// Returns the absolute value of a Fix32 number.
@@ -301,10 +316,11 @@ public static partial class Fix32Ext {
 #endif
 #if CHECK_OVERFLOW
 		if (x.ToDouble() * y.ToDouble() < Fix32.MinValue.ToDouble() || x.ToDouble() * y.ToDouble() > Fix32.MaxValue.ToDouble()) {
-			Console.WriteLine("Overflow " + x.ToStringExt() + " * " + y.ToStringExt() + ".\n" + new System.Diagnostics.StackTrace(true));
-			System.Diagnostics.Debugger.Break();
+			ReportOverflowDebug("Overflow " + x.ToStringExt() + " * " + y.ToStringExt() + " = " + (x.ToDouble() * y.ToDouble()));
+			//System.Diagnostics.Debugger.Break();
 		}
 #endif
+		return MulSafe(x, y);
 		return (Fix32) (((long) x * (long) y) >> FRACTIONAL_BITS);
 	}
 
@@ -331,6 +347,12 @@ public static partial class Fix32Ext {
 	public static Fix32 Div(this Fix32 x, Fix32 y) {
 #if USE_DOUBLES
 		return (x.ToDouble() / y.ToDouble()).ToFix();
+#endif
+#if CHECK_OVERFLOW
+		if (x.ToDouble() / y.ToDouble() < Fix32.MinValue.ToDouble() || x.ToDouble() / y.ToDouble() > Fix32.MaxValue.ToDouble()) {
+			ReportOverflowDebug("Overflow " + x.ToStringExt() + " / " + y.ToStringExt() + " = " + (x.ToDouble() / y.ToDouble()));
+			//System.Diagnostics.Debugger.Break();
+		}
 #endif
 		if ((int) y == 0) {
 			return (Fix32) (unchecked((int) (((((uint) x) >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE))));
@@ -1073,5 +1095,10 @@ public static partial class Fix32Ext {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 Saturate(long value) {
 		return (Fix32) (int) (((((ulong) value) >> 63) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
+	}
+
+	[Conditional("CHECK_OVERFLOW")]
+	private static void ReportOverflowDebug(string txt) {
+		Console.WriteLine(txt);
 	}
 }

@@ -37,6 +37,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         ///<param name="extremePoint">The extreme point in the local space of A.</param>
         public static void GetLocalMinkowskiExtremePoint(ConvexShape shapeA, ConvexShape shapeB, ref Vector3 direction, ref RigidTransform localTransformB, out Vector3 extremePoint)
         {
+
+			// Extra added step to allow Fix32 precision to be enough
+			Fix32 largestComponent =
+				direction.X.Abs() | direction.Y.Abs() | direction.Z.Abs() |
+				Fix32.One;
+			Fix32 largestComponentInv = Fix32.One.Div(largestComponent);
+			Vector3.Multiply(ref direction, largestComponentInv, out direction);
+
             //Extreme point of A-B along D = (extreme point of A along D) - (extreme point of B along -D)
             shapeA.GetLocalExtremePointWithoutMargin(ref direction, out extremePoint);
             Vector3 v;

@@ -18,14 +18,15 @@ namespace BEPUutilities
         /// <summary>
         /// Large tolerance value. Defaults to 1e-5f.
         /// </summary>
-        public static Fix32 BigEpsilon = 1e-5m.ToFix();
+        public const Fix32 BigEpsilon = ((Fix32) 128);
 
-        /// <summary>
-        /// Tolerance value. Defaults to 1e-7f.
-        /// </summary>
-        public static Fix32 Epsilon = 1e-7m.ToFix();
-		public static Fix32 MinusEpsilon = Epsilon.Neg();
-		public static Fix32 MinusBigEpsilon = BigEpsilon.Neg();
+		/// <summary>
+		/// Tolerance value. Defaults to 1e-7f.
+		/// </summary>
+		public const Fix32 Epsilon = (Fix32) 1;
+
+		public const Fix32 MinusEpsilon = (Fix32) (-(int) Epsilon);
+		public const Fix32 MinusBigEpsilon = (Fix32) (-(int) BigEpsilon);
 
 		/// <summary>
 		/// Represents an invalid Vector3.
@@ -346,6 +347,19 @@ namespace BEPUutilities
             Vector3.Subtract(ref c, ref a, out ac);
             Vector3.Subtract(ref p, ref a, out ap);
 
+			// Extra added step to allow Fix32 precision to be enough
+			// Divide all vectors by the largest component to avoid overflows
+			// To speed up the process, or all the absolute values to get a number large enough
+			Fix32 largestComponentApprox =
+				ab.X.Abs() | ab.Y.Abs() | ab.Z.Abs() |
+				ac.X.Abs() | ac.Y.Abs() | ac.Z.Abs() |
+				ap.X.Abs() | ap.Y.Abs() | ap.Z.Abs() |
+				Fix32.One;
+			Fix32 largestComponentInv = Fix32.One.Div(largestComponentApprox);
+			Vector3.Multiply(ref ab, largestComponentInv, out ab);
+			Vector3.Multiply(ref ac, largestComponentInv, out ac);
+			Vector3.Multiply(ref ap, largestComponentInv, out ap);
+
             //Vertex region A?
             Fix32 d1;
             Fix32 d2;
@@ -360,6 +374,10 @@ namespace BEPUutilities
             //Vertex region B?
             Vector3 bp;
             Vector3.Subtract(ref p, ref b, out bp);
+
+            // Extra step to fix Fix32 precision
+            Vector3.Multiply(ref bp, largestComponentInv, out bp);
+
             Fix32 d3, d4;
             Vector3.Dot(ref ab, ref bp, out d3);
             Vector3.Dot(ref ac, ref bp, out d4);
@@ -382,6 +400,10 @@ namespace BEPUutilities
             //Vertex region C?
             Vector3 cp;
             Vector3.Subtract(ref p, ref c, out cp);
+
+            // Extra step to fix Fix32 precision
+            Vector3.Multiply(ref cp, largestComponentInv, out cp);
+
             Fix32 d5, d6;
             Vector3.Dot(ref ab, ref cp, out d5);
             Vector3.Dot(ref ac, ref cp, out d6);
