@@ -48,7 +48,6 @@
     <Compile Include="AllBenchmarks.cs" />
     <Compile Include="Benchmark.cs" />
     <Compile Include="Benchmarks\DiscreteVsContinuousBenchmark.cs" />
-    <Compile Include="Benchmarks\InverseKinematicsBenchmark.cs" />
     <Compile Include="Benchmarks\PathFollowingBenchmark.cs" />
     <Compile Include="Benchmarks\PyramidBenchmark.cs" />
     <Compile Include="Benchmarks\SelfCollidingClothBenchmark.cs" />

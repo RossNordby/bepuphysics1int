@@ -145,10 +145,7 @@
     <Compile Include="Demos\Extras\Tests\ConvexHullTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\DeterminismTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\GeneralConvexPairStressDemo.cs" />
-    <Compile Include="Demos\Extras\Tests\InverseKinematicsTestDemo.cs" />
-    <Compile Include="Demos\Extras\Tests\InverseKinematicsTestDemo2.cs" />
     <Compile Include="Demos\Extras\Tests\JointLimitTestDemo.cs" />
-    <Compile Include="Demos\Extras\Tests\KinematicActivityTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\LotsOfBoxesTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\MobileMeshSolidityTestDemo.cs" />
     <Compile Include="Demos\Extras\Tests\MoreConstraintsTestDemo.cs" />
@@ -214,10 +211,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BEPUik\BEPUik.csproj">
-      <Project>{2d5a0344-623a-4bfa-aab6-8ac64e2a4129}</Project>
-      <Name>BEPUik</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BEPUphysicsDrawer\BEPUphysicsDrawer.csproj">
       <Project>{20cc0765-e7f5-44cb-9b86-ec8cdd1852ce}</Project>
       <Name>BEPUphysicsDrawer</Name>

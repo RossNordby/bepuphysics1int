@@ -48,7 +48,6 @@
     <Compile Include="AllBenchmarks.cs" />
     <Compile Include="Benchmark.cs" />
     <Compile Include="Benchmarks\DiscreteVsContinuousBenchmark.cs" />
-    <Compile Include="Benchmarks\InverseKinematicsBenchmark.cs" />
     <Compile Include="Benchmarks\SelfCollidingClothBenchmark.cs" />
     <Compile Include="Benchmarks\PathFollowingBenchmark.cs" />
     <Compile Include="Benchmarks\PyramidBenchmark.cs" />
@@ -59,10 +58,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BEPUik\BEPUik.csproj">
-      <Project>{2d5a0344-623a-4bfa-aab6-8ac64e2a4129}</Project>
-      <Name>BEPUik</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BEPUphysics\BEPUphysics.csproj">
       <Project>{c0d52c9f-14b8-4008-8ddc-109c27561a5c}</Project>
       <Name>BEPUphysics</Name>
