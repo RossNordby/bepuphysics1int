@@ -204,8 +204,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             Vector3.Max(ref a, ref b, out boundingBox.Max);
             Vector3.Max(ref c, ref boundingBox.Max, out boundingBox.Max);
 
-			boundingBox.Min.X =
-boundingBox.Min.X.Add(shapeTransform.Position.X.Sub(collisionMargin));
+			boundingBox.Min.X = boundingBox.Min.X.Add(shapeTransform.Position.X.Sub(collisionMargin));
 			boundingBox.Min.Y = boundingBox.Min.Y.Add(shapeTransform.Position.Y.Sub(collisionMargin));
 			boundingBox.Min.Z = boundingBox.Min.Z.Add(shapeTransform.Position.Z.Sub(collisionMargin));
 			boundingBox.Max.X = boundingBox.Max.X.Add(shapeTransform.Position.X.Add(collisionMargin));
