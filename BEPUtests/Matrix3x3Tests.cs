@@ -61,6 +61,7 @@ namespace BEPUtests
 		[Test]
 		public void BenchmarkInvert()
 		{
+			Matrix3x3.Invert(ref testCases[0], out var _); // Prepare
 			Fix32Tests.PrepareStatistics(out var deltas, out Stopwatch swFixed, out Stopwatch swFloat);
 			
 			foreach (var m in testCases)
@@ -126,6 +127,7 @@ namespace BEPUtests
 		[Test]
 		public void BenchmarkAdaptiveInvert()
 		{
+			Matrix3x3.AdaptiveInvert(ref testCases[0], out var _); // Prepare
 			Fix32Tests.PrepareStatistics(out var deltas, out Stopwatch swFixed, out Stopwatch swFloat);
 
 			foreach (var m in testCases)
