@@ -352,24 +352,7 @@ public static partial class Fix32Ext {
 	/// Divide. Saturates on overflow. May change to Fast.
 	/// </summary>
 	public static Fix32 Div(this Fix32 x, Fix32 y) {
-#if USE_DOUBLES
-		return (x.ToDouble() / y.ToDouble()).ToFix();
-#endif
-#if CHECK_OVERFLOW
-		if (x.ToDouble() / y.ToDouble() < Fix32.MinValue.ToDouble() || x.ToDouble() / y.ToDouble() > Fix32.MaxValue.ToDouble()) {
-			ReportOverflowDebug("Overflow " + x.ToStringExt() + " / " + y.ToStringExt() + " = " + (x.ToDouble() / y.ToDouble()));
-			//System.Diagnostics.Debugger.Break();
-		}
-#endif
-		if ((int) y == 0) {
-			return (Fix32) (unchecked((int) (((((uint) x) >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE))));
-			return x >= 0 ? Fix32.MaxValue : Fix32.MinValue; // Branched version of the previous code, for clarity. Slower
-		}
-
-		long r = ((long) x << FRACTIONAL_BITS) / (int) y;
-		if (r > (int) Fix32.MaxValue) return Fix32.MaxValue;
-		if (r < (int) Fix32.MinValue) return Fix32.MinValue;
-		return (Fix32) (int) r;
+		return DivSafe(x, y);
 	}
 
 	/// <summary>
@@ -396,7 +379,24 @@ public static partial class Fix32Ext {
 	/// </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 DivSafe(this Fix32 x, Fix32 y) {
-		return Div(x, y);
+#if USE_DOUBLES
+		return (x.ToDouble() / y.ToDouble()).ToFix();
+#endif
+#if CHECK_OVERFLOW
+		if (x.ToDouble() / y.ToDouble() < Fix32.MinValue.ToDouble() || x.ToDouble() / y.ToDouble() > Fix32.MaxValue.ToDouble()) {
+			ReportOverflowDebug("Overflow " + x.ToStringExt() + " / " + y.ToStringExt() + " = " + (x.ToDouble() / y.ToDouble()));
+			//System.Diagnostics.Debugger.Break();
+		}
+#endif
+		if ((int) y == 0) {
+			return (Fix32) (unchecked((int) (((((uint) x) >> NUM_BITS_MINUS_ONE) - 1U) ^ (1U << NUM_BITS_MINUS_ONE))));
+			return x >= 0 ? Fix32.MaxValue : Fix32.MinValue; // Branched version of the previous code, for clarity. Slower
+		}
+
+		long r = ((long) x << FRACTIONAL_BITS) / (int) y;
+		if (r > (int) Fix32.MaxValue) return Fix32.MaxValue;
+		if (r < (int) Fix32.MinValue) return Fix32.MinValue;
+		return (Fix32) (int) r;
 	}
 
 	/// <summary>
@@ -1193,14 +1193,77 @@ public static partial class Fix32Ext {
 		return (x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble()).ToFix();
 #endif
 #if CHECK_OVERFLOW
-		if (x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble() < Fix32.MinValue.ToDouble() || x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble() > Fix32.MaxValue.ToDouble()) {
-			ReportOverflowDebug("Overflow " + x.ToStringExt() + " * " + y.ToStringExt() + " = " + (x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble()));
+		var test = x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble();
+		if (test < Fix32.MinValue.ToDouble() || test > Fix32.MaxValue.ToDouble()) {
+			ReportOverflowDebug("Overflow " + x.ToStringExt() + " * " + y.ToStringExt() + " - " + z.ToStringExt() + " * " + w.ToStringExt() + " = " + test);
 			//System.Diagnostics.Debugger.Break();
 		}
 #endif
-		long firstMul = (long) x * (long) y;
-		long secondMul = (long) z * (long) w;
-		return (Fix32) ((firstMul - secondMul) >> FRACTIONAL_BITS);
+		return (Fix32) ((((long) x * (long) y) - ((long) z * (long) w)) >> FRACTIONAL_BITS);
+	}
+
+	/// <summary>
+	/// x*y - z*w
+	/// Saturates.
+	/// </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32 MulSubMulSafe(Fix32 x, Fix32 y, Fix32 z, Fix32 w) {
+#if USE_DOUBLES
+		return (x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble()).ToFix();
+#endif
+#if CHECK_OVERFLOW
+		var test = x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble();
+		if (test < Fix32.MinValue.ToDouble() || test > Fix32.MaxValue.ToDouble()) {
+			ReportOverflowDebug("Overflow " + x.ToStringExt() + " * " + y.ToStringExt() + " - " + z.ToStringExt() + " * " + w.ToStringExt() + " = " + test);
+			//System.Diagnostics.Debugger.Break();
+		}
+#endif
+		long r = (((long) x * (long) y) - ((long) z * (long) w)) >> FRACTIONAL_BITS;
+		if (r > MAX_INT_VALUE) return Fix32.MaxValue;
+		if (r < MIN_INT_VALUE) return Fix32.MinValue;
+		return (Fix32) r;
+	}
+
+	/// <summary>
+	/// (x*y - z*w) * m
+	/// No saturation (overflows)
+	/// </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32 MulSubMul_Mul(Fix32 x, Fix32 y, Fix32 z, Fix32 w, Fix32 m) {
+#if USE_DOUBLES
+		return ((x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble()) * m.ToDouble()).ToFix();
+#endif
+#if CHECK_OVERFLOW
+		var test = (x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble()) * m.ToDouble();
+		if (test < Fix32.MinValue.ToDouble() || test > Fix32.MaxValue.ToDouble()) {
+			ReportOverflowDebug("Overflow (" + x.ToStringExt() + " * " + y.ToStringExt() + " - " + z.ToStringExt() + " * " + w.ToStringExt() + ") * " + m.ToStringExt() + " = " + test);
+			//System.Diagnostics.Debugger.Break();
+		}
+#endif
+		long r = ((((long) x * (long) y) - ((long) z * (long) w)) * (long) m) >> (2 * FRACTIONAL_BITS);
+		return (Fix32) r;
+	}
+
+	/// <summary>
+	/// (x*y - z*w) * m
+	/// No saturation (overflows)
+	/// </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32 MulSubMul_MulSafe(Fix32 x, Fix32 y, Fix32 z, Fix32 w, Fix32 m) {
+#if USE_DOUBLES
+		return ((x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble()) * m.ToDouble()).ToFix();
+#endif
+#if CHECK_OVERFLOW
+		var test = (x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble()) * m.ToDouble();
+		if (test < Fix32.MinValue.ToDouble() || test > Fix32.MaxValue.ToDouble()) {
+			ReportOverflowDebug("Overflow (" + x.ToStringExt() + " * " + y.ToStringExt() + " - " + z.ToStringExt() + " * " + w.ToStringExt() + ") * " + m.ToStringExt() + " = " + test);
+			//System.Diagnostics.Debugger.Break();
+		}
+#endif
+		long r = ((((long) x * (long) y) - ((long) z * (long) w)) * (long) m) >> (2 * FRACTIONAL_BITS);
+		if (r > MAX_INT_VALUE) return Fix32.MaxValue;
+		if (r < MIN_INT_VALUE) return Fix32.MinValue;
+		return (Fix32) r;
 	}
 	#endregion
 }

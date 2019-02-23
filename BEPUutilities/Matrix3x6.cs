@@ -12,11 +12,11 @@ namespace BEPUutilities
 			// Perform Gauss-Jordan elimination
 			for (int k = 0; k < m; k++)
 			{
-				Fix32 maxValue = Fix32Ext.Abs(M[k + k * m]);
+				Fix32 maxValue = M[k + k * m].Abs();
 				int iMax = k;
 				for (int i = k+1; i < m; i++)
 				{
-					Fix32 value = Fix32Ext.Abs(M[i + k * m]);
+					Fix32 value = M[i + k * m].Abs();
 					if (value >= maxValue)
 					{
 						maxValue = value;
@@ -42,7 +42,8 @@ namespace BEPUutilities
 				M[k + k * m] = F64.C1;
 				for (int j = k + 1; j < n; j++)
 				{
-					M[k + j * m] = M[k + j * m].Mul(pivotInverse);
+					ref var t = ref M[k + j * m];
+					t = t.Mul(pivotInverse);
 				}
 
 				// Subtract row k from other rows
@@ -50,12 +51,13 @@ namespace BEPUutilities
 				{
 					if (i == k)
 						continue;
-					Fix32 f = M[i + k * m];					
+					ref Fix32 f = ref M[i + k * m];					
 					for (int j = k + 1; j < n; j++)
 					{
-						M[i + j * m] = M[i + j * m].Sub(M[k + j * m].Mul(f));
+						ref var t = ref M[i + j * m];
+						t = t.Sub(M[k + j * m].Mul(f));
 					}
-					M[i + k * m] = F64.C0;
+					f = F64.C0;
 				}
 			}
 			return true;
