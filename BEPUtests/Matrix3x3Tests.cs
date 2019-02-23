@@ -32,9 +32,9 @@ namespace BEPUtests
 			var deltas = new List<decimal>();
 
 			// Scalability and edge cases
-			foreach (var m in testCases)
+			for (int i = 0; i < testCases.Length; i++)
 			{
-				Matrix3x3 testCase = m;
+				Matrix3x3 testCase = testCases[i];
 
 				FloatMatrix3x3 floatMatrix = MathConverter.Convert(testCase);
 				FloatMatrix3x3 expected;
@@ -50,9 +50,8 @@ namespace BEPUtests
 				{
 					deltas.Add(delta);
 					success &= delta <= maxDelta;
-
+					Assert.True(success, string.Format("Test case {0}\nPrecision: Matrix3x3Invert({1}):\nExpected:\n{2}\nActual:\n{3}\ndelta: {4}", i, testCase, expected, actual, delta));
 				}
-				Assert.True(success, string.Format("Precision: Matrix3x3Invert({0}): Expected {1} Actual {2}", testCase, expected, actual));
 			}
 			Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
 			Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
@@ -101,8 +100,7 @@ namespace BEPUtests
 			// Scalability and edge cases
 			for (int i = 0; i < testCases.Length; i++)
 			{
-				Matrix3x3 m = testCases[i];
-				Matrix3x3 testCase = m;
+				Matrix3x3 testCase = testCases[i];
 
 				FloatMatrix3x3 floatMatrix = MathConverter.Convert(testCase);
 				FloatMatrix3x3 expected;
@@ -116,9 +114,8 @@ namespace BEPUtests
 				{
 					deltas.Add(delta);
 					success &= delta <= maxDelta;
-					
+					Assert.True(success, string.Format("Test case {0}\nPrecision: Matrix3x3Invert({1}):\nExpected:\n{2}\nActual:\n{3}\ndelta: {4}", i, testCase, expected, actual, delta));
 				}
-				Assert.True(success, string.Format("Test case {0}\nPrecision: Matrix3x3Invert({1}):\nExpected:\n{2}\nActual:\n{3}", i, testCase, expected, actual));
 			}
 			Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
 			Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
