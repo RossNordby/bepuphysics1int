@@ -142,7 +142,7 @@ namespace BEPUtests
 		[Fact]
 		public void BenchmarkAdaptiveInvert()
 		{
-			Fix32Tests.PrepareStatistics(out var deltas, out Stopwatch swF, out Stopwatch swD);
+			Fix32Tests.PrepareStatistics(out var deltas, out Stopwatch swFixed, out Stopwatch swFloat);
 
 			foreach (var m in testCases)
 			{
@@ -152,38 +152,38 @@ namespace BEPUtests
 				{
 					FloatMatrix3x3 floatMatrix = MathConverter.Convert(testCase);
 					FloatMatrix3x3 expected;
-					swF.Start();
+					swFloat.Start();
 					FloatMatrix3x3.AdaptiveInvert(ref floatMatrix, out expected);
-					swF.Stop();
+					swFloat.Stop();
 
 
 					Matrix3x3 actual;
-					swD.Start();
+					swFixed.Start();
 					Matrix3x3.AdaptiveInvert(ref testCase, out actual);
-					swD.Stop();
+					swFixed.Stop();
 
 					foreach (decimal delta in GetDeltas(expected, actual))
 						deltas.Add((double) delta);
 				}
 			}
-			output.WriteLine(Fix32Tests.GetStatisticsString(deltas, swF, swD));
+			output.WriteLine(Fix32Tests.GetStatisticsString(deltas, swFixed, swFloat));
 		}
 
-		decimal[] GetDeltas(FloatMatrix3x3 expected, Matrix3x3 actual)
+		double[] GetDeltas(FloatMatrix3x3 expected, Matrix3x3 actual)
 		{
-			decimal[] result = new decimal[9];
+			double[] result = new double[9];
 			int i = 0;
-			result[i++] = (decimal)actual.M11.ToDecimal() - (decimal)expected.M11;
-			result[i++] = (decimal)actual.M12.ToDecimal() - (decimal)expected.M12;
-			result[i++] = (decimal)actual.M13.ToDecimal() - (decimal)expected.M13;
+			result[i++] = actual.M11.ToDouble() - expected.M11;
+			result[i++] = actual.M12.ToDouble() - expected.M12;
+			result[i++] = actual.M13.ToDouble() - expected.M13;
 
-			result[i++] = (decimal)actual.M21.ToDecimal() - (decimal)expected.M21;
-			result[i++] = (decimal)actual.M22.ToDecimal() - (decimal)expected.M22;
-			result[i++] = (decimal)actual.M23.ToDecimal() - (decimal)expected.M23;
+			result[i++] = actual.M21.ToDouble() - expected.M21;
+			result[i++] = actual.M22.ToDouble() - expected.M22;
+			result[i++] = actual.M23.ToDouble() - expected.M23;
 
-			result[i++] = (decimal)actual.M31.ToDecimal() - (decimal)expected.M31;
-			result[i++] = (decimal)actual.M32.ToDecimal() - (decimal)expected.M32;
-			result[i++] = (decimal)actual.M33.ToDecimal() - (decimal)expected.M33;
+			result[i++] = actual.M31.ToDouble() - expected.M31;
+			result[i++] = actual.M32.ToDouble() - expected.M32;
+			result[i++] = actual.M33.ToDouble() - expected.M33;
 
 			return result;
 		}

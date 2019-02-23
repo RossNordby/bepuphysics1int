@@ -1058,9 +1058,15 @@ public class Fix32Tests {
 		swFloat = new Stopwatch();
 	}
 
-	public static string GetStatisticsString(List<double> deltas, Stopwatch swF, Stopwatch swD) {
+	public static string GetStatisticsString(List<double> deltas, Stopwatch swFixed, Stopwatch swFloat) {
 		StringBuilder s = new StringBuilder();
+		s.AppendFormat("Fixed: {0} ms total\n", swFixed.Elapsed.TotalMilliseconds.ToString("0.000"));
+		s.AppendFormat("Float: {0} ms total\n", swFloat.Elapsed.TotalMilliseconds.ToString("0.000"));
+		s.AppendFormat("Fixed is {0} times faster than Float (Greater is better)\n", (swFloat.Elapsed.TotalMilliseconds / swFixed.Elapsed.TotalMilliseconds).ToString("0.000"));
+		s.AppendFormat("Fixed is {0} times slower than Float (Smaller is better)\n", (swFixed.Elapsed.TotalMilliseconds / swFloat.Elapsed.TotalMilliseconds).ToString("0.000"));
+
 		if (deltas.Count > 0) {
+			s.Append("\n");
 			s.AppendFormat("Delta statistics\n");
 			s.AppendFormat("Max error: {0} ({1} times precision)\n", deltas.Max(), deltas.Max() / (double) Fix32Ext.Precision);
 			s.AppendFormat("Min error: {0} ({1} times precision)\n", deltas.Min(), deltas.Min() / (double) Fix32Ext.Precision);
@@ -1071,13 +1077,8 @@ public class Fix32Tests {
 			s.AppendFormat("Med error: {0} ({1} times precision)\n", median, median / (double) Fix32Ext.Precision);
 			s.AppendFormat("Q3  error: {0} ({1} times precision)\n", median, median / (double) Fix32Ext.Precision);
 			s.AppendFormat("Avg error: {0} ({1} times precision)\n", deltas.Average(), deltas.Average() / (double) Fix32Ext.Precision);
-		}
 
-		s.AppendFormat("Fixed: {0} ms total\n", swF.Elapsed.TotalMilliseconds);
-		s.AppendFormat("Float: {0} ms total\n", swD.Elapsed.TotalMilliseconds);
-		s.AppendFormat("Fixed is {0} times faster than Float (Greater is better)\n", swD.Elapsed.TotalMilliseconds / swF.Elapsed.TotalMilliseconds);
 
-		if (deltas.Count > 0) {
 			var deltasDict = new Dictionary<double, int>();
 			foreach (var d in deltas) {
 				deltasDict[d] = (deltasDict.ContainsKey(d) ? deltasDict[d] : 0) + 1;
@@ -1086,7 +1087,7 @@ public class Fix32Tests {
 			s.Append("\n");
 			s.Append("All deltas and occurrences:\n");
 			foreach (var d in deltasDict) {
-				s.Append(d.Key.ToString()).Append(" (").Append((d.Value * 100f / deltas.Count).ToString("0.00")).Append("%)\n");
+				s.Append("[ ").Append((d.Value * 100f / deltas.Count).ToString("000.00")).Append(" % ] ").Append(d.Key.ToString()).Append("\n");
 			}
 		}
 

@@ -542,85 +542,93 @@ namespace BEPUutilities
                     determinantInverse = F64.C1.Div(determinant);
                     m11 = matrix.M22.Mul(determinantInverse);
                     m12 = (matrix.M12.Neg()).Mul(determinantInverse);
-                    m13 = F64.C0;
+                    m13 = Fix32.Zero;
 
                     m21 = (matrix.M21.Neg()).Mul(determinantInverse);
                     m22 = matrix.M11.Mul(determinantInverse);
-                    m23 = F64.C0;
+                    m23 = Fix32.Zero;
 
-                    m31 = F64.C0;
-                    m32 = F64.C0;
-                    m33 = F64.C0;
+                    m31 = Fix32.Zero;
+                    m32 = Fix32.Zero;
+                    m33 = Fix32.Zero;
                     break;
                 case 2: //Lower right matrix, m22, m23, m32, m33.
                     determinantInverse = F64.C1.Div(determinant);
-                    m11 = F64.C0;
-                    m12 = F64.C0;
-                    m13 = F64.C0;
+                    m11 = Fix32.Zero;
+                    m12 = Fix32.Zero;
+                    m13 = Fix32.Zero;
 
-                    m21 = F64.C0;
+                    m21 = Fix32.Zero;
                     m22 = matrix.M33.Mul(determinantInverse);
                     m23 = (matrix.M23.Neg()).Mul(determinantInverse);
 
-                    m31 = F64.C0;
+                    m31 = Fix32.Zero;
                     m32 = (matrix.M32.Neg()).Mul(determinantInverse);
                     m33 = matrix.M22.Mul(determinantInverse);
                     break;
                 case 3: //Corners, m11, m31, m13, m33.
                     determinantInverse = F64.C1.Div(determinant);
                     m11 = matrix.M33.Mul(determinantInverse);
-                    m12 = F64.C0;
+                    m12 = Fix32.Zero;
                     m13 = (matrix.M13.Neg()).Mul(determinantInverse);
 
-                    m21 = F64.C0;
-                    m22 = F64.C0;
-                    m23 = F64.C0;
+                    m21 = Fix32.Zero;
+                    m22 = Fix32.Zero;
+                    m23 = Fix32.Zero;
 
                     m31 = (matrix.M31.Neg()).Mul(determinantInverse);
-                    m32 = F64.C0;
+                    m32 = Fix32.Zero;
                     m33 = matrix.M11.Mul(determinantInverse);
                     break;
                 case 4: //M11
                     m11 = F64.C1.Div(matrix.M11);
-                    m12 = F64.C0;
-                    m13 = F64.C0;
+                    m12 = Fix32.Zero;
+                    m13 = Fix32.Zero;
 
-                    m21 = F64.C0;
-                    m22 = F64.C0;
-                    m23 = F64.C0;
+                    m21 = Fix32.Zero;
+                    m22 = Fix32.Zero;
+                    m23 = Fix32.Zero;
 
-                    m31 = F64.C0;
-                    m32 = F64.C0;
-                    m33 = F64.C0;
+                    m31 = Fix32.Zero;
+                    m32 = Fix32.Zero;
+                    m33 = Fix32.Zero;
                     break;
                 case 5: //M22
-                    m11 = F64.C0;
-                    m12 = F64.C0;
-                    m13 = F64.C0;
+                    m11 = Fix32.Zero;
+                    m12 = Fix32.Zero;
+                    m13 = Fix32.Zero;
 
-                    m21 = F64.C0;
+                    m21 = Fix32.Zero;
                     m22 = F64.C1.Div(matrix.M22);
-                    m23 = F64.C0;
+                    m23 = Fix32.Zero;
 
-                    m31 = F64.C0;
-                    m32 = F64.C0;
-                    m33 = F64.C0;
+                    m31 = Fix32.Zero;
+                    m32 = Fix32.Zero;
+                    m33 = Fix32.Zero;
                     break;
                 case 6: //M33
-                    m11 = F64.C0;
-                    m12 = F64.C0;
-                    m13 = F64.C0;
+                    m11 = Fix32.Zero;
+                    m12 = Fix32.Zero;
+                    m13 = Fix32.Zero;
 
-                    m21 = F64.C0;
-                    m22 = F64.C0;
-                    m23 = F64.C0;
+                    m21 = Fix32.Zero;
+                    m22 = Fix32.Zero;
+                    m23 = Fix32.Zero;
 
-                    m31 = F64.C0;
-                    m32 = F64.C0;
+                    m31 = Fix32.Zero;
+                    m32 = Fix32.Zero;
                     m33 = F64.C1.Div(matrix.M33);
                     break;
                 default: //Completely singular.
-                    m11 = F64.C0; m12 = F64.C0; m13 = F64.C0; m21 = F64.C0; m22 = F64.C0; m23 = F64.C0; m31 = F64.C0; m32 = F64.C0; m33 = F64.C0;
+                    m11 = Fix32.Zero;
+					m12 = Fix32.Zero;
+					m13 = Fix32.Zero;
+					m21 = Fix32.Zero;
+					m22 = Fix32.Zero;
+					m23 = Fix32.Zero;
+					m31 = Fix32.Zero;
+					m32 = Fix32.Zero;
+					m33 = Fix32.Zero;
                     break;
             }
 
