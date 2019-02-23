@@ -214,3 +214,4 @@ ModelManifest.xml
 *.scache
 *.opendb
 *.db
+Builds/
