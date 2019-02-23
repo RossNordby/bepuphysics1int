@@ -1101,4 +1101,26 @@ public static partial class Fix32Ext {
 	private static void ReportOverflowDebug(string txt) {
 		Console.WriteLine(txt);
 	}
+
+	#region Compound operators
+	/// <summary>
+	/// x*y - z*w
+	/// Multiply. No saturation (overflows)
+	/// </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32 MulSubMul(Fix32 x, Fix32 y, Fix32 z, Fix32 w) {
+#if USE_DOUBLES
+		return Math.Round(x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble()).ToFix();
+#endif
+#if CHECK_OVERFLOW
+		if (x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble() < Fix32.MinValue.ToDouble() || x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble() > Fix32.MaxValue.ToDouble()) {
+			ReportOverflowDebug("Overflow " + x.ToStringExt() + " * " + y.ToStringExt() + " = " + (x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble()));
+			//System.Diagnostics.Debugger.Break();
+		}
+#endif
+		long firstMul = (long) x * (long) y;
+		long secondMul = (long) z * (long) w;
+		return (Fix32) ((firstMul - secondMul) >> FRACTIONAL_BITS);
+	}
+	#endregion
 }

@@ -1219,21 +1219,21 @@ namespace BEPUutilities
 
 			// We'll play it fast and loose here and assume the following won't overflow
             //Try m11, m12, m21, m22.
-            Fix32 determinant = (M11.Mul(M22)).Sub(M12.Mul(M21));
+            Fix32 determinant = Fix32Ext.MulSubMul(M11, M22, M12, M21);
             if (determinant != F64.C0)
             {
                 subMatrixCode = 1;
                 return determinant;
             }
             //Try m22, m23, m32, m33.
-            determinant = (M22.Mul(M33)).Sub(M23.Mul(M32));
+            determinant = Fix32Ext.MulSubMul(M22, M33, M23, M32);
             if (determinant != F64.C0)
             {
                 subMatrixCode = 2;
                 return determinant;
             }
             //Try m11, m13, m31, m33.
-            determinant = (M11.Mul(M33)).Sub(M13.Mul(M12));
+            determinant = Fix32Ext.MulSubMul(M11, M33, M13, M12);
             if (determinant != F64.C0)
             {
                 subMatrixCode = 3;

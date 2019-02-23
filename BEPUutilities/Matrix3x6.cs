@@ -1,23 +1,22 @@
 ﻿
 using System;
-using System.Threading;
 
 namespace BEPUutilities
 {
 	static class Matrix3x6
 	{
-		[ThreadStatic] private static Fix32[,] Matrix;
+		[ThreadStatic] private static Fix32[] Matrix;
 
-		public static bool Gauss(Fix32[,] M, int m, int n)
+		public static bool Gauss(Fix32[] M, int m, int n)
 		{
 			// Perform Gauss-Jordan elimination
 			for (int k = 0; k < m; k++)
 			{
-				Fix32 maxValue = Fix32Ext.Abs(M[k, k]);
+				Fix32 maxValue = Fix32Ext.Abs(M[k + k * m]);
 				int iMax = k;
 				for (int i = k+1; i < m; i++)
 				{
-					Fix32 value = Fix32Ext.Abs(M[i, k]);
+					Fix32 value = Fix32Ext.Abs(M[i + k * m]);
 					if (value >= maxValue)
 					{
 						maxValue = value;
@@ -31,19 +30,19 @@ namespace BEPUutilities
 				{
 					for (int j = 0; j < n; j++)
 					{
-						Fix32 temp = M[k, j];
-						M[k, j] = M[iMax, j];
-						M[iMax, j] = temp;
+						Fix32 temp = M[k + j * m];
+						M[k + j * m] = M[iMax + j * m];
+						M[iMax + j * m] = temp;
 					}
 				}
 
 				// Divide row by pivot
-				Fix32 pivotInverse = F64.C1.Div(M[k, k]);
+				Fix32 pivotInverse = F64.C1.Div(M[k + k * m]);
 
-				M[k, k] = F64.C1;
+				M[k + k * m] = F64.C1;
 				for (int j = k + 1; j < n; j++)
 				{
-					M[k, j] = M[k, j].Mul(pivotInverse);
+					M[k + j * m] = M[k + j * m].Mul(pivotInverse);
 				}
 
 				// Subtract row k from other rows
@@ -51,12 +50,12 @@ namespace BEPUutilities
 				{
 					if (i == k)
 						continue;
-					Fix32 f = M[i, k];					
+					Fix32 f = M[i + k * m];					
 					for (int j = k + 1; j < n; j++)
 					{
-						M[i, j] = M[i, j].Sub(M[k, j].Mul(f));
+						M[i + j * m] = M[i + j * m].Sub(M[k + j * m].Mul(f));
 					}
-					M[i, k] = F64.C0;
+					M[i + k * m] = F64.C0;
 				}
 			}
 			return true;
@@ -65,29 +64,29 @@ namespace BEPUutilities
 		public static bool Invert(ref Matrix3x3 m, out Matrix3x3 r)
 		{
 			if (Matrix == null)
-				 Matrix = new Fix32[3, 6];
-			Fix32[,] M = Matrix;
+				 Matrix = new Fix32[3 + 6 * 3];
+			Fix32[] M = Matrix;
 
 			// Initialize temporary matrix
-			M[0, 0] = m.M11;
-			M[0, 1] = m.M12;
-			M[0, 2] = m.M13;
-			M[1, 0] = m.M21;
-			M[1, 1] = m.M22;
-			M[1, 2] = m.M23;
-			M[2, 0] = m.M31;
-			M[2, 1] = m.M32;
-			M[2, 2] = m.M33;
+			M[0 + 0 * 3] = m.M11;
+			M[0 + 1 * 3] = m.M12;
+			M[0 + 2 * 3] = m.M13;
+			M[1 + 0 * 3] = m.M21;
+			M[1 + 1 * 3] = m.M22;
+			M[1 + 2 * 3] = m.M23;
+			M[2 + 0 * 3] = m.M31;
+			M[2 + 1 * 3] = m.M32;
+			M[2 + 2 * 3] = m.M33;
 
-			M[0, 3] = Fix32.One;
-			M[0, 4] = Fix32.Zero;
-			M[0, 5] = Fix32.Zero;
-			M[1, 3] = Fix32.Zero;
-			M[1, 4] = Fix32.One;
-			M[1, 5] = Fix32.Zero;
-			M[2, 3] = Fix32.Zero;
-			M[2, 4] = Fix32.Zero;
-			M[2, 5] = Fix32.One;
+			M[0 + 3 * 3] = Fix32.One;
+			M[0 + 4 * 3] = Fix32.Zero;
+			M[0 + 5 * 3] = Fix32.Zero;
+			M[1 + 3 * 3] = Fix32.Zero;
+			M[1 + 4 * 3] = Fix32.One;
+			M[1 + 5 * 3] = Fix32.Zero;
+			M[2 + 3 * 3] = Fix32.Zero;
+			M[2 + 4 * 3] = Fix32.Zero;
+			M[2 + 5 * 3] = Fix32.One;
 
 			if (!Gauss(M, 3, 6))
 			{
@@ -96,19 +95,19 @@ namespace BEPUutilities
 			}
 			r = new Matrix3x3(
 				// m11...m13
-				M[0, 3],
-				M[0, 4],
-				M[0, 5],
+				M[0 + 3 * 3],
+				M[0 + 4 * 3],
+				M[0 + 5 * 3],
 
 				// m21...m23
-				M[1, 3],
-				M[1, 4],
-				M[1, 5],
+				M[1 + 3 * 3],
+				M[1 + 4 * 3],
+				M[1 + 5 * 3],
 
 				// m31...m33
-				M[2, 3],
-				M[2, 4],
-				M[2, 5]
+				M[2 + 3 * 3],
+				M[2 + 4 * 3],
+				M[2 + 5 * 3]
 				);
 			return true;
 		}
