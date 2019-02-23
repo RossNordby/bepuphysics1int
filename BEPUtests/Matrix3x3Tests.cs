@@ -1,12 +1,10 @@
-﻿
-using Xunit;
-using Xunit.Abstractions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BEPUutilities;
 using FloatMatrix3x3 = BEPUutilitiesFloat.Matrix3x3;
 using BEPUtests.util;
 using System.Linq;
 using System.Diagnostics;
+using NUnit.Framework;
 using System;
 
 namespace BEPUtests
@@ -26,17 +24,7 @@ namespace BEPUtests
 
 		};
 
-		private readonly ITestOutputHelper output;
-		
-		public Matrix3x3Tests(ITestOutputHelper output)
-		{
-			if (output == null)
-				output = new ConsoleTestOutputHelper();
-			this.output = output;
-		}
-
-
-		[Fact]
+		[Test]
 		public void Invert()
 		{
 			var maxDelta = 0.001m;
@@ -66,18 +54,15 @@ namespace BEPUtests
 				}
 				Assert.True(success, string.Format("Precision: Matrix3x3Invert({0}): Expected {1} Actual {2}", testCase, expected, actual));
 			}
-			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
-			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
+			Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
+			Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
 		}
 
-		[Fact]
+		[Test]
 		public void BenchmarkInvert()
 		{
-			var swf = new Stopwatch();
-			var swd = new Stopwatch();
-
-			var deltas = new List<decimal>();
-
+			Fix32Tests.PrepareStatistics(out var deltas, out Stopwatch swFixed, out Stopwatch swFloat);
+			
 			foreach (var m in testCases)
 			{
 				Matrix3x3 testCase = m;
@@ -86,28 +71,26 @@ namespace BEPUtests
 				{
 					FloatMatrix3x3 floatMatrix = MathConverter.Convert(testCase);
 					FloatMatrix3x3 expected;
-					swf.Start();
+					swFloat.Start();
 					FloatMatrix3x3.Invert(ref floatMatrix, out expected);
-					swf.Stop();
+					swFloat.Stop();
 
 					Matrix3x3 actual;
-					swd.Start();
+					swFixed.Start();
 					Matrix3x3.Invert(ref testCase, out actual);
-					swd.Stop();
+					swFixed.Stop();
 
 					if (float.IsInfinity(expected.M11) || float.IsNaN(expected.M11))
 						expected = new FloatMatrix3x3();
 
-					foreach (decimal delta in GetDeltas(expected, actual))
+					foreach (var delta in GetDeltas(expected, actual))
 						deltas.Add(delta);
 				}
 			}
-			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
-			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
-			output.WriteLine("Fix32.Invert time = {0}ms, float.Invert time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
+			Console.WriteLine(Fix32Tests.GetStatisticsString(deltas, swFixed, swFloat));
 		}
 
-		[Fact]
+		[Test]
 		public void AdaptiveInvert()
 		{
 			var maxDelta = 0.001m;
@@ -115,8 +98,9 @@ namespace BEPUtests
 			var deltas = new List<decimal>();
 
 			// Scalability and edge cases
-			foreach (var m in testCases)
+			for (int i = 0; i < testCases.Length; i++)
 			{
+				Matrix3x3 m = testCases[i];
 				Matrix3x3 testCase = m;
 
 				FloatMatrix3x3 floatMatrix = MathConverter.Convert(testCase);
@@ -133,13 +117,13 @@ namespace BEPUtests
 					success &= delta <= maxDelta;
 					
 				}
-				Assert.True(success, string.Format("Precision: Matrix3x3Invert({0}): Expected {1} Actual {2}", testCase, expected, actual));
+				Assert.True(success, string.Format("Test case {0}\nPrecision: Matrix3x3Invert({1}):\nExpected:\n{2}\nActual:\n{3}", i, testCase, expected, actual));
 			}
-			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
-			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
+			Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
+			Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
 		}
 
-		[Fact]
+		[Test]
 		public void BenchmarkAdaptiveInvert()
 		{
 			Fix32Tests.PrepareStatistics(out var deltas, out Stopwatch swFixed, out Stopwatch swFloat);
@@ -151,22 +135,20 @@ namespace BEPUtests
 				for (int i = 0; i < 10000; i++)
 				{
 					FloatMatrix3x3 floatMatrix = MathConverter.Convert(testCase);
-					FloatMatrix3x3 expected;
 					swFloat.Start();
-					FloatMatrix3x3.AdaptiveInvert(ref floatMatrix, out expected);
+					FloatMatrix3x3.AdaptiveInvert(ref floatMatrix, out var expected);
 					swFloat.Stop();
 
 
-					Matrix3x3 actual;
 					swFixed.Start();
-					Matrix3x3.AdaptiveInvert(ref testCase, out actual);
+					Matrix3x3.AdaptiveInvert(ref testCase, out var actual);
 					swFixed.Stop();
 
-					foreach (decimal delta in GetDeltas(expected, actual))
-						deltas.Add((double) delta);
+					foreach (var delta in GetDeltas(expected, actual))
+						deltas.Add(delta);
 				}
 			}
-			output.WriteLine(Fix32Tests.GetStatisticsString(deltas, swFixed, swFloat));
+			Console.WriteLine(Fix32Tests.GetStatisticsString(deltas, swFixed, swFloat));
 		}
 
 		double[] GetDeltas(FloatMatrix3x3 expected, Matrix3x3 actual)

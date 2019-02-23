@@ -1,13 +1,11 @@
-﻿
-using Xunit;
-using Xunit.Abstractions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BEPUutilities;
 using FloatMatrix = BEPUutilitiesFloat.Matrix;
 using BEPUtests.util;
 using System.Linq;
 using System.Diagnostics;
 using System;
+using NUnit.Framework;
 
 namespace BEPUtests
 {
@@ -26,17 +24,7 @@ namespace BEPUtests
 
 		};
 
-		private readonly ITestOutputHelper output;
-		
-		public MatrixTests(ITestOutputHelper output)
-		{
-			if (output == null)
-				output = new ConsoleTestOutputHelper();
-			this.output = output;
-		}
-
-
-		[Fact]
+		[Test]
 		public void Invert()
 		{
 			var maxDelta = 0.00001m;
@@ -66,11 +54,11 @@ namespace BEPUtests
 				}
 				Assert.True(success, string.Format("Precision: Matrix3x3Invert({0}): Expected {1} Actual {2}", testCase, expected, actual));
 			}
-			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
-			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
+			Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
+			Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
 		}
 
-		[Fact]
+		[Test]
 		public void BenchmarkInvert()
 		{
 			var swf = new Stopwatch();
@@ -102,9 +90,9 @@ namespace BEPUtests
 						deltas.Add(delta);
 				}
 			}
-			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
-			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
-			output.WriteLine("Fix32.Invert time = {0}ms, float.Invert time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
+			Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
+			Console.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
+			Console.WriteLine("Fix32.Invert time = {0}ms, float.Invert time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
 		}		
 
 		decimal[] GetDeltas(FloatMatrix expected, Matrix actual)

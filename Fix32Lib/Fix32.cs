@@ -11,8 +11,8 @@ using System.Runtime.CompilerServices;
 /// Represents a Q1.15.16 fixed-point number.
 /// </summary>
 public enum Fix32 : int {
-	MaxValue = Fix32Ext.MAX_VALUE,
-	MinValue = Fix32Ext.MIN_VALUE,
+	MaxValue = int.MaxValue,
+	MinValue = int.MinValue,
 	
 
 	Six = One * 6,
@@ -45,6 +45,15 @@ public enum Fix32 : int {
 }
 
 /// <summary>
+/// Fix32 number stored in a long.
+/// Used inside operations when more precision is needed for the integer side.
+/// </summary>
+public enum Fix32L : long {
+	MaxValue = long.MaxValue,
+	MinValue = long.MinValue,
+}
+
+/// <summary>
 /// Operations for <see cref="Fix32"/>.
 /// </summary>
 public static partial class Fix32Ext {
@@ -52,8 +61,6 @@ public static partial class Fix32Ext {
 	// Precision of this type is 2^-14, that is 6.103515625E-5
 	public static readonly double Precision = ((Fix32) 1).ToDouble();
 
-	public const int MAX_VALUE = int.MaxValue;
-	public const int MIN_VALUE = int.MinValue;
 	public const int MAX_INT_VALUE = int.MaxValue >> FRACTIONAL_BITS;
 	public const int MIN_INT_VALUE = int.MinValue >> FRACTIONAL_BITS;
 	public const int NUM_BITS = 32;
@@ -188,7 +195,7 @@ public static partial class Fix32Ext {
 		return (-x.ToDouble()).ToFix();
 #endif
 		//return new Fix32(-x.RawValue);
-		return (Fix32) ((int) x == MIN_VALUE ? MAX_VALUE : -(int) x);
+		return x == Fix32.MinValue ? Fix32.MaxValue : (Fix32) (-(int) x);
 	}
 
 	/// <summary>
@@ -220,7 +227,7 @@ public static partial class Fix32Ext {
 #if USE_DOUBLES
 		return Math.Abs(x.ToDouble()).ToFix();
 #endif
-		if ((int) x == MIN_VALUE) {
+		if (x == Fix32.MinValue) {
 			return Fix32.MaxValue;
 		}
 
@@ -269,7 +276,7 @@ public static partial class Fix32Ext {
 	/// </summary>
 	public static Fix32 Round(this Fix32 x) {
 #if USE_DOUBLES
-		return Math.Round(v.ToDouble()).ToFix();
+		return Math.Round(x.ToDouble()).ToFix();
 #endif
 		var fractionalPart = (int) x & FRACTIONAL_MASK;
 		var integralPart = (Fix32) ((int) x & INTEGER_MASK);
@@ -312,7 +319,7 @@ public static partial class Fix32Ext {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 Mul(this Fix32 x, Fix32 y) {
 #if USE_DOUBLES
-		return Math.Round(x.ToDouble() * y.ToDouble()).ToFix();
+		return (x.ToDouble() * y.ToDouble()).ToFix();
 #endif
 #if CHECK_OVERFLOW
 		if (x.ToDouble() * y.ToDouble() < Fix32.MinValue.ToDouble() || x.ToDouble() * y.ToDouble() > Fix32.MaxValue.ToDouble()) {
@@ -330,7 +337,7 @@ public static partial class Fix32Ext {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 MulSafe(this Fix32 x, Fix32 y) {
 #if USE_DOUBLES
-		return Math.Round(x.ToDouble() * y.ToDouble()).ToFix();
+		return (x.ToDouble() * y.ToDouble()).ToFix();
 #endif
 		long multLong = ((long) x * (long) y) >> FRACTIONAL_BITS;
 
@@ -360,8 +367,8 @@ public static partial class Fix32Ext {
 		}
 
 		long r = ((long) x << FRACTIONAL_BITS) / (int) y;
-		if (r > MAX_VALUE) return Fix32.MaxValue;
-		if (r < MIN_VALUE) return Fix32.MinValue;
+		if (r > (int) Fix32.MaxValue) return Fix32.MaxValue;
+		if (r < (int) Fix32.MinValue) return Fix32.MinValue;
 		return (Fix32) (int) r;
 	}
 
@@ -570,7 +577,7 @@ public static partial class Fix32Ext {
 		return (x.ToDouble() % y.ToDouble()).ToFix();
 #endif
 		return (Fix32) (
-			(int) x == MIN_VALUE & (int) y == -1 ?
+			x == Fix32.MinValue & (int) y == -1 ?
 			0 :
 			(int) x % (int) y);
 	}
@@ -590,7 +597,7 @@ public static partial class Fix32Ext {
 	/// </summary>
 	public static Fix32 Pow2(this Fix32 xx) {
 #if USE_DOUBLES
-		return Math.Pow(2, x.ToDouble()).ToFix();
+		return Math.Pow(2, xx.ToDouble()).ToFix();
 #endif
 		Fix32 x = xx;
 		if ((int) x == 0) return Fix32.One;
@@ -636,7 +643,7 @@ public static partial class Fix32Ext {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 Pow2Fast(this Fix32 xx) {
 #if USE_DOUBLES
-		return Math.Pow(2, x.ToDouble()).ToFix();
+		return Math.Pow(2, xx.ToDouble()).ToFix();
 #endif
 		return (Fix32) Fixed32.Pow(2, (int) xx);
 	}
@@ -871,7 +878,7 @@ public static partial class Fix32Ext {
 	/// </summary>
 	public static Fix32 Atan(this Fix32 zz) {
 #if USE_DOUBLES
-		return Math.Atan(z.ToDouble()).ToFix();
+		return Math.Atan(zz.ToDouble()).ToFix();
 #endif
 		Fix32 z = zz;
 		if ((int) z == 0)
@@ -1001,10 +1008,10 @@ public static partial class Fix32Ext {
 		return atan;
 	}
 
-
+	#region ToFrom Fix32
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 ToFix(this float value) {
-		return (Fix32) (int) Clamp(value * ONE, MIN_VALUE, MAX_VALUE);
+		return (Fix32) (int) Clamp(value * ONE, (int) Fix32.MinValue, (int) Fix32.MaxValue);
 	}
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 ToFixFast(this float value) {
@@ -1017,7 +1024,7 @@ public static partial class Fix32Ext {
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 ToFix(this double value) {
-		return (Fix32) (int) Clamp(value * ONE, MIN_VALUE, MAX_VALUE);
+		return (Fix32) (int) Clamp(value * ONE, (int) Fix32.MinValue, (int) Fix32.MaxValue);
 	}
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 ToFixFast(this double value) {
@@ -1030,7 +1037,7 @@ public static partial class Fix32Ext {
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 ToFix(this int value) {
-		return (Fix32) (value > MAX_INT_VALUE ? MAX_VALUE : value < MIN_INT_VALUE ? MIN_VALUE : value * ONE);
+		return (Fix32) (value > MAX_INT_VALUE ? (int) Fix32.MaxValue : value < MIN_INT_VALUE ? (int) Fix32.MinValue : value * ONE);
 	}
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 ToFixFast(this int value) {
@@ -1043,7 +1050,7 @@ public static partial class Fix32Ext {
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 ToFix(this long value) {
-		return (Fix32) (value > MAX_INT_VALUE ? MAX_VALUE : value < MIN_INT_VALUE ? MIN_VALUE : value * ONE);
+		return (Fix32) (value > MAX_INT_VALUE ? (int) Fix32.MaxValue : value < MIN_INT_VALUE ? (int) Fix32.MinValue : value * ONE);
 	}
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 ToFixFast(this long value) {
@@ -1056,7 +1063,7 @@ public static partial class Fix32Ext {
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 ToFix(this decimal value) {
-		return (Fix32) (int) Clamp(value * ONE, MIN_VALUE, MAX_VALUE);
+		return (Fix32) (int) Clamp(value * ONE, (int) Fix32.MinValue, (int) Fix32.MaxValue);
 	}
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 ToFixFast(this decimal value) {
@@ -1066,7 +1073,75 @@ public static partial class Fix32Ext {
 	public static decimal ToDecimal(this Fix32 value) {
 		return (decimal) value / ONE;
 	}
+	#endregion
 
+	#region ToFrom Fix32L
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32L ToFixL(this float value) {
+		return (Fix32L) (long) Clamp(value * ONE, (long) Fix32L.MinValue, (long) Fix32L.MaxValue);
+	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32L ToFixLFast(this float value) {
+		return (Fix32L) (long) (value * ONE);
+	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static float ToFloat(this Fix32L value) {
+		return (float) value / ONE;
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32L ToFixL(this double value) {
+		return (Fix32L) (long) Clamp(value * ONE, (long) Fix32L.MinValue, (long) Fix32L.MaxValue);
+	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32L ToFixLFast(this double value) {
+		return (Fix32L) (long) (value * ONE);
+	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static double ToDouble(this Fix32L value) {
+		return (double) value / ONE;
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32L ToFixL(this int value) {
+		return (Fix32L) (value > MAX_INT_VALUE ? (long) Fix32L.MaxValue : value < MIN_INT_VALUE ? (long) Fix32L.MinValue : value * ONE);
+	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32L ToFixLFast(this int value) {
+		return (Fix32L) (value * ONE);
+	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static int ToInt(this Fix32L value) {
+		long v = (long) value / ONE;
+		return v > MAX_INT_VALUE ? MAX_INT_VALUE : v < MIN_INT_VALUE ? MIN_INT_VALUE : (int) v;
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32L ToFixL(this long value) {
+		return (Fix32L) (value > MAX_INT_VALUE ? (long) Fix32L.MaxValue : value < MIN_INT_VALUE ? (long) Fix32L.MinValue : value * ONE);
+	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32L ToFixLFast(this long value) {
+		return (Fix32L) (value * ONE);
+	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static long ToLong(this Fix32L value) {
+		return (long) value / ONE;
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32L ToFixL(this decimal value) {
+		return (Fix32L) (long) Clamp(value * ONE, (long) Fix32L.MinValue, (long) Fix32L.MaxValue);
+	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Fix32L ToFixLFast(this decimal value) {
+		return (Fix32L) (long) (value * ONE);
+	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static decimal ToDecimal(this Fix32L value) {
+		return (decimal) value / ONE;
+	}
+	#endregion
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static double Clamp(float value, double min, double max) {
@@ -1093,6 +1168,11 @@ public static partial class Fix32Ext {
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static string ToStringExt(this Fix32L x) {
+		return x.ToDouble().ToString("0.##########");
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 Saturate(long value) {
 		return (Fix32) (int) (((((ulong) value) >> 63) - 1U) ^ (1U << NUM_BITS_MINUS_ONE));
 	}
@@ -1105,12 +1185,12 @@ public static partial class Fix32Ext {
 	#region Compound operators
 	/// <summary>
 	/// x*y - z*w
-	/// Multiply. No saturation (overflows)
+	/// No saturation (overflows)
 	/// </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Fix32 MulSubMul(Fix32 x, Fix32 y, Fix32 z, Fix32 w) {
 #if USE_DOUBLES
-		return Math.Round(x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble()).ToFix();
+		return (x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble()).ToFix();
 #endif
 #if CHECK_OVERFLOW
 		if (x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble() < Fix32.MinValue.ToDouble() || x.ToDouble() * y.ToDouble() - z.ToDouble() * w.ToDouble() > Fix32.MaxValue.ToDouble()) {

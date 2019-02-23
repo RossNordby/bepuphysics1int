@@ -1,21 +1,13 @@
 ﻿using BEPUbenchmark;
 using BEPUbenchmark.Benchmarks;
+using NUnit.Framework;
 using System;
 using System.Text;
-using Xunit;
-using Xunit.Abstractions;
 
 namespace BEPUtests
 {
 	public class CrossPlatformDeterminismTests
     {
-		private readonly ITestOutputHelper output;
-
-		public CrossPlatformDeterminismTests(ITestOutputHelper output)
-		{
-			this.output = output;
-		}
-
 		private void GetExpectedHash(Benchmark b, StringBuilder result)
 		{
 			result.AppendFormat("{{\"{0}\", new string[] {{", b.GetName());
@@ -35,7 +27,7 @@ namespace BEPUtests
 			result.AppendLine("}}");
 		}
 
-		//[Fact]
+		//[Test]
 		public void OutputExpectedHashes()
 		{
 			StringBuilder result = new StringBuilder();
@@ -58,10 +50,10 @@ public static readonly Dictionary<string, string[]> Hashes = new Dictionary<stri
 				first = false;
 			}
 			result.AppendLine("};\n}\n}\n");
-			output.WriteLine(result.ToString());
+			Console.WriteLine(result.ToString());
 		}
 		
-		//[Fact]
+		//[Test]
 		public void OutputExpectedHashesForBenchmark()
 		{
 			Benchmark b = new PathFollowingBenchmark();
@@ -69,28 +61,28 @@ public static readonly Dictionary<string, string[]> Hashes = new Dictionary<stri
 			StringBuilder result = new StringBuilder();
 
 			GetExpectedHash(b, result);
-			output.WriteLine(result.ToString());
+			Console.WriteLine(result.ToString());
 		}
 
-		[Fact]
+		[Test]
 		public void DiscreteVsContinuous()
 		{
 			TestDeterminism(new DiscreteVsContinuousBenchmark());
 		}
 
-		[Fact]
+		[Test]
 		public void Pyramid()
 		{
 			TestDeterminism(new PyramidBenchmark());
 		}
 
-		[Fact]
+		[Test]
 		public void PathFollowing()
 		{
 			TestDeterminism(new PathFollowingBenchmark());
 		}
 
-		[Fact]
+		[Test]
 		public void SelfCollidingCloth()
 		{
 			TestDeterminism(new SelfCollidingClothBenchmark());
