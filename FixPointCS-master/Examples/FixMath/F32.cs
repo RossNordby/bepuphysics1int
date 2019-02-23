@@ -151,12 +151,6 @@ namespace FixMath
         public static F32 Tan(F32 a) { return FromRaw(Fixed32.Tan(a.raw)); }
         public static F32 TanFast(F32 a) { return FromRaw(Fixed32.TanFast(a.raw)); }
         public static F32 TanFastest(F32 a) { return FromRaw(Fixed32.TanFastest(a.raw)); }
-        public static F32 Asin(F32 a) { return FromRaw(Fixed32.Asin(a.raw)); }
-        public static F32 AsinFast(F32 a) { return FromRaw(Fixed32.AsinFast(a.raw)); }
-        public static F32 AsinFastest(F32 a) { return FromRaw(Fixed32.AsinFastest(a.raw)); }
-        public static F32 Acos(F32 a) { return FromRaw(Fixed32.Acos(a.raw)); }
-        public static F32 AcosFast(F32 a) { return FromRaw(Fixed32.AcosFast(a.raw)); }
-        public static F32 AcosFastest(F32 a) { return FromRaw(Fixed32.AcosFastest(a.raw)); }
         public static F32 Atan(F32 a) { return FromRaw(Fixed32.Atan(a.raw)); }
         public static F32 AtanFast(F32 a) { return FromRaw(Fixed32.AtanFast(a.raw)); }
         public static F32 AtanFastest(F32 a) { return FromRaw(Fixed32.AtanFastest(a.raw)); }

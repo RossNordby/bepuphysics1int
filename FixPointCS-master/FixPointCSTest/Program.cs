@@ -1201,32 +1201,6 @@ namespace FixPointCSTest
             ),
 
             new UnaryOpFamily(
-                (double i0) => { return Math.Asin(i0); },
-                AbsoluteUnaryErrorEvaluator(),
-                new[] {
-                    Operation.F32_F32("Fixed32.Asin", (int n, F32[] i0, F32[] o) => { for (int i=0; i<n; i++) { o[i] = F32.Asin(i0[i]); } }),
-                    Operation.F32_F32("Fixed32.AsinFast", (int n, F32[] i0, F32[] o) => { for (int i=0; i<n; i++) { o[i] = F32.AsinFast(i0[i]); } }),
-                    Operation.F32_F32("Fixed32.AsinFastest", (int n, F32[] i0, F32[] o) => { for (int i=0; i<n; i++) { o[i] = F32.AsinFastest(i0[i]); } }),
-                },
-                bounds => new[] {
-                    InputGenerator.Unary(Input.Uniform(-1.0, 1.0))
-                }
-            ),
-
-            new UnaryOpFamily(
-                (double i0) => { return Math.Acos(i0); },
-                AbsoluteUnaryErrorEvaluator(),
-                new[] {
-                    Operation.F32_F32("Fixed32.Acos", (int n, F32[] i0, F32[] o) => { for (int i=0; i<n; i++) { o[i] = F32.Acos(i0[i]); } }),
-                    Operation.F32_F32("Fixed32.AcosFast", (int n, F32[] i0, F32[] o) => { for (int i=0; i<n; i++) { o[i] = F32.AcosFast(i0[i]); } }),
-                    Operation.F32_F32("Fixed32.AcosFastest", (int n, F32[] i0, F32[] o) => { for (int i=0; i<n; i++) { o[i] = F32.AcosFastest(i0[i]); } }),
-                },
-                bounds => new[] {
-                    InputGenerator.Unary(Input.Uniform(-1.0, 1.0))
-                }
-            ),
-
-            new UnaryOpFamily(
                 (double i0) => { return Math.Atan(i0); },
                 AbsoluteUnaryErrorEvaluator(),
                 new[] {

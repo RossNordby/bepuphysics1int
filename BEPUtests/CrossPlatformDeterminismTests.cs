@@ -79,12 +79,6 @@ public static readonly Dictionary<string, string[]> Hashes = new Dictionary<stri
 		}
 
 		[Fact]
-		public void InverseKinematic()
-		{
-			TestDeterminism(new InverseKinematicsBenchmark());
-		}
-
-		[Fact]
 		public void Pyramid()
 		{
 			TestDeterminism(new PyramidBenchmark());

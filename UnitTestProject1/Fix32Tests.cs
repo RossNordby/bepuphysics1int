@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 
 public class Fix32Tests {
 	static int OneRaw = (int) Fix32.One;
@@ -172,7 +173,7 @@ public class Fix32Tests {
 				Assert.AreEqual(expected, actual, x.ToStringExt() + " + " + y.ToStringExt());
 			}
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -203,7 +204,7 @@ public class Fix32Tests {
 				Assert.AreEqual(expected, actual, x.ToStringExt() + " - " + y.ToStringExt());
 			}
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -381,7 +382,7 @@ public class Fix32Tests {
 				Assert.AreEqual(expected, actual, (double) Fix32Ext.Precision, x.ToStringExt() + " * " + y.ToStringExt() + Delta(expected, actual, deltas));
 			}
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -407,7 +408,7 @@ public class Fix32Tests {
 				Assert.AreEqual(expected, actual, (double) Fix32Ext.Precision, x.ToStringExt() + " * " + y.ToStringExt() + Delta(expected, actual, deltas));
 			}
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -444,7 +445,7 @@ public class Fix32Tests {
 				}
 			}
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -478,7 +479,7 @@ public class Fix32Tests {
 				}
 			}
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -504,7 +505,7 @@ public class Fix32Tests {
 				Assert.AreEqual(expected, actual, maxDelta, b.ToStringExt() + Delta(expected, actual, deltas));
 			}
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -530,7 +531,7 @@ public class Fix32Tests {
 				Assert.AreEqual(expected, actual, maxDelta, b.ToStringExt() + Delta(expected, actual, deltas));
 			}
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -555,7 +556,7 @@ public class Fix32Tests {
 				Assert.AreEqual(expected, actual, maxDelta, b.ToStringExt() + Delta(expected, actual, deltas));
 			}
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -578,7 +579,7 @@ public class Fix32Tests {
 				Assert.AreEqual(expected, actual, maxDelta, "sqrt(" + f.ToStringExt() + ")" + Delta(expected, actual, deltas));
 			}
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -601,7 +602,7 @@ public class Fix32Tests {
 				Assert.AreEqual(expected, actual, maxDelta, "sqrt(" + f.ToStringExt() + ")" + Delta(expected, actual, deltas));
 			}
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -652,7 +653,7 @@ public class Fix32Tests {
 
 			Assert.AreEqual(expected, actual, maxDelta, "Pow2(" + e.ToStringExt() + ")" + Delta(expected, actual, deltas));
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -683,7 +684,7 @@ public class Fix32Tests {
 
 			Assert.AreEqual(expected, actual, maxDelta, "Pow2(" + e.ToStringExt() + ")" + Delta(expected, actual, deltas));
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -726,7 +727,7 @@ public class Fix32Tests {
 				}
 			}
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 	
 	[Test]
@@ -767,7 +768,7 @@ public class Fix32Tests {
 			swD.Stop();
 			Assert.AreEqual(expected, actualF.ToDouble(), 4 * Fix32Ext.Precision, "Sin(" + f.ToDouble() + ")" + Delta(expected, actualF.ToDouble(), deltas));
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -795,7 +796,7 @@ public class Fix32Tests {
 			swD.Stop();
 			Assert.AreEqual(expected, actualF.ToDouble(), 4 * Fix32Ext.Precision, "Sin(" + f.ToDouble() + ")" + Delta(expected, actualF.ToDouble(), deltas));
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -823,7 +824,7 @@ public class Fix32Tests {
 			swD.Stop();
 			Assert.AreEqual(expected, actualF.ToDouble(), 16 * Fix32Ext.Precision, "Sin(" + f.ToDouble() + ")" + Delta(expected, actualF.ToDouble(), deltas));
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 	
 	[Test]
@@ -864,7 +865,7 @@ public class Fix32Tests {
 			swD.Stop();
 			Assert.AreEqual(expected, actualF.ToDouble(), 4 * Fix32Ext.Precision, "Cos(" + f.ToDouble() + ")" + Delta(expected, actualF.ToDouble(), deltas));
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -892,7 +893,7 @@ public class Fix32Tests {
 			swD.Stop();
 			Assert.AreEqual(expected, actualF.ToDouble(), 4 * Fix32Ext.Precision, "Cos(" + f.ToDouble() + ")" + Delta(expected, actualF.ToDouble(), deltas));
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 
 	[Test]
@@ -920,7 +921,7 @@ public class Fix32Tests {
 			swD.Stop();
 			Assert.AreEqual(expected, actualF.ToDouble(), 16 * Fix32Ext.Precision, "Cos(" + f.ToDouble() + ")" + Delta(expected, actualF.ToDouble(), deltas));
 		}
-		PrintStatistics(deltas, swF, swD);
+		Console.WriteLine(GetStatisticsString(deltas, swF, swD));
 	}
 	/*
 	[Test]
@@ -1051,24 +1052,44 @@ public class Fix32Tests {
 		return " [Delta: " + delta + "]";
 	}
 
-	static void PrepareStatistics(out List<double> deltas, out Stopwatch swF, out Stopwatch swD) {
+	public static void PrepareStatistics(out List<double> deltas, out Stopwatch swFixed, out Stopwatch swFloat) {
 		deltas = new List<double>();
-		swF = new Stopwatch();
-		swD = new Stopwatch();
+		swFixed = new Stopwatch();
+		swFloat = new Stopwatch();
 	}
 
-	static void PrintStatistics(List<double> deltas, Stopwatch swF, Stopwatch swD) {
+	public static string GetStatisticsString(List<double> deltas, Stopwatch swF, Stopwatch swD) {
+		StringBuilder s = new StringBuilder();
 		if (deltas.Count > 0) {
-			Console.WriteLine("Delta statistics");
-			Console.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (double) Fix32Ext.Precision);
-			Console.WriteLine("Min error: {0} ({1} times precision)", deltas.Min(), deltas.Min() / (double) Fix32Ext.Precision);
+			s.AppendFormat("Delta statistics\n");
+			s.AppendFormat("Max error: {0} ({1} times precision)\n", deltas.Max(), deltas.Max() / (double) Fix32Ext.Precision);
+			s.AppendFormat("Min error: {0} ({1} times precision)\n", deltas.Min(), deltas.Min() / (double) Fix32Ext.Precision);
 			var median = deltas.OrderBy(d => d).ElementAt(deltas.Count / 2);
-			Console.WriteLine("Med error: {0} ({1} times precision)", median, median / (double) Fix32Ext.Precision);
-			Console.WriteLine("Avg error: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (double) Fix32Ext.Precision);
+			var q1 = deltas.ElementAt(deltas.Count / 4);
+			var q3 = deltas.ElementAt((deltas.Count * 3) / 4);
+			s.AppendFormat("Q1  error: {0} ({1} times precision)\n", median, median / (double) Fix32Ext.Precision);
+			s.AppendFormat("Med error: {0} ({1} times precision)\n", median, median / (double) Fix32Ext.Precision);
+			s.AppendFormat("Q3  error: {0} ({1} times precision)\n", median, median / (double) Fix32Ext.Precision);
+			s.AppendFormat("Avg error: {0} ({1} times precision)\n", deltas.Average(), deltas.Average() / (double) Fix32Ext.Precision);
 		}
 
-		Console.WriteLine("Fixed:  {0} ms total", swF.Elapsed.TotalMilliseconds);
-		Console.WriteLine("Double: {0} ms total", swD.Elapsed.TotalMilliseconds);
-		Console.WriteLine("Fixed is {0} times faster than Double (Greater is better)", swD.Elapsed.TotalMilliseconds / swF.Elapsed.TotalMilliseconds);
+		s.AppendFormat("Fixed: {0} ms total\n", swF.Elapsed.TotalMilliseconds);
+		s.AppendFormat("Float: {0} ms total\n", swD.Elapsed.TotalMilliseconds);
+		s.AppendFormat("Fixed is {0} times faster than Float (Greater is better)\n", swD.Elapsed.TotalMilliseconds / swF.Elapsed.TotalMilliseconds);
+
+		if (deltas.Count > 0) {
+			var deltasDict = new Dictionary<double, int>();
+			foreach (var d in deltas) {
+				deltasDict[d] = (deltasDict.ContainsKey(d) ? deltasDict[d] : 0) + 1;
+			}
+
+			s.Append("\n");
+			s.Append("All deltas and occurrences:\n");
+			foreach (var d in deltasDict) {
+				s.Append(d.Key.ToString()).Append(" (").Append((d.Value * 100f / deltas.Count).ToString("0.00")).Append("%)\n");
+			}
+		}
+
+		return s.ToString();
 	}
 }

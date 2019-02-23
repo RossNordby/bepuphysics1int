@@ -67,6 +67,10 @@
       <Project>{f0c0a8c3-016d-46e4-bc13-940f89085213}</Project>
       <Name>Fix32Lib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UnitTestProject1\Tests.csproj">
+      <Project>{ccb19185-83df-48c0-9ef9-b0fef012fb62}</Project>
+      <Name>Tests</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="xunit">

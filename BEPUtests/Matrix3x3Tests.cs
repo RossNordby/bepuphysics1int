@@ -142,10 +142,7 @@ namespace BEPUtests
 		[Fact]
 		public void BenchmarkAdaptiveInvert()
 		{
-			var swf = new Stopwatch();
-			var swd = new Stopwatch();
-
-			var deltas = new List<decimal>();
+			Fix32Tests.PrepareStatistics(out var deltas, out Stopwatch swF, out Stopwatch swD);
 
 			foreach (var m in testCases)
 			{
@@ -155,23 +152,21 @@ namespace BEPUtests
 				{
 					FloatMatrix3x3 floatMatrix = MathConverter.Convert(testCase);
 					FloatMatrix3x3 expected;
-					swf.Start();
+					swF.Start();
 					FloatMatrix3x3.AdaptiveInvert(ref floatMatrix, out expected);
-					swf.Stop();
+					swF.Stop();
 
 
 					Matrix3x3 actual;
-					swd.Start();
+					swD.Start();
 					Matrix3x3.AdaptiveInvert(ref testCase, out actual);
-					swd.Stop();
+					swD.Stop();
 
 					foreach (decimal delta in GetDeltas(expected, actual))
-						deltas.Add(delta);
+						deltas.Add((double) delta);
 				}
 			}
-			output.WriteLine("Max error: {0} ({1} times precision)", deltas.Max(), deltas.Max() / (decimal) Fix32Ext.Precision);
-			output.WriteLine("Average precision: {0} ({1} times precision)", deltas.Average(), deltas.Average() / (decimal) Fix32Ext.Precision);
-			output.WriteLine("Fix32.AdaptiveInvert time = {0}ms, float.AdaptiveInvert time = {1}ms", swf.ElapsedMilliseconds, swd.ElapsedMilliseconds);
+			output.WriteLine(Fix32Tests.GetStatisticsString(deltas, swF, swD));
 		}
 
 		decimal[] GetDeltas(FloatMatrix3x3 expected, Matrix3x3 actual)
