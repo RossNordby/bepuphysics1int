@@ -19,6 +19,6 @@ namespace BEPUutilities
         /// T parameter of the ray hit.  
         /// The ray hit location is equal to the ray origin added to the ray direction multiplied by T.
         ///</summary>
-        public Fix32 T;
+        public Fix T;
     }
 }

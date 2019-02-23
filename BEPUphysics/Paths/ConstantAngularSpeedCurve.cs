@@ -13,7 +13,7 @@ namespace BEPUphysics.Paths
         /// </summary>
         /// <param name="speed">Speed to maintain while traveling around a curve.</param>
         /// <param name="curve">Curve to wrap.</param>
-        public ConstantAngularSpeedCurve(Fix32 speed, Curve<Quaternion> curve)
+        public ConstantAngularSpeedCurve(Fix speed, Curve<Quaternion> curve)
             : base(speed, curve)
         {
         }
@@ -25,12 +25,12 @@ namespace BEPUphysics.Paths
         /// <param name="curve">Curve to wrap.</param>
         /// <param name="sampleCount">Number of samples to use when constructing the wrapper curve.
         /// More samples increases the accuracy of the speed requirement at the cost of performance.</param>
-        public ConstantAngularSpeedCurve(Fix32 speed, Curve<Quaternion> curve, int sampleCount)
+        public ConstantAngularSpeedCurve(Fix speed, Curve<Quaternion> curve, int sampleCount)
             : base(speed, curve, sampleCount)
         {
         }
 
-        protected override Fix32 GetDistance(Quaternion start, Quaternion end)
+        protected override Fix GetDistance(Quaternion start, Quaternion end)
         {
             Quaternion.Conjugate(ref end, out end);
             Quaternion.Multiply(ref end, ref start, out end);

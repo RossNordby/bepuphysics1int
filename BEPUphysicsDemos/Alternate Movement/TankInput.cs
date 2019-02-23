@@ -32,18 +32,18 @@ namespace BEPUphysicsDemos.AlternateMovement
         /// <summary>
         /// Speed that the vehicle tries towreach when moving backward.
         /// </summary>
-        public Fix32 BackwardSpeed = (-15).ToFix();
+        public Fix BackwardSpeed = (-15).ToFix();
 
         /// <summary>
         /// Default coefficient of sliding friction on an individual wheel in the tank track.
         /// </summary>
-        public Fix32 BaseSlidingFriction;
+        public Fix BaseSlidingFriction;
 
 
         /// <summary>
         /// Speed that the vehicle tries to reach when moving forward.
         /// </summary>
-        public Fix32 ForwardSpeed = 15.ToFix();
+        public Fix ForwardSpeed = 15.ToFix();
 
         /// <summary>
         /// Whether or not to use the vehicle's input.
@@ -53,7 +53,7 @@ namespace BEPUphysicsDemos.AlternateMovement
         /// <summary>
         /// Default maximum force that an individual wheel in a tank track can exert.
         /// </summary>
-        public Fix32 MaximumDriveForce;
+        public Fix MaximumDriveForce;
 
         /// <summary>
         /// Draws the body and wheels.
@@ -75,7 +75,7 @@ namespace BEPUphysicsDemos.AlternateMovement
         /// </summary>
         public List<DisplayModel> WheelModels;
 
-		Fix32 FrictionBlender(Fix32 wheelFriction, Fix32 supportFriction, bool isKineticFriction, Wheel wheel)
+		Fix FrictionBlender(Fix wheelFriction, Fix supportFriction, bool isKineticFriction, Wheel wheel)
         {
             //The default friction blender is multiplicative.  This tank had its coefficients designed for averaged coefficients.
             //So, let's average the friction coefficients!
@@ -217,7 +217,7 @@ namespace BEPUphysicsDemos.AlternateMovement
         /// <param name="dt">Time since last frame in simulation seconds.</param>
         /// <param name="keyboardInput">Keyboard state.</param>
         /// <param name="gamePadInput">Gamepad state.</param>
-        public void Update(Fix32 dt, KeyboardState keyboardInput, GamePadState gamePadInput)
+        public void Update(Fix dt, KeyboardState keyboardInput, GamePadState gamePadInput)
         {
             //Update the wheel's graphics.
             for (int k = 0; k < WheelModels.Count; k++)

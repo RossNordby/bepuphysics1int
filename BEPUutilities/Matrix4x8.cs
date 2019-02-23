@@ -5,13 +5,13 @@ namespace BEPUutilities
 {
 	static class Matrix4x8
 	{
-		[ThreadStatic] private static Fix32[] Matrix;
+		[ThreadStatic] private static Fix[] Matrix;
 
 		public static bool Invert(ref Matrix m, out Matrix r)
 		{
 			if (Matrix == null)
-				Matrix = new Fix32[4 + 8 * 4];
-			Fix32[] M = Matrix;
+				Matrix = new Fix[4 + 8 * 4];
+			Fix[] M = Matrix;
 
 			M[0 + 0 * 4] = m.M11;
 			M[0 + 1 * 4] = m.M12;
@@ -30,22 +30,22 @@ namespace BEPUutilities
 			M[3 + 2 * 4] = m.M43;
 			M[3 + 3 * 4] = m.M44;
 
-			M[0 + 4 * 4] = Fix32.One;
-			M[0 + 5 * 4] = Fix32.Zero;
-			M[0 + 6 * 4] = Fix32.Zero;
-			M[0 + 7 * 4] = Fix32.Zero;
-			M[1 + 4 * 4] = Fix32.Zero;
-			M[1 + 5 * 4] = Fix32.One;
-			M[1 + 6 * 4] = Fix32.Zero;
-			M[1 + 7 * 4] = Fix32.Zero;
-			M[2 + 4 * 4] = Fix32.Zero;
-			M[2 + 5 * 4] = Fix32.Zero;
-			M[2 + 6 * 4] = Fix32.One;
-			M[2 + 7 * 4] = Fix32.Zero;
-			M[3 + 4 * 4] = Fix32.Zero;
-			M[3 + 5 * 4] = Fix32.Zero;
-			M[3 + 6 * 4] = Fix32.Zero;
-			M[3 + 7 * 4] = Fix32.One;
+			M[0 + 4 * 4] = Fix.One;
+			M[0 + 5 * 4] = Fix.Zero;
+			M[0 + 6 * 4] = Fix.Zero;
+			M[0 + 7 * 4] = Fix.Zero;
+			M[1 + 4 * 4] = Fix.Zero;
+			M[1 + 5 * 4] = Fix.One;
+			M[1 + 6 * 4] = Fix.Zero;
+			M[1 + 7 * 4] = Fix.Zero;
+			M[2 + 4 * 4] = Fix.Zero;
+			M[2 + 5 * 4] = Fix.Zero;
+			M[2 + 6 * 4] = Fix.One;
+			M[2 + 7 * 4] = Fix.Zero;
+			M[3 + 4 * 4] = Fix.Zero;
+			M[3 + 5 * 4] = Fix.Zero;
+			M[3 + 6 * 4] = Fix.Zero;
+			M[3 + 7 * 4] = Fix.One;
 
 
 			if (!Matrix3x6.Gauss(M, 4, 8))

@@ -105,7 +105,7 @@ namespace BEPUphysics.EntityStateManagement
         }
 
 
-        Fix32 blendAmount;
+        Fix blendAmount;
         ///<summary>
         /// Gets or sets the blending amount to use.
         /// This is set automatically when the space is using internal timestepping
@@ -114,7 +114,7 @@ namespace BEPUphysics.EntityStateManagement
         /// in the blended state.  A value of 1 means use only the current frame;
         /// a value of 0 means use only the previous frame.
         ///</summary>
-        public Fix32 BlendAmount
+        public Fix BlendAmount
         {
             get
             {

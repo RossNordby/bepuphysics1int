@@ -26,9 +26,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 ((random.NextDouble() - 0.5).ToFix()).Mul(length));
         }
 
-        Fix32 width = 15.ToFix();
-        Fix32 height = 15.ToFix();
-        Fix32 length = 15.ToFix();
+        Fix width = 15.ToFix();
+        Fix height = 15.ToFix();
+        Fix length = 15.ToFix();
         /// <summary>
         /// Constructs a new demo.
         /// </summary>
@@ -92,7 +92,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         private RawList<Entity> addedEntities = new RawList<Entity>();
         private RawList<Entity> removedEntities = new RawList<Entity>();
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             for (int i = removedEntities.Count - 1; i >= 0; --i)
             {

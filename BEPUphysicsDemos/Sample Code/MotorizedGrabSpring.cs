@@ -154,7 +154,7 @@ namespace BEPUphysicsDemos.SampleCode
         /// Updates the grab constraint's grab position after the end of a frame.
         /// </summary>
         /// <param name="dt">Time since last frame in simulation seconds.</param>
-        void IEndOfFrameUpdateable.Update(Fix32 dt)
+        void IEndOfFrameUpdateable.Update(Fix dt)
         {
             //Since the grabbed position is usually examined graphically, 
             //it's good to use the interpolated positions in case the 

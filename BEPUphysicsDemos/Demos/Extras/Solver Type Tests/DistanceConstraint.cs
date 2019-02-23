@@ -15,15 +15,15 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
 
 
         private Vector3 jacobian;
-        private Fix32 effectiveMass;
+        private Fix effectiveMass;
 
 
-        private Fix32 biasVelocity;
+        private Fix biasVelocity;
 
-        private Fix32 accumulatedImpulse;
-        private Fix32 impulse;
+        private Fix accumulatedImpulse;
+        private Fix impulse;
 
-        private Fix32 distance;
+        private Fix distance;
 
         public DistanceConstraint(LinearDynamic a, LinearDynamic b)
         {
@@ -35,10 +35,10 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             distance = (a.Position - b.Position).Length();
         }
 
-        public override void Preupdate(Fix32 inverseDt, bool useConstraintCounts)
+        public override void Preupdate(Fix inverseDt, bool useConstraintCounts)
         {
             Vector3.Subtract(ref B.Position, ref A.Position, out jacobian);
-            Fix32 currentDistance = jacobian.LengthSquared();
+            Fix currentDistance = jacobian.LengthSquared();
             if (currentDistance > Toolbox.Epsilon)
             {
                 currentDistance = Fix32Ext.Sqrt(currentDistance);
@@ -63,11 +63,11 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         {
             Vector3 relativeVelocity;
             Vector3.Subtract(ref B.Velocity, ref A.Velocity, out relativeVelocity);
-            Fix32 relativeVelocityAlongJacobian;
+            Fix relativeVelocityAlongJacobian;
             Vector3.Dot(ref relativeVelocity, ref jacobian, out relativeVelocityAlongJacobian);
 
 
-            Fix32 changeInVelocity = (relativeVelocityAlongJacobian.Sub(biasVelocity)).Sub(Softness.Mul(accumulatedImpulse));
+            Fix changeInVelocity = (relativeVelocityAlongJacobian.Sub(biasVelocity)).Sub(Softness.Mul(accumulatedImpulse));
 
             impulse = changeInVelocity.Mul(effectiveMass);
 
@@ -86,7 +86,7 @@ accumulatedImpulse.Add(impulse);
             ApplyImpulse(dynamic, accumulatedImpulse);
         }
 
-        private void ApplyImpulse(LinearDynamic dynamic, Fix32 impulseToApply)
+        private void ApplyImpulse(LinearDynamic dynamic, Fix impulseToApply)
         {
             Vector3 worldSpaceImpulse;
             if (A == dynamic)

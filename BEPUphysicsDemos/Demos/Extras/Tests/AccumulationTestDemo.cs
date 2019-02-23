@@ -27,15 +27,15 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             int xLength = 256;
             int zLength = 256;
 
-            Fix32 xSpacing = .5m.ToFix();
-            Fix32 zSpacing = .5m.ToFix();
-            var heights = new Fix32[xLength, zLength];
+            Fix xSpacing = .5m.ToFix();
+            Fix zSpacing = .5m.ToFix();
+            var heights = new Fix[xLength, zLength];
             for (int i = 0; i < xLength; i++)
             {
                 for (int j = 0; j < zLength; j++)
                 {
-                    Fix32 x = (i - xLength / 2).ToFix();
-                    Fix32 z = (j - zLength / 2).ToFix();
+                    Fix x = (i - xLength / 2).ToFix();
+                    Fix z = (j - zLength / 2).ToFix();
                     heights[i, j] = (10.ToFix().Mul((Fix32Ext.Sin(x.Div(8.ToFix())).Add(Fix32Ext.Sin(z.Div(8.ToFix()))))));
                 }
             }
@@ -81,7 +81,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         }
 
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
 #if XBOX360
             if(Game.GamePadInput.Triggers.Left > .5m)

@@ -299,7 +299,7 @@ namespace BEPUphysics.Vehicle
         }
 
 
-        internal void PreStep(Fix32 dt)
+        internal void PreStep(Fix dt)
         {
             Matrix.CreateFromAxisAngle(ref suspension.localDirection, shape.steeringAngle, out shape.steeringTransform);
             Matrix.TransformNormal(ref localForwardDirection, ref shape.steeringTransform, out worldForwardDirection);
@@ -502,17 +502,17 @@ namespace BEPUphysics.Vehicle
         }
 
 
-        internal void UpdateAtEndOfFrame(Fix32 dt)
+        internal void UpdateAtEndOfFrame(Fix dt)
         {
             shape.UpdateWorldTransform();
         }
 
-        internal void UpdateAtEndOfUpdate(Fix32 dt)
+        internal void UpdateAtEndOfUpdate(Fix dt)
         {
             shape.UpdateSpin(dt);
         }
 
-        internal void UpdateDuringForces(Fix32 dt)
+        internal void UpdateDuringForces(Fix dt)
         {
             suspension.ComputeWorldSpaceData();
             shape.UpdateDetectorPosition();

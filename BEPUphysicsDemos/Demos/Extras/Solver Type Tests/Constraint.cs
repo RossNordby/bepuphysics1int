@@ -9,10 +9,10 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
 {
     abstract class Constraint
     {
-        public Fix32 Softness = 0.ToFix();
-        public Fix32 BiasFactor = 0.2m.ToFix();
+        public Fix Softness = 0.ToFix();
+        public Fix BiasFactor = 0.2m.ToFix();
 
-        public abstract void Preupdate(Fix32 inverseDt, bool useConstraintCounts);
+        public abstract void Preupdate(Fix inverseDt, bool useConstraintCounts);
 
         public abstract void SolveIteration();
 

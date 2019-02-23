@@ -28,7 +28,7 @@ namespace BEPUphysics.BroadPhaseSystems
         /// <param name="maximumLength">Maximum length of the ray in units of the ray's direction's length.</param>
         ///<param name="outputIntersections">Overlapped entries.</param>
         ///<returns>Whether or not the ray hit anything.</returns>
-        bool RayCast(Ray ray, Fix32 maximumLength, IList<BroadPhaseEntry> outputIntersections);
+        bool RayCast(Ray ray, Fix maximumLength, IList<BroadPhaseEntry> outputIntersections);
 
         //There's no single-hit version because the TOI on queries isn't really meaningful.
         //TODO: IQueryAccelerator + BroadPhase.  Both have add methods.  A user might expect to be able to add separately, but that doesn't really work.

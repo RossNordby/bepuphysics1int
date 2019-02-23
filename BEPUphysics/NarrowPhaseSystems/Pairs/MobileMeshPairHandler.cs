@@ -118,7 +118,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         ///</summary>
         ///<param name="requester">Collidable requesting the update.</param>
         ///<param name="dt">Timestep duration.</param>
-        public override void UpdateTimeOfImpact(Collidable requester, Fix32 dt)
+        public override void UpdateTimeOfImpact(Collidable requester, Fix dt)
         {
             var overlap = BroadPhaseOverlap;
             var meshMode = mobileMesh.entity == null ? PositionUpdateMode.Discrete : mobileMesh.entity.PositionUpdateMode;
@@ -161,7 +161,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
                 }
                 Vector3.Multiply(ref velocity, dt, out velocity);
-                Fix32 velocitySquared = velocity.LengthSquared();
+                Fix velocitySquared = velocity.LengthSquared();
 
                 var minimumRadius = convex.Shape.MinimumRadius.Mul(MotionSettings.CoreShapeScaling);
                 timeOfImpact = F64.C1;
@@ -201,7 +201,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                                 Vector3.Subtract(ref triangle.vC, ref triangle.vA, out AC);
                                 Vector3 normal;
                                 Vector3.Cross(ref AB, ref AC, out normal);
-                                Fix32 dot;
+                                Fix dot;
                                 Vector3.Dot(ref normal, ref rayHit.Normal, out dot);
                                 //Only perform sweep if the object is in danger of hitting the object.
                                 //Triangles can be one sided, so check the impact normal against the triangle normal.

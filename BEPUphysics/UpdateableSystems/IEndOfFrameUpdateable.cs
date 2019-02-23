@@ -11,7 +11,7 @@ namespace BEPUphysics.UpdateableSystems
         /// Updates the object at the end of the frame.
         /// </summary>
         /// <param name="dt">Time step duration.</param>
-        void Update(Fix32 dt);
+        void Update(Fix dt);
 
     }
 }

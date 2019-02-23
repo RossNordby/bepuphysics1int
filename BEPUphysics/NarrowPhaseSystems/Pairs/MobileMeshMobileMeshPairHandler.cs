@@ -44,7 +44,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
             base.CleanUpCollidable(collidable);
         }
 
-        protected override void ConfigureCollidable(TriangleEntry entry, Fix32 dt)
+        protected override void ConfigureCollidable(TriangleEntry entry, Fix dt)
         {
             var shape = entry.Collidable.Shape;
             mesh.Shape.TriangleMesh.Data.GetTriangle(entry.Index, out shape.vA, out shape.vB, out shape.vC);
@@ -100,7 +100,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
 
 
-        protected override void UpdateContainedPairs(Fix32 dt)
+        protected override void UpdateContainedPairs(Fix dt)
         {
             var overlappedElements = CommonResources.GetIntList();
             BoundingBox localBoundingBox;

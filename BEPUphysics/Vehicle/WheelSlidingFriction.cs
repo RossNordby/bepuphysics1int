@@ -33,40 +33,40 @@ namespace BEPUphysics.Vehicle
         /// <param name="usingKineticFriction">True if the friction coefficients passed into the blender are kinetic coefficients, false otherwise.</param>
         /// <param name="wheel">Wheel being blended.</param>
         /// <returns>Blended friction coefficient.</returns>
-        public static Fix32 BlendFriction(Fix32 wheelFriction, Fix32 materialFriction, bool usingKineticFriction, Wheel wheel)
+        public static Fix BlendFriction(Fix wheelFriction, Fix materialFriction, bool usingKineticFriction, Wheel wheel)
         {
             return wheelFriction.Mul(materialFriction);
         }
 
         #endregion
 
-        internal Fix32 accumulatedImpulse;
+        internal Fix accumulatedImpulse;
 
         //Fix32 linearBX, linearBY, linearBZ;
-        private Fix32 angularAX, angularAY, angularAZ;
-        private Fix32 angularBX, angularBY, angularBZ;
+        private Fix angularAX, angularAY, angularAZ;
+        private Fix angularBX, angularBY, angularBZ;
         internal bool isActive = true;
-        private Fix32 linearAX, linearAY, linearAZ;
-        private Fix32 blendedCoefficient;
-        private Fix32 kineticCoefficient;
+        private Fix linearAX, linearAY, linearAZ;
+        private Fix blendedCoefficient;
+        private Fix kineticCoefficient;
         private WheelFrictionBlender frictionBlender = DefaultSlidingFrictionBlender;
         internal Vector3 slidingFrictionAxis;
         internal SolverSettings solverSettings = new SolverSettings();
-        private Fix32 staticCoefficient;
-        private Fix32 staticFrictionVelocityThreshold = F64.C5;
+        private Fix staticCoefficient;
+        private Fix staticFrictionVelocityThreshold = F64.C5;
         private Wheel wheel;
         internal int numIterationsAtZeroImpulse;
         private Entity vehicleEntity, supportEntity;
 
         //Inverse effective mass matrix
-        private Fix32 velocityToImpulse;
+        private Fix velocityToImpulse;
 
         /// <summary>
         /// Constructs a new sliding friction object for a wheel.
         /// </summary>
         /// <param name="dynamicCoefficient">Coefficient of dynamic sliding friction to be blended with the supporting entity's friction.</param>
         /// <param name="staticCoefficient">Coefficient of static sliding friction to be blended with the supporting entity's friction.</param>
-        public WheelSlidingFriction(Fix32 dynamicCoefficient, Fix32 staticCoefficient)
+        public WheelSlidingFriction(Fix dynamicCoefficient, Fix staticCoefficient)
         {
             KineticCoefficient = dynamicCoefficient;
             StaticCoefficient = staticCoefficient;
@@ -81,7 +81,7 @@ namespace BEPUphysics.Vehicle
         /// Gets the coefficient of sliding friction between the wheel and support.
         /// This coefficient is the blended result of the supporting entity's friction and the wheel's friction.
         /// </summary>
-        public Fix32 BlendedCoefficient
+        public Fix BlendedCoefficient
         {
             get { return blendedCoefficient; }
         }
@@ -91,7 +91,7 @@ namespace BEPUphysics.Vehicle
         /// This coefficient and the supporting entity's coefficient of friction will be 
         /// taken into account to determine the used coefficient at any given time.
         /// </summary>
-        public Fix32 KineticCoefficient
+        public Fix KineticCoefficient
         {
             get { return kineticCoefficient; }
             set { kineticCoefficient = MathHelper.Max(value, F64.C0); }
@@ -119,7 +119,7 @@ namespace BEPUphysics.Vehicle
         /// This coefficient and the supporting entity's coefficient of friction will be 
         /// taken into account to determine the used coefficient at any given time.
         /// </summary>
-        public Fix32 StaticCoefficient
+        public Fix StaticCoefficient
         {
             get { return staticCoefficient; }
             set { staticCoefficient = MathHelper.Max(value, F64.C0); }
@@ -128,7 +128,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the velocity under which the coefficient of static friction will be used instead of the dynamic one.
         /// </summary>
-        public Fix32 StaticFrictionVelocityThreshold
+        public Fix StaticFrictionVelocityThreshold
         {
             get { return staticFrictionVelocityThreshold; }
             set { staticFrictionVelocityThreshold = Fix32Ext.Abs(value); }
@@ -137,7 +137,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets the force 
         /// </summary>
-        public Fix32 TotalImpulse
+        public Fix TotalImpulse
         {
             get { return accumulatedImpulse; }
         }
@@ -168,26 +168,26 @@ namespace BEPUphysics.Vehicle
         ///<summary>
         /// Gets the relative velocity along the sliding direction at the wheel contact.
         ///</summary>
-        public Fix32 RelativeVelocity
+        public Fix RelativeVelocity
         {
             get
             {
-                Fix32 velocity = (((((vehicleEntity.linearVelocity.X.Mul(linearAX)).Add(vehicleEntity.linearVelocity.Y.Mul(linearAY))).Add(vehicleEntity.linearVelocity.Z.Mul(linearAZ))).Add(vehicleEntity.angularVelocity.X.Mul(angularAX))).Add(vehicleEntity.angularVelocity.Y.Mul(angularAY))).Add(vehicleEntity.angularVelocity.Z.Mul(angularAZ));
+                Fix velocity = (((((vehicleEntity.linearVelocity.X.Mul(linearAX)).Add(vehicleEntity.linearVelocity.Y.Mul(linearAY))).Add(vehicleEntity.linearVelocity.Z.Mul(linearAZ))).Add(vehicleEntity.angularVelocity.X.Mul(angularAX))).Add(vehicleEntity.angularVelocity.Y.Mul(angularAY))).Add(vehicleEntity.angularVelocity.Z.Mul(angularAZ));
                 if (supportEntity != null)
 					velocity = velocity.Add((((((supportEntity.linearVelocity.X.Neg().Mul(linearAX)).Sub(supportEntity.linearVelocity.Y.Mul(linearAY))).Sub(supportEntity.linearVelocity.Z.Mul(linearAZ))).Add(supportEntity.angularVelocity.X.Mul(angularBX))).Add(supportEntity.angularVelocity.Y.Mul(angularBY))).Add(supportEntity.angularVelocity.Z.Mul(angularBZ)));
                 return velocity;
             }
         }
 
-        internal Fix32 ApplyImpulse()
+        internal Fix ApplyImpulse()
         {
             //Compute relative velocity and convert to an impulse
-            Fix32 lambda = RelativeVelocity.Mul(velocityToImpulse);
+            Fix lambda = RelativeVelocity.Mul(velocityToImpulse);
 
 
             //Clamp accumulated impulse
-            Fix32 previousAccumulatedImpulse = accumulatedImpulse;
-            Fix32 maxForce = (blendedCoefficient.Neg()).Mul(wheel.suspension.accumulatedImpulse);
+            Fix previousAccumulatedImpulse = accumulatedImpulse;
+            Fix maxForce = (blendedCoefficient.Neg()).Mul(wheel.suspension.accumulatedImpulse);
             accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse.Add(lambda), maxForce.Neg(), maxForce);
             lambda = accumulatedImpulse.Sub(previousAccumulatedImpulse);
 
@@ -224,13 +224,13 @@ namespace BEPUphysics.Vehicle
             return lambda;
         }
 
-        internal void PreStep(Fix32 dt)
+        internal void PreStep(Fix dt)
         {
             vehicleEntity = wheel.Vehicle.Body;
             supportEntity = wheel.SupportingEntity;
             supportIsDynamic = supportEntity != null && supportEntity.isDynamic;
             Vector3.Cross(ref wheel.worldForwardDirection, ref wheel.normal, out slidingFrictionAxis);
-            Fix32 axisLength = slidingFrictionAxis.LengthSquared();
+            Fix axisLength = slidingFrictionAxis.LengthSquared();
             //Safety against bad cross product
             if (axisLength < Toolbox.BigEpsilon)
             {
@@ -258,10 +258,10 @@ namespace BEPUphysics.Vehicle
             angularBZ = (linearAX.Mul(wheel.rb.Y)).Sub((linearAY.Mul(wheel.rb.X)));
 
             //Compute inverse effective mass matrix
-            Fix32 entryA, entryB;
+            Fix entryA, entryB;
 
             //these are the transformed coordinates
-            Fix32 tX, tY, tZ;
+            Fix tX, tY, tZ;
             if (vehicleEntity.isDynamic)
             {
                 tX = ((angularAX.Mul(vehicleEntity.inertiaTensorInverse.M11)).Add(angularAY.Mul(vehicleEntity.inertiaTensorInverse.M21))).Add(angularAZ.Mul(vehicleEntity.inertiaTensorInverse.M31));

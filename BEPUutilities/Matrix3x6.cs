@@ -5,18 +5,18 @@ namespace BEPUutilities
 {
 	static class Matrix3x6
 	{
-		[ThreadStatic] private static Fix32[] Matrix;
+		[ThreadStatic] private static Fix[] Matrix;
 
-		public static bool Gauss(Fix32[] M, int m, int n)
+		public static bool Gauss(Fix[] M, int m, int n)
 		{
 			// Perform Gauss-Jordan elimination
 			for (int k = 0; k < m; k++)
 			{
-				Fix32 maxValue = M[k + k * m].Abs();
+				Fix maxValue = M[k + k * m].Abs();
 				int iMax = k;
 				for (int i = k+1; i < m; i++)
 				{
-					Fix32 value = M[i + k * m].Abs();
+					Fix value = M[i + k * m].Abs();
 					if (value >= maxValue)
 					{
 						maxValue = value;
@@ -30,14 +30,14 @@ namespace BEPUutilities
 				{
 					for (int j = 0; j < n; j++)
 					{
-						Fix32 temp = M[k + j * m];
+						Fix temp = M[k + j * m];
 						M[k + j * m] = M[iMax + j * m];
 						M[iMax + j * m] = temp;
 					}
 				}
 
 				// Divide row by pivot
-				Fix32 pivotInverse = F64.C1.Div(M[k + k * m]);
+				Fix pivotInverse = F64.C1.Div(M[k + k * m]);
 
 				M[k + k * m] = F64.C1;
 				for (int j = k + 1; j < n; j++)
@@ -51,7 +51,7 @@ namespace BEPUutilities
 				{
 					if (i == k)
 						continue;
-					ref Fix32 f = ref M[i + k * m];					
+					ref Fix f = ref M[i + k * m];					
 					for (int j = k + 1; j < n; j++)
 					{
 						ref var t = ref M[i + j * m];
@@ -66,8 +66,8 @@ namespace BEPUutilities
 		public static bool Invert(ref Matrix3x3 m, out Matrix3x3 r)
 		{
 			if (Matrix == null)
-				 Matrix = new Fix32[3 + 6 * 3];
-			Fix32[] M = Matrix;
+				 Matrix = new Fix[3 + 6 * 3];
+			Fix[] M = Matrix;
 
 			// Initialize temporary matrix
 			M[0 + 0 * 3] = m.M11;
@@ -80,15 +80,15 @@ namespace BEPUutilities
 			M[2 + 1 * 3] = m.M32;
 			M[2 + 2 * 3] = m.M33;
 
-			M[0 + 3 * 3] = Fix32.One;
-			M[0 + 4 * 3] = Fix32.Zero;
-			M[0 + 5 * 3] = Fix32.Zero;
-			M[1 + 3 * 3] = Fix32.Zero;
-			M[1 + 4 * 3] = Fix32.One;
-			M[1 + 5 * 3] = Fix32.Zero;
-			M[2 + 3 * 3] = Fix32.Zero;
-			M[2 + 4 * 3] = Fix32.Zero;
-			M[2 + 5 * 3] = Fix32.One;
+			M[0 + 3 * 3] = Fix.One;
+			M[0 + 4 * 3] = Fix.Zero;
+			M[0 + 5 * 3] = Fix.Zero;
+			M[1 + 3 * 3] = Fix.Zero;
+			M[1 + 4 * 3] = Fix.One;
+			M[1 + 5 * 3] = Fix.Zero;
+			M[2 + 3 * 3] = Fix.Zero;
+			M[2 + 4 * 3] = Fix.Zero;
+			M[2 + 5 * 3] = Fix.One;
 
 			if (!Gauss(M, 3, 6))
 			{

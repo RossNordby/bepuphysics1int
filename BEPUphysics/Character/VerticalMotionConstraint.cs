@@ -20,11 +20,11 @@ namespace BEPUphysics.Character
 
         SupportData supportData;
 
-        private Fix32 maximumGlueForce;
+        private Fix maximumGlueForce;
         /// <summary>
         /// Gets or sets the maximum force that the constraint will apply in attempting to keep the character stuck to the ground.
         /// </summary>
-        public Fix32 MaximumGlueForce
+        public Fix MaximumGlueForce
         {
             get
             {
@@ -37,15 +37,15 @@ namespace BEPUphysics.Character
                 maximumGlueForce = value;
             }
         }
-        Fix32 maximumForce;
+        Fix maximumForce;
 
-        Fix32 supportForceFactor = F64.C1;
+        Fix supportForceFactor = F64.C1;
         /// <summary>
         /// Gets or sets the scaling factor of forces applied to the supporting object if it is a dynamic entity.
         /// Low values (below 1) reduce the amount of motion imparted to the support object; it acts 'heavier' as far as vertical motion is concerned.
         /// High values (above 1) increase the force applied to support objects, making them appear lighter.
         /// </summary>
-        public Fix32 SupportForceFactor
+        public Fix SupportForceFactor
         {
             get
             {
@@ -63,22 +63,22 @@ namespace BEPUphysics.Character
         /// <summary>
         /// Gets the effective mass felt by the constraint.
         /// </summary>
-        public Fix32 EffectiveMass
+        public Fix EffectiveMass
         {
             get
             {
                 return effectiveMass;
             }
         }
-        Fix32 effectiveMass;
+        Fix effectiveMass;
         Entity supportEntity;
         Vector3 linearJacobianA;
         Vector3 linearJacobianB;
         Vector3 angularJacobianB;
 
    
-        Fix32 accumulatedImpulse;
-        Fix32 permittedVelocity;
+        Fix accumulatedImpulse;
+        Fix permittedVelocity;
 
 		/// <summary>
 		/// Constructs a new vertical motion constraint.
@@ -99,7 +99,7 @@ namespace BEPUphysics.Character
 		/// <param name="characterBody">Character body governed by the constraint.</param>
 		/// <param name="supportFinder">Support finder used by the character.</param>
 		/// <param name="maximumGlueForce">Maximum force the vertical motion constraint is allowed to apply in an attempt to keep the character on the ground.</param>
-		public VerticalMotionConstraint(Entity characterBody, SupportFinder supportFinder, Fix32 maximumGlueForce)
+		public VerticalMotionConstraint(Entity characterBody, SupportFinder supportFinder, Fix maximumGlueForce)
         {
             this.characterBody = characterBody;
             this.supportFinder = supportFinder;
@@ -148,7 +148,7 @@ namespace BEPUphysics.Character
         /// Performs any per-frame computation needed by the constraint.
         /// </summary>
         /// <param name="dt">Time step duration.</param>
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             //Collect references, pick the mode, and configure the coefficients to be used by the solver.
             if (supportData.SupportObject != null)
@@ -184,7 +184,7 @@ namespace BEPUphysics.Character
 
             linearJacobianA = supportData.Normal;
             Vector3.Negate(ref linearJacobianA, out linearJacobianB);
-            Fix32 inverseEffectiveMass = characterBody.InverseMass;
+            Fix inverseEffectiveMass = characterBody.InverseMass;
             if (supportEntity != null)
             {
                 Vector3 offsetB = supportData.Position - supportEntity.Position;
@@ -196,7 +196,7 @@ namespace BEPUphysics.Character
                     Matrix3x3 inertiaInverse = supportEntity.InertiaTensorInverse;
                     Vector3 angularComponentB;
                     Matrix3x3.Transform(ref angularJacobianB, ref inertiaInverse, out angularComponentB);
-                    Fix32 effectiveMassContribution;
+                    Fix effectiveMassContribution;
                     Vector3.Dot(ref angularComponentB, ref angularJacobianB, out effectiveMassContribution);
 
 					inverseEffectiveMass =
@@ -239,20 +239,20 @@ inverseEffectiveMass.Add(supportForceFactor.Mul((effectiveMassContribution.Add(s
         /// Computes a solution to the constraint.
         /// </summary>
         /// <returns>Magnitude of the applied impulse.</returns>
-        public override Fix32 SolveIteration()
+        public override Fix SolveIteration()
         {
             //The relative velocity's x component is in the movement direction.
             //y is the perpendicular direction.
 
             //Note that positive velocity is penetrating velocity.
-            Fix32 relativeVelocity = RelativeVelocity.Add(permittedVelocity);
+            Fix relativeVelocity = RelativeVelocity.Add(permittedVelocity);
 
 
             //Create the full velocity change, and convert it to an impulse in constraint space.
-            Fix32 lambda = (relativeVelocity.Neg()).Mul(effectiveMass);
+            Fix lambda = (relativeVelocity.Neg()).Mul(effectiveMass);
 
             //Add and clamp the impulse.
-            Fix32 previousAccumulatedImpulse = accumulatedImpulse;
+            Fix previousAccumulatedImpulse = accumulatedImpulse;
             accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse.Add(lambda), F64.C0, maximumForce);
             lambda = accumulatedImpulse.Sub(previousAccumulatedImpulse);
             //Use the jacobians to put the impulse into world space.
@@ -285,17 +285,17 @@ inverseEffectiveMass.Add(supportForceFactor.Mul((effectiveMassContribution.Add(s
         /// <summary>
         /// Gets the relative velocity between the character and its support along the support normal.
         /// </summary>
-        public Fix32 RelativeVelocity
+        public Fix RelativeVelocity
         {
             get
             {
-                Fix32 relativeVelocity;
+                Fix relativeVelocity;
 
                 Vector3.Dot(ref linearJacobianA, ref characterBody.linearVelocity, out relativeVelocity);
 
                 if (supportEntity != null)
                 {
-                    Fix32 supportVelocity;
+                    Fix supportVelocity;
                     Vector3.Dot(ref linearJacobianB, ref supportEntity.linearVelocity, out supportVelocity);
 					relativeVelocity = relativeVelocity.Add(supportVelocity);
                     Vector3.Dot(ref angularJacobianB, ref supportEntity.angularVelocity, out supportVelocity);

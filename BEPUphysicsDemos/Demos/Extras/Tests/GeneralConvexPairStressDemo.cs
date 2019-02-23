@@ -15,9 +15,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
 
         Random random = new Random();
-        Fix32 width = 45.ToFix();
-        Fix32 height = 45.ToFix();
-        Fix32 length = 45.ToFix();
+        Fix width = 45.ToFix();
+        Fix height = 45.ToFix();
+        Fix length = 45.ToFix();
         /// <summary>
         /// Constructs a new demo.
         /// </summary>
@@ -69,19 +69,19 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 (random.NextDouble().ToFix().Mul(2.ToFix())).Sub(1.ToFix()),
 (random.NextDouble().ToFix().Mul(2.ToFix())).Sub(1.ToFix()))),
 random.NextDouble().ToFix().Mul(50.ToFix()));
-            Fix32 linearFactor = 0.5m.ToFix();
+            Fix linearFactor = 0.5m.ToFix();
             entity.LinearVelocity = new Vector3(
 (random.NextDouble().ToFix().Mul(2.ToFix()).Sub(1.ToFix())).Mul(linearFactor),
 (random.NextDouble().ToFix().Mul(2.ToFix()).Sub(1.ToFix())).Mul(linearFactor),
 ((random.NextDouble().ToFix().Mul(2.ToFix())).Sub(1.ToFix())).Mul(linearFactor));
-            Fix32 angularFactor = 0.5m.ToFix();
+            Fix angularFactor = 0.5m.ToFix();
             entity.AngularVelocity = new Vector3(
 (random.NextDouble().ToFix().Mul(2.ToFix()).Sub(1.ToFix())).Mul(angularFactor),
 (random.NextDouble().ToFix().Mul(2.ToFix()).Sub(1.ToFix())).Mul(angularFactor),
 ((random.NextDouble().ToFix().Mul(2.ToFix())).Sub(1.ToFix())).Mul(angularFactor));
         }
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             for (int i = 0; i < 10; i++)
             {

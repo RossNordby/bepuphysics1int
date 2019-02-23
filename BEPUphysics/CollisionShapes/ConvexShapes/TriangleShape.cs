@@ -148,7 +148,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<param name="vC">Third local vertex in the triangle.</param>
         ///<param name="collisionMargin">Collision margin of the shape.</param>
         /// <returns>Description required to define a convex shape.</returns>
-        public static ConvexShapeDescription ComputeDescription(Vector3 vA, Vector3 vB, Vector3 vC, Fix32 collisionMargin)
+        public static ConvexShapeDescription ComputeDescription(Vector3 vA, Vector3 vB, Vector3 vC, Fix collisionMargin)
         {
             ConvexShapeDescription description;
             // A triangle by itself technically has no volume, but shapes try to include the collision margin in the volume when feasible (e.g. BoxShape).
@@ -220,7 +220,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<param name="extremePoint">Extreme point on the shape.</param>
         public override void GetLocalExtremePointWithoutMargin(ref Vector3 direction, out Vector3 extremePoint)
         {
-            Fix32 dotA, dotB, dotC;
+            Fix dotA, dotB, dotC;
             Vector3.Dot(ref direction, ref vA, out dotA);
             Vector3.Dot(ref direction, ref vB, out dotB);
             Vector3.Dot(ref direction, ref vC, out dotC);
@@ -253,16 +253,16 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 
             //Calculate distribution of mass.
 
-            Fix32 massPerPoint = F64.OneThird;
+            Fix massPerPoint = F64.OneThird;
 
             //Subtract the position from the distribution, moving into a 'body space' relative to itself.
             //        [ (j * j + z * z)  (-j * j)  (-j * z) ]
             //I = I + [ (-j * j)  (j * j + z * z)  (-j * z) ]
             //	      [ (-j * z)  (-j * z)  (j * j + j * j) ]
 
-            Fix32 i = vA.X.Sub(center.X);
-            Fix32 j = vA.Y.Sub(center.Y);
-            Fix32 k = vA.Z.Sub(center.Z);
+            Fix i = vA.X.Sub(center.X);
+            Fix j = vA.Y.Sub(center.Y);
+            Fix k = vA.Z.Sub(center.Z);
             //localInertiaTensor += new Matrix(j * j + k * k, -j * j, -j * k, 0, -j * j, j * j + k * k, -j * k, 0, -j * k, -j * k, j * j + j * j, 0, 0, 0, 0, 0); //No mass per point.
             var volumeDistribution = new Matrix3x3(massPerPoint.Mul(((j.Mul(j)).Add(k.Mul(k)))), massPerPoint.Mul(((i.Neg()).Mul(j))), massPerPoint.Mul(((i.Neg()).Mul(k))),
 massPerPoint.Mul(((i.Neg()).Mul(j))), massPerPoint.Mul(((i.Mul(i)).Add(k.Mul(k)))), massPerPoint.Mul(((j.Neg()).Mul(k))),
@@ -322,7 +322,7 @@ massPerPoint.Mul(((i.Neg()).Mul(k))), massPerPoint.Mul(((j.Neg()).Mul(k))), mass
         /// <param name="maximumLength">Maximum distance to travel in units of the direction vector's length.</param>
         /// <param name="hit">Hit data of the ray cast, if any.</param>
         /// <returns>Whether or not the ray hit the target.</returns>
-        public override bool RayTest(ref Ray ray, ref RigidTransform transform, Fix32 maximumLength, out RayHit hit)
+        public override bool RayTest(ref Ray ray, ref RigidTransform transform, Fix maximumLength, out RayHit hit)
         {
             Matrix3x3 orientation;
             Matrix3x3.CreateFromQuaternion(ref transform.Orientation, out orientation);

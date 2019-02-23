@@ -45,7 +45,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
 
             
-            Fix32 dot;
+            Fix dot;
             Vector3.Dot(ref triangleNormal, ref triangle.vA, out dot);
             switch (triangle.sidedness)
             {
@@ -69,8 +69,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Could optimize this process a bit.  The 'point' being compared is always zero.  Additionally, since the triangle normal is available,
             //there is a little extra possible optimization.
             lastRegion = Toolbox.GetClosestPointOnTriangleToPoint(ref triangle.vA, ref triangle.vB, ref triangle.vC, ref Toolbox.ZeroVector, out closestPoint);
-            Fix32 lengthSquared = closestPoint.LengthSquared();
-            Fix32 marginSum = triangle.collisionMargin.Add(sphere.collisionMargin);
+            Fix lengthSquared = closestPoint.LengthSquared();
+            Fix marginSum = triangle.collisionMargin.Add(sphere.collisionMargin);
 
             if (lengthSquared <= marginSum.Mul(marginSum))
             {

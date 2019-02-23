@@ -14,12 +14,12 @@ namespace BEPUphysics.Constraints
         /// Gets the current relative velocity of the constraint.
         /// Computed based on the current connection velocities and jacobians.
         /// </summary>
-        Fix32 RelativeVelocity { get; }
+        Fix RelativeVelocity { get; }
 
         /// <summary>
         /// Gets the total impulse a constraint has applied.
         /// </summary>
-        Fix32 TotalImpulse { get; }
+        Fix TotalImpulse { get; }
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ namespace BEPUphysics.Constraints
         /// <summary>
         /// Gets the current constraint error.
         /// </summary>
-        Fix32 Error { get; }
+        Fix Error { get; }
     }
 
     /// <summary>

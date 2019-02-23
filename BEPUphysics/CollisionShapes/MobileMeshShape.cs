@@ -19,12 +19,12 @@ namespace BEPUphysics.CollisionShapes
     ///</summary>
     public class MobileMeshShape : EntityShape
     {
-        private Fix32 meshCollisionMargin = CollisionDetectionSettings.DefaultMargin;
+        private Fix meshCollisionMargin = CollisionDetectionSettings.DefaultMargin;
         /// <summary>
         /// Gets or sets the margin of the mobile mesh to use when colliding with other meshes.
         /// When colliding with non-mesh shapes, the mobile mesh has no margin.
         /// </summary>
-        public Fix32 MeshCollisionMargin
+        public Fix MeshCollisionMargin
         {
             get
             {
@@ -187,7 +187,7 @@ namespace BEPUphysics.CollisionShapes
         /// <param name="sidednessWhenSolid">Triangle sidedness to use when the shape is solid.</param>
         /// <param name="collisionMargin">Collision margin used to expand the mesh triangles.</param>
         /// <param name="volumeDescription">Description of the volume and its distribution in the shape. Assumed to be correct; no processing or validation is performed.</param>
-        public MobileMeshShape(TransformableMeshData meshData, IList<Vector3> hullVertices, MobileMeshSolidity solidity, TriangleSidedness sidednessWhenSolid, Fix32 collisionMargin, EntityShapeVolumeDescription volumeDescription)
+        public MobileMeshShape(TransformableMeshData meshData, IList<Vector3> hullVertices, MobileMeshSolidity solidity, TriangleSidedness sidednessWhenSolid, Fix collisionMargin, EntityShapeVolumeDescription volumeDescription)
         {
             triangleMesh = new TriangleMesh(meshData);
             this.hullVertices = new RawList<Vector3>(hullVertices);
@@ -221,7 +221,7 @@ namespace BEPUphysics.CollisionShapes
         {
             var overlapList = CommonResources.GetIntList();
             hit = new RayHit();
-            hit.T = Fix32.MaxValue;
+            hit.T = Fix.MaxValue;
             if (triangleMesh.Tree.GetOverlaps(ray, overlapList))
             {
                 bool minimumClockwise = false;
@@ -231,7 +231,7 @@ namespace BEPUphysics.CollisionShapes
                     triangleMesh.Data.GetTriangle(overlapList[i], out vA, out vB, out vC);
                     bool hitClockwise;
                     RayHit tempHit;
-                    if (Toolbox.FindRayTriangleIntersection(ref ray, Fix32.MaxValue, ref vA, ref vB, ref vC, out hitClockwise, out tempHit) &&
+                    if (Toolbox.FindRayTriangleIntersection(ref ray, Fix.MaxValue, ref vA, ref vB, ref vC, out hitClockwise, out tempHit) &&
                         tempHit.T < hit.T)
                     {
                         hit = tempHit;
@@ -241,7 +241,7 @@ namespace BEPUphysics.CollisionShapes
                 CommonResources.GiveBack(overlapList);
 
                 //If the mesh is hit from behind by the ray on the first hit, then the ray is inside.
-                return hit.T < Fix32.MaxValue && ((SidednessWhenSolid == TriangleSidedness.Clockwise && !minimumClockwise) || (SidednessWhenSolid == TriangleSidedness.Counterclockwise && minimumClockwise));
+                return hit.T < Fix.MaxValue && ((SidednessWhenSolid == TriangleSidedness.Clockwise && !minimumClockwise) || (SidednessWhenSolid == TriangleSidedness.Counterclockwise && minimumClockwise));
             }
             CommonResources.GiveBack(overlapList);
             return false;
@@ -251,7 +251,7 @@ namespace BEPUphysics.CollisionShapes
         /// <summary>
         /// The difference in t parameters in a ray cast under which two hits are considered to be redundant.
         /// </summary>
-        public static Fix32 MeshHitUniquenessThreshold = F64.C1em5;
+        public static Fix MeshHitUniquenessThreshold = F64.C1em5;
 
         internal bool IsHitUnique(RawList<RayHit> hits, ref RayHit hit)
         {
@@ -302,13 +302,13 @@ namespace BEPUphysics.CollisionShapes
                 //Identify the first and last hits.
                 int minimum = 0;
                 int maximum = 0;
-                Fix32 minimumT = Fix32.MaxValue;
-                Fix32 maximumT = F64.C1.Neg();
+                Fix minimumT = Fix.MaxValue;
+                Fix maximumT = F64.C1.Neg();
                 for (int i = 0; i < hitList.Count; i++)
                 {
                     triangleMesh.Data.GetTriangle(hitList[i], out vA, out vB, out vC);
                     RayHit hit;
-                    if (Toolbox.FindRayTriangleIntersection(ref ray, Fix32.MaxValue, TriangleSidedness.DoubleSided, ref vA, ref vB, ref vC, out hit) &&
+                    if (Toolbox.FindRayTriangleIntersection(ref ray, Fix.MaxValue, TriangleSidedness.DoubleSided, ref vA, ref vB, ref vC, out hit) &&
                         IsHitUnique(hits, ref hit))
                     {
                         if (hit.T < minimumT)
@@ -438,7 +438,7 @@ namespace BEPUphysics.CollisionShapes
             }
             shapeInformation.Center = new Vector3();
             shapeInformation.VolumeDistribution = new Matrix3x3();
-            Fix32 totalWeight = F64.C0;
+            Fix totalWeight = F64.C0;
             for (int i = 0; i < data.indices.Length; i += 3)
             {
                 //Compute the center contribution.
@@ -450,10 +450,10 @@ namespace BEPUphysics.CollisionShapes
                 Vector3.Subtract(ref vC, ref vA, out vAvC);
                 Vector3 cross;
                 Vector3.Cross(ref vAvB, ref vAvC, out cross);
-                Fix32 weight = cross.Length();
+                Fix weight = cross.Length();
 				totalWeight = totalWeight.Add(weight);
 
-                Fix32 perVertexWeight = weight.Mul(F64.OneThird);
+                Fix perVertexWeight = weight.Mul(F64.OneThird);
                 shapeInformation.Center += perVertexWeight * (vA + vB + vC);
 
                 //Compute the inertia contribution of this triangle.
@@ -497,11 +497,11 @@ namespace BEPUphysics.CollisionShapes
             var backDirection = new Vector3(o.M13, o.M23, o.M33);
 
             int right = 0, left = 0, up = 0, down = 0, backward = 0, forward = 0;
-            Fix32 minX = Fix32.MaxValue, maxX = Fix32.MaxValue.Neg(), minY = Fix32.MaxValue, maxY = Fix32.MaxValue.Neg(), minZ = Fix32.MaxValue, maxZ = Fix32.MaxValue.Neg();
+            Fix minX = Fix.MaxValue, maxX = Fix.MaxValue.Neg(), minY = Fix.MaxValue, maxY = Fix.MaxValue.Neg(), minZ = Fix.MaxValue, maxZ = Fix.MaxValue.Neg();
 
             for (int i = 0; i < hullVertices.Count; i++)
             {
-                Fix32 dotX, dotY, dotZ;
+                Fix dotX, dotY, dotZ;
                 Vector3.Dot(ref rightDirection, ref hullVertices.Elements[i], out dotX);
                 Vector3.Dot(ref upDirection, ref hullVertices.Elements[i], out dotY);
                 Vector3.Dot(ref backDirection, ref hullVertices.Elements[i], out dotZ);

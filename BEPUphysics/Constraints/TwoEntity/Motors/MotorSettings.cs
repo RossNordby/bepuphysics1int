@@ -31,7 +31,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
     {
         internal SolverUpdateable motor;
 
-        internal Fix32 maximumForce = Fix32.MaxValue;
+        internal Fix maximumForce = Fix.MaxValue;
         internal MotorMode mode = MotorMode.VelocityMotor;
 
         protected MotorSettings(SolverUpdateable motor)
@@ -43,7 +43,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Gets and sets the maximum impulse that the constraint will attempt to apply when satisfying its requirements.
         /// This field can be used to simulate friction in a constraint.
         /// </summary>
-        public Fix32 MaximumForce
+        public Fix MaximumForce
         {
             get
             {
@@ -192,17 +192,17 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// <summary>
         /// Speed at which the servo will try to achieve its goal.
         /// </summary>
-        internal Fix32 baseCorrectiveSpeed;
+        internal Fix baseCorrectiveSpeed;
 
         /// <summary>
         /// Maximum extra velocity that the constraint will apply in an effort to correct constraint error.
         /// </summary>
-        internal Fix32 maxCorrectiveVelocity = Fix32.MaxValue;
+        internal Fix maxCorrectiveVelocity = Fix.MaxValue;
 
         /// <summary>
         /// Squared maximum extra velocity that the constraint will apply in an effort to correct constraint error.
         /// </summary>
-        internal Fix32 maxCorrectiveVelocitySquared = Fix32.MaxValue;
+        internal Fix maxCorrectiveVelocitySquared = Fix.MaxValue;
 
         /// <summary>
         /// Spring settings define how a constraint responds to velocity and position error.
@@ -218,7 +218,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Gets and sets the speed at which the servo will try to achieve its goal.
         /// This is inactive if the constraint is not in servo mode.
         /// </summary>
-        public Fix32 BaseCorrectiveSpeed
+        public Fix BaseCorrectiveSpeed
         {
             get { return baseCorrectiveSpeed; }
             set
@@ -235,7 +235,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// <summary>
         /// Gets or sets the maximum extra velocity that the constraint will apply in an effort to correct any constraint error.
         /// </summary>
-        public Fix32 MaxCorrectiveVelocity
+        public Fix MaxCorrectiveVelocity
         {
             get { return maxCorrectiveVelocity; }
             set
@@ -244,9 +244,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                 if (maxCorrectiveVelocity != value)
                 {
                     maxCorrectiveVelocity = value;
-                    if (maxCorrectiveVelocity >= Fix32.MaxValue)
+                    if (maxCorrectiveVelocity >= Fix.MaxValue)
                     {
-                        maxCorrectiveVelocitySquared = Fix32.MaxValue;
+                        maxCorrectiveVelocitySquared = Fix.MaxValue;
                     }
                     else
                     {
@@ -279,7 +279,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
     /// </summary>
     public class ServoSettings1D : ServoSettings
     {
-        internal Fix32 goal;
+        internal Fix goal;
 
         internal ServoSettings1D(MotorSettings motorSettings)
             : base(motorSettings)
@@ -289,7 +289,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// <summary>
         /// Gets or sets the goal position of the servo.
         /// </summary>
-        public Fix32 Goal
+        public Fix Goal
         {
             get { return goal; }
             set
@@ -379,7 +379,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Must be greater than zero.
         /// Sometimes, if a joint system is unstable, increasing the softness of the involved constraints will make it settle down.
         /// </summary>
-        internal Fix32 softness = .0001m.ToFix();
+        internal Fix softness = .0001m.ToFix();
 
         internal VelocityMotorSettings(MotorSettings motorSettings)
         {
@@ -393,7 +393,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Sometimes, if a joint system is unstable, increasing the softness of the involved constraints will make it settle down.
         /// For motors, softness can be used to implement damping.  For a damping constant k, the appropriate softness is 1/k.
         /// </summary>
-        public Fix32 Softness
+        public Fix Softness
         {
             get { return softness; }
             set
@@ -414,7 +414,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
     /// </summary>
     public class VelocityMotorSettings1D : VelocityMotorSettings
     {
-        internal Fix32 goalVelocity;
+        internal Fix goalVelocity;
 
         internal VelocityMotorSettings1D(MotorSettings motorSettings)
             : base(motorSettings)
@@ -424,7 +424,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// <summary>
         /// Gets or sets the goal velocity of the motor.
         /// </summary>
-        public Fix32 GoalVelocity
+        public Fix GoalVelocity
         {
             get { return goalVelocity; }
             set

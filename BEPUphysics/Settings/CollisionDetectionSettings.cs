@@ -10,7 +10,7 @@ namespace BEPUphysics.Settings
     {
 
 
-        internal static Fix32 ContactInvalidationLengthSquared = .01m.ToFix();
+        internal static Fix ContactInvalidationLengthSquared = .01m.ToFix();
 
         /// <summary>
         /// For persistent manifolds, contacts are represented by an offset in local space of two colliding bodies.
@@ -20,7 +20,7 @@ namespace BEPUphysics.Settings
         /// If the world is smaller or larger than 'normal' for the engine, adjusting this value proportionally can improve contact caching behavior.
         /// The default value of .1f works well for worlds that operate on the order of 1 unit.
         /// </summary>
-        public static Fix32 ContactInvalidationLength
+        public static Fix ContactInvalidationLength
         {
             get
             {
@@ -33,13 +33,13 @@ namespace BEPUphysics.Settings
         }
 
 
-        internal static Fix32 ContactMinimumSeparationDistanceSquared = .0009m.ToFix();
+        internal static Fix ContactMinimumSeparationDistanceSquared = .0009m.ToFix();
         /// <summary>
         /// In persistent manifolds, if two contacts are too close together, then 
         /// the system will not use one of them.  This avoids redundant constraints.
         /// Defaults to .03f.
         /// </summary>
-        public static Fix32 ContactMinimumSeparationDistance
+        public static Fix ContactMinimumSeparationDistance
         {
             get
             {
@@ -51,13 +51,13 @@ namespace BEPUphysics.Settings
             }
         }
 
-        internal static Fix32 nonconvexNormalDotMinimum = .99m.ToFix();
+        internal static Fix nonconvexNormalDotMinimum = .99m.ToFix();
         /// <summary>
         /// In regular convex manifolds, two contacts are considered redundant if their positions are too close together.  
         /// In nonconvex manifolds, the normal must also be tested, since a contact in the same location could have a different normal.
         /// This property is the minimum angle in radians between normals below which contacts are considered redundant.
         /// </summary>
-        public static Fix32 NonconvexNormalAngleDifferenceMinimum
+        public static Fix NonconvexNormalAngleDifferenceMinimum
         {
             get
             {
@@ -73,20 +73,20 @@ namespace BEPUphysics.Settings
         /// The default amount of allowed penetration into the margin before position correcting impulses will be applied.
         /// Defaults to .01f.
         /// </summary>
-        public static Fix32 AllowedPenetration = .01m.ToFix();
+        public static Fix AllowedPenetration = .01m.ToFix();
 
         /// <summary>
         /// Default collision margin around objects.  Margins help prevent objects from interpenetrating and improve stability.
         /// Defaults to .04f.
         /// </summary>
-        public static Fix32 DefaultMargin = .04m.ToFix();
+        public static Fix DefaultMargin = .04m.ToFix();
 
-        internal static Fix32 maximumContactDistance = .1m.ToFix();
+        internal static Fix maximumContactDistance = .1m.ToFix();
         /// <summary>
         /// Maximum distance between the surfaces defining a contact point allowed before removing the contact.
         /// Defaults to .1f.
         /// </summary>
-        public static Fix32 MaximumContactDistance
+        public static Fix MaximumContactDistance
         {
             get
             {

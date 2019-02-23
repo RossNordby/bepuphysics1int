@@ -8,12 +8,12 @@ namespace BEPUphysics.Materials
     ///</summary>
     public class Material
     {
-        internal Fix32 kineticFriction = MaterialManager.DefaultKineticFriction;
+        internal Fix kineticFriction = MaterialManager.DefaultKineticFriction;
         ///<summary>
         /// Gets or sets the friction coefficient used when the object is sliding quickly and
         /// no special material relationship is defined between the colliding objects.
         ///</summary>
-        public Fix32 KineticFriction
+        public Fix KineticFriction
         {
             get
             {
@@ -27,12 +27,12 @@ namespace BEPUphysics.Materials
             }
         }
 
-        internal Fix32 staticFriction = MaterialManager.DefaultStaticFriction;
+        internal Fix staticFriction = MaterialManager.DefaultStaticFriction;
         ///<summary>
         /// Gets or sets the friction coefficient used when the object is sliding slowly and
         /// no special material relationship is defined between the colliding objects.
         ///</summary>
-        public Fix32 StaticFriction
+        public Fix StaticFriction
         {
             get
             {
@@ -47,12 +47,12 @@ namespace BEPUphysics.Materials
         }
 
 
-        internal Fix32 bounciness = MaterialManager.DefaultBounciness;
+        internal Fix bounciness = MaterialManager.DefaultBounciness;
         ///<summary>
         /// Gets or sets the coefficient of restitution between the objects when
         /// no special material relationship is defined between the colliding objects.
         ///</summary>
-        public Fix32 Bounciness
+        public Fix Bounciness
         {
             get
             {
@@ -85,7 +85,7 @@ namespace BEPUphysics.Materials
         ///<param name="staticFriction">Static friction to use.</param>
         ///<param name="kineticFriction">Kinetic friction to use.</param>
         ///<param name="bounciness">Bounciness to use.</param>
-        public Material(Fix32 staticFriction, Fix32 kineticFriction, Fix32 bounciness)
+        public Material(Fix staticFriction, Fix kineticFriction, Fix bounciness)
             : this()
         {
             this.staticFriction = staticFriction;

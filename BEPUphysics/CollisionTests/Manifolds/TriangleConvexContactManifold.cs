@@ -68,7 +68,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
             pairTester = new TriangleConvexPairTester();
         }
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             //First, refresh all existing contacts.  This is an incremental manifold.
             ContactRefresher.ContactRefresh(contacts, supplementData, ref convex.worldTransform, ref triangle.worldTransform, contactIndicesToRemove);
@@ -159,7 +159,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
         private bool IsContactUnique(ref ContactData contactCandidate)
         {
             contactCandidate.Validate();
-            Fix32 distanceSquared;
+            Fix distanceSquared;
             for (int i = 0; i < contacts.Count; i++)
             {
                 Vector3.DistanceSquared(ref contacts.Elements[i].Position, ref contactCandidate.Position, out distanceSquared);

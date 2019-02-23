@@ -47,13 +47,13 @@ namespace BEPUphysicsDemos
             get { return viewDirection; }
             set
             {
-                Fix32 lengthSquared = value.LengthSquared();
+                Fix lengthSquared = value.LengthSquared();
                 if (lengthSquared > Toolbox.Epsilon)
                 {
                     Vector3.Divide(ref value, Fix32Ext.Sqrt(lengthSquared), out value);
 					//Validate the input. A temporary violation of the maximum pitch is permitted as it will be fixed as the user looks around.
 					//However, we cannot allow a view direction parallel to the locked up direction.
-					Fix32 dot;
+					Fix dot;
                     Vector3.Dot(ref value, ref lockedUp, out dot);
                     if (Fix32Ext.Abs(dot) > 1.ToFix().Sub(Toolbox.BigEpsilon))
                     {
@@ -66,11 +66,11 @@ namespace BEPUphysicsDemos
             }
         }
 
-        private Fix32 maximumPitch = MathHelper.PiOver2.Mul(0.99m.ToFix());
+        private Fix maximumPitch = MathHelper.PiOver2.Mul(0.99m.ToFix());
         /// <summary>
         /// Gets or sets how far the camera can look up or down in radians.
         /// </summary>
-        public Fix32 MaximumPitch
+        public Fix MaximumPitch
         {
             get { return maximumPitch; }
             set
@@ -93,7 +93,7 @@ namespace BEPUphysicsDemos
             set
             {
                 var oldUp = lockedUp;
-				Fix32 lengthSquared = value.LengthSquared();
+				Fix lengthSquared = value.LengthSquared();
                 if (lengthSquared > Toolbox.Epsilon)
                 {
                     Vector3.Divide(ref value, Fix32Ext.Sqrt(lengthSquared), out lockedUp);
@@ -114,7 +114,7 @@ namespace BEPUphysicsDemos
         /// <param name="pitch">Initial pitch angle of the camera.</param>
         /// <param name="yaw">Initial yaw value of the camera.</param>
         /// <param name="projectionMatrix">Projection matrix used.</param>
-        public Camera(Vector3 position, Fix32 pitch, Fix32 yaw, Matrix projectionMatrix)
+        public Camera(Vector3 position, Fix pitch, Fix yaw, Matrix projectionMatrix)
         {
             Position = position;
             Yaw(yaw);
@@ -128,7 +128,7 @@ namespace BEPUphysicsDemos
         /// Moves the camera forward.
         /// </summary>
         /// <param name="distance">Distance to move.</param>
-        public void MoveForward(Fix32 distance)
+        public void MoveForward(Fix distance)
         {
             Position += WorldMatrix.Forward * distance;
         }
@@ -137,7 +137,7 @@ namespace BEPUphysicsDemos
         /// Moves the camera to the right.
         /// </summary>
         /// <param name="distance">Distance to move.</param>
-        public void MoveRight(Fix32 distance)
+        public void MoveRight(Fix distance)
         {
             Position += WorldMatrix.Right * distance;
         }
@@ -146,7 +146,7 @@ namespace BEPUphysicsDemos
         /// Moves the camera up.
         /// </summary>
         /// <param name="distance">Distance to move.</param>
-        public void MoveUp(Fix32 distance)
+        public void MoveUp(Fix distance)
         {
             Position += new Vector3(0.ToFix(), distance, 0.ToFix());
         }
@@ -156,7 +156,7 @@ namespace BEPUphysicsDemos
         /// Rotates the camera around its locked up vector.
         /// </summary>
         /// <param name="radians">Amount to rotate.</param>
-        public void Yaw(Fix32 radians)
+        public void Yaw(Fix radians)
         {
             //Rotate around the up vector.
             Matrix3x3 rotation;
@@ -171,18 +171,18 @@ namespace BEPUphysicsDemos
         /// Rotates the view direction up or down relative to the locked up vector.
         /// </summary>
         /// <param name="radians">Amount to rotate.</param>
-        public void Pitch(Fix32 radians)
+        public void Pitch(Fix radians)
         {
             //Do not allow the new view direction to violate the maximum pitch.
-            Fix32 dot;
+            Fix dot;
             Vector3.Dot(ref viewDirection, ref lockedUp, out dot);
 
             //While this could be rephrased in terms of dot products alone, converting to actual angles can be more intuitive.
             //Consider +Pi/2 to be up, and -Pi/2 to be down.
-            Fix32 currentPitch = Fix32Ext.Acos(MathHelper.Clamp(dot.Neg(), (-1).ToFix(), 1.ToFix())).Sub(MathHelper.PiOver2);
+            Fix currentPitch = Fix32Ext.Acos(MathHelper.Clamp(dot.Neg(), (-1).ToFix(), 1.ToFix())).Sub(MathHelper.PiOver2);
             //Compute our new pitch by clamping the current + change.
-            Fix32 newPitch = MathHelper.Clamp(currentPitch.Add(radians), maximumPitch.Neg(), maximumPitch);
-            Fix32 allowedChange = newPitch.Sub(currentPitch);
+            Fix newPitch = MathHelper.Clamp(currentPitch.Add(radians), maximumPitch.Neg(), maximumPitch);
+            Fix allowedChange = newPitch.Sub(currentPitch);
 
             //Compute and apply the rotation.
             Vector3 pitchAxis;

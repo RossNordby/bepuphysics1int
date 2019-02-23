@@ -53,7 +53,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             int width = 30;
             int height = 10;
             int length = 30;
-            Fix32 spacing = 3.ToFix();
+            Fix spacing = 3.ToFix();
             var dynamics = new LinearDynamic[width, height, length];
             for (int widthIndex = 0; widthIndex < width; ++widthIndex)
             {
@@ -166,8 +166,8 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             var planeConstraint = constraint as PlaneCollisionConstraint;
             if (planeConstraint != null)
             {
-                Fix32 threshold = 1.ToFix();
-                Fix32 distance = planeConstraint.Distance;
+                Fix threshold = 1.ToFix();
+                Fix distance = planeConstraint.Distance;
                 if (distance < threshold)
                 {
                     if (distance > 0.ToFix())
@@ -205,7 +205,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         }
 
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             if (Game.WasKeyPressed(Microsoft.Xna.Framework.Input.Keys.P))
             {

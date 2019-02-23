@@ -26,7 +26,7 @@ namespace BEPUphysicsDemos.SampleCode
         /// <param name="explosionMagnitude">Base strength of the blast as applied in units of impulse.</param>
         /// <param name="maxDist">Maximum radius of effect.</param>
         /// <param name="containingSpace">Space in which the explosion resides.</param>
-        public Explosion(Vector3 pos, Fix32 explosionMagnitude, Fix32 maxDist, Space containingSpace)
+        public Explosion(Vector3 pos, Fix explosionMagnitude, Fix maxDist, Space containingSpace)
         {
             Position = pos;
             Magnitude = explosionMagnitude;
@@ -42,12 +42,12 @@ namespace BEPUphysicsDemos.SampleCode
         /// <summary>
         /// Gets or sets the base strength of the blast.
         /// </summary>
-        public Fix32 Magnitude { get; set; }
+        public Fix Magnitude { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum distance that the explosion will affect.
         /// </summary>
-        public Fix32 MaxDistance { get; set; }
+        public Fix MaxDistance { get; set; }
 
         /// <summary>
         /// Gets or sets the space that the explosion will explode in.
@@ -72,7 +72,7 @@ namespace BEPUphysicsDemos.SampleCode
                     if (e.IsDynamic)
                     {
                         Vector3 offset = e.Position - Position;
-						Fix32 distanceSquared = offset.LengthSquared();
+						Fix distanceSquared = offset.LengthSquared();
                         if (distanceSquared > Toolbox.Epsilon) //Be kind to the engine and don't give it a value divided by zero.
                         {
                             var distance = Fix32Ext.Sqrt(distanceSquared);

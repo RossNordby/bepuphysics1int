@@ -170,7 +170,7 @@ namespace BEPUphysics.Constraints.Collision
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public sealed override void Update(Fix32 dt)
+        public sealed override void Update(Fix dt)
         {
             for (int i = 0; i < penetrationConstraints.Count; i++)
                 UpdateUpdateable(penetrationConstraints.Elements[i], dt);
@@ -198,7 +198,7 @@ namespace BEPUphysics.Constraints.Collision
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public sealed override Fix32 SolveIteration()
+        public sealed override Fix SolveIteration()
         {
 
             int activeConstraints = 0;

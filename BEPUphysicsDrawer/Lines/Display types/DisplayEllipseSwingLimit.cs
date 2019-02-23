@@ -46,13 +46,13 @@ namespace BEPUphysicsDrawer.Lines
             axis.PositionB = MathConverter.Convert(LineObject.ConnectionB.Position + LineObject.TwistAxisB * BEPUutilities.F64.C1p5);
 
 
-			Fix32 angleIncrement = (4.ToFix().Mul(BEPUutilities.MathHelper.Pi)).Div(limitLines.Length.ToFix()); //Each loop iteration moves this many radians forward.
+			Fix angleIncrement = (4.ToFix().Mul(BEPUutilities.MathHelper.Pi)).Div(limitLines.Length.ToFix()); //Each loop iteration moves this many radians forward.
             for (int i = 0; i < limitLines.Length / 2; i++)
             {
                 Line pointToPreviousPoint = limitLines[2 * i];
                 Line centerToPoint = limitLines[2 * i + 1];
 
-				Fix32 currentAngle = i.ToFix().Mul(angleIncrement);
+				Fix currentAngle = i.ToFix().Mul(angleIncrement);
 
                 //Using the parametric equation for an ellipse, compute the axis of rotation and angle.
                 Vector3 rotationAxis = MathConverter.Convert(LineObject.Basis.XAxis * LineObject.MaximumAngleX * Fix32Ext.Cos(currentAngle) +

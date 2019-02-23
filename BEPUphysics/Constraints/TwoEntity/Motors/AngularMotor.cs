@@ -17,7 +17,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         private Vector3 accumulatedImpulse;
 
 
-        private Fix32 angle;
+        private Fix angle;
         private Vector3 axis;
         private Vector3 biasVelocity;
         private Matrix3x3 effectiveMassMatrix;
@@ -166,7 +166,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// <summary>
         /// Applies the corrective impulses required by the constraint.
         /// </summary>
-        public override Fix32 SolveIteration()
+        public override Fix SolveIteration()
         {
 #if !WINDOWS
             Vector3 lambda = new Vector3();
@@ -185,12 +185,12 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
 			accumulatedImpulse.X = accumulatedImpulse.X.Add(lambda.X);
 			accumulatedImpulse.Y = accumulatedImpulse.Y.Add(lambda.Y);
 			accumulatedImpulse.Z = accumulatedImpulse.Z.Add(lambda.Z);
-            Fix32 sumLengthSquared = accumulatedImpulse.LengthSquared();
+            Fix sumLengthSquared = accumulatedImpulse.LengthSquared();
 
             if (sumLengthSquared > maxForceDtSquared)
             {
                 //max / impulse gives some value 0 < x < 1.  Basically, normalize the vector (divide by the length) and scale by the maximum.
-                Fix32 multiplier = maxForceDt.Div(Fix32Ext.Sqrt(sumLengthSquared));
+                Fix multiplier = maxForceDt.Div(Fix32Ext.Sqrt(sumLengthSquared));
 				accumulatedImpulse.X = accumulatedImpulse.X.Mul(multiplier);
 				accumulatedImpulse.Y = accumulatedImpulse.Y.Mul(multiplier);
 				accumulatedImpulse.Z = accumulatedImpulse.Z.Mul(multiplier);
@@ -220,12 +220,12 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Initializes the constraint for the current frame.
         /// </summary>
         /// <param name="dt">Time between frames.</param>
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             basis.rotationMatrix = connectionA.orientationMatrix;
             basis.ComputeWorldSpaceAxes();
 
-            Fix32 inverseDt = F64.C1.Div(dt);
+            Fix inverseDt = F64.C1.Div(dt);
             if (settings.mode == MotorMode.Servomechanism) //Only need to do the bulk of this work if it's a servo.
             {
 
@@ -249,7 +249,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                 Quaternion.Concatenate(ref bTargetConjugate, ref connectionB.orientation, out error);
 
 
-                Fix32 errorReduction;
+                Fix errorReduction;
                 settings.servo.springSettings.ComputeErrorReductionAndSoftness(dt, inverseDt, out errorReduction, out usedSoftness);
 
                 //Turn this into an axis-angle representation.
@@ -258,7 +258,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                 //Scale the axis by the desired velocity if the angle is sufficiently large (epsilon).
                 if (angle > Toolbox.BigEpsilon)
                 {
-                    Fix32 velocity = MathHelper.Min(settings.servo.baseCorrectiveSpeed, angle.Mul(inverseDt)).Add(angle.Mul(errorReduction)).Neg();
+                    Fix velocity = MathHelper.Min(settings.servo.baseCorrectiveSpeed, angle.Mul(inverseDt)).Add(angle.Mul(errorReduction)).Neg();
 
                     biasVelocity.X = axis.X.Mul(velocity);
                     biasVelocity.Y = axis.Y.Mul(velocity);
@@ -266,10 +266,10 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
 
 
                     //Ensure that the corrective velocity doesn't exceed the max.
-                    Fix32 length = biasVelocity.LengthSquared();
+                    Fix length = biasVelocity.LengthSquared();
                     if (length > settings.servo.maxCorrectiveVelocitySquared)
                     {
-                        Fix32 multiplier = settings.servo.maxCorrectiveVelocity.Div(Fix32Ext.Sqrt(length));
+                        Fix multiplier = settings.servo.maxCorrectiveVelocity.Div(Fix32Ext.Sqrt(length));
 						biasVelocity.X = biasVelocity.X.Mul(multiplier);
 						biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
 						biasVelocity.Z = biasVelocity.Z.Mul(multiplier);

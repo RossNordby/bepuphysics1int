@@ -46,7 +46,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         }
 
         Random random = new Random();
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             base.Update(dt);
             for (int i = 0; i < entities.Count; i++)
@@ -76,7 +76,7 @@ timeSinceLastReset.Add(dt);
             }   
         }
         static int resets;
-        Fix32 timeSinceLastReset;
+        Fix timeSinceLastReset;
 
         /// <summary>
         /// Gets the name of the simulation.

@@ -18,15 +18,15 @@ namespace BEPUphysicsDemos.Demos
         public ColosseumDemo(DemosGame game)
             : base(game)
         {
-            Fix32 angle;
+            Fix angle;
             int numBoxesPerRing = 12;
-            Fix32 blockWidth = 2.ToFix();
-            Fix32 blockHeight = 2.ToFix();
-            Fix32 blockLength = 6.ToFix();
-            Fix32 radius = 15.ToFix();
+            Fix blockWidth = 2.ToFix();
+            Fix blockHeight = 2.ToFix();
+            Fix blockLength = 6.ToFix();
+            Fix radius = 15.ToFix();
             Entity toAdd;
             Space.Add(new Box(new Vector3(0.ToFix(), (blockHeight.Neg().Div(2.ToFix())).Sub(1.ToFix()), 0.ToFix()), 100.ToFix(), 2.ToFix(), 100.ToFix()));
-            Fix32 increment = MathHelper.TwoPi.Div(numBoxesPerRing.ToFix());
+            Fix increment = MathHelper.TwoPi.Div(numBoxesPerRing.ToFix());
             for (int i = 0; i < 8; i++)
             {
                 for (int k = 0; k < numBoxesPerRing; k++)

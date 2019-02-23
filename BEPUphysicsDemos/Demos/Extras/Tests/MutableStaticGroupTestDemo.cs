@@ -42,9 +42,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             var collidables = new List<Collidable>();
 
             //Start with a whole bunch of boxes.  These are entity collidables, but without entities!
-            Fix32 xSpacing = 6.ToFix();
-            Fix32 ySpacing = 6.ToFix();
-            Fix32 zSpacing = 6.ToFix();
+            Fix xSpacing = 6.ToFix();
+            Fix ySpacing = 6.ToFix();
+            Fix zSpacing = 6.ToFix();
 
 
             //NOTE: You might notice this demo takes a while to start, especially on the Xbox360.  Do not fear!  That's due to the creation of the graphics data, not the physics.

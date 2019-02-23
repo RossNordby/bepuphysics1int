@@ -15,7 +15,7 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
             sortingHash = hash;
         }
 
-        internal int GetIndex(Fix32 x)
+        internal int GetIndex(Fix x)
         {
             int minIndex = 0; //inclusive
             int maxIndex = entries.Count; //exclusive

@@ -47,9 +47,9 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
 
 
 
-        private Fix32 inverseDt;
-        private Fix32 dt;
-        public override void Update(Fix32 dt)
+        private Fix inverseDt;
+        private Fix dt;
+        public override void Update(Fix dt)
         {
 
             var wholeStartTime = Stopwatch.GetTimestamp();
@@ -96,7 +96,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             TotalTime = (wholeEndTime - wholeStartTime) / (double)Stopwatch.Frequency;
         }
 
-        public override void Update(Fix32 dt, IParallelLooper looper)
+        public override void Update(Fix dt, IParallelLooper looper)
         {
             var wholeStartTime = Stopwatch.GetTimestamp();
             this.dt = dt;

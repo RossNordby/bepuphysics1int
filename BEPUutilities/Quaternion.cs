@@ -12,22 +12,22 @@ namespace BEPUutilities
         /// <summary>
         /// X component of the quaternion.
         /// </summary>
-        public Fix32 X;
+        public Fix X;
 
         /// <summary>
         /// Y component of the quaternion.
         /// </summary>
-        public Fix32 Y;
+        public Fix Y;
 
         /// <summary>
         /// Z component of the quaternion.
         /// </summary>
-        public Fix32 Z;
+        public Fix Z;
 
         /// <summary>
         /// W component of the quaternion.
         /// </summary>
-        public Fix32 W;
+        public Fix W;
 
         /// <summary>
         /// Constructs a new Quaternion.
@@ -36,7 +36,7 @@ namespace BEPUutilities
         /// <param name="y">Y component of the quaternion.</param>
         /// <param name="z">Z component of the quaternion.</param>
         /// <param name="w">W component of the quaternion.</param>
-        public Quaternion(Fix32 x, Fix32 y, Fix32 z, Fix32 w)
+        public Quaternion(Fix x, Fix y, Fix z, Fix w)
         {
             this.X = x;
             this.Y = y;
@@ -66,14 +66,14 @@ namespace BEPUutilities
         /// <param name="result">Product of the multiplication.</param>
         public static void Multiply(ref Quaternion a, ref Quaternion b, out Quaternion result)
         {
-            Fix32 x = a.X;
-            Fix32 y = a.Y;
-            Fix32 z = a.Z;
-            Fix32 w = a.W;
-            Fix32 bX = b.X;
-            Fix32 bY = b.Y;
-            Fix32 bZ = b.Z;
-            Fix32 bW = b.W;
+            Fix x = a.X;
+            Fix y = a.Y;
+            Fix z = a.Z;
+            Fix w = a.W;
+            Fix bX = b.X;
+            Fix bY = b.Y;
+            Fix bZ = b.Z;
+            Fix bW = b.W;
             result.X = (((x.Mul(bW)).Add(bX.Mul(w))).Add(y.Mul(bZ))).Sub(z.Mul(bY));
             result.Y = (((y.Mul(bW)).Add(bY.Mul(w))).Add(z.Mul(bX))).Sub(x.Mul(bZ));
             result.Z = (((z.Mul(bW)).Add(bZ.Mul(w))).Add(x.Mul(bY))).Sub(y.Mul(bX));
@@ -86,7 +86,7 @@ namespace BEPUutilities
         /// <param name="q">Quaternion to multiply.</param>
         /// <param name="scale">Amount to multiply each component of the quaternion by.</param>
         /// <param name="result">Scaled quaternion.</param>
-        public static void Multiply(ref Quaternion q, Fix32 scale, out Quaternion result)
+        public static void Multiply(ref Quaternion q, Fix scale, out Quaternion result)
         {
             result.X = q.X.Mul(scale);
             result.Y = q.Y.Mul(scale);
@@ -102,14 +102,14 @@ namespace BEPUutilities
         /// <param name="result">Product of the multiplication.</param>
         public static void Concatenate(ref Quaternion a, ref Quaternion b, out Quaternion result)
         {
-            Fix32 aX = a.X;
-            Fix32 aY = a.Y;
-            Fix32 aZ = a.Z;
-            Fix32 aW = a.W;
-            Fix32 bX = b.X;
-            Fix32 bY = b.Y;
-            Fix32 bZ = b.Z;
-            Fix32 bW = b.W;
+            Fix aX = a.X;
+            Fix aY = a.Y;
+            Fix aZ = a.Z;
+            Fix aW = a.W;
+            Fix bX = b.X;
+            Fix bY = b.Y;
+            Fix bZ = b.Z;
+            Fix bW = b.W;
 
             result.X = (((aW.Mul(bX)).Add(aX.Mul(bW))).Add(aZ.Mul(bY))).Sub(aY.Mul(bZ));
             result.Y = (((aW.Mul(bY)).Add(aY.Mul(bW))).Add(aX.Mul(bZ))).Sub(aZ.Mul(bX));
@@ -153,7 +153,7 @@ namespace BEPUutilities
         /// <param name="q">Quaternion based on the rotation matrix.</param>
         public static void CreateFromRotationMatrix(ref Matrix3x3 r, out Quaternion q)
         {
-            Fix32 trace = (r.M11.Add(r.M22)).Add(r.M33);
+            Fix trace = (r.M11.Add(r.M22)).Add(r.M33);
 #if !WINDOWS
             q = new Quaternion();
 #endif
@@ -247,7 +247,7 @@ namespace BEPUutilities
         /// <param name="toReturn">Normalized quaternion.</param>
         public static void Normalize(ref Quaternion quaternion, out Quaternion toReturn)
         {
-            Fix32 l = Fix32Ext.Sqrt((((quaternion.X.Mul(quaternion.X)).Add(quaternion.Y.Mul(quaternion.Y))).Add(quaternion.Z.Mul(quaternion.Z))).Add(quaternion.W.Mul(quaternion.W)));
+            Fix l = Fix32Ext.Sqrt((((quaternion.X.Mul(quaternion.X)).Add(quaternion.Y.Mul(quaternion.Y))).Add(quaternion.Z.Mul(quaternion.Z))).Add(quaternion.W.Mul(quaternion.W)));
             toReturn.X = quaternion.X.Div(l);
             toReturn.Y = quaternion.Y.Div(l);
             toReturn.Z = quaternion.Z.Div(l);
@@ -259,7 +259,7 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            Fix32 l = Fix32Ext.Sqrt((((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))).Add(W.Mul(W)));
+            Fix l = Fix32Ext.Sqrt((((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))).Add(W.Mul(W)));
 			X = X.Div(l);
 			Y = Y.Div(l);
 			Z = Z.Div(l);
@@ -270,7 +270,7 @@ namespace BEPUutilities
         /// Computes the squared length of the quaternion.
         /// </summary>
         /// <returns>Squared length of the quaternion.</returns>
-        public Fix32 LengthSquared()
+        public Fix LengthSquared()
         {
             return (((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))).Add(W.Mul(W));
         }
@@ -279,7 +279,7 @@ namespace BEPUutilities
         /// Computes the length of the quaternion.
         /// </summary>
         /// <returns>Length of the quaternion.</returns>
-        public Fix32 Length()
+        public Fix Length()
         {
             return Fix32Ext.Sqrt((((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))).Add(W.Mul(W)));
         }
@@ -292,9 +292,9 @@ namespace BEPUutilities
         /// <param name="end">Ending point of the interpolation.</param>
         /// <param name="interpolationAmount">Amount of the end point to use.</param>
         /// <param name="result">Interpolated intermediate quaternion.</param>
-        public static void Slerp(ref Quaternion start, ref Quaternion end, Fix32 interpolationAmount, out Quaternion result)
+        public static void Slerp(ref Quaternion start, ref Quaternion end, Fix interpolationAmount, out Quaternion result)
         {
-			Fix32 cosHalfTheta = (((start.W.Mul(end.W)).Add(start.X.Mul(end.X))).Add(start.Y.Mul(end.Y))).Add(start.Z.Mul(end.Z));
+			Fix cosHalfTheta = (((start.W.Mul(end.W)).Add(start.X.Mul(end.X))).Add(start.Y.Mul(end.Y))).Add(start.Z.Mul(end.Z));
             if (cosHalfTheta < F64.C0)
             {
                 //Negating a quaternion results in the same orientation, 
@@ -315,11 +315,11 @@ namespace BEPUutilities
                 return;
             }
             // Calculate temporary values.
-            Fix32 halfTheta = Fix32Ext.Acos(cosHalfTheta);
-			Fix32 sinHalfTheta = Fix32Ext.Sqrt(F64.C1.Sub(cosHalfTheta.Mul(cosHalfTheta)));
+            Fix halfTheta = Fix32Ext.Acos(cosHalfTheta);
+			Fix sinHalfTheta = Fix32Ext.Sqrt(F64.C1.Sub(cosHalfTheta.Mul(cosHalfTheta)));
 
-			Fix32 aFraction = Fix32Ext.Sin((F64.C1.Sub(interpolationAmount)).Mul(halfTheta)).Div(sinHalfTheta);
-			Fix32 bFraction = Fix32Ext.Sin(interpolationAmount.Mul(halfTheta)).Div(sinHalfTheta);
+			Fix aFraction = Fix32Ext.Sin((F64.C1.Sub(interpolationAmount)).Mul(halfTheta)).Div(sinHalfTheta);
+			Fix bFraction = Fix32Ext.Sin(interpolationAmount.Mul(halfTheta)).Div(sinHalfTheta);
 
             //Blend the two quaternions to get the result!
             result.X = ((start.X.Mul(aFraction)).Add(end.X.Mul(bFraction)));
@@ -339,7 +339,7 @@ namespace BEPUutilities
         /// <param name="end">Ending point of the interpolation.</param>
         /// <param name="interpolationAmount">Amount of the end point to use.</param>
         /// <returns>Interpolated intermediate quaternion.</returns>
-        public static Quaternion Slerp(Quaternion start, Quaternion end, Fix32 interpolationAmount)
+        public static Quaternion Slerp(Quaternion start, Quaternion end, Fix interpolationAmount)
         {
             Quaternion toReturn;
             Slerp(ref start, ref end, interpolationAmount, out toReturn);
@@ -381,7 +381,7 @@ namespace BEPUutilities
         /// <param name="result">Result of the inversion.</param>
         public static void Inverse(ref Quaternion quaternion, out Quaternion result)
         {
-            Fix32 inverseSquaredNorm = (((quaternion.X.Mul(quaternion.X)).Add(quaternion.Y.Mul(quaternion.Y))).Add(quaternion.Z.Mul(quaternion.Z))).Add(quaternion.W.Mul(quaternion.W));
+            Fix inverseSquaredNorm = (((quaternion.X.Mul(quaternion.X)).Add(quaternion.Y.Mul(quaternion.Y))).Add(quaternion.Z.Mul(quaternion.Z))).Add(quaternion.W.Mul(quaternion.W));
             result.X = (quaternion.X.Neg()).Mul(inverseSquaredNorm);
             result.Y = (quaternion.Y.Neg()).Mul(inverseSquaredNorm);
             result.Z = (quaternion.Z.Neg()).Mul(inverseSquaredNorm);
@@ -510,22 +510,22 @@ namespace BEPUutilities
             //The expanded form would be to treat v as an 'axis only' quaternion
             //and perform standard quaternion multiplication.  Assuming q is normalized,
             //q^-1 can be replaced by a conjugation.
-            Fix32 x2 = rotation.X.Add(rotation.X);
-            Fix32 y2 = rotation.Y.Add(rotation.Y);
-            Fix32 z2 = rotation.Z.Add(rotation.Z);
-            Fix32 xx2 = rotation.X.Mul(x2);
-            Fix32 xy2 = rotation.X.Mul(y2);
-            Fix32 xz2 = rotation.X.Mul(z2);
-            Fix32 yy2 = rotation.Y.Mul(y2);
-            Fix32 yz2 = rotation.Y.Mul(z2);
-            Fix32 zz2 = rotation.Z.Mul(z2);
-            Fix32 wx2 = rotation.W.Mul(x2);
-            Fix32 wy2 = rotation.W.Mul(y2);
-            Fix32 wz2 = rotation.W.Mul(z2);
+            Fix x2 = rotation.X.Add(rotation.X);
+            Fix y2 = rotation.Y.Add(rotation.Y);
+            Fix z2 = rotation.Z.Add(rotation.Z);
+            Fix xx2 = rotation.X.Mul(x2);
+            Fix xy2 = rotation.X.Mul(y2);
+            Fix xz2 = rotation.X.Mul(z2);
+            Fix yy2 = rotation.Y.Mul(y2);
+            Fix yz2 = rotation.Y.Mul(z2);
+            Fix zz2 = rotation.Z.Mul(z2);
+            Fix wx2 = rotation.W.Mul(x2);
+            Fix wy2 = rotation.W.Mul(y2);
+            Fix wz2 = rotation.W.Mul(z2);
             //Defer the component setting since they're used in computation.
-            Fix32 transformedX = ((v.X.Mul(((F64.C1.Sub(yy2)).Sub(zz2)))).Add(v.Y.Mul((xy2.Sub(wz2))))).Add(v.Z.Mul((xz2.Add(wy2))));
-            Fix32 transformedY = ((v.X.Mul((xy2.Add(wz2)))).Add(v.Y.Mul(((F64.C1.Sub(xx2)).Sub(zz2))))).Add(v.Z.Mul((yz2.Sub(wx2))));
-            Fix32 transformedZ = ((v.X.Mul((xz2.Sub(wy2)))).Add(v.Y.Mul((yz2.Add(wx2))))).Add(v.Z.Mul(((F64.C1.Sub(xx2)).Sub(yy2))));
+            Fix transformedX = ((v.X.Mul(((F64.C1.Sub(yy2)).Sub(zz2)))).Add(v.Y.Mul((xy2.Sub(wz2))))).Add(v.Z.Mul((xz2.Add(wy2))));
+            Fix transformedY = ((v.X.Mul((xy2.Add(wz2)))).Add(v.Y.Mul(((F64.C1.Sub(xx2)).Sub(zz2))))).Add(v.Z.Mul((yz2.Sub(wx2))));
+            Fix transformedZ = ((v.X.Mul((xz2.Sub(wy2)))).Add(v.Y.Mul((yz2.Add(wx2))))).Add(v.Z.Mul(((F64.C1.Sub(xx2)).Sub(yy2))));
             result.X = transformedX;
             result.Y = transformedY;
             result.Z = transformedZ;
@@ -551,24 +551,24 @@ namespace BEPUutilities
         /// <param name="x">X component of the vector to transform.</param>
         /// <param name="rotation">Rotation to apply to the vector.</param>
         /// <param name="result">Transformed vector.</param>
-        public static void TransformX(Fix32 x, ref Quaternion rotation, out Vector3 result)
+        public static void TransformX(Fix x, ref Quaternion rotation, out Vector3 result)
         {
             //This operation is an optimized-down version of v' = q * v * q^-1.
             //The expanded form would be to treat v as an 'axis only' quaternion
             //and perform standard quaternion multiplication.  Assuming q is normalized,
             //q^-1 can be replaced by a conjugation.
-            Fix32 y2 = rotation.Y.Add(rotation.Y);
-            Fix32 z2 = rotation.Z.Add(rotation.Z);
-            Fix32 xy2 = rotation.X.Mul(y2);
-            Fix32 xz2 = rotation.X.Mul(z2);
-            Fix32 yy2 = rotation.Y.Mul(y2);
-            Fix32 zz2 = rotation.Z.Mul(z2);
-            Fix32 wy2 = rotation.W.Mul(y2);
-            Fix32 wz2 = rotation.W.Mul(z2);
+            Fix y2 = rotation.Y.Add(rotation.Y);
+            Fix z2 = rotation.Z.Add(rotation.Z);
+            Fix xy2 = rotation.X.Mul(y2);
+            Fix xz2 = rotation.X.Mul(z2);
+            Fix yy2 = rotation.Y.Mul(y2);
+            Fix zz2 = rotation.Z.Mul(z2);
+            Fix wy2 = rotation.W.Mul(y2);
+            Fix wz2 = rotation.W.Mul(z2);
             //Defer the component setting since they're used in computation.
-            Fix32 transformedX = x.Mul(((F64.C1.Sub(yy2)).Sub(zz2)));
-            Fix32 transformedY = x.Mul((xy2.Add(wz2)));
-            Fix32 transformedZ = x.Mul((xz2.Sub(wy2)));
+            Fix transformedX = x.Mul(((F64.C1.Sub(yy2)).Sub(zz2)));
+            Fix transformedY = x.Mul((xy2.Add(wz2)));
+            Fix transformedZ = x.Mul((xz2.Sub(wy2)));
             result.X = transformedX;
             result.Y = transformedY;
             result.Z = transformedZ;
@@ -581,25 +581,25 @@ namespace BEPUutilities
         /// <param name="y">Y component of the vector to transform.</param>
         /// <param name="rotation">Rotation to apply to the vector.</param>
         /// <param name="result">Transformed vector.</param>
-        public static void TransformY(Fix32 y, ref Quaternion rotation, out Vector3 result)
+        public static void TransformY(Fix y, ref Quaternion rotation, out Vector3 result)
         {
             //This operation is an optimized-down version of v' = q * v * q^-1.
             //The expanded form would be to treat v as an 'axis only' quaternion
             //and perform standard quaternion multiplication.  Assuming q is normalized,
             //q^-1 can be replaced by a conjugation.
-            Fix32 x2 = rotation.X.Add(rotation.X);
-            Fix32 y2 = rotation.Y.Add(rotation.Y);
-            Fix32 z2 = rotation.Z.Add(rotation.Z);
-            Fix32 xx2 = rotation.X.Mul(x2);
-            Fix32 xy2 = rotation.X.Mul(y2);
-            Fix32 yz2 = rotation.Y.Mul(z2);
-            Fix32 zz2 = rotation.Z.Mul(z2);
-            Fix32 wx2 = rotation.W.Mul(x2);
-            Fix32 wz2 = rotation.W.Mul(z2);
+            Fix x2 = rotation.X.Add(rotation.X);
+            Fix y2 = rotation.Y.Add(rotation.Y);
+            Fix z2 = rotation.Z.Add(rotation.Z);
+            Fix xx2 = rotation.X.Mul(x2);
+            Fix xy2 = rotation.X.Mul(y2);
+            Fix yz2 = rotation.Y.Mul(z2);
+            Fix zz2 = rotation.Z.Mul(z2);
+            Fix wx2 = rotation.W.Mul(x2);
+            Fix wz2 = rotation.W.Mul(z2);
             //Defer the component setting since they're used in computation.
-            Fix32 transformedX = y.Mul((xy2.Sub(wz2)));
-            Fix32 transformedY = y.Mul(((F64.C1.Sub(xx2)).Sub(zz2)));
-            Fix32 transformedZ = y.Mul((yz2.Add(wx2)));
+            Fix transformedX = y.Mul((xy2.Sub(wz2)));
+            Fix transformedY = y.Mul(((F64.C1.Sub(xx2)).Sub(zz2)));
+            Fix transformedZ = y.Mul((yz2.Add(wx2)));
             result.X = transformedX;
             result.Y = transformedY;
             result.Z = transformedZ;
@@ -612,25 +612,25 @@ namespace BEPUutilities
         /// <param name="z">Z component of the vector to transform.</param>
         /// <param name="rotation">Rotation to apply to the vector.</param>
         /// <param name="result">Transformed vector.</param>
-        public static void TransformZ(Fix32 z, ref Quaternion rotation, out Vector3 result)
+        public static void TransformZ(Fix z, ref Quaternion rotation, out Vector3 result)
         {
             //This operation is an optimized-down version of v' = q * v * q^-1.
             //The expanded form would be to treat v as an 'axis only' quaternion
             //and perform standard quaternion multiplication.  Assuming q is normalized,
             //q^-1 can be replaced by a conjugation.
-            Fix32 x2 = rotation.X.Add(rotation.X);
-            Fix32 y2 = rotation.Y.Add(rotation.Y);
-            Fix32 z2 = rotation.Z.Add(rotation.Z);
-            Fix32 xx2 = rotation.X.Mul(x2);
-            Fix32 xz2 = rotation.X.Mul(z2);
-            Fix32 yy2 = rotation.Y.Mul(y2);
-            Fix32 yz2 = rotation.Y.Mul(z2);
-            Fix32 wx2 = rotation.W.Mul(x2);
-            Fix32 wy2 = rotation.W.Mul(y2);
+            Fix x2 = rotation.X.Add(rotation.X);
+            Fix y2 = rotation.Y.Add(rotation.Y);
+            Fix z2 = rotation.Z.Add(rotation.Z);
+            Fix xx2 = rotation.X.Mul(x2);
+            Fix xz2 = rotation.X.Mul(z2);
+            Fix yy2 = rotation.Y.Mul(y2);
+            Fix yz2 = rotation.Y.Mul(z2);
+            Fix wx2 = rotation.W.Mul(x2);
+            Fix wy2 = rotation.W.Mul(y2);
             //Defer the component setting since they're used in computation.
-            Fix32 transformedX = z.Mul((xz2.Add(wy2)));
-            Fix32 transformedY = z.Mul((yz2.Sub(wx2)));
-            Fix32 transformedZ = z.Mul(((F64.C1.Sub(xx2)).Sub(yy2)));
+            Fix transformedX = z.Mul((xz2.Add(wy2)));
+            Fix transformedY = z.Mul((yz2.Sub(wx2)));
+            Fix transformedZ = z.Mul(((F64.C1.Sub(xx2)).Sub(yy2)));
             result.X = transformedX;
             result.Y = transformedY;
             result.Z = transformedZ;
@@ -657,10 +657,10 @@ namespace BEPUutilities
         /// <param name="axis">Axis of rotation.</param>
         /// <param name="angle">Angle to rotate around the axis.</param>
         /// <returns>Quaternion representing the axis and angle rotation.</returns>
-        public static Quaternion CreateFromAxisAngle(Vector3 axis, Fix32 angle)
+        public static Quaternion CreateFromAxisAngle(Vector3 axis, Fix angle)
         {
-			Fix32 halfAngle = angle.Mul(F64.C0p5);
-			Fix32 s = Fix32Ext.Sin(halfAngle);
+			Fix halfAngle = angle.Mul(F64.C0p5);
+			Fix s = Fix32Ext.Sin(halfAngle);
             Quaternion q;
             q.X = axis.X.Mul(s);
             q.Y = axis.Y.Mul(s);
@@ -675,10 +675,10 @@ namespace BEPUutilities
         /// <param name="axis">Axis of rotation.</param>
         /// <param name="angle">Angle to rotate around the axis.</param>
         /// <param name="q">Quaternion representing the axis and angle rotation.</param>
-        public static void CreateFromAxisAngle(ref Vector3 axis, Fix32 angle, out Quaternion q)
+        public static void CreateFromAxisAngle(ref Vector3 axis, Fix angle, out Quaternion q)
         {
-			Fix32 halfAngle = angle.Mul(F64.C0p5);
-			Fix32 s = Fix32Ext.Sin(halfAngle);
+			Fix halfAngle = angle.Mul(F64.C0p5);
+			Fix s = Fix32Ext.Sin(halfAngle);
             q.X = axis.X.Mul(s);
             q.Y = axis.Y.Mul(s);
             q.Z = axis.Z.Mul(s);
@@ -692,7 +692,7 @@ namespace BEPUutilities
         /// <param name="pitch">Pitch of the rotation.</param>
         /// <param name="roll">Roll of the rotation.</param>
         /// <returns>Quaternion representing the yaw, pitch, and roll.</returns>
-        public static Quaternion CreateFromYawPitchRoll(Fix32 yaw, Fix32 pitch, Fix32 roll)
+        public static Quaternion CreateFromYawPitchRoll(Fix yaw, Fix pitch, Fix roll)
         {
             Quaternion toReturn;
             CreateFromYawPitchRoll(yaw, pitch, roll, out toReturn);
@@ -706,24 +706,24 @@ namespace BEPUutilities
         /// <param name="pitch">Pitch of the rotation.</param>
         /// <param name="roll">Roll of the rotation.</param>
         /// <param name="q">Quaternion representing the yaw, pitch, and roll.</param>
-        public static void CreateFromYawPitchRoll(Fix32 yaw, Fix32 pitch, Fix32 roll, out Quaternion q)
+        public static void CreateFromYawPitchRoll(Fix yaw, Fix pitch, Fix roll, out Quaternion q)
         {
-			Fix32 halfRoll = roll.Mul(F64.C0p5);
-			Fix32 halfPitch = pitch.Mul(F64.C0p5);
-			Fix32 halfYaw = yaw.Mul(F64.C0p5);
+			Fix halfRoll = roll.Mul(F64.C0p5);
+			Fix halfPitch = pitch.Mul(F64.C0p5);
+			Fix halfYaw = yaw.Mul(F64.C0p5);
 
-			Fix32 sinRoll = Fix32Ext.Sin(halfRoll);
-			Fix32 sinPitch = Fix32Ext.Sin(halfPitch);
-			Fix32 sinYaw = Fix32Ext.Sin(halfYaw);
+			Fix sinRoll = Fix32Ext.Sin(halfRoll);
+			Fix sinPitch = Fix32Ext.Sin(halfPitch);
+			Fix sinYaw = Fix32Ext.Sin(halfYaw);
 
-			Fix32 cosRoll = Fix32Ext.Cos(halfRoll);
-			Fix32 cosPitch = Fix32Ext.Cos(halfPitch);
-			Fix32 cosYaw = Fix32Ext.Cos(halfYaw);
+			Fix cosRoll = Fix32Ext.Cos(halfRoll);
+			Fix cosPitch = Fix32Ext.Cos(halfPitch);
+			Fix cosYaw = Fix32Ext.Cos(halfYaw);
 
-			Fix32 cosYawCosPitch = cosYaw.Mul(cosPitch);
-			Fix32 cosYawSinPitch = cosYaw.Mul(sinPitch);
-			Fix32 sinYawCosPitch = sinYaw.Mul(cosPitch);
-			Fix32 sinYawSinPitch = sinYaw.Mul(sinPitch);
+			Fix cosYawCosPitch = cosYaw.Mul(cosPitch);
+			Fix cosYawSinPitch = cosYaw.Mul(sinPitch);
+			Fix sinYawCosPitch = sinYaw.Mul(cosPitch);
+			Fix sinYawSinPitch = sinYaw.Mul(sinPitch);
 
             q.X = (cosYawSinPitch.Mul(cosRoll)).Add(sinYawCosPitch.Mul(sinRoll));
             q.Y = (sinYawCosPitch.Mul(cosRoll)).Sub(cosYawSinPitch.Mul(sinRoll));
@@ -737,9 +737,9 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="q">Quaternion to be converted.</param>
         /// <returns>Angle around the axis represented by the quaternion.</returns>
-        public static Fix32 GetAngleFromQuaternion(ref Quaternion q)
+        public static Fix GetAngleFromQuaternion(ref Quaternion q)
         {
-            Fix32 qw = Fix32Ext.Abs(q.W);
+            Fix qw = Fix32Ext.Abs(q.W);
             if (qw > F64.C1)
                 return F64.C0;
             return F64.C2.Mul(Fix32Ext.Acos(qw));
@@ -751,12 +751,12 @@ namespace BEPUutilities
         /// <param name="q">Quaternion to be converted.</param>
         /// <param name="axis">Axis represented by the quaternion.</param>
         /// <param name="angle">Angle around the axis represented by the quaternion.</param>
-        public static void GetAxisAngleFromQuaternion(ref Quaternion q, out Vector3 axis, out Fix32 angle)
+        public static void GetAxisAngleFromQuaternion(ref Quaternion q, out Vector3 axis, out Fix angle)
         {
 #if !WINDOWS
             axis = new Vector3();
 #endif
-            Fix32 qw = q.W;
+            Fix qw = q.W;
             if (qw > F64.C0)
             {
                 axis.X = q.X;
@@ -771,7 +771,7 @@ namespace BEPUutilities
                 qw = qw.Neg();
             }
 
-            Fix32 lengthSquared = axis.LengthSquared();
+            Fix lengthSquared = axis.LengthSquared();
             if (lengthSquared > F64.C1em14)
             {
                 Vector3.Divide(ref axis, Fix32Ext.Sqrt(lengthSquared), out axis);
@@ -792,7 +792,7 @@ namespace BEPUutilities
         /// <param name="q">Quaternion representing the rotation from v1 to v2.</param>
         public static void GetQuaternionBetweenNormalizedVectors(ref Vector3 v1, ref Vector3 v2, out Quaternion q)
         {
-            Fix32 dot;
+            Fix dot;
             Vector3.Dot(ref v1, ref v2, out dot);
             //For non-normal vectors, the multiplying the axes length squared would be necessary:
             //Fix32 w = dot + (Fix32)Math.Sqrt(v1.LengthSquared() * v2.LengthSquared());
@@ -803,9 +803,9 @@ namespace BEPUutilities
                 //The solution is to pick an arbitrary perpendicular axis.
                 //Project onto the plane which has the lowest component magnitude.
                 //On that 2d plane, perform a 90 degree rotation.
-                Fix32 absX = Fix32Ext.Abs(v1.X);
-                Fix32 absY = Fix32Ext.Abs(v1.Y);
-                Fix32 absZ = Fix32Ext.Abs(v1.Z);
+                Fix absX = Fix32Ext.Abs(v1.X);
+                Fix absY = Fix32Ext.Abs(v1.Y);
+                Fix absZ = Fix32Ext.Abs(v1.Z);
                 if (absX < absY && absX < absZ)
                     q = new Quaternion(F64.C0, v1.Z.Neg(), v1.Y, F64.C0);
                 else if (absY < absZ)

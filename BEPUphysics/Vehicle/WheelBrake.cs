@@ -33,34 +33,34 @@ namespace BEPUphysics.Vehicle
         /// <param name="usingKineticFriction">True if the friction coefficients passed into the blender are kinetic coefficients, false otherwise.</param>
         /// <param name="wheel">Wheel being blended.</param>
         /// <returns>Blended friction coefficient.</returns>
-        public static Fix32 BlendFriction(Fix32 wheelFriction, Fix32 materialFriction, bool usingKineticFriction, Wheel wheel)
+        public static Fix BlendFriction(Fix wheelFriction, Fix materialFriction, bool usingKineticFriction, Wheel wheel)
         {
             return wheelFriction.Mul(materialFriction);
         }
 
         #endregion
 
-        internal Fix32 accumulatedImpulse;
+        internal Fix accumulatedImpulse;
 
         //Fix32 linearBX, linearBY, linearBZ;
-        private Fix32 angularAX, angularAY, angularAZ;
-        private Fix32 angularBX, angularBY, angularBZ;
+        private Fix angularAX, angularAY, angularAZ;
+        private Fix angularBX, angularBY, angularBZ;
         internal bool isActive = true;
-        private Fix32 linearAX, linearAY, linearAZ;
-        private Fix32 blendedCoefficient;
-        private Fix32 kineticBrakingFrictionCoefficient;
+        private Fix linearAX, linearAY, linearAZ;
+        private Fix blendedCoefficient;
+        private Fix kineticBrakingFrictionCoefficient;
         private WheelFrictionBlender frictionBlender = DefaultRollingFrictionBlender;
         private bool isBraking;
-        private Fix32 rollingFrictionCoefficient;
+        private Fix rollingFrictionCoefficient;
         internal SolverSettings solverSettings = new SolverSettings();
-        private Fix32 staticBrakingFrictionCoefficient;
-        private Fix32 staticFrictionVelocityThreshold = F64.C5;
+        private Fix staticBrakingFrictionCoefficient;
+        private Fix staticFrictionVelocityThreshold = F64.C5;
         private Wheel wheel;
         internal int numIterationsAtZeroImpulse;
         private Entity vehicleEntity, supportEntity;
 
         //Inverse effective mass matrix
-        private Fix32 velocityToImpulse;
+        private Fix velocityToImpulse;
         private bool supportIsDynamic;
 
 
@@ -70,7 +70,7 @@ namespace BEPUphysics.Vehicle
         /// <param name="dynamicBrakingFrictionCoefficient">Coefficient of dynamic friction of the wheel for friction when the brake is active.</param>
         /// <param name="staticBrakingFrictionCoefficient">Coefficient of static friction of the wheel for friction when the brake is active.</param>
         /// <param name="rollingFrictionCoefficient">Coefficient of friction of the wheel for rolling friction when the brake isn't active.</param>
-        public WheelBrake(Fix32 dynamicBrakingFrictionCoefficient, Fix32 staticBrakingFrictionCoefficient, Fix32 rollingFrictionCoefficient)
+        public WheelBrake(Fix dynamicBrakingFrictionCoefficient, Fix staticBrakingFrictionCoefficient, Fix rollingFrictionCoefficient)
         {
             KineticBrakingFrictionCoefficient = dynamicBrakingFrictionCoefficient;
             StaticBrakingFrictionCoefficient = staticBrakingFrictionCoefficient;
@@ -86,7 +86,7 @@ namespace BEPUphysics.Vehicle
         /// Gets the coefficient of rolling friction between the wheel and support.
         /// This coefficient is the blended result of the supporting entity's friction and the wheel's friction.
         /// </summary>
-        public Fix32 BlendedCoefficient
+        public Fix BlendedCoefficient
         {
             get { return blendedCoefficient; }
         }
@@ -98,7 +98,7 @@ namespace BEPUphysics.Vehicle
         /// This coefficient is used instead of the rollingFrictionCoefficient when 
         /// isBraking is true.
         /// </summary>
-        public Fix32 KineticBrakingFrictionCoefficient
+        public Fix KineticBrakingFrictionCoefficient
         {
             get { return kineticBrakingFrictionCoefficient; }
             set { kineticBrakingFrictionCoefficient = MathHelper.Max(value, F64.C0); }
@@ -139,7 +139,7 @@ namespace BEPUphysics.Vehicle
         /// This coefficient is used instead of the brakingFrictionCoefficient when 
         /// isBraking is false.
         /// </summary>
-        public Fix32 RollingFrictionCoefficient
+        public Fix RollingFrictionCoefficient
         {
             get { return rollingFrictionCoefficient; }
             set { rollingFrictionCoefficient = MathHelper.Max(value, F64.C0); }
@@ -152,7 +152,7 @@ namespace BEPUphysics.Vehicle
         /// This coefficient is used instead of the rollingFrictionCoefficient when 
         /// isBraking is true.
         /// </summary>
-        public Fix32 StaticBrakingFrictionCoefficient
+        public Fix StaticBrakingFrictionCoefficient
         {
             get { return staticBrakingFrictionCoefficient; }
             set { staticBrakingFrictionCoefficient = MathHelper.Max(value, F64.C0); }
@@ -161,7 +161,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the velocity under which the coefficient of static friction will be used instead of the dynamic one.
         /// </summary>
-        public Fix32 StaticFrictionVelocityThreshold
+        public Fix StaticFrictionVelocityThreshold
         {
             get { return staticFrictionVelocityThreshold; }
             set { staticFrictionVelocityThreshold = Fix32Ext.Abs(value); }
@@ -170,7 +170,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets the force 
         /// </summary>
-        public Fix32 TotalImpulse
+        public Fix TotalImpulse
         {
             get { return accumulatedImpulse; }
         }
@@ -199,26 +199,26 @@ namespace BEPUphysics.Vehicle
         ///<summary>
         /// Gets the relative velocity along the braking direction at the wheel contact.
         ///</summary>
-        public Fix32 RelativeVelocity
+        public Fix RelativeVelocity
         {
             get
             {
-                Fix32 velocity = (((((vehicleEntity.linearVelocity.X.Mul(linearAX)).Add(vehicleEntity.linearVelocity.Y.Mul(linearAY))).Add(vehicleEntity.linearVelocity.Z.Mul(linearAZ))).Add(vehicleEntity.angularVelocity.X.Mul(angularAX))).Add(vehicleEntity.angularVelocity.Y.Mul(angularAY))).Add(vehicleEntity.angularVelocity.Z.Mul(angularAZ));
+                Fix velocity = (((((vehicleEntity.linearVelocity.X.Mul(linearAX)).Add(vehicleEntity.linearVelocity.Y.Mul(linearAY))).Add(vehicleEntity.linearVelocity.Z.Mul(linearAZ))).Add(vehicleEntity.angularVelocity.X.Mul(angularAX))).Add(vehicleEntity.angularVelocity.Y.Mul(angularAY))).Add(vehicleEntity.angularVelocity.Z.Mul(angularAZ));
                 if (supportEntity != null)
 					velocity = velocity.Add((((((supportEntity.linearVelocity.X.Neg().Mul(linearAX)).Sub(supportEntity.linearVelocity.Y.Mul(linearAY))).Sub(supportEntity.linearVelocity.Z.Mul(linearAZ))).Add(supportEntity.angularVelocity.X.Mul(angularBX))).Add(supportEntity.angularVelocity.Y.Mul(angularBY))).Add(supportEntity.angularVelocity.Z.Mul(angularBZ)));
                 return velocity;
             }
         }
 
-        internal Fix32 ApplyImpulse()
+        internal Fix ApplyImpulse()
         {
             //Compute relative velocity and convert to impulse
-            Fix32 lambda = RelativeVelocity.Mul(velocityToImpulse);
+            Fix lambda = RelativeVelocity.Mul(velocityToImpulse);
 
 
             //Clamp accumulated impulse
-            Fix32 previousAccumulatedImpulse = accumulatedImpulse;
-            Fix32 maxForce = (blendedCoefficient.Neg()).Mul(wheel.suspension.accumulatedImpulse);
+            Fix previousAccumulatedImpulse = accumulatedImpulse;
+            Fix maxForce = (blendedCoefficient.Neg()).Mul(wheel.suspension.accumulatedImpulse);
             accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse.Add(lambda), maxForce.Neg(), maxForce);
             lambda = accumulatedImpulse.Sub(previousAccumulatedImpulse);
 
@@ -255,7 +255,7 @@ namespace BEPUphysics.Vehicle
             return lambda;
         }
 
-        internal void PreStep(Fix32 dt)
+        internal void PreStep(Fix dt)
         {
             vehicleEntity = wheel.Vehicle.Body;
             supportEntity = wheel.SupportingEntity;

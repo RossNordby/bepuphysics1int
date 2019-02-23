@@ -21,7 +21,7 @@ namespace BEPUbenchmark
 		public void Initialize()
 		{
 			Space = new Space();
-			Space.ForceUpdater.Gravity = new Vector3(0.ToFix(), (Fix32)(-9.81m).ToFix(), 0.ToFix());
+			Space.ForceUpdater.Gravity = new Vector3(0.ToFix(), (Fix)(-9.81m).ToFix(), 0.ToFix());
 			Space.TimeStepSettings.TimeStepDuration = (1 / 60m).ToFix();
 
 			InitializeSpace();
@@ -100,7 +100,7 @@ namespace BEPUbenchmark
 			return hex.ToString();
 		}
 
-		private void Fix32IntoByteArray(Fix32 value, int offset, byte[] destination)
+		private void Fix32IntoByteArray(Fix value, int offset, byte[] destination)
 		{
 			offset *= sizeof(long);
 			long raw = (long)value;

@@ -114,7 +114,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         }
 
         int frameIndex;
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             base.Update(dt);
             testSpace0.Update();

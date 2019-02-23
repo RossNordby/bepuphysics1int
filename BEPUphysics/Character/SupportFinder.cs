@@ -22,13 +22,13 @@ namespace BEPUphysics.Character
         private RawList<CharacterContact> sideContacts = new RawList<CharacterContact>();
         private RawList<CharacterContact> headContacts = new RawList<CharacterContact>();
 
-        Fix32 maximumAssistedDownStepHeight = F64.C1;
+        Fix maximumAssistedDownStepHeight = F64.C1;
         /// <summary>
         /// Gets or sets the maximum distance from the character's center to the support that will be assisted by downstepping.
         /// If the character walks off a step with height less than this value, the character will retain traction despite
         /// being temporarily airborne according to its contacts.
         /// </summary>
-        public Fix32 MaximumAssistedDownStepHeight
+        public Fix MaximumAssistedDownStepHeight
         {
             get
             {
@@ -43,7 +43,7 @@ namespace BEPUphysics.Character
         /// <summary>
         /// Gets the vertical distance from the center of the character to the bottom of the character.
         /// </summary>
-        public Fix32 BottomDistance { get; private set; }
+        public Fix BottomDistance { get; private set; }
 
         private SupportData supportData;
         /// <summary>
@@ -104,7 +104,7 @@ namespace BEPUphysics.Character
             if (contacts.Count > 1)
             {
                 Vector3.Divide(ref supportData.Position, contacts.Count.ToFix(), out supportData.Position);
-                Fix32 length = supportData.Normal.LengthSquared();
+                Fix length = supportData.Normal.LengthSquared();
                 if (length < Toolbox.Epsilon)
                 {
                     //It's possible that the normals have cancelled each other out- that would be bad!
@@ -118,11 +118,11 @@ namespace BEPUphysics.Character
             }
             //Now that we have the normal, cycle through all the contacts again and find the deepest projected depth.
             //Use that object as our support too.
-            Fix32 depth = Fix32.MaxValue.Neg();
+            Fix depth = Fix.MaxValue.Neg();
             Collidable supportObject = null;
             for (int i = 0; i < contacts.Count; i++)
             {
-                Fix32 dot;
+                Fix dot;
                 Vector3.Dot(ref contacts.Elements[i].Contact.Normal, ref supportData.Normal, out dot);
                 dot = dot.Mul(contacts.Elements[i].Contact.PenetrationDepth);
                 if (dot > depth)
@@ -159,10 +159,10 @@ namespace BEPUphysics.Character
                 {
                     //Find the traction-providing contact which is furthest in the direction of the movement direction.
                     int greatestIndex = -1;
-                    Fix32 greatestDot = Fix32.MaxValue.Neg();
+                    Fix greatestDot = Fix.MaxValue.Neg();
                     for (int i = 0; i < tractionContacts.Count; i++)
                     {
-                        Fix32 dot;
+                        Fix dot;
                         Vector3.Dot(ref movementDirection, ref tractionContacts.Elements[i].Contact.Normal, out dot);
                         if (dot > greatestDot)
                         {
@@ -177,10 +177,10 @@ namespace BEPUphysics.Character
 
                     //Project all other contact depths onto the chosen normal, keeping the largest one.
                     //This lets the vertical motion constraint relax when objects are penetrating deeply.
-                    Fix32 depth = Fix32.MaxValue.Neg();
+                    Fix depth = Fix.MaxValue.Neg();
                     for (int i = 0; i < tractionContacts.Count; i++)
                     {
-                        Fix32 dot;
+                        Fix dot;
                         Vector3.Dot(ref tractionContacts.Elements[i].Contact.Normal, ref verticalSupportData.Normal, out dot);
                         dot = dot.Mul(tractionContacts.Elements[i].Contact.PenetrationDepth);
                         if (dot > depth)
@@ -309,7 +309,7 @@ namespace BEPUphysics.Character
             BottomDistance = (extremePoint.Y.Neg()).Add(convexShape.collisionMargin);
 
             convexShape.GetLocalExtremePointWithoutMargin(ref Toolbox.RightVector, out extremePoint);
-            Fix32 rayCastInnerRadius = MathHelper.Max((extremePoint.X.Add(convexShape.collisionMargin)).Mul(F64.C0p8), extremePoint.X);
+            Fix rayCastInnerRadius = MathHelper.Max((extremePoint.X.Add(convexShape.collisionMargin)).Mul(F64.C0p8), extremePoint.X);
 
             //Vertically, the rays will start at the same height as the character's center.
             //While they could be started lower on a cylinder, that wouldn't always work for a sphere or capsule: the origin might end up outside of the shape!
@@ -340,7 +340,7 @@ namespace BEPUphysics.Character
             //the ray test won't recover traction. This situation just isn't very common.)
             if (!HasSupport && hadTraction)
             {
-                Fix32 supportRayLength = maximumAssistedDownStepHeight.Add(BottomDistance);
+                Fix supportRayLength = maximumAssistedDownStepHeight.Add(BottomDistance);
                 SupportRayData = null;
                 //If the contacts aren't available to support the character, raycast down to find the ground.
                 if (!HasTraction)
@@ -474,7 +474,7 @@ namespace BEPUphysics.Character
 
         }
 
-        bool TryDownCast(ref Ray ray, Fix32 length, out bool hasTraction, out SupportRayData supportRayData)
+        bool TryDownCast(ref Ray ray, Fix length, out bool hasTraction, out SupportRayData supportRayData)
         {
             RayHit earliestHit;
             Collidable earliestHitObject;
@@ -482,7 +482,7 @@ namespace BEPUphysics.Character
             hasTraction = false;
             if (QueryManager.RayCast(ray, length, out earliestHit, out earliestHitObject))
             {
-                Fix32 lengthSquared = earliestHit.Normal.LengthSquared();
+                Fix lengthSquared = earliestHit.Normal.LengthSquared();
                 if (lengthSquared < Toolbox.Epsilon)
                 {
                     //Don't try to continue if the support ray is stuck in something.
@@ -491,7 +491,7 @@ namespace BEPUphysics.Character
                 Vector3.Divide(ref earliestHit.Normal, Fix32Ext.Sqrt(lengthSquared), out earliestHit.Normal);
                 //A collidable was hit!  It's a support, but does it provide traction?
                 earliestHit.Normal.Normalize();
-                Fix32 dot;
+                Fix dot;
                 Vector3.Dot(ref ray.Direction, ref earliestHit.Normal, out dot);
                 if (dot < F64.C0)
                 {
@@ -530,8 +530,8 @@ namespace BEPUphysics.Character
             foreach (var c in SideContacts)
             {
                 //An existing contact is considered 'deeper' if its normal-adjusted depth is greater than the new contact.
-                Fix32 dot = Vector3.Dot(contact.Normal, c.Contact.Normal);
-                Fix32 depth = (dot.Mul(c.Contact.PenetrationDepth)).Add(Toolbox.BigEpsilon);
+                Fix dot = Vector3.Dot(contact.Normal, c.Contact.Normal);
+                Fix depth = (dot.Mul(c.Contact.PenetrationDepth)).Add(Toolbox.BigEpsilon);
                 if (depth >= contact.PenetrationDepth)
                     return false;
 
@@ -611,7 +611,7 @@ namespace BEPUphysics.Character
         /// Depth of the supporting location.
         /// Can be negative in the case of raycast supports.
         /// </summary>
-        public Fix32 Depth;
+        public Fix Depth;
         /// <summary>
         /// The object which the character is standing on.
         /// </summary>

@@ -15,7 +15,7 @@ namespace BEPUphysics.Paths
         /// </summary>
         /// <param name="speed">Speed to maintain while traveling around a curve.</param>
         /// <param name="curve">Curve to wrap.</param>
-        public ConstantLinearSpeedCurve(Fix32 speed, Curve<Vector3> curve)
+        public ConstantLinearSpeedCurve(Fix speed, Curve<Vector3> curve)
             : base(speed, curve)
         {
         }
@@ -27,14 +27,14 @@ namespace BEPUphysics.Paths
         /// <param name="curve">Curve to wrap.</param>
         /// <param name="sampleCount">Number of samples to use when constructing the wrapper curve.
         /// More samples increases the accuracy of the speed requirement at the cost of performance.</param>
-        public ConstantLinearSpeedCurve(Fix32 speed, Curve<Vector3> curve, int sampleCount)
+        public ConstantLinearSpeedCurve(Fix speed, Curve<Vector3> curve, int sampleCount)
             : base(speed, curve, sampleCount)
         {
         }
 
-        protected override Fix32 GetDistance(Vector3 start, Vector3 end)
+        protected override Fix GetDistance(Vector3 start, Vector3 end)
         {
-            Fix32 distance;
+            Fix distance;
             Vector3.Distance(ref start, ref end, out distance);
             return distance;
         }

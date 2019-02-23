@@ -25,10 +25,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         {
             contact = new ContactData();
 
-            Fix32 radiusSum = a.collisionMargin.Add(b.collisionMargin);
+            Fix radiusSum = a.collisionMargin.Add(b.collisionMargin);
             Vector3 centerDifference;
             Vector3.Subtract(ref positionB, ref positionA, out centerDifference);
-            Fix32 centerDistance = centerDifference.LengthSquared();
+            Fix centerDistance = centerDifference.LengthSquared();
 
             if (centerDistance < (radiusSum.Add(CollisionDetectionSettings.maximumContactDistance)).Mul((radiusSum.Add(CollisionDetectionSettings.maximumContactDistance))))
             {

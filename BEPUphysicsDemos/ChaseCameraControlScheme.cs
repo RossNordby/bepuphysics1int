@@ -29,12 +29,12 @@ namespace BEPUphysicsDemos
         /// <summary>
         /// Gets or sets the distance away from the target entity to try to maintain.  The distance will be shorter at times if the ray hits an object.
         /// </summary>
-        public Fix32 DistanceToTarget { get; set; }
+        public Fix DistanceToTarget { get; set; }
         
         /// <summary>
         /// Gets or sets the margin of the camera. The camera will be placed no closer to any obstacle than this margin along the ray cast.
         /// </summary>
-        public Fix32 ChaseCameraMargin { get; set; }
+        public Fix ChaseCameraMargin { get; set; }
 
         //The raycast filter limits the results retrieved from the Space.RayCast while in chase camera mode.
         Func<BroadPhaseEntry, bool> rayCastFilter;
@@ -52,7 +52,7 @@ namespace BEPUphysicsDemos
         /// <param name="distanceToTarget">Distance from the target position to try to maintain.</param>
         /// <param name="camera">Camera controlled by the scheme.</param>
         /// <param name="game">Running game.</param>
-        public ChaseCameraControlScheme(Entity chasedEntity, Vector3 offsetFromChaseTarget, bool transformOffset, Fix32 distanceToTarget, Camera camera, DemosGame game)
+        public ChaseCameraControlScheme(Entity chasedEntity, Vector3 offsetFromChaseTarget, bool transformOffset, Fix distanceToTarget, Camera camera, DemosGame game)
             : base(camera, game)
         {
             ChasedEntity = chasedEntity;
@@ -64,7 +64,7 @@ namespace BEPUphysicsDemos
             rayCastFilter = RayCastFilter;
         }
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             base.Update(dt);
 
@@ -74,7 +74,7 @@ namespace BEPUphysicsDemos
 
             //Find the earliest ray hit that isn't the chase target to position the camera appropriately.
             RayCastResult result;
-			Fix32 cameraDistance = ChasedEntity.Space.RayCast(new Ray(lookAt, backwards), DistanceToTarget, rayCastFilter, out result) ? result.HitData.T : DistanceToTarget;
+			Fix cameraDistance = ChasedEntity.Space.RayCast(new Ray(lookAt, backwards), DistanceToTarget, rayCastFilter, out result) ? result.HitData.T : DistanceToTarget;
 
             Camera.Position = lookAt + (MathHelper.Max(cameraDistance.Sub(ChaseCameraMargin), 0.ToFix())) * backwards; //Put the camera just before any hit spot.
 

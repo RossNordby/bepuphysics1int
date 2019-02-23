@@ -14,32 +14,32 @@ namespace BEPUutilities
         /// <summary>
         /// Value at row 1, column 1 of the matrix.
         /// </summary>
-        public Fix32 M11;
+        public Fix M11;
 
         /// <summary>
         /// Value at row 1, column 2 of the matrix.
         /// </summary>
-        public Fix32 M12;
+        public Fix M12;
 
         /// <summary>
         /// Value at row 1, column 2 of the matrix.
         /// </summary>
-        public Fix32 M13;
+        public Fix M13;
 
         /// <summary>
         /// Value at row 2, column 1 of the matrix.
         /// </summary>
-        public Fix32 M21;
+        public Fix M21;
 
         /// <summary>
         /// Value at row 2, column 2 of the matrix.
         /// </summary>
-        public Fix32 M22;
+        public Fix M22;
 
         /// <summary>
         /// Value at row 2, column 3 of the matrix.
         /// </summary>
-        public Fix32 M23;
+        public Fix M23;
 
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace BEPUutilities
         /// <param name="m21">Value at row 2, column 1 of the matrix.</param>
         /// <param name="m22">Value at row 2, column 2 of the matrix.</param>
         /// <param name="m23">Value at row 2, column 3 of the matrix.</param>
-        public Matrix2x3(Fix32 m11, Fix32 m12, Fix32 m13, Fix32 m21, Fix32 m22, Fix32 m23)
+        public Matrix2x3(Fix m11, Fix m12, Fix m13, Fix m21, Fix m22, Fix m23)
         {
             M11 = m11;
             M12 = m12;
@@ -69,13 +69,13 @@ namespace BEPUutilities
         /// <param name="result">Sum of the two matrices.</param>
         public static void Add(ref Matrix2x3 a, ref Matrix2x3 b, out Matrix2x3 result)
         {
-            Fix32 m11 = a.M11.Add(b.M11);
-            Fix32 m12 = a.M12.Add(b.M12);
-            Fix32 m13 = a.M13.Add(b.M13);
+            Fix m11 = a.M11.Add(b.M11);
+            Fix m12 = a.M12.Add(b.M12);
+            Fix m13 = a.M13.Add(b.M13);
 
-            Fix32 m21 = a.M21.Add(b.M21);
-            Fix32 m22 = a.M22.Add(b.M22);
-            Fix32 m23 = a.M23.Add(b.M23);
+            Fix m21 = a.M21.Add(b.M21);
+            Fix m22 = a.M22.Add(b.M22);
+            Fix m23 = a.M23.Add(b.M23);
 
             result.M11 = m11;
             result.M12 = m12;
@@ -95,13 +95,13 @@ namespace BEPUutilities
         /// <param name="result">Product of the multiplication.</param>
         public static void Multiply(ref Matrix2x3 a, ref Matrix3x3 b, out Matrix2x3 result)
         {
-            Fix32 resultM11 = ((a.M11.Mul(b.M11)).Add(a.M12.Mul(b.M21))).Add(a.M13.Mul(b.M31));
-            Fix32 resultM12 = ((a.M11.Mul(b.M12)).Add(a.M12.Mul(b.M22))).Add(a.M13.Mul(b.M32));
-            Fix32 resultM13 = ((a.M11.Mul(b.M13)).Add(a.M12.Mul(b.M23))).Add(a.M13.Mul(b.M33));
+            Fix resultM11 = ((a.M11.Mul(b.M11)).Add(a.M12.Mul(b.M21))).Add(a.M13.Mul(b.M31));
+            Fix resultM12 = ((a.M11.Mul(b.M12)).Add(a.M12.Mul(b.M22))).Add(a.M13.Mul(b.M32));
+            Fix resultM13 = ((a.M11.Mul(b.M13)).Add(a.M12.Mul(b.M23))).Add(a.M13.Mul(b.M33));
 
-            Fix32 resultM21 = ((a.M21.Mul(b.M11)).Add(a.M22.Mul(b.M21))).Add(a.M23.Mul(b.M31));
-            Fix32 resultM22 = ((a.M21.Mul(b.M12)).Add(a.M22.Mul(b.M22))).Add(a.M23.Mul(b.M32));
-            Fix32 resultM23 = ((a.M21.Mul(b.M13)).Add(a.M22.Mul(b.M23))).Add(a.M23.Mul(b.M33));
+            Fix resultM21 = ((a.M21.Mul(b.M11)).Add(a.M22.Mul(b.M21))).Add(a.M23.Mul(b.M31));
+            Fix resultM22 = ((a.M21.Mul(b.M12)).Add(a.M22.Mul(b.M22))).Add(a.M23.Mul(b.M32));
+            Fix resultM23 = ((a.M21.Mul(b.M13)).Add(a.M22.Mul(b.M23))).Add(a.M23.Mul(b.M33));
 
             result.M11 = resultM11;
             result.M12 = resultM12;
@@ -120,13 +120,13 @@ namespace BEPUutilities
         /// <param name="result">Product of the multiplication.</param>
         public static void Multiply(ref Matrix2x3 a, ref Matrix b, out Matrix2x3 result)
         {
-            Fix32 resultM11 = ((a.M11.Mul(b.M11)).Add(a.M12.Mul(b.M21))).Add(a.M13.Mul(b.M31));
-            Fix32 resultM12 = ((a.M11.Mul(b.M12)).Add(a.M12.Mul(b.M22))).Add(a.M13.Mul(b.M32));
-            Fix32 resultM13 = ((a.M11.Mul(b.M13)).Add(a.M12.Mul(b.M23))).Add(a.M13.Mul(b.M33));
+            Fix resultM11 = ((a.M11.Mul(b.M11)).Add(a.M12.Mul(b.M21))).Add(a.M13.Mul(b.M31));
+            Fix resultM12 = ((a.M11.Mul(b.M12)).Add(a.M12.Mul(b.M22))).Add(a.M13.Mul(b.M32));
+            Fix resultM13 = ((a.M11.Mul(b.M13)).Add(a.M12.Mul(b.M23))).Add(a.M13.Mul(b.M33));
 
-            Fix32 resultM21 = ((a.M21.Mul(b.M11)).Add(a.M22.Mul(b.M21))).Add(a.M23.Mul(b.M31));
-            Fix32 resultM22 = ((a.M21.Mul(b.M12)).Add(a.M22.Mul(b.M22))).Add(a.M23.Mul(b.M32));
-            Fix32 resultM23 = ((a.M21.Mul(b.M13)).Add(a.M22.Mul(b.M23))).Add(a.M23.Mul(b.M33));
+            Fix resultM21 = ((a.M21.Mul(b.M11)).Add(a.M22.Mul(b.M21))).Add(a.M23.Mul(b.M31));
+            Fix resultM22 = ((a.M21.Mul(b.M12)).Add(a.M22.Mul(b.M22))).Add(a.M23.Mul(b.M32));
+            Fix resultM23 = ((a.M21.Mul(b.M13)).Add(a.M22.Mul(b.M23))).Add(a.M23.Mul(b.M33));
 
             result.M11 = resultM11;
             result.M12 = resultM12;
@@ -144,13 +144,13 @@ namespace BEPUutilities
         /// <param name="result">Negated matrix.</param>
         public static void Negate(ref Matrix2x3 matrix, out Matrix2x3 result)
         {
-            Fix32 m11 = matrix.M11.Neg();
-            Fix32 m12 = matrix.M12.Neg();
-            Fix32 m13 = matrix.M13.Neg();
+            Fix m11 = matrix.M11.Neg();
+            Fix m12 = matrix.M12.Neg();
+            Fix m13 = matrix.M13.Neg();
 
-            Fix32 m21 = matrix.M21.Neg();
-            Fix32 m22 = matrix.M22.Neg();
-            Fix32 m23 = matrix.M23.Neg();
+            Fix m21 = matrix.M21.Neg();
+            Fix m22 = matrix.M22.Neg();
+            Fix m23 = matrix.M23.Neg();
 
             result.M11 = m11;
             result.M12 = m12;
@@ -169,13 +169,13 @@ namespace BEPUutilities
         /// <param name="result">Difference of the two matrices.</param>
         public static void Subtract(ref Matrix2x3 a, ref Matrix2x3 b, out Matrix2x3 result)
         {
-            Fix32 m11 = a.M11.Sub(b.M11);
-            Fix32 m12 = a.M12.Sub(b.M12);
-            Fix32 m13 = a.M13.Sub(b.M13);
+            Fix m11 = a.M11.Sub(b.M11);
+            Fix m12 = a.M12.Sub(b.M12);
+            Fix m13 = a.M13.Sub(b.M13);
 
-            Fix32 m21 = a.M21.Sub(b.M21);
-            Fix32 m22 = a.M22.Sub(b.M22);
-            Fix32 m23 = a.M23.Sub(b.M23);
+            Fix m21 = a.M21.Sub(b.M21);
+            Fix m22 = a.M22.Sub(b.M22);
+            Fix m23 = a.M23.Sub(b.M23);
 
             result.M11 = m11;
             result.M12 = m12;

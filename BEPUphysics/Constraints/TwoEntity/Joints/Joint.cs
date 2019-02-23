@@ -12,14 +12,14 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Maximum extra velocity that the constraint will apply in an effort to correct constraint error.
         /// </summary>
-        protected Fix32 maxCorrectiveVelocity = Fix32.MaxValue;
+        protected Fix maxCorrectiveVelocity = Fix.MaxValue;
 
         /// <summary>
         /// Squared maximum extra velocity that the constraint will apply in an effort to correct constraint error.
         /// </summary>
-        protected Fix32 maxCorrectiveVelocitySquared = Fix32.MaxValue;
+        protected Fix maxCorrectiveVelocitySquared = Fix.MaxValue;
 
-        protected Fix32 softness;
+        protected Fix softness;
 
         /// <summary>
         /// Spring settings define how a constraint responds to velocity and position error.
@@ -29,15 +29,15 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Gets or sets the maximum extra velocity that the constraint will apply in an effort to correct any constraint error.
         /// </summary>
-        public Fix32 MaxCorrectiveVelocity
+        public Fix MaxCorrectiveVelocity
         {
             get { return maxCorrectiveVelocity; }
             set
             {
                 maxCorrectiveVelocity = MathHelper.Max(F64.C0, value);
-                if (maxCorrectiveVelocity >= Fix32.MaxValue)
+                if (maxCorrectiveVelocity >= Fix.MaxValue)
                 {
-                    maxCorrectiveVelocitySquared = Fix32.MaxValue;
+                    maxCorrectiveVelocitySquared = Fix.MaxValue;
                 }
                 else
                 {

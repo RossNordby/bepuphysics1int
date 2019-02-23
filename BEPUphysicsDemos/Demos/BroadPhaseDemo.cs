@@ -28,7 +28,7 @@ namespace BEPUphysicsDemos.Demos
             int numColumns = 15;
             int numRows = 15;
             int numHigh = 15;
-			Fix32 separation = 3.ToFix();
+			Fix separation = 3.ToFix();
 
             Entity toAdd;
 

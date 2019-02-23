@@ -32,38 +32,38 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
             throw new NotSupportedException("The Grid2DSortAndSweep broad phase cannot accelerate infinite ray casts.  Consider using a broad phase which supports infinite tests, using a custom solution, or using a finite ray.");
         }
 
-        public bool RayCast(Ray ray, Fix32 maximumLength, IList<BroadPhaseEntry> outputIntersections)
+        public bool RayCast(Ray ray, Fix maximumLength, IList<BroadPhaseEntry> outputIntersections)
         {
-            if (maximumLength == Fix32.MaxValue) 
+            if (maximumLength == Fix.MaxValue) 
                 throw new NotSupportedException("The Grid2DSortAndSweep broad phase cannot accelerate infinite ray casts.  Consider specifying a maximum length or using a broad phase which supports infinite ray casts.");
         
             //Use 2d line rasterization.
             //Compute the exit location in the cell.
             //Test against each bounding box up until the exit value is reached.
-            Fix32 length = F64.C0;
+            Fix length = F64.C0;
             Int2 cellIndex;
             Vector3 currentPosition = ray.Position;
             Grid2DSortAndSweep.ComputeCell(ref currentPosition, out cellIndex);
             while (true)
             {
 
-                Fix32 cellWidth = F64.C1.Div(Grid2DSortAndSweep.cellSizeInverse);
-                Fix32 nextT; //Distance along ray to next boundary.
-                Fix32 nextTy; //Distance along ray to next boundary along y axis.
-                Fix32 nextTz; //Distance along ray to next boundary along z axis.
+                Fix cellWidth = F64.C1.Div(Grid2DSortAndSweep.cellSizeInverse);
+                Fix nextT; //Distance along ray to next boundary.
+                Fix nextTy; //Distance along ray to next boundary along y axis.
+                Fix nextTz; //Distance along ray to next boundary along z axis.
 							  //Find the next cell.
 				if (ray.Direction.Y > F64.C0)
 					nextTy = (((cellIndex.Y + 1).ToFix().Mul(cellWidth)).Sub(currentPosition.Y)).Div(ray.Direction.Y);
 				else if (ray.Direction.Y < F64.C0)
 					nextTy = (((cellIndex.Y).ToFix().Mul(cellWidth)).Sub(currentPosition.Y)).Div(ray.Direction.Y);
 				else
-					nextTy = Fix32.MaxValue;
+					nextTy = Fix.MaxValue;
                 if (ray.Direction.Z > F64.C0)
                     nextTz = (((cellIndex.Z + 1).ToFix().Mul(cellWidth)).Sub(currentPosition.Z)).Div(ray.Direction.Z);
                 else if (ray.Direction.Z < F64.C0)
                     nextTz = (((cellIndex.Z).ToFix().Mul(cellWidth)).Sub(currentPosition.Z)).Div(ray.Direction.Z);
                 else
-                    nextTz = Fix32.MaxValue;
+                    nextTz = Fix.MaxValue;
 
                 bool yIsMinimum = nextTy < nextTz;
                 nextT = yIsMinimum ? nextTy : nextTz;
@@ -75,7 +75,7 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                 GridCell2D cell;
                 if (owner.cellSet.TryGetCell(ref cellIndex, out cell))
                 {
-                    Fix32 endingX;
+                    Fix endingX;
                     if(ray.Direction.X < F64.C0)
                         endingX = currentPosition.X;
                     else
@@ -88,7 +88,7 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                         && cell.entries.Elements[i].item.boundingBox.Min.X <= endingX; i++) //TODO: Try additional x axis pruning?
                     {
                         var item = cell.entries.Elements[i].item;
-                        Fix32 t;
+                        Fix t;
                         if (ray.Intersects(ref item.boundingBox, out t) && t < maximumLength && !outputIntersections.Contains(item))
                         {
                             outputIntersections.Add(item);

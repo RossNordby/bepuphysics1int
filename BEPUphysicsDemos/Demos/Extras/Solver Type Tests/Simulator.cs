@@ -37,9 +37,9 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         public double TotalTime { get; protected set; }
         public double SolveTime { get; protected set; }
 
-        public abstract void Update(Fix32 dt);
+        public abstract void Update(Fix dt);
 
-        public abstract void Update(Fix32 dt, IParallelLooper looper);
+        public abstract void Update(Fix dt, IParallelLooper looper);
 
 
         Vector3 gravityVelocityChange;
@@ -49,7 +49,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             Vector3.Add(ref dynamics.Elements[i].Velocity, ref gravityVelocityChange, out dynamics.Elements[i].Velocity);
         }
 
-        protected void ApplyGravity(Fix32 dt)
+        protected void ApplyGravity(Fix dt)
         {
             Vector3.Multiply(ref Gravity, dt, out gravityVelocityChange);
             for (int i = dynamics.Count - 1; i >= 0; --i)
@@ -57,7 +57,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
                 ApplyGravity(i);
             }
         }
-        protected void ApplyGravity(Fix32 dt, IParallelLooper looper)
+        protected void ApplyGravity(Fix dt, IParallelLooper looper)
         {
             Vector3.Multiply(ref Gravity, dt, out gravityVelocityChange);
             looper.ForLoop(0, dynamics.Count, ApplyGravity);

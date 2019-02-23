@@ -22,20 +22,20 @@ namespace BEPUphysicsDemos.Demos.Extras
         public SolidPyramidDemo(DemosGame game)
             : base(game)
         {
-            Fix32 boxSize = 1.ToFix();
+            Fix boxSize = 1.ToFix();
             int bottomBoxCount = 10;
 
             var ground = new Box(new Vector3(0.ToFix(), (-.5m).ToFix(), 0.ToFix()), 40.ToFix(), 1.ToFix(), 40.ToFix());
             Space.Add(ground);
 
-            Fix32 spacing = 0.05m.ToFix();
+            Fix spacing = 0.05m.ToFix();
 
-            Fix32 offset = (-0.5m).ToFix().Mul((((bottomBoxCount - 1).ToFix()).Mul((boxSize.Add(spacing)))));
+            Fix offset = (-0.5m).ToFix().Mul((((bottomBoxCount - 1).ToFix()).Mul((boxSize.Add(spacing)))));
             var origin = new Vector3(offset, boxSize.Neg().Mul(0.5m.ToFix()), offset);
             for (int heightIndex = 0; heightIndex < bottomBoxCount - 2; ++heightIndex)
             {
                 var levelWidth = bottomBoxCount - heightIndex;
-                Fix32 perBoxWidth = boxSize.Add(spacing);
+                Fix perBoxWidth = boxSize.Add(spacing);
 				//Move the origin for this level.
 				origin.X =
 origin.X.Add(perBoxWidth.Mul(0.5m.ToFix()));

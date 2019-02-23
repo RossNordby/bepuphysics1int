@@ -11,18 +11,18 @@ namespace BEPUutilities
         /// <summary>
         /// X component of the vector.
         /// </summary>
-        public Fix32 X;
+        public Fix X;
         /// <summary>
         /// Y component of the vector.
         /// </summary>
-        public Fix32 Y;
+        public Fix Y;
 
         /// <summary>
         /// Constructs a new two dimensional vector.
         /// </summary>
         /// <param name="x">X component of the vector.</param>
         /// <param name="y">Y component of the vector.</param>
-        public Vector2(Fix32 x, Fix32 y)
+        public Vector2(Fix x, Fix y)
         {
             this.X = x;
             this.Y = y;
@@ -32,7 +32,7 @@ namespace BEPUutilities
         /// Computes the squared length of the vector.
         /// </summary>
         /// <returns>Squared length of the vector.</returns>
-        public Fix32 LengthSquared()
+        public Fix LengthSquared()
         {
             return (X.Mul(X)).Add(Y.Mul(Y));
         }
@@ -41,7 +41,7 @@ namespace BEPUutilities
         /// Computes the length of the vector.
         /// </summary>
         /// <returns>Length of the vector.</returns>
-        public Fix32 Length()
+        public Fix Length()
         {
             return Fix32Ext.Sqrt((X.Mul(X)).Add(Y.Mul(Y)));
         }
@@ -85,7 +85,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="scale">Amount to scale.</param>
         /// <param name="result">Scaled vector.</param>
-        public static void Multiply(ref Vector2 v, Fix32 scale, out Vector2 result)
+        public static void Multiply(ref Vector2 v, Fix scale, out Vector2 result)
         {
             result.X = v.X.Mul(scale);
             result.Y = v.Y.Mul(scale);
@@ -109,9 +109,9 @@ namespace BEPUutilities
         /// <param name="v">Vector to divide.</param>
         /// <param name="divisor">Value to divide the vector's components.</param>
         /// <param name="result">Result of the division.</param>
-        public static void Divide(ref Vector2 v, Fix32 divisor, out Vector2 result)
+        public static void Divide(ref Vector2 v, Fix divisor, out Vector2 result)
         {
-            Fix32 inverse = F64.C1.Div(divisor);
+            Fix inverse = F64.C1.Div(divisor);
             result.X = v.X.Mul(inverse);
             result.Y = v.Y.Mul(inverse);
         }
@@ -122,7 +122,7 @@ namespace BEPUutilities
         /// <param name="a">First vector of the dot product.</param>
         /// <param name="b">Second vector of the dot product.</param>
         /// <param name="dot">Dot product of the two vectors.</param>
-        public static void Dot(ref Vector2 a, ref Vector2 b, out Fix32 dot)
+        public static void Dot(ref Vector2 a, ref Vector2 b, out Fix dot)
         {
             dot = (a.X.Mul(b.X)).Add(a.Y.Mul(b.Y));
         }
@@ -133,7 +133,7 @@ namespace BEPUutilities
         /// <param name="a">First vector of the dot product.</param>
         /// <param name="b">Second vector of the dot product.</param>
         /// <returns>Dot product of the two vectors.</returns>
-        public static Fix32 Dot(Vector2 a, Vector2 b)
+        public static Fix Dot(Vector2 a, Vector2 b)
         {
             return (a.X.Mul(b.X)).Add(a.Y.Mul(b.Y));
         }
@@ -173,7 +173,7 @@ namespace BEPUutilities
         /// <param name="result">Normalized vector.</param>
         public static void Normalize(ref Vector2 v, out Vector2 result)
         {
-            Fix32 length = v.Length();
+            Fix length = v.Length();
             result.X = v.X.Div(length);
             result.Y = v.Y.Div(length);
         }
@@ -268,7 +268,7 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            Fix32 length = Length();
+            Fix length = Length();
             X = X.Div(length);
             Y = Y.Div(length);
         }
@@ -279,7 +279,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="f">Amount to scale.</param>
         /// <returns>Scaled vector.</returns>
-        public static Vector2 operator *(Vector2 v, Fix32 f)
+        public static Vector2 operator *(Vector2 v, Fix f)
         {
             Vector2 toReturn;
             toReturn.X = v.X.Mul(f);
@@ -292,7 +292,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="f">Amount to scale.</param>
         /// <returns>Scaled vector.</returns>
-        public static Vector2 operator *(Fix32 f, Vector2 v)
+        public static Vector2 operator *(Fix f, Vector2 v)
         {
             Vector2 toReturn;
             toReturn.X = v.X.Mul(f);
@@ -319,7 +319,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to divide.</param>
         /// <param name="f">Amount to divide.</param>
         /// <returns>Divided vector.</returns>
-        public static Vector2 operator /(Vector2 v, Fix32 f)
+        public static Vector2 operator /(Vector2 v, Fix f)
         {
             Vector2 toReturn;
             toReturn.X = v.X.Div(f);

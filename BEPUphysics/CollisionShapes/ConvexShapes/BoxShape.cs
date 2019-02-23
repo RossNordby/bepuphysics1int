@@ -11,15 +11,15 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
     ///</summary>
     public class BoxShape : ConvexShape
     {
-        internal Fix32 halfWidth;
-        internal Fix32 halfHeight;
-        internal Fix32 halfLength;
+        internal Fix halfWidth;
+        internal Fix halfHeight;
+        internal Fix halfLength;
 
 
         /// <summary>
         /// Width of the box divided by two.
         /// </summary>
-        public Fix32 HalfWidth
+        public Fix HalfWidth
         {
             get { return halfWidth; }
             set { halfWidth = value; OnShapeChanged(); }
@@ -28,7 +28,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <summary>
         /// Height of the box divided by two.
         /// </summary>
-        public Fix32 HalfHeight
+        public Fix HalfHeight
         {
             get { return halfHeight; }
             set { halfHeight = value; OnShapeChanged(); }
@@ -37,7 +37,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <summary>
         /// Length of the box divided by two.
         /// </summary>
-        public Fix32 HalfLength
+        public Fix HalfLength
         {
             get { return halfLength; }
             set { halfLength = value; OnShapeChanged(); }
@@ -46,7 +46,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <summary>
         /// Width of the box.
         /// </summary>
-        public Fix32 Width
+        public Fix Width
         {
             get { return halfWidth.Mul(F64.C2); }
             set { halfWidth = value.Mul(F64.C0p5); OnShapeChanged(); }
@@ -55,7 +55,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <summary>
         /// Height of the box.
         /// </summary>
-        public Fix32 Height
+        public Fix Height
         {
             get { return halfHeight.Mul(F64.C2); }
             set { halfHeight = value.Mul(F64.C0p5); OnShapeChanged(); }
@@ -64,7 +64,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <summary>
         /// Length of the box.
         /// </summary>
-        public Fix32 Length
+        public Fix Length
         {
             get { return halfLength.Mul(F64.C2); }
             set { halfLength = value.Mul(F64.C0p5); OnShapeChanged(); }
@@ -77,7 +77,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<param name="width">Width of the box.</param>
         ///<param name="height">Height of the box.</param>
         ///<param name="length">Length of the box.</param>
-        public BoxShape(Fix32 width, Fix32 height, Fix32 length)
+        public BoxShape(Fix width, Fix height, Fix length)
         {
             halfWidth = width.Mul(F64.C0p5);
             halfHeight = height.Mul(F64.C0p5);
@@ -93,7 +93,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<param name="height">Height of the box.</param>
         ///<param name="length">Length of the box.</param>
         /// <param name="description">Cached information about the shape. Assumed to be correct; no extra processing or validation is performed.</param>
-        public BoxShape(Fix32 width, Fix32 height, Fix32 length, ConvexShapeDescription description)
+        public BoxShape(Fix width, Fix height, Fix length, ConvexShapeDescription description)
         {
             halfWidth = width.Mul(F64.C0p5);
             halfHeight = height.Mul(F64.C0p5);
@@ -116,15 +116,15 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<param name="length">Length of the box.</param>
         /// <param name="collisionMargin">Collision margin of the shape.</param>
         /// <returns>Description required to define a convex shape.</returns>
-        public static ConvexShapeDescription ComputeDescription(Fix32 width, Fix32 height, Fix32 length, Fix32 collisionMargin)
+        public static ConvexShapeDescription ComputeDescription(Fix width, Fix height, Fix length, Fix collisionMargin)
         {
             ConvexShapeDescription description;
             description.EntityShapeVolume.Volume = (width.Mul(height)).Mul(length);
 
-            Fix32 widthSquared = width.Mul(width);
-            Fix32 heightSquared = height.Mul(height);
-            Fix32 lengthSquared = length.Mul(length);
-			Fix32 inv12 = F64.OneTwelfth;
+            Fix widthSquared = width.Mul(width);
+            Fix heightSquared = height.Mul(height);
+            Fix lengthSquared = length.Mul(length);
+			Fix inv12 = F64.OneTwelfth;
 
             description.EntityShapeVolume.VolumeDistribution = new Matrix3x3();
             description.EntityShapeVolume.VolumeDistribution.M11 = (heightSquared.Add(lengthSquared)).Mul(inv12);
@@ -196,7 +196,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <param name="maximumLength">Maximum distance to travel in units of the direction vector's length.</param>
         /// <param name="hit">Hit data for the raycast, if any.</param>
         /// <returns>Whether or not the ray hit the target.</returns>
-        public override bool RayTest(ref Ray ray, ref RigidTransform transform, Fix32 maximumLength, out RayHit hit)
+        public override bool RayTest(ref Ray ray, ref RigidTransform transform, Fix maximumLength, out RayHit hit)
         {
             hit = new RayHit();
 
@@ -208,14 +208,14 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             Vector3 localDirection;
             Quaternion.Transform(ref ray.Direction, ref conjugate, out localDirection);
             Vector3 normal = Toolbox.ZeroVector;
-            Fix32 temp, tmin = F64.C0, tmax = maximumLength;
+            Fix temp, tmin = F64.C0, tmax = maximumLength;
 
             if (Fix32Ext.Abs(localDirection.X) < Toolbox.Epsilon && (localOrigin.X < halfWidth.Neg() || localOrigin.X > halfWidth))
                 return false;
-            Fix32 inverseDirection = F64.C1.Div(localDirection.X);
+            Fix inverseDirection = F64.C1.Div(localDirection.X);
 			// inverseDirection might be Infinity (Fix32.MaxValue), so use SafeMul here to handle overflow
-            Fix32 t1 = Fix32Ext.MulSafe(((halfWidth.Neg()).Sub(localOrigin.X)), inverseDirection);
-            Fix32 t2 = Fix32Ext.MulSafe((halfWidth.Sub(localOrigin.X)), inverseDirection);
+            Fix t1 = Fix32Ext.MulSafe(((halfWidth.Neg()).Sub(localOrigin.X)), inverseDirection);
+            Fix t2 = Fix32Ext.MulSafe((halfWidth.Sub(localOrigin.X)), inverseDirection);
             var tempNormal = new Vector3(F64.C1.Neg(), F64.C0, F64.C0);
             if (t1 > t2)
             {

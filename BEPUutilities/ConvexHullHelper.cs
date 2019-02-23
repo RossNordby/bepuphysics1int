@@ -155,7 +155,7 @@ namespace BEPUutilities
                     //If the point is beyond the current triangle, continue.
                     Vector3 offset;
                     Vector3.Subtract(ref maximum, ref points.Elements[outputTriangleIndices.Elements[k]], out offset);
-					Fix32 dot;
+					Fix dot;
                     Vector3.Dot(ref normal, ref offset, out dot);
                     if (dot > F64.C0)
                     {
@@ -240,11 +240,11 @@ namespace BEPUutilities
 
         private static int GetExtremePoint(ref Vector3 direction, RawList<Vector3> points, RawList<int> outsidePoints)
         {
-            Fix32 maximumDot = Fix32.MaxValue.Neg();
+            Fix maximumDot = Fix.MaxValue.Neg();
             int extremeIndex = 0;
             for (int i = 0; i < outsidePoints.Count; ++i)
             {
-                Fix32 dot;
+                Fix dot;
                 Vector3.Dot(ref points.Elements[outsidePoints[i]], ref direction, out dot);
                 if (dot > maximumDot)
                 {
@@ -255,12 +255,12 @@ namespace BEPUutilities
             return extremeIndex;
         }
 
-        private static void GetExtremePoints(ref Vector3 direction, RawList<Vector3> points, out Fix32 maximumDot, out Fix32 minimumDot, out int maximumIndex, out int minimumIndex)
+        private static void GetExtremePoints(ref Vector3 direction, RawList<Vector3> points, out Fix maximumDot, out Fix minimumDot, out int maximumIndex, out int minimumIndex)
         {
             maximumIndex = 0;
             minimumIndex = 0;
 
-            Fix32 dot;
+            Fix dot;
             Vector3.Dot(ref points.Elements[0], ref direction, out dot);
             minimumDot = dot;
             maximumDot = dot;
@@ -287,7 +287,7 @@ namespace BEPUutilities
             int a, b, c, d;
             Vector3 direction;
             //Find the extreme points along the x axis.
-            Fix32 minimumX = Fix32.MaxValue, maximumX = Fix32.MaxValue.Neg();
+            Fix minimumX = Fix.MaxValue, maximumX = Fix.MaxValue.Neg();
             int minimumXIndex = 0, maximumXIndex = 0;
             for (int i = 0; i < points.Count; ++i)
             {
@@ -315,11 +315,11 @@ namespace BEPUutilities
             Vector3.Cross(ref ab, ref Toolbox.UpVector, out direction);
             if (direction.LengthSquared() < Toolbox.Epsilon)
                 Vector3.Cross(ref ab, ref Toolbox.RightVector, out direction);
-            Fix32 minimumDot, maximumDot;
+            Fix minimumDot, maximumDot;
             int minimumIndex, maximumIndex;
             GetExtremePoints(ref direction, points, out maximumDot, out minimumDot, out maximumIndex, out minimumIndex);
             //Compare the location of the extreme points to the location of the axis.
-            Fix32 dot;
+            Fix dot;
             Vector3.Dot(ref direction, ref points.Elements[a], out dot);
             //Use the point further from the axis.
             if (Fix32Ext.Abs(dot.Sub(minimumDot)) > Fix32Ext.Abs(dot.Sub(maximumDot)))
@@ -397,7 +397,7 @@ namespace BEPUutilities
                 Vector3.Cross(ref ac, ref ab, out cross);
                 Vector3 offset;
                 Vector3.Subtract(ref vA, ref centroid, out offset);
-                Fix32 volume;
+                Fix volume;
                 Vector3.Dot(ref offset, ref cross, out volume);
                 //This volume/cross product could also be used to check for degeneracy, but we already tested for that.
                 if (Fix32Ext.Abs(volume) < Toolbox.BigEpsilon)
@@ -458,7 +458,7 @@ namespace BEPUutilities
                     //from the triangle face.
                     Vector3 offset;
                     Vector3.Subtract(ref points.Elements[insidePoints.Elements[j]], ref p, out offset);
-                    Fix32 dot;
+                    Fix dot;
                     Vector3.Dot(ref offset, ref normal, out dot);
                     //If it's visible, then it's outside!
                     if (dot > F64.C0)
@@ -494,7 +494,7 @@ namespace BEPUutilities
             //Assume a consistent winding.  Check to see if the normal points at the point.
             Vector3 offset;
             Vector3.Subtract(ref point, ref a, out offset);
-            Fix32 dot;
+            Fix dot;
             Vector3.Dot(ref offset, ref normal, out dot);
             return dot >= F64.C0;
         }

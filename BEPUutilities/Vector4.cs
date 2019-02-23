@@ -11,19 +11,19 @@ namespace BEPUutilities
         /// <summary>
         /// X component of the vector.
         /// </summary>
-        public Fix32 X;
+        public Fix X;
         /// <summary>
         /// Y component of the vector.
         /// </summary>
-        public Fix32 Y;
+        public Fix Y;
         /// <summary>
         /// Z component of the vector.
         /// </summary>
-        public Fix32 Z;
+        public Fix Z;
         /// <summary>
         /// W component of the vector.
         /// </summary>
-        public Fix32 W;
+        public Fix W;
 
         /// <summary>
         /// Constructs a new 3d vector.
@@ -32,7 +32,7 @@ namespace BEPUutilities
         /// <param name="y">Y component of the vector.</param>
         /// <param name="z">Z component of the vector.</param>
         /// <param name="w">W component of the vector.</param>
-        public Vector4(Fix32 x, Fix32 y, Fix32 z, Fix32 w)
+        public Vector4(Fix x, Fix y, Fix z, Fix w)
         {
             this.X = x;
             this.Y = y;
@@ -45,7 +45,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="xyz">X, Y, and Z components of the vector.</param>
         /// <param name="w">W component of the vector.</param>
-        public Vector4(Vector3 xyz, Fix32 w)
+        public Vector4(Vector3 xyz, Fix w)
         {
             this.X = xyz.X;
             this.Y = xyz.Y;
@@ -59,7 +59,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="x">X component of the vector.</param>
         /// <param name="yzw">Y, Z, and W components of the vector.</param>
-        public Vector4(Fix32 x, Vector3 yzw)
+        public Vector4(Fix x, Vector3 yzw)
         {
             this.X = x;
             this.Y = yzw.X;
@@ -73,7 +73,7 @@ namespace BEPUutilities
         /// <param name="xy">X and Y components of the vector.</param>
         /// <param name="z">Z component of the vector.</param>
         /// <param name="w">W component of the vector.</param>
-        public Vector4(Vector2 xy, Fix32 z, Fix32 w)
+        public Vector4(Vector2 xy, Fix z, Fix w)
         {
             this.X = xy.X;
             this.Y = xy.Y;
@@ -87,7 +87,7 @@ namespace BEPUutilities
         /// <param name="x">X component of the vector.</param>
         /// <param name="yz">Y and Z components of the vector.</param>
         /// <param name="w">W component of the vector.</param>
-        public Vector4(Fix32 x, Vector2 yz, Fix32 w)
+        public Vector4(Fix x, Vector2 yz, Fix w)
         {
             this.X = x;
             this.Y = yz.X;
@@ -101,7 +101,7 @@ namespace BEPUutilities
         /// <param name="x">X component of the vector.</param>
         /// <param name="y">Y and Z components of the vector.</param>
         /// <param name="zw">W component of the vector.</param>
-        public Vector4(Fix32 x, Fix32 y, Vector2 zw)
+        public Vector4(Fix x, Fix y, Vector2 zw)
         {
             this.X = x;
             this.Y = y;
@@ -127,7 +127,7 @@ namespace BEPUutilities
         /// Computes the squared length of the vector.
         /// </summary>
         /// <returns>Squared length of the vector.</returns>
-        public Fix32 LengthSquared()
+        public Fix LengthSquared()
         {
             return (((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))).Add(W.Mul(W));
         }
@@ -136,7 +136,7 @@ namespace BEPUutilities
         /// Computes the length of the vector.
         /// </summary>
         /// <returns>Length of the vector.</returns>
-        public Fix32 Length()
+        public Fix Length()
         {
             return Fix32Ext.Sqrt((((X.Mul(X)).Add(Y.Mul(Y))).Add(Z.Mul(Z))).Add(W.Mul(W)));
         }
@@ -146,7 +146,7 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            Fix32 length = Length();
+            Fix length = Length();
             X = X.Div(length);
             Y = Y.Div(length);
             Z = Z.Div(length);
@@ -168,7 +168,7 @@ namespace BEPUutilities
         /// <param name="a">First vector in the product.</param>
         /// <param name="b">Second vector in the product.</param>
         /// <returns>Resulting dot product.</returns>
-        public static Fix32 Dot(Vector4 a, Vector4 b)
+        public static Fix Dot(Vector4 a, Vector4 b)
         {
             return (((a.X.Mul(b.X)).Add(a.Y.Mul(b.Y))).Add(a.Z.Mul(b.Z))).Add(a.W.Mul(b.W));
         }
@@ -179,7 +179,7 @@ namespace BEPUutilities
         /// <param name="a">First vector in the product.</param>
         /// <param name="b">Second vector in the product.</param>
         /// <param name="product">Resulting dot product.</param>
-        public static void Dot(ref Vector4 a, ref Vector4 b, out Fix32 product)
+        public static void Dot(ref Vector4 a, ref Vector4 b, out Fix product)
         {
             product = (((a.X.Mul(b.X)).Add(a.Y.Mul(b.Y))).Add(a.Z.Mul(b.Z))).Add(a.W.Mul(b.W));
         }
@@ -215,7 +215,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="scale">Amount to scale.</param>
         /// <param name="result">Scaled vector.</param>
-        public static void Multiply(ref Vector4 v, Fix32 scale, out Vector4 result)
+        public static void Multiply(ref Vector4 v, Fix scale, out Vector4 result)
         {
             result.X = v.X.Mul(scale);
             result.Y = v.Y.Mul(scale);
@@ -245,7 +245,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to divide.</param>
         /// <param name="divisor">Value to divide the vector's components.</param>
         /// <param name="result">Result of the division.</param>
-        public static void Divide(ref Vector4 v, Fix32 divisor, out Vector4 result)
+        public static void Divide(ref Vector4 v, Fix divisor, out Vector4 result)
         {
             result.X = v.X.Div(divisor);
             result.Y = v.Y.Div(divisor);
@@ -258,7 +258,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="f">Amount to scale.</param>
         /// <returns>Scaled vector.</returns>
-        public static Vector4 operator *(Vector4 v, Fix32 f)
+        public static Vector4 operator *(Vector4 v, Fix f)
         {
             Vector4 toReturn;
             toReturn.X = v.X.Mul(f);
@@ -273,7 +273,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="f">Amount to scale.</param>
         /// <returns>Scaled vector.</returns>
-        public static Vector4 operator *(Fix32 f, Vector4 v)
+        public static Vector4 operator *(Fix f, Vector4 v)
         {
             Vector4 toReturn;
             toReturn.X = v.X.Mul(f);
@@ -304,7 +304,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to divide.</param>
         /// <param name="f">Value to divide the vector's components.</param>
         /// <returns>Result of the division.</returns>
-        public static Vector4 operator /(Vector4 v, Fix32 f)
+        public static Vector4 operator /(Vector4 v, Fix f)
         {
             Vector4 toReturn;
             toReturn.X = v.X.Div(f);
@@ -425,12 +425,12 @@ namespace BEPUutilities
         /// <param name="a">First vector.</param>
         /// <param name="b">Second vector.</param>
         /// <param name="distanceSquared">Squared distance between the two vectors.</param>
-        public static void DistanceSquared(ref Vector4 a, ref Vector4 b, out Fix32 distanceSquared)
+        public static void DistanceSquared(ref Vector4 a, ref Vector4 b, out Fix distanceSquared)
         {
-            Fix32 x = a.X.Sub(b.X);
-            Fix32 y = a.Y.Sub(b.Y);
-            Fix32 z = a.Z.Sub(b.Z);
-            Fix32 w = a.W.Sub(b.W);
+            Fix x = a.X.Sub(b.X);
+            Fix y = a.Y.Sub(b.Y);
+            Fix z = a.Z.Sub(b.Z);
+            Fix w = a.W.Sub(b.W);
             distanceSquared = (((x.Mul(x)).Add(y.Mul(y))).Add(z.Mul(z))).Add(w.Mul(w));
         }
 
@@ -440,12 +440,12 @@ namespace BEPUutilities
         /// <param name="a">First vector.</param>
         /// <param name="b">Second vector.</param>
         /// <param name="distance">Distance between the two vectors.</param>
-        public static void Distance(ref Vector4 a, ref Vector4 b, out Fix32 distance)
+        public static void Distance(ref Vector4 a, ref Vector4 b, out Fix distance)
         {
-            Fix32 x = a.X.Sub(b.X);
-            Fix32 y = a.Y.Sub(b.Y);
-            Fix32 z = a.Z.Sub(b.Z);
-            Fix32 w = a.W.Sub(b.W);
+            Fix x = a.X.Sub(b.X);
+            Fix y = a.Y.Sub(b.Y);
+            Fix z = a.Z.Sub(b.Z);
+            Fix w = a.W.Sub(b.W);
             distance = Fix32Ext.Sqrt((((x.Mul(x)).Add(y.Mul(y))).Add(z.Mul(z))).Add(w.Mul(w)));
         }
         /// <summary>
@@ -454,9 +454,9 @@ namespace BEPUutilities
         /// <param name="a">First vector.</param>
         /// <param name="b">Second vector.</param>
         /// <returns>Distance between the two vectors.</returns>
-        public static Fix32 Distance(Vector4 a, Vector4 b)
+        public static Fix Distance(Vector4 a, Vector4 b)
         {
-            Fix32 toReturn;
+            Fix toReturn;
             Distance(ref a, ref b, out toReturn);
             return toReturn;
         }
@@ -505,7 +505,7 @@ namespace BEPUutilities
         /// <param name="result">Normalized vector.</param>
         public static void Normalize(ref Vector4 v, out Vector4 result)
         {
-            Fix32 length = v.Length();
+            Fix length = v.Length();
             result.X = v.X.Div(length);
             result.Y = v.Y.Div(length);
             result.Z = v.Z.Div(length);
@@ -613,7 +613,7 @@ namespace BEPUutilities
         /// <param name="end">Ending location of the interpolation.</param>
         /// <param name="interpolationAmount">Amount of the end location to use.</param>
         /// <returns>Interpolated intermediate state.</returns>
-        public static Vector4 Lerp(Vector4 start, Vector4 end, Fix32 interpolationAmount)
+        public static Vector4 Lerp(Vector4 start, Vector4 end, Fix interpolationAmount)
         {
             Vector4 toReturn;
             Lerp(ref start, ref end, interpolationAmount, out toReturn);
@@ -626,9 +626,9 @@ namespace BEPUutilities
         /// <param name="end">Ending location of the interpolation.</param>
         /// <param name="interpolationAmount">Amount of the end location to use.</param>
         /// <param name="result">Interpolated intermediate state.</param>
-        public static void Lerp(ref Vector4 start, ref Vector4 end, Fix32 interpolationAmount, out Vector4 result)
+        public static void Lerp(ref Vector4 start, ref Vector4 end, Fix interpolationAmount, out Vector4 result)
         {
-            Fix32 startAmount = F64.C1.Sub(interpolationAmount);
+            Fix startAmount = F64.C1.Sub(interpolationAmount);
             result.X = (start.X.Mul(startAmount)).Add(end.X.Mul(interpolationAmount));
             result.Y = (start.Y.Mul(startAmount)).Add(end.Y.Mul(interpolationAmount));
             result.Z = (start.Z.Mul(startAmount)).Add(end.Z.Mul(interpolationAmount));
@@ -644,14 +644,14 @@ namespace BEPUutilities
         /// <param name="tangent2">Tangent associated with the second position.</param>
         /// <param name="interpolationAmount">Amount of the second point to use.</param>
         /// <param name="result">Interpolated intermediate state.</param>
-        public static void Hermite(ref Vector4 value1, ref Vector4 tangent1, ref Vector4 value2, ref Vector4 tangent2, Fix32 interpolationAmount, out Vector4 result)
+        public static void Hermite(ref Vector4 value1, ref Vector4 tangent1, ref Vector4 value2, ref Vector4 tangent2, Fix interpolationAmount, out Vector4 result)
         {
-            Fix32 weightSquared = interpolationAmount.Mul(interpolationAmount);
-            Fix32 weightCubed = interpolationAmount.Mul(weightSquared);
-            Fix32 value1Blend = ((F64.C2.Mul(weightCubed)).Sub(F64.C3.Mul(weightSquared))).Add(F64.C1);
-            Fix32 tangent1Blend = (weightCubed.Sub(F64.C2.Mul(weightSquared))).Add(interpolationAmount);
-            Fix32 value2Blend = ((F64.C2.Neg()).Mul(weightCubed)).Add(F64.C3.Mul(weightSquared));
-            Fix32 tangent2Blend = weightCubed.Sub(weightSquared);
+            Fix weightSquared = interpolationAmount.Mul(interpolationAmount);
+            Fix weightCubed = interpolationAmount.Mul(weightSquared);
+            Fix value1Blend = ((F64.C2.Mul(weightCubed)).Sub(F64.C3.Mul(weightSquared))).Add(F64.C1);
+            Fix tangent1Blend = (weightCubed.Sub(F64.C2.Mul(weightSquared))).Add(interpolationAmount);
+            Fix value2Blend = ((F64.C2.Neg()).Mul(weightCubed)).Add(F64.C3.Mul(weightSquared));
+            Fix tangent2Blend = weightCubed.Sub(weightSquared);
             result.X = (((value1.X.Mul(value1Blend)).Add(value2.X.Mul(value2Blend))).Add(tangent1.X.Mul(tangent1Blend))).Add(tangent2.X.Mul(tangent2Blend));
             result.Y = (((value1.Y.Mul(value1Blend)).Add(value2.Y.Mul(value2Blend))).Add(tangent1.Y.Mul(tangent1Blend))).Add(tangent2.Y.Mul(tangent2Blend));
             result.Z = (((value1.Z.Mul(value1Blend)).Add(value2.Z.Mul(value2Blend))).Add(tangent1.Z.Mul(tangent1Blend))).Add(tangent2.Z.Mul(tangent2Blend));
@@ -666,7 +666,7 @@ namespace BEPUutilities
         /// <param name="tangent2">Tangent associated with the second position.</param>
         /// <param name="interpolationAmount">Amount of the second point to use.</param>
         /// <returns>Interpolated intermediate state.</returns>
-        public static Vector4 Hermite(Vector4 value1, Vector4 tangent1, Vector4 value2, Vector4 tangent2, Fix32 interpolationAmount)
+        public static Vector4 Hermite(Vector4 value1, Vector4 tangent1, Vector4 value2, Vector4 tangent2, Fix interpolationAmount)
         {
             Vector4 toReturn;
             Hermite(ref value1, ref tangent1, ref value2, ref tangent2, interpolationAmount, out toReturn);

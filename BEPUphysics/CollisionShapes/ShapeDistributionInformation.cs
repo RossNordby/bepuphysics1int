@@ -20,7 +20,7 @@ namespace BEPUphysics.CollisionShapes
         /// <summary>
         /// The volume of a shape.
         /// </summary>
-        public Fix32 Volume;
+        public Fix Volume;
 
     }
 }

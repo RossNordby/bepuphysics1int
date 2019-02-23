@@ -40,7 +40,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
 
         //Expand the convex's bounding box to include the mobile mesh's movement.
 
-        protected internal override int FindOverlappingTriangles(Fix32 dt)
+        protected internal override int FindOverlappingTriangles(Fix dt)
         {
             BoundingBox boundingBox;
             AffineTransform transform = new AffineTransform(mesh.worldTransform.Orientation, mesh.worldTransform.Position);
@@ -151,7 +151,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
             get { return mesh.improveBoundaryBehavior; }
         }
 
-        Fix32 previousDepth;
+        Fix previousDepth;
         Vector3 lastValidConvexPosition;
         protected override void ProcessCandidates(ref QuickList<ContactData> candidates)
         {
@@ -175,7 +175,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
 
                 //Cast from the current position back to the previous position.
                 Vector3.Subtract(ref lastValidConvexPosition, ref ray.Position, out ray.Direction);
-                Fix32 rayDirectionLength = ray.Direction.LengthSquared();
+                Fix rayDirectionLength = ray.Direction.LengthSquared();
                 if (rayDirectionLength < Toolbox.Epsilon)
                 {
                     //The object may not have moved enough to normalize properly.  If so, choose something arbitrary.
@@ -203,7 +203,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                     newContact.Normal = hit.Normal;
                     newContact.Normal.Normalize();
 
-                    Fix32 factor;
+                    Fix factor;
                     Vector3.Dot(ref ray.Direction, ref newContact.Normal, out factor);
                     newContact.PenetrationDepth = ((factor.Neg()).Mul(hit.T)).Add(convex.Shape.MinimumRadius);
 

@@ -164,7 +164,7 @@ clawHingeB.Motor.Settings.Servo.SpringSettings.Damping.Div(100.ToFix());
 
 
             //Put some boxes on the ground to try to pick up.
-            for (Fix32 k = 0.ToFix(); k < MathHelper.Pi.Mul(2.ToFix()); k = k.Add(MathHelper.Pi.Div(6.ToFix())))
+            for (Fix k = 0.ToFix(); k < MathHelper.Pi.Mul(2.ToFix()); k = k.Add(MathHelper.Pi.Div(6.ToFix())))
             {
                 Space.Add(new Box(new Vector3(Fix32Ext.Cos(k).Mul(5.5m.ToFix()), 2.ToFix(), Fix32Ext.Sin(k).Mul(5.5m.ToFix())), 1.ToFix(), 1.ToFix(), 1.ToFix(), 10.ToFix()));
             }
@@ -173,7 +173,7 @@ clawHingeB.Motor.Settings.Servo.SpringSettings.Damping.Div(100.ToFix());
         }
 
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
 #if !WINDOWS
             if (Game.GamePadInput.IsButtonDown(Buttons.LeftShoulder))

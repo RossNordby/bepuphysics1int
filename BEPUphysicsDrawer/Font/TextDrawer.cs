@@ -86,7 +86,7 @@ namespace BEPUphysicsDrawer.Font
 		/// <param name="text">Text to draw.</param>
 		/// <param name="value">Number to draw.</param>
 		/// <param name="position">Position to draw the text at.</param>
-		public void Draw(string text, Fix32 value, Vector2 position)
+		public void Draw(string text, Fix value, Vector2 position)
 		{
 			Draw(text, value.ToDouble(), position);
 		}

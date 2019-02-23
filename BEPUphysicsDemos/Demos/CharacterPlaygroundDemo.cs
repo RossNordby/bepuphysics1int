@@ -188,17 +188,17 @@ namespace BEPUphysicsDemos.Demos
             int numColumns = 3;
             int numRows = 3;
             int numHigh = 3;
-            Fix32 xSpacing = 1.01m.ToFix();
-			Fix32 ySpacing = 1.01m.ToFix();
-			Fix32 zSpacing = 1.01m.ToFix();
+            Fix xSpacing = 1.01m.ToFix();
+			Fix ySpacing = 1.01m.ToFix();
+			Fix zSpacing = 1.01m.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
                         Space.Add(new Box(new Vector3(
-(Fix32.Five.Add(xSpacing.Mul(i.ToFix()))).Sub((((numRows - 1).ToFix()).Mul(xSpacing)).Div(Fix32.Two)),
+(Fix.Five.Add(xSpacing.Mul(i.ToFix()))).Sub((((numRows - 1).ToFix()).Mul(xSpacing)).Div(Fix.Two)),
 1.58m.ToFix().Add(k.ToFix().Mul(ySpacing)),
-(45.ToFix().Add(zSpacing.Mul(j.ToFix()))).Sub((((numColumns - 1).ToFix()).Mul(zSpacing)).Div(Fix32.Two))),
-Fix32.Half, Fix32.Half, Fix32.Half, Fix32.Five));
+(45.ToFix().Add(zSpacing.Mul(j.ToFix()))).Sub((((numColumns - 1).ToFix()).Mul(zSpacing)).Div(Fix.Two))),
+Fix.Half, Fix.Half, Fix.Half, Fix.Five));
 
 
 
@@ -231,7 +231,7 @@ Fix32.Half, Fix32.Half, Fix32.Half, Fix32.Five));
                 offset = new Vector3(0.ToFix(), 0.ToFix(), 4.ToFix());
                 Box a = new Box(new Vector3((i * 1.5m + 3.5m).ToFix(), 10.ToFix(), 24.ToFix()), 1.5m.ToFix(), 1.ToFix(), 4.ToFix());
                 Box b = new Box(new Vector3((i * 1.5m + 3.5m).ToFix(), 10.ToFix(), 24.ToFix()), 1.5m.ToFix(), 1.ToFix(), 4.ToFix());
-                Fix32 angle = ((-i).ToFix().Mul(MathHelper.PiOver2)).Div(numPads.ToFix());
+                Fix angle = ((-i).ToFix().Mul(MathHelper.PiOver2)).Div(numPads.ToFix());
                 b.Orientation = Quaternion.CreateFromAxisAngle(Vector3.Right, angle);
                 b.Position += offset * .5m.ToFix() + Quaternion.Transform(offset * .5m.ToFix(), b.Orientation);
 
@@ -247,10 +247,10 @@ Fix32.Half, Fix32.Half, Fix32.Half, Fix32.Five));
         EntityRotator platformRotator;
         Path<Vector3> platformPath;
         Path<Quaternion> platformOrientationPath;
-        Fix32 pathTime;
+        Fix pathTime;
 
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
 			//Increment the time.  Note that the space's timestep is used
 			//instead of the method's dt.  This is because the demos, by

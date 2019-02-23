@@ -11,11 +11,11 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
     ///</summary>
     public class CapsuleShape : ConvexShape
     {
-        Fix32 halfLength;
+        Fix halfLength;
         ///<summary>
         /// Gets or sets the length of the capsule's inner line segment.
         ///</summary>
-        public Fix32 Length
+        public Fix Length
         {
             get
             {
@@ -32,7 +32,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<summary>
         /// Gets or sets the radius of the capsule.
         ///</summary>
-        public Fix32 Radius { get { return collisionMargin; } set { CollisionMargin = value; } }
+        public Fix Radius { get { return collisionMargin; } set { CollisionMargin = value; } }
 
 
         ///<summary>
@@ -40,7 +40,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///</summary>
         ///<param name="length">Length of the capsule's inner line segment.</param>
         ///<param name="radius">Radius to expand the line segment width.</param>
-        public CapsuleShape(Fix32 length, Fix32 radius)
+        public CapsuleShape(Fix length, Fix radius)
         {
             halfLength = length.Mul(F64.C0p5);
 
@@ -52,7 +52,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///</summary>
         ///<param name="length">Length of the capsule's inner line segment.</param>
         /// <param name="description">Cached information about the shape. Assumed to be correct; no extra processing or validation is performed.</param>
-        public CapsuleShape(Fix32 length, ConvexShapeDescription description)
+        public CapsuleShape(Fix length, ConvexShapeDescription description)
         {
             halfLength = length.Mul(F64.C0p5);
 
@@ -74,14 +74,14 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<param name="length">Length of the capsule's inner line segment.</param>
         ///<param name="radius">Radius to expand the line segment width.</param>
         /// <returns>Description required to define a convex shape.</returns>
-        public static ConvexShapeDescription ComputeDescription(Fix32 length, Fix32 radius)
+        public static ConvexShapeDescription ComputeDescription(Fix length, Fix radius)
         {
             ConvexShapeDescription description;
             description.EntityShapeVolume.Volume = (((MathHelper.Pi.Mul(radius)).Mul(radius)).Mul(length)).Add((((F64.FourThirds.Mul(MathHelper.Pi)).Mul(radius)).Mul(radius)).Mul(radius));
 
             description.EntityShapeVolume.VolumeDistribution = new Matrix3x3();
-            Fix32 effectiveLength = length.Add(radius.Div(F64.C2)); //This is a cylindrical inertia tensor. Approximate.
-            Fix32 diagValue = ((F64.C0p0833333333.Mul(effectiveLength)).Mul(effectiveLength)).Add((F64.C0p25.Mul(radius)).Mul(radius));
+            Fix effectiveLength = length.Add(radius.Div(F64.C2)); //This is a cylindrical inertia tensor. Approximate.
+            Fix diagValue = ((F64.C0p0833333333.Mul(effectiveLength)).Mul(effectiveLength)).Add((F64.C0p25.Mul(radius)).Mul(radius));
             description.EntityShapeVolume.VolumeDistribution.M11 = diagValue;
             description.EntityShapeVolume.VolumeDistribution.M22 = (F64.C0p5.Mul(radius)).Mul(radius);
             description.EntityShapeVolume.VolumeDistribution.M33 = diagValue;
@@ -174,7 +174,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <param name="maximumLength">Maximum distance to travel in units of the ray direction's length.</param>
         /// <param name="hit">Ray hit data, if any.</param>
         /// <returns>Whether or not the ray hit the target.</returns>
-        public override bool RayTest(ref Ray ray, ref RigidTransform transform, Fix32 maximumLength, out RayHit hit)
+        public override bool RayTest(ref Ray ray, ref RigidTransform transform, Fix maximumLength, out RayHit hit)
         {
             //Put the ray into local space.
             Quaternion conjugate;
@@ -191,7 +191,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 hit.T = F64.C0;
                 hit.Location = localRay.Position;
                 hit.Normal = new Vector3(hit.Location.X, F64.C0, hit.Location.Z);
-                Fix32 normalLengthSquared = hit.Normal.LengthSquared();
+                Fix normalLengthSquared = hit.Normal.LengthSquared();
                 if (normalLengthSquared > F64.C1em9)
                     Vector3.Divide(ref hit.Normal, Fix32Ext.Sqrt(normalLengthSquared), out hit.Normal);
                 else
@@ -206,7 +206,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             //The projected ray is then tested against the circle to compute the time of impact.
             //That time of impact is used to compute the 3d hit location.
             Vector2 planeDirection = new Vector2(localRay.Direction.X, localRay.Direction.Z);
-            Fix32 planeDirectionLengthSquared = planeDirection.LengthSquared();
+            Fix planeDirectionLengthSquared = planeDirection.LengthSquared();
 
             if (planeDirectionLengthSquared < Toolbox.Epsilon)
             {
@@ -224,15 +224,15 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 
             }
             Vector2 planeOrigin = new Vector2(localRay.Position.X, localRay.Position.Z);
-            Fix32 dot;
+            Fix dot;
             Vector2.Dot(ref planeDirection, ref planeOrigin, out dot);
-            Fix32 closestToCenterT = (dot.Neg()).Div(planeDirectionLengthSquared);
+            Fix closestToCenterT = (dot.Neg()).Div(planeDirectionLengthSquared);
 
             Vector2 closestPoint;
             Vector2.Multiply(ref planeDirection, closestToCenterT, out closestPoint);
             Vector2.Add(ref planeOrigin, ref closestPoint, out closestPoint);
             //How close does the ray come to the circle?
-            Fix32 squaredDistance = closestPoint.LengthSquared();
+            Fix squaredDistance = closestPoint.LengthSquared();
             if (squaredDistance > collisionMargin.Mul(collisionMargin))
             {
                 //It's too far!  The ray cannot possibly hit the capsule.
@@ -243,8 +243,8 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 
 
             //With the squared distance, compute the distance backward along the ray from the closest point on the ray to the axis.
-            Fix32 backwardsDistance = collisionMargin.Mul(Fix32Ext.Sqrt(F64.C1.Sub(squaredDistance.Div((collisionMargin.Mul(collisionMargin))))));
-            Fix32 tOffset = backwardsDistance.Div(Fix32Ext.Sqrt(planeDirectionLengthSquared));
+            Fix backwardsDistance = collisionMargin.Mul(Fix32Ext.Sqrt(F64.C1.Sub(squaredDistance.Div((collisionMargin.Mul(collisionMargin))))));
+            Fix tOffset = backwardsDistance.Div(Fix32Ext.Sqrt(planeDirectionLengthSquared));
 
             hit.T = closestToCenterT.Sub(tOffset);
 
@@ -257,7 +257,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             {
                 //Yup!
                 hit.Normal = new Vector3(hit.Location.X, F64.C0, hit.Location.Z);
-                Fix32 normalLengthSquared = hit.Normal.LengthSquared();
+                Fix normalLengthSquared = hit.Normal.LengthSquared();
                 if (normalLengthSquared > F64.C1em9)
                     Vector3.Divide(ref hit.Normal, Fix32Ext.Sqrt(normalLengthSquared), out hit.Normal);
                 else

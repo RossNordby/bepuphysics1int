@@ -371,13 +371,13 @@ namespace BEPUphysics.Entities
             }
         }
 
-        internal Fix32 mass;
+        internal Fix mass;
         ///<summary>
         /// Gets or sets the mass of the entity.  Setting this to an invalid value, such as a non-positive number, NaN, or infinity, makes the entity kinematic.
         /// Setting it to a valid positive number will also scale the inertia tensor if it was already dynamic, or force the calculation of a new inertia tensor
         /// if it was previously kinematic.
         ///</summary>
-        public Fix32 Mass
+        public Fix Mass
         {
             get
             {
@@ -407,11 +407,11 @@ namespace BEPUphysics.Entities
             }
         }
 
-        internal Fix32 inverseMass;
+        internal Fix inverseMass;
         /// <summary>
         /// Gets or sets the inverse mass of the entity.
         /// </summary>
-        public Fix32 InverseMass
+        public Fix InverseMass
         {
             get
             {
@@ -556,7 +556,7 @@ namespace BEPUphysics.Entities
         ///</summary>
         ///<param name="collisionInformation">Collidable to use with the entity.</param>
         ///<param name="mass">Mass of the entity. If positive, the entity will be dynamic. Otherwise, it will be kinematic.</param>
-        public Entity(EntityCollidable collisionInformation, Fix32 mass)
+        public Entity(EntityCollidable collisionInformation, Fix mass)
             : this()
         {
             Initialize(collisionInformation, mass);
@@ -568,7 +568,7 @@ namespace BEPUphysics.Entities
         ///<param name="collisionInformation">Collidable to use with the entity.</param>
         ///<param name="mass">Mass of the entity. If positive, the entity will be dynamic. Otherwise, it will be kinematic.</param>
         /// <param name="inertiaTensor">Inertia tensor of the entity. Only used for a dynamic entity.</param>
-        public Entity(EntityCollidable collisionInformation, Fix32 mass, Matrix3x3 inertiaTensor)
+        public Entity(EntityCollidable collisionInformation, Fix mass, Matrix3x3 inertiaTensor)
             : this()
         {
             Initialize(collisionInformation, mass, inertiaTensor);
@@ -589,7 +589,7 @@ namespace BEPUphysics.Entities
         ///</summary>
         ///<param name="shape">Shape to use with the entity.</param>
         ///<param name="mass">Mass of the entity. If positive, the entity will be dynamic. Otherwise, it will be kinematic.</param>
-        public Entity(EntityShape shape, Fix32 mass)
+        public Entity(EntityShape shape, Fix mass)
             : this()
         {
             Initialize(shape.GetCollidableInstance(), mass);
@@ -601,7 +601,7 @@ namespace BEPUphysics.Entities
         ///<param name="shape">Shape to use with the entity.</param>
         ///<param name="mass">Mass of the entity. If positive, the entity will be dynamic. Otherwise, it will be kinematic.</param>
         /// <param name="inertiaTensor">Inertia tensor of the entity. Only used for a dynamic entity.</param>
-        public Entity(EntityShape shape, Fix32 mass, Matrix3x3 inertiaTensor)
+        public Entity(EntityShape shape, Fix mass, Matrix3x3 inertiaTensor)
             : this()
         {
             Initialize(shape.GetCollidableInstance(), mass, inertiaTensor);
@@ -619,7 +619,7 @@ namespace BEPUphysics.Entities
             collisionInformation.Entity = this;
         }
 
-        protected internal void Initialize(EntityCollidable collisionInformation, Fix32 mass)
+        protected internal void Initialize(EntityCollidable collisionInformation, Fix mass)
         {
             CollisionInformation = collisionInformation;
 
@@ -635,7 +635,7 @@ namespace BEPUphysics.Entities
             collisionInformation.Entity = this;
         }
 
-        protected internal void Initialize(EntityCollidable collisionInformation, Fix32 mass, Matrix3x3 inertiaTensor)
+        protected internal void Initialize(EntityCollidable collisionInformation, Fix mass, Matrix3x3 inertiaTensor)
         {
             CollisionInformation = collisionInformation;
 
@@ -840,7 +840,7 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
         /// Forces the entity to become dynamic.  Dynamic entities respond to collisions and have finite mass and inertia.
         ///</summary>
         ///<param name="mass">Mass to use for the entity.</param>
-        public void BecomeDynamic(Fix32 mass)
+        public void BecomeDynamic(Fix mass)
         {
             BecomeDynamic(mass, collisionInformation.Shape.VolumeDistribution * (mass.Mul(InertiaHelper.InertiaTensorScale)));
         }
@@ -850,7 +850,7 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
         ///</summary>
         ///<param name="mass">Mass to use for the entity.</param>
         /// <param name="localInertiaTensor">Inertia tensor to use for the entity.</param>
-        public void BecomeDynamic(Fix32 mass, Matrix3x3 localInertiaTensor)
+        public void BecomeDynamic(Fix mass, Matrix3x3 localInertiaTensor)
         {
 			// if (mass <= 0) || Fix32.IsInfinity(mass) || Fix32.IsNaN(mass))
 			if (mass <= F64.C0)
@@ -885,7 +885,7 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
         }
 
 
-        void IForceUpdateable.UpdateForForces(Fix32 dt)
+        void IForceUpdateable.UpdateForForces(Fix dt)
         {
 
             //Apply gravity.
@@ -904,23 +904,23 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
             if (activityInformation.DeactivationManager.useStabilization && activityInformation.allowStabilization &&
                 (activityInformation.isSlowing || activityInformation.velocityTimeBelowLimit > activityInformation.DeactivationManager.lowVelocityTimeMinimum))
             {
-                Fix32 energy = linearVelocity.LengthSquared().Add(angularVelocity.LengthSquared());
+                Fix energy = linearVelocity.LengthSquared().Add(angularVelocity.LengthSquared());
                 if (energy < activityInformation.DeactivationManager.velocityLowerLimitSquared)
                 {
-                    Fix32 boost = F64.C1.Sub(Fix32Ext.Sqrt(energy).Div((F64.C2.Mul(activityInformation.DeactivationManager.velocityLowerLimit))));
+                    Fix boost = F64.C1.Sub(Fix32Ext.Sqrt(energy).Div((F64.C2.Mul(activityInformation.DeactivationManager.velocityLowerLimit))));
                     ModifyAngularDamping(boost);
                     ModifyLinearDamping(boost);
                 }
             }
 
             //Damping
-            Fix32 linear = LinearDamping.Add(linearDampingBoost);
+            Fix linear = LinearDamping.Add(linearDampingBoost);
             if (linear > F64.C0)
             {
                 Vector3.Multiply(ref linearVelocity, Fix32Ext.Pow(MathHelper.Clamp(F64.C1.Sub(linear), F64.C0, F64.C1), dt), out linearVelocity);
             }
             //When applying angular damping, the momentum or velocity is damped depending on the conservation setting.
-            Fix32 angular = AngularDamping.Add(angularDampingBoost);
+            Fix angular = AngularDamping.Add(angularDampingBoost);
             if (angular > F64.C0)
             {
 #if CONSERVE
@@ -1045,7 +1045,7 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
             }
         }
 
-        void ICCDPositionUpdateable.UpdateTimesOfImpact(Fix32 dt)
+        void ICCDPositionUpdateable.UpdateTimesOfImpact(Fix dt)
         {
             //I am a continuous object.  If I am in a pair with another object, even if I am inactive,
             //I must order the pairs to compute a time of impact.
@@ -1067,9 +1067,9 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
             }
         }
 
-        void ICCDPositionUpdateable.UpdatePositionContinuously(Fix32 dt)
+        void ICCDPositionUpdateable.UpdatePositionContinuously(Fix dt)
         {
-            Fix32 minimumToi = F64.C1;
+            Fix minimumToi = F64.C1;
             for (int i = 0; i < collisionInformation.pairs.Count; i++)
             {
                 if (collisionInformation.pairs.Elements[i].timeOfImpact < minimumToi)
@@ -1098,7 +1098,7 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
 #endif
         }
 
-        void IPositionUpdateable.PreUpdatePosition(Fix32 dt)
+        void IPositionUpdateable.PreUpdatePosition(Fix dt)
         {
             Vector3 increment;
 
@@ -1137,15 +1137,15 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
 
 
 
-        Fix32 linearDampingBoost, angularDampingBoost;
-        Fix32 angularDamping = .15m.ToFix();
-        Fix32 linearDamping = .03m.ToFix();
+        Fix linearDampingBoost, angularDampingBoost;
+        Fix angularDamping = .15m.ToFix();
+        Fix linearDamping = .03m.ToFix();
         ///<summary>
         /// Gets or sets the angular damping of the entity.
         /// Values range from 0 to 1, corresponding to a fraction of angular momentum removed
         /// from the entity over a unit of time.
         ///</summary>
-        public Fix32 AngularDamping
+        public Fix AngularDamping
         {
             get
             {
@@ -1161,7 +1161,7 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
         /// Values range from 0 to 1, corresponding to a fraction of linear momentum removed
         /// from the entity over a unit of time.
         ///</summary>
-        public Fix32 LinearDamping
+        public Fix LinearDamping
         {
             get
             {
@@ -1179,10 +1179,10 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
         /// damping returns to the base value.
         /// </summary>
         /// <param name="damping">Damping to add.</param>
-        public void ModifyLinearDamping(Fix32 damping)
+        public void ModifyLinearDamping(Fix damping)
         {
-            Fix32 totalDamping = LinearDamping.Add(linearDampingBoost);
-            Fix32 remainder = F64.C1.Sub(totalDamping);
+            Fix totalDamping = LinearDamping.Add(linearDampingBoost);
+            Fix remainder = F64.C1.Sub(totalDamping);
 			linearDampingBoost = linearDampingBoost.Add(damping.Mul(remainder));
         }
         /// <summary>
@@ -1190,10 +1190,10 @@ angularVelocity.X.Add(((impulse.X.Mul(inertiaTensorInverse.M11)).Add(impulse.Y.M
         /// damping returns to the base value.
         /// </summary>
         /// <param name="damping">Damping to add.</param>
-        public void ModifyAngularDamping(Fix32 damping)
+        public void ModifyAngularDamping(Fix damping)
         {
-            Fix32 totalDamping = AngularDamping.Add(angularDampingBoost);
-            Fix32 remainder = F64.C1.Sub(totalDamping);
+            Fix totalDamping = AngularDamping.Add(angularDampingBoost);
+            Fix remainder = F64.C1.Sub(totalDamping);
 			angularDampingBoost = angularDampingBoost.Add(damping.Mul(remainder));
         }
 

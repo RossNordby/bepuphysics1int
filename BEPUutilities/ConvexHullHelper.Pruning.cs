@@ -56,7 +56,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="points">List of points to prune.</param>
         /// <param name="cellSize">Size of cells to determine redundancy.</param>
-        public static void RemoveRedundantPoints(IList<Vector3> points, Fix32 cellSize)
+        public static void RemoveRedundantPoints(IList<Vector3> points, Fix cellSize)
         {
             var rawPoints = CommonResources.GetVectorList();
             rawPoints.AddRange(points);
@@ -83,7 +83,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="points">List of points to prune.</param>
         /// <param name="cellSize">Size of cells to determine redundancy.</param>
-        public static void RemoveRedundantPoints(RawList<Vector3> points, Fix32 cellSize)
+        public static void RemoveRedundantPoints(RawList<Vector3> points, Fix cellSize)
         {
             var set = BlockedCellSets.Take();
             for (int i = points.Count - 1; i >= 0; --i)

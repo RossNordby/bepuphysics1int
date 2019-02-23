@@ -24,12 +24,12 @@ namespace BEPUphysicsDemos.AlternateMovement
         /// <summary>
         /// Speed that the Vehicle tries towreach when moving backward.
         /// </summary>
-        public Fix32 BackwardSpeed = (-13).ToFix();
+        public Fix BackwardSpeed = (-13).ToFix();
 
         /// <summary>
         /// Speed that the Vehicle tries to reach when moving forward.
         /// </summary>
-        public Fix32 ForwardSpeed = 30.ToFix();
+        public Fix ForwardSpeed = 30.ToFix();
 
         /// <summary>
         /// Whether or not to use the Vehicle's input.
@@ -40,7 +40,7 @@ namespace BEPUphysicsDemos.AlternateMovement
         /// <summary>
         /// Maximum turn angle of the wheels.
         /// </summary>
-        public Fix32 MaximumTurnAngle = MathHelper.Pi.Div(6.ToFix());
+        public Fix MaximumTurnAngle = MathHelper.Pi.Div(6.ToFix());
 
         /// <summary>
         /// Draws the body and wheels.
@@ -55,7 +55,7 @@ namespace BEPUphysicsDemos.AlternateMovement
         /// <summary>
         /// Turning speed of the wheels in radians per second.
         /// </summary>
-        public Fix32 TurnSpeed = MathHelper.Pi;
+        public Fix TurnSpeed = MathHelper.Pi;
 
         /// <summary>
         /// Physics representation of the Vehicle.
@@ -195,7 +195,7 @@ namespace BEPUphysicsDemos.AlternateMovement
         /// <param name="dt">Time since last frame in simulation seconds.</param>
         /// <param name="keyboardInput">Keyboard state.</param>
         /// <param name="gamePadInput">Gamepad state.</param>
-        public void Update(Fix32 dt, KeyboardState keyboardInput, GamePadState gamePadInput)
+        public void Update(Fix dt, KeyboardState keyboardInput, GamePadState gamePadInput)
         {
             //Update the wheel's graphics.
             for (int k = 0; k < 4; k++)
@@ -261,7 +261,7 @@ namespace BEPUphysicsDemos.AlternateMovement
                 }
                 //Use smooth steering; while held down, move towards maximum.
                 //When not pressing any buttons, smoothly return to facing forward.
-                Fix32 angle;
+                Fix angle;
                 bool steered = false;
                 if (keyboardInput.IsKeyDown(Keys.S))
                 {

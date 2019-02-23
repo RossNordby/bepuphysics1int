@@ -7,8 +7,8 @@ namespace BEPUphysics.Paths
 {
     internal struct SpeedControlledCurveSample
     {
-        public Fix32 Wrapped;
-        public Fix32 SpeedControlled;
+        public Fix Wrapped;
+        public Fix SpeedControlled;
     }
 
     /// <summary>
@@ -106,18 +106,18 @@ namespace BEPUphysics.Paths
         /// </summary>
         /// <param name="time">Time to check for speed.</param>
         /// <returns>Speed at the given time.</returns>
-        public abstract Fix32 GetSpeedAtCurveTime(Fix32 time);
+        public abstract Fix GetSpeedAtCurveTime(Fix time);
 
         /// <summary>
         /// Gets the time at which the internal curve would be evaluated at the given time.
         /// </summary>
         /// <param name="time">Time to evaluate the speed-controlled curve.</param>
         /// <returns>Time at which the internal curve would be evaluated.</returns>
-        public Fix32 GetInnerTime(Fix32 time)
+        public Fix GetInnerTime(Fix time)
         {
             if (Curve == null)
                 throw new InvalidOperationException("SpeedControlledCurve's internal curve is null; ensure that its curve property is set prior to evaluation.");
-            Fix32 firstTime, lastTime;
+            Fix firstTime, lastTime;
             GetPathBoundsInformation(out firstTime, out lastTime);
             time = Curve<TValue>.ModifyTime(time, firstTime, lastTime, Curve.PreLoop, Curve.PostLoop);
 
@@ -150,7 +150,7 @@ namespace BEPUphysics.Paths
             }
 
 
-            Fix32 curveTime = (time.Sub(samples[indexMin].Wrapped)).Div((samples[indexMin + 1].Wrapped.Sub(samples[indexMin].Wrapped)));
+            Fix curveTime = (time.Sub(samples[indexMin].Wrapped)).Div((samples[indexMin + 1].Wrapped.Sub(samples[indexMin].Wrapped)));
             return ((F64.C1.Sub(curveTime)).Mul(samples[indexMin].SpeedControlled)).Add((curveTime).Mul(samples[indexMin + 1].SpeedControlled));
         }
 
@@ -160,7 +160,7 @@ namespace BEPUphysics.Paths
         /// <param name="time">Time to evaluate the curve at.</param>
         /// <param name="value">Value of the curve at the given time.</param>
         /// <param name="innerTime">Time at which the internal curve was evaluated to get the value.</param>
-        public void Evaluate(Fix32 time, out TValue value, out Fix32 innerTime)
+        public void Evaluate(Fix time, out TValue value, out Fix innerTime)
         {
             Curve.Evaluate(innerTime = GetInnerTime(time), out value);
         }
@@ -170,7 +170,7 @@ namespace BEPUphysics.Paths
         /// </summary>
         /// <param name="time">Time to evaluate the curve at.</param>
         /// <param name="value">Value of the curve at the given time.</param>
-        public override void Evaluate(Fix32 time, out TValue value)
+        public override void Evaluate(Fix time, out TValue value)
         {
             Curve.Evaluate(GetInnerTime(time), out value);
         }
@@ -180,7 +180,7 @@ namespace BEPUphysics.Paths
         /// </summary>
         /// <param name="startingTime">Beginning time of the path.</param>
         /// <param name="endingTime">Ending time of the path.</param>
-        public override void GetPathBoundsInformation(out Fix32 startingTime, out Fix32 endingTime)
+        public override void GetPathBoundsInformation(out Fix startingTime, out Fix endingTime)
         {
             if (samples.Count > 0)
             {
@@ -204,7 +204,7 @@ namespace BEPUphysics.Paths
             //TODO: Call this from curve if add/remove/timechange/valuechange happens
             //Could hide it then.
             samples.Clear();
-            Fix32 firstTime, lastTime;
+            Fix firstTime, lastTime;
             int minIndex, maxIndex;
             curve.GetCurveBoundsInformation(out firstTime, out lastTime, out minIndex, out maxIndex);
 
@@ -212,15 +212,15 @@ namespace BEPUphysics.Paths
             if (minIndex < 0 || maxIndex < 0)
                 return;
 
-            Fix32 timeElapsed = F64.C0;
+            Fix timeElapsed = F64.C0;
             //TODO: useless calculation due to this
             TValue currentValue = Curve.ControlPoints[minIndex].Value;
             TValue previousValue = currentValue;
 
-            Fix32 inverseSampleCount = F64.C1.Div((SamplesPerInterval + 1).ToFix());
+            Fix inverseSampleCount = F64.C1.Div((SamplesPerInterval + 1).ToFix());
 
-            Fix32 speed = GetSpeedAtCurveTime(Curve.ControlPoints[minIndex].Time);
-            Fix32 previousSpeed = speed;
+            Fix speed = GetSpeedAtCurveTime(Curve.ControlPoints[minIndex].Time);
+            Fix previousSpeed = speed;
             for (int i = minIndex; i < maxIndex; i++)
             {
                 previousValue = currentValue;
@@ -262,6 +262,6 @@ curveTime.Add(curveTimePerSample);
         /// <param name="start">Starting value.</param>
         /// <param name="end">Ending value.</param>
         /// <returns>Distance between the values.</returns>
-        protected abstract Fix32 GetDistance(TValue start, TValue end);
+        protected abstract Fix GetDistance(TValue start, TValue end);
     }
 }

@@ -70,7 +70,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3.Cross(ref ac, ref ab, out reverseNormal);
             //Convex position dot normal is ALWAYS zero.  The thing to look at is the plane's 'd'.
             //If the distance along the normal is positive, then the convex is 'behind' that normal.
-            Fix32 dotA;
+            Fix dotA;
             Vector3.Dot(ref triangle.vA, ref reverseNormal, out dotA);
 
             contactList = new TinyStructList<ContactData>();
@@ -125,9 +125,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
 
 
-            Fix32 dotE;
+            Fix dotE;
             Vector3.Dot(ref extremePoint, ref reverseNormal, out dotE);
-            Fix32 t = (dotA.Sub(dotE)).Div(reverseNormal.LengthSquared());
+            Fix t = (dotA.Sub(dotE)).Div(reverseNormal.LengthSquared());
 
 
 
@@ -135,9 +135,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             Vector3.Multiply(ref reverseNormal, t, out offset);
 
             //Compare the distance from the plane to the convex object.
-            Fix32 distanceSquared = offset.LengthSquared();
+            Fix distanceSquared = offset.LengthSquared();
 
-            Fix32 marginSum = triangle.collisionMargin.Add(convex.collisionMargin);
+            Fix marginSum = triangle.collisionMargin.Add(convex.collisionMargin);
             //TODO: Could just normalize early and avoid computing point plane before it's necessary.  
             //Exposes a sqrt but...
             if (t <= F64.C0 || distanceSquared < marginSum.Mul(marginSum))
@@ -153,9 +153,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 else contact.Position = new Vector3();
                 Vector3.Add(ref extremePoint, ref contact.Position, out contact.Position); //A + t * AB.
 
-                Fix32 normalLength = reverseNormal.Length();
+                Fix normalLength = reverseNormal.Length();
                 Vector3.Divide(ref reverseNormal, normalLength, out contact.Normal);
-                Fix32 distance = normalLength.Mul(t);
+                Fix distance = normalLength.Mul(t);
 
 
 
@@ -265,8 +265,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
             Vector3 displacement;
             Vector3.Subtract(ref closestB, ref closestA, out displacement);
-            Fix32 distanceSquared = displacement.LengthSquared();
-            Fix32 margin = convex.collisionMargin.Add(triangle.collisionMargin);
+            Fix distanceSquared = displacement.LengthSquared();
+            Fix margin = convex.collisionMargin.Add(triangle.collisionMargin);
 
             contactList = new TinyStructList<ContactData>();
             if (distanceSquared < margin.Mul(margin))
@@ -281,7 +281,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                     Vector3.Subtract(ref triangle.vB, ref triangle.vA, out ab);
                     Vector3.Subtract(ref triangle.vC, ref triangle.vA, out ac);
                     Vector3.Cross(ref ab, ref ac, out triangleNormal);
-                    Fix32 dot;
+                    Fix dot;
                     Vector3.Dot(ref triangleNormal, ref displacement, out dot);
                     if (triangle.sidedness == TriangleSidedness.Clockwise && dot > F64.C0)
                         return false;
@@ -299,7 +299,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
 
                 contact.Normal = displacement;
-                Fix32 distance = Fix32Ext.Sqrt(distanceSquared);
+                Fix distance = Fix32Ext.Sqrt(distanceSquared);
                 Vector3.Divide(ref contact.Normal, distance, out contact.Normal);
                 contact.PenetrationDepth = margin.Sub(distance);
 
@@ -332,14 +332,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             if (MPRToolbox.AreLocalShapesOverlapping(convex, triangle, ref center, ref Toolbox.RigidIdentity))
             {
 
-                Fix32 dot;
+                Fix dot;
 
 
                 Vector3 triangleNormal, ab, ac;
                 Vector3.Subtract(ref triangle.vB, ref triangle.vA, out ab);
                 Vector3.Subtract(ref triangle.vC, ref triangle.vA, out ac);
                 Vector3.Cross(ref ab, ref ac, out triangleNormal);
-                Fix32 lengthSquared = triangleNormal.LengthSquared();
+                Fix lengthSquared = triangleNormal.LengthSquared();
                 if (lengthSquared < Toolbox.Epsilon.Mul(F64.C0p01))
                 {
                     //Degenerate triangle! That's no good.
@@ -400,7 +400,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                         Vector3 p;
                         Vector3.Multiply(ref contact.Normal, dot, out p);
                         Vector3.Subtract(ref contact.Normal, ref p, out contact.Normal);
-                        Fix32 length = contact.Normal.LengthSquared();
+                        Fix length = contact.Normal.LengthSquared();
                         if (length > Toolbox.Epsilon)
                         {
                             //Renormalize the corrected normal.
@@ -410,7 +410,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                         }
                         else
                         {
-                            contact.PenetrationDepth = Fix32.MaxValue;
+                            contact.PenetrationDepth = Fix.MaxValue;
                             contact.Normal = new Vector3();
                         }
                     }
@@ -418,7 +418,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
 
                     Vector3 candidateNormal;
-                    Fix32 candidateDepth;
+                    Fix candidateDepth;
 
                     MPRToolbox.LocalSurfaceCast(convex, triangle, ref Toolbox.RigidIdentity, ref BCnormal, out candidateDepth, out candidateNormal);
                     //Check to see if the normal is facing in the proper direction, considering that this may not be a two-sided triangle.
@@ -433,7 +433,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                         Vector3 p;
                         Vector3.Multiply(ref candidateNormal, dot, out p);
                         Vector3.Subtract(ref candidateNormal, ref p, out candidateNormal);
-                        Fix32 length = candidateNormal.LengthSquared();
+                        Fix length = candidateNormal.LengthSquared();
                         if (length > Toolbox.Epsilon)
                         {
                             //Renormalize the corrected normal.
@@ -443,7 +443,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                         }
                         else
                         {
-                            contact.PenetrationDepth = Fix32.MaxValue;
+                            contact.PenetrationDepth = Fix.MaxValue;
                             contact.Normal = new Vector3();
                         }
                     }
@@ -468,7 +468,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                         Vector3 p;
                         Vector3.Multiply(ref candidateNormal, dot, out p);
                         Vector3.Subtract(ref candidateNormal, ref p, out candidateNormal);
-                        Fix32 length = candidateNormal.LengthSquared();
+                        Fix length = candidateNormal.LengthSquared();
                         if (length > Toolbox.Epsilon)
                         {
                             //Renormalize the corrected normal.
@@ -478,7 +478,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                         }
                         else
                         {
-                            contact.PenetrationDepth = Fix32.MaxValue;
+                            contact.PenetrationDepth = Fix.MaxValue;
                             contact.Normal = new Vector3();
                         }
                     }
@@ -596,15 +596,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         {
             Vector3 closestPoint;
             Toolbox.GetClosestPointOnTriangleToPoint(ref triangle.vA, ref triangle.vB, ref triangle.vC, ref Toolbox.ZeroVector, out closestPoint);
-            Fix32 length = closestPoint.LengthSquared();
-            Fix32 minimumRadius = convex.MinimumRadius.Mul((MotionSettings.CoreShapeScaling.Add(F64.C0p01)));
+            Fix length = closestPoint.LengthSquared();
+            Fix minimumRadius = convex.MinimumRadius.Mul((MotionSettings.CoreShapeScaling.Add(F64.C0p01)));
             if (length < minimumRadius.Mul(minimumRadius))
             {
                 Vector3 triangleNormal, ab, ac;
                 Vector3.Subtract(ref triangle.vB, ref triangle.vA, out ab);
                 Vector3.Subtract(ref triangle.vC, ref triangle.vA, out ac);
                 Vector3.Cross(ref ab, ref ac, out triangleNormal);
-                Fix32 dot;
+                Fix dot;
                 Vector3.Dot(ref closestPoint, ref triangleNormal, out dot);
                 if ((triangle.sidedness == TriangleSidedness.Clockwise && dot > F64.C0) || (triangle.sidedness == TriangleSidedness.Counterclockwise && dot < F64.C0))
                 {
@@ -624,7 +624,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 {
                     //The direction is undefined.  Use the triangle's normal.
                     //One sided triangles can only face in the appropriate direction.
-                    Fix32 normalLength = triangleNormal.LengthSquared();
+                    Fix normalLength = triangleNormal.LengthSquared();
                     if (triangleNormal.LengthSquared() > Toolbox.Epsilon)
                     {
                         Vector3.Divide(ref triangleNormal, Fix32Ext.Sqrt(normalLength), out triangleNormal);
@@ -671,28 +671,28 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 			// Extra added step to allow Fix32 precision to be enough
 			// Divide all vectors by the largest component to avoid overflows
 			// To speed up the process, or all the absolute values to get a number large enough
-			Fix32 largestComponentApprox =
+			Fix largestComponentApprox =
 				ab.X.Abs() | ab.Y.Abs() | ab.Z.Abs() |
 				ac.X.Abs() | ac.Y.Abs() | ac.Z.Abs() |
 				ap.X.Abs() | ap.Y.Abs() | ap.Z.Abs() |
-				Fix32.One;
-			Fix32 largestComponentInv = Fix32.One.Div(largestComponentApprox);
+				Fix.One;
+			Fix largestComponentInv = Fix.One.Div(largestComponentApprox);
 			Vector3.Multiply(ref ab, largestComponentInv, out ab);
 			Vector3.Multiply(ref ac, largestComponentInv, out ac);
 			Vector3.Multiply(ref ap, largestComponentInv, out ap);
 
             //Check to see if it's outside A.
-            Fix32 APdotAB, APdotAC;
+            Fix APdotAB, APdotAC;
             Vector3.Dot(ref ap, ref ab, out APdotAB);
             Vector3.Dot(ref ap, ref ac, out APdotAC);
-            if (APdotAC <= Fix32.Zero && APdotAB <= Fix32.Zero)
+            if (APdotAC <= Fix.Zero && APdotAB <= Fix.Zero)
             {
                 //It is A!
                 return VoronoiRegion.A;
             }
 
             //Check to see if it's outside B.
-            Fix32 BPdotAB, BPdotAC;
+            Fix BPdotAB, BPdotAC;
             Vector3 bp;
             Vector3.Subtract(ref p, ref triangle.vB, out bp);
 
@@ -701,20 +701,20 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             Vector3.Dot(ref ab, ref bp, out BPdotAB);
             Vector3.Dot(ref ac, ref bp, out BPdotAC);
-            if (BPdotAB >= Fix32.Zero && BPdotAC <= BPdotAB)
+            if (BPdotAB >= Fix.Zero && BPdotAC <= BPdotAB)
             {
                 //It is B!
                 return VoronoiRegion.B;
             }
 
             //Check to see if it's outside AB.
-            if (APdotAB > Fix32.Zero && BPdotAB < Fix32.Zero && APdotAB.Mul(BPdotAC) <= BPdotAB.Mul(APdotAC)) //Note > and < instead of => <=; avoids possibly division by zero
+            if (APdotAB > Fix.Zero && BPdotAB < Fix.Zero && APdotAB.Mul(BPdotAC) <= BPdotAB.Mul(APdotAC)) //Note > and < instead of => <=; avoids possibly division by zero
             {
                 return VoronoiRegion.AB;
             }
 
             //Check to see if it's outside C.
-            Fix32 CPdotAB, CPdotAC;
+            Fix CPdotAB, CPdotAC;
             Vector3 cp;
             Vector3.Subtract(ref p, ref triangle.vC, out cp);
 
@@ -723,20 +723,20 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             Vector3.Dot(ref ab, ref cp, out CPdotAB);
             Vector3.Dot(ref ac, ref cp, out CPdotAC);
-            if (CPdotAC >= Fix32.Zero && CPdotAB <= CPdotAC)
+            if (CPdotAC >= Fix.Zero && CPdotAB <= CPdotAC)
             {
                 //It is C!
                 return VoronoiRegion.C;
             }
 
             //Check if it's outside AC.    
-            if (APdotAC > Fix32.Zero && CPdotAC < Fix32.Zero && CPdotAB.Mul(APdotAC) <= APdotAB.Mul(CPdotAC)) //Note > instead of >= and < instead of <=; prevents bad denominator
+            if (APdotAC > Fix.Zero && CPdotAC < Fix.Zero && CPdotAB.Mul(APdotAC) <= APdotAB.Mul(CPdotAC)) //Note > instead of >= and < instead of <=; prevents bad denominator
             {
                 return VoronoiRegion.AC;
             }
 
             //Check if it's outside BC.
-            if (BPdotAC.Sub(BPdotAB) > Fix32.Zero && CPdotAB.Sub(CPdotAC) > Fix32.Zero && BPdotAB.Mul(CPdotAC) <= CPdotAB.Mul(BPdotAC))//Note > instead of >= and < instead of <=; prevents bad denominator
+            if (BPdotAC.Sub(BPdotAB) > Fix.Zero && CPdotAB.Sub(CPdotAC) > Fix.Zero && BPdotAB.Mul(CPdotAC) <= CPdotAB.Mul(BPdotAC))//Note > instead of >= and < instead of <=; prevents bad denominator
             {
                 return VoronoiRegion.BC;
             }
@@ -786,7 +786,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Otherwise, it belongs to the vertex.
             //MPR tends to produce 'approximate' normals, though.
             //Use a fairly forgiving epsilon.
-            Fix32 dotA, dotB, dotC;
+            Fix dotA, dotB, dotC;
             Vector3.Dot(ref triangle.vA, ref contact.Normal, out dotA);
             Vector3.Dot(ref triangle.vB, ref contact.Normal, out dotB);
             Vector3.Dot(ref triangle.vC, ref contact.Normal, out dotC);
@@ -797,10 +797,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             dotC = dotC.Neg();
 
 
-            Fix32 faceEpsilon = F64.C0p01;
-            Fix32 edgeEpsilon = F64.C0p01;
+            Fix faceEpsilon = F64.C0p01;
+            Fix edgeEpsilon = F64.C0p01;
 
-            Fix32 edgeDot;
+            Fix edgeDot;
             Vector3 edgeDirection;
             if (dotA > dotB && dotA > dotC)
             {

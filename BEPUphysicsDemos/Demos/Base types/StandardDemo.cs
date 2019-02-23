@@ -27,7 +27,7 @@ namespace BEPUphysicsDemos.Demos
     {
         protected FreeCameraControlScheme freeCameraControlScheme;
         protected CharacterControllerInput character;
-        protected Fix32 grabDistance;
+        protected Fix grabDistance;
         protected MotorizedGrabSpring grabber;
         protected LineDisplayObjectBase grabberGraphic;
         protected Entity kapow;
@@ -91,7 +91,7 @@ namespace BEPUphysicsDemos.Demos
             return entry != character.CharacterController.Body.CollisionInformation && entry.CollisionRules.Personal <= CollisionRule.Normal;
         }
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             #region Kapow-Shooter Input
 

@@ -40,7 +40,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             Vector3 offset;
             Vector3.Subtract(ref spherePosition, ref contact.Position, out offset);
-            Fix32 offsetLength = offset.LengthSquared();
+            Fix offsetLength = offset.LengthSquared();
 
             if (offsetLength > (sphere.collisionMargin.Add(CollisionDetectionSettings.maximumContactDistance)).Mul((sphere.collisionMargin.Add(CollisionDetectionSettings.maximumContactDistance))))
             {

@@ -13,24 +13,24 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// <summary>
         /// Minimum velocity necessary for a bounce to occur at a joint limit.
         /// </summary>
-        protected Fix32 bounceVelocityThreshold = F64.C1;
+        protected Fix bounceVelocityThreshold = F64.C1;
 
         /// <summary>
         /// Bounciness of this joint limit.  0 is completely inelastic; 1 is completely elastic.
         /// </summary>
-        protected Fix32 bounciness;
+        protected Fix bounciness;
 
         protected bool isLimitActive;
 
         /// <summary>
         /// Small area that the constraint can be violated without applying position correction.  Helps avoid jitter.
         /// </summary>
-        protected Fix32 margin = 0.005m.ToFix();
+        protected Fix margin = 0.005m.ToFix();
 
         /// <summary>
         /// Gets or sets the minimum velocity necessary for a bounce to occur at a joint limit.
         /// </summary>
-        public Fix32 BounceVelocityThreshold
+        public Fix BounceVelocityThreshold
         {
             get { return bounceVelocityThreshold; }
             set { bounceVelocityThreshold = MathHelper.Max(F64.C0, value); }
@@ -39,7 +39,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// <summary>
         /// Gets or sets the bounciness of this joint limit.  0 is completely inelastic; 1 is completely elastic.
         /// </summary>
-        public Fix32 Bounciness
+        public Fix Bounciness
         {
             get { return bounciness; }
             set { bounciness = MathHelper.Clamp(value, F64.C0, F64.C1); }
@@ -57,7 +57,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// <summary>
         /// Gets or sets the small area that the constraint can be violated without applying position correction.  Helps avoid jitter.
         /// </summary>
-        public Fix32 Margin
+        public Fix Margin
         {
             get { return margin; }
             set { margin = MathHelper.Max(value, F64.C0); }
@@ -68,7 +68,7 @@ namespace BEPUphysics.Constraints.TwoEntity.JointLimits
         /// </summary>
         /// <param name="impactVelocity">Velocity of the impact on the limit.</param>
         /// <returns>The resulting bounce velocity of the impact.</returns>
-        protected Fix32 ComputeBounceVelocity(Fix32 impactVelocity)
+        protected Fix ComputeBounceVelocity(Fix impactVelocity)
         {
             var lowThreshold = bounceVelocityThreshold.Mul(F64.C0p3);
             var velocityFraction = MathHelper.Clamp((impactVelocity.Sub(lowThreshold)).Div(((bounceVelocityThreshold.Sub(lowThreshold)).Add(Toolbox.Epsilon))), F64.C0, F64.C1);

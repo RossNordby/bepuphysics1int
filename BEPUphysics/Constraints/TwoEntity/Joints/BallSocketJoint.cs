@@ -208,13 +208,13 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Called by preStep(Fix32 dt)
         /// </summary>
         /// <param name="dt">Time in seconds since the last update.</param>
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             Matrix3x3.Transform(ref localAnchorA, ref connectionA.orientationMatrix, out worldOffsetA);
             Matrix3x3.Transform(ref localAnchorB, ref connectionB.orientationMatrix, out worldOffsetB);
 
 
-            Fix32 errorReductionParameter;
+            Fix errorReductionParameter;
             springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReductionParameter, out softness);
 
             //Mass Matrix
@@ -266,10 +266,10 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Multiply(ref error, errorReductionParameter.Neg(), out biasVelocity);
 
             //Ensure that the corrective velocity doesn't exceed the max.
-            Fix32 length = biasVelocity.LengthSquared();
+            Fix length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                Fix32 multiplier = maxCorrectiveVelocity.Div(Fix32Ext.Sqrt(length));
+                Fix multiplier = maxCorrectiveVelocity.Div(Fix32Ext.Sqrt(length));
 				biasVelocity.X = biasVelocity.X.Mul(multiplier);
 				biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
 				biasVelocity.Z = biasVelocity.Z.Mul(multiplier);
@@ -316,7 +316,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Calculates and applies corrective impulses.
         /// Called automatically by space.
         /// </summary>
-        public override Fix32 SolveIteration()
+        public override Fix SolveIteration()
         {
 #if !WINDOWS
             Vector3 lambda = new Vector3();

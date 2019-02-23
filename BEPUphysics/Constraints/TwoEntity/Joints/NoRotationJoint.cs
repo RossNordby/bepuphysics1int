@@ -163,7 +163,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Applies the corrective impulses required by the constraint.
         /// </summary>
-        public override Fix32 SolveIteration()
+        public override Fix SolveIteration()
         {
             Vector3 velocityDifference;
             Vector3.Subtract(ref connectionB.angularVelocity, ref connectionA.angularVelocity, out velocityDifference);
@@ -194,7 +194,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Initializes the constraint for the current frame.
         /// </summary>
         /// <param name="dt">Time between frames.</param>
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             Quaternion quaternionA;
             Quaternion.Multiply(ref connectionA.orientation, ref initialQuaternionConjugateA, out quaternionA);
@@ -205,7 +205,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Quaternion.Multiply(ref quaternionA, ref quaternionB, out intermediate);
 
 
-            Fix32 angle;
+            Fix angle;
             Vector3 axis;
             Quaternion.GetAxisAngleFromQuaternion(ref intermediate, out axis, out angle);
 
@@ -213,7 +213,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             error.Y = axis.Y.Mul(angle);
             error.Z = axis.Z.Mul(angle);
 
-            Fix32 errorReduction;
+            Fix errorReduction;
             springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReduction, out softness);
             errorReduction = errorReduction.Neg();
             biasVelocity.X = errorReduction.Mul(error.X);
@@ -221,10 +221,10 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             biasVelocity.Z = errorReduction.Mul(error.Z);
 
             //Ensure that the corrective velocity doesn't exceed the max.
-            Fix32 length = biasVelocity.LengthSquared();
+            Fix length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                Fix32 multiplier = maxCorrectiveVelocity.Div(Fix32Ext.Sqrt(length));
+                Fix multiplier = maxCorrectiveVelocity.Div(Fix32Ext.Sqrt(length));
 				biasVelocity.X = biasVelocity.X.Mul(multiplier);
 				biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
 				biasVelocity.Z = biasVelocity.Z.Mul(multiplier);

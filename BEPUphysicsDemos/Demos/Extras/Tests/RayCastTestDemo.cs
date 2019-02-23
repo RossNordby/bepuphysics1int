@@ -74,7 +74,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             get { return "Ray Cast Test"; }
         }
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             base.Update(dt);
 

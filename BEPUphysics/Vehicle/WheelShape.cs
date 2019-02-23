@@ -17,11 +17,11 @@ namespace BEPUphysics.Vehicle
     /// </summary>
     public abstract class WheelShape : ICollisionRulesOwner
     {
-        private Fix32 airborneWheelAcceleration = 40.ToFix();
+        private Fix airborneWheelAcceleration = 40.ToFix();
 
 
-        private Fix32 airborneWheelDeceleration = 4.ToFix();
-        private Fix32 brakeFreezeWheelDeceleration = 40.ToFix();
+        private Fix airborneWheelDeceleration = 4.ToFix();
+        private Fix brakeFreezeWheelDeceleration = 40.ToFix();
 
         /// <summary>
         /// Collects collision pairs from the environment.
@@ -29,11 +29,11 @@ namespace BEPUphysics.Vehicle
         protected internal Box detector = new Box(Vector3.Zero, F64.C0, F64.C0, F64.C0);
 
         protected internal Matrix localGraphicTransform;
-        protected Fix32 spinAngle;
+        protected Fix spinAngle;
 
 
-        protected Fix32 spinVelocity;
-        internal Fix32 steeringAngle;
+        protected Fix spinVelocity;
+        internal Fix steeringAngle;
 
         internal Matrix steeringTransform;
         protected internal Wheel wheel;
@@ -53,13 +53,13 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the graphical radius of the wheel.
         /// </summary>
-        public abstract Fix32 Radius { get; set; }
+        public abstract Fix Radius { get; set; }
 
         /// <summary>
         /// Gets or sets the rate at which the wheel's spinning velocity increases when accelerating and airborne.
         /// This is a purely graphical effect.
         /// </summary>
-        public Fix32 AirborneWheelAcceleration
+        public Fix AirborneWheelAcceleration
         {
             get { return airborneWheelAcceleration; }
             set { airborneWheelAcceleration = Fix32Ext.Abs(value); }
@@ -69,7 +69,7 @@ namespace BEPUphysics.Vehicle
         /// Gets or sets the rate at which the wheel's spinning velocity decreases when the wheel is airborne and its motor is idle.
         /// This is a purely graphical effect.
         /// </summary>
-        public Fix32 AirborneWheelDeceleration
+        public Fix AirborneWheelDeceleration
         {
             get { return airborneWheelDeceleration; }
             set { airborneWheelDeceleration = Fix32Ext.Abs(value); }
@@ -79,7 +79,7 @@ namespace BEPUphysics.Vehicle
         /// Gets or sets the rate at which the wheel's spinning velocity decreases when braking.
         /// This is a purely graphical effect.
         /// </summary>
-        public Fix32 BrakeFreezeWheelDeceleration
+        public Fix BrakeFreezeWheelDeceleration
         {
             get { return brakeFreezeWheelDeceleration; }
             set { brakeFreezeWheelDeceleration = Fix32Ext.Abs(value); }
@@ -113,7 +113,7 @@ namespace BEPUphysics.Vehicle
         /// This changes each frame based on the relative velocity between the
         /// support and the wheel.
         /// </summary>
-        public Fix32 SpinAngle
+        public Fix SpinAngle
         {
             get { return spinAngle; }
             set { spinAngle = value; }
@@ -124,7 +124,7 @@ namespace BEPUphysics.Vehicle
         /// between the support and the wheel.  Whenever the wheel is in contact with
         /// the ground, the spin velocity will be each frame.
         /// </summary>
-        public Fix32 SpinVelocity
+        public Fix SpinVelocity
         {
             get { return spinVelocity; }
             set { spinVelocity = value; }
@@ -133,7 +133,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the current steering angle of this wheel.
         /// </summary>
-        public Fix32 SteeringAngle
+        public Fix SteeringAngle
         {
             get { return steeringAngle; }
             set { steeringAngle = value; }
@@ -187,7 +187,7 @@ namespace BEPUphysics.Vehicle
         /// Updates the spin velocity and spin angle for the shape.
         /// </summary>
         /// <param name="dt">Simulation timestep.</param>
-        internal void UpdateSpin(Fix32 dt)
+        internal void UpdateSpin(Fix dt)
         {
             if (wheel.HasSupport && !(wheel.brake.IsBraking && FreezeWheelsWhileBraking))
             {
@@ -197,7 +197,7 @@ namespace BEPUphysics.Vehicle
             else if (wheel.HasSupport && wheel.brake.IsBraking && FreezeWheelsWhileBraking)
             {
                 //On the ground, braking
-                Fix32 deceleratedValue = F64.C0;
+                Fix deceleratedValue = F64.C0;
                 if (spinVelocity > F64.C0)
                     deceleratedValue = MathHelper.Max(spinVelocity.Sub(brakeFreezeWheelDeceleration.Mul(dt)), F64.C0);
                 else if (spinVelocity < F64.C0)
@@ -211,7 +211,7 @@ namespace BEPUphysics.Vehicle
             else if (!wheel.HasSupport && wheel.drivingMotor.TargetSpeed != F64.C0)
             {
                 //Airborne and accelerating, increase spin velocity.
-                Fix32 maxSpeed = Fix32Ext.Abs(wheel.drivingMotor.TargetSpeed).Div(Radius);
+                Fix maxSpeed = Fix32Ext.Abs(wheel.drivingMotor.TargetSpeed).Div(Radius);
                 spinVelocity = MathHelper.Clamp(spinVelocity.Add((Fix32Ext.Sign(wheel.drivingMotor.TargetSpeed).Mul(airborneWheelAcceleration)).Mul(dt)), maxSpeed.Neg(), maxSpeed);
             }
             else if (!wheel.HasSupport && wheel.Brake.IsBraking)
@@ -243,7 +243,7 @@ namespace BEPUphysics.Vehicle
         /// <param name="entity">Entity supporting the wheel, if any.</param>
         /// <param name="material">Material of the support.</param>
         /// <returns>Whether or not any support was found.</returns>
-        protected internal abstract bool FindSupport(out Vector3 location, out Vector3 normal, out Fix32 suspensionLength, out Collidable supportCollidable, out Entity entity, out Material material);
+        protected internal abstract bool FindSupport(out Vector3 location, out Vector3 normal, out Fix suspensionLength, out Collidable supportCollidable, out Entity entity, out Material material);
 
         /// <summary>
         /// Initializes the detector entity and any other necessary logic.

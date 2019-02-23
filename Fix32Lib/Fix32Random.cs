@@ -7,11 +7,11 @@ public class Fix32Random {
 		random = new Random(seed);
 	}
 
-	public Fix32 Next() {
-		return (Fix32) random.Next(int.MinValue, int.MaxValue);
+	public Fix Next() {
+		return (Fix) random.Next(int.MinValue, int.MaxValue);
 	}
 
-	public Fix32 NextInt(int maxValue) {
+	public Fix NextInt(int maxValue) {
 		return random.Next(maxValue).ToFix();
 	}
 }

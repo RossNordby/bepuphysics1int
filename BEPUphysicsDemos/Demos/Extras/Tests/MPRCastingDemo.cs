@@ -49,7 +49,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         bool hit;
         RayHit hitData;
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             if (Game.KeyboardInput.IsKeyDown(Keys.NumPad6))
                 aTransform.Position += Vector3.Right * dt;

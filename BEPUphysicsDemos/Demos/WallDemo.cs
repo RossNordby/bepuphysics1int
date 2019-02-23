@@ -18,9 +18,9 @@ namespace BEPUphysicsDemos.Demos
         {
             int width = 10;
             int height = 10;
-			Fix32 blockWidth = 2.ToFix();
-			Fix32 blockHeight = 1.ToFix();
-			Fix32 blockLength = 1.ToFix();
+			Fix blockWidth = 2.ToFix();
+			Fix blockHeight = 1.ToFix();
+			Fix blockLength = 1.ToFix();
 
             for (int i = 0; i < width; i++)
             {

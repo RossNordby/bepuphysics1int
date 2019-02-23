@@ -98,8 +98,8 @@ namespace BEPUphysicsDemos.Demos
             Space.Add(distanceJoint);
 
             int numBlocksTall = 10; //How many 'stories' tall.
-            Fix32 blockWidth = 4.ToFix(); //Total width/length of the tower.
-            Fix32 blockHeight = 1.333m.ToFix();
+            Fix blockWidth = 4.ToFix(); //Total width/length of the tower.
+            Fix blockHeight = 1.333m.ToFix();
             Entity toAdd;
             for (int i = 0; i < numBlocksTall; i++)
             {

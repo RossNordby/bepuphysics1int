@@ -16,9 +16,9 @@ namespace BEPUphysics.DeactivationManagement
         private int maximumDeactivationAttemptsPerFrame = 100;
         private int deactivationIslandIndex;
 
-        internal Fix32 velocityLowerLimit = .26m.ToFix();
-        internal Fix32 velocityLowerLimitSquared = (.26m * .26m).ToFix();
-        internal Fix32 lowVelocityTimeMinimum = F64.C1;
+        internal Fix velocityLowerLimit = .26m.ToFix();
+        internal Fix velocityLowerLimitSquared = (.26m * .26m).ToFix();
+        internal Fix lowVelocityTimeMinimum = F64.C1;
 
         ///<summary>
         /// Gets or sets the velocity under which the deactivation system will consider 
@@ -26,7 +26,7 @@ namespace BEPUphysics.DeactivationManagement
         /// for the LowVelocityTimeMinimum).
         /// Defaults to 0.26.
         ///</summary>
-        public Fix32 VelocityLowerLimit
+        public Fix VelocityLowerLimit
         {
             get
             {
@@ -44,7 +44,7 @@ namespace BEPUphysics.DeactivationManagement
         /// objects to be deactivation candidates (if their velocity stays below the VelocityLowerLimit for the duration).
         /// Defaults to 1.
         /// </summary>
-        public Fix32 LowVelocityTimeMinimum
+        public Fix LowVelocityTimeMinimum
         {
             get
             {
@@ -218,13 +218,13 @@ namespace BEPUphysics.DeactivationManagement
 
         Deque<SimulationIslandConnection> splitAttempts = new Deque<SimulationIslandConnection>();
 
-        static Fix32 maximumSplitAttemptsFraction = .01m.ToFix();
+        static Fix maximumSplitAttemptsFraction = .01m.ToFix();
         /// <summary>
         /// Gets or sets the fraction of splits that the deactivation manager will attempt in a single frame.
         /// The total splits queued multiplied by this value results in the number of splits managed.
         /// Defaults to .04f.
         /// </summary>
-        public static Fix32 MaximumSplitAttemptsFraction
+        public static Fix MaximumSplitAttemptsFraction
         {
             get
             {

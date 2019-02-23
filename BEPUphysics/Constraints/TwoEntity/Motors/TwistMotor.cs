@@ -16,16 +16,16 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         private readonly MotorSettings1D settings;
 
 
-        private Fix32 accumulatedImpulse;
+        private Fix accumulatedImpulse;
 
         /// <summary>
         /// Velocity needed to get closer to the goal.
         /// </summary>
-        protected Fix32 biasVelocity;
+        protected Fix biasVelocity;
 
         private Vector3 jacobianA, jacobianB;
-        private Fix32 error;
-        private Fix32 velocityToImpulse;
+        private Fix error;
+        private Fix velocityToImpulse;
 
 
         /// <summary>
@@ -91,11 +91,11 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// <summary>
         /// Gets the current relative velocity between the connected entities with respect to the constraint.
         /// </summary>
-        public Fix32 RelativeVelocity
+        public Fix RelativeVelocity
         {
             get
             {
-                Fix32 velocityA, velocityB;
+                Fix velocityA, velocityB;
                 Vector3.Dot(ref connectionA.angularVelocity, ref jacobianA, out velocityA);
                 Vector3.Dot(ref connectionB.angularVelocity, ref jacobianB, out velocityB);
                 return velocityA.Add(velocityB);
@@ -106,7 +106,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// <summary>
         /// Gets the total impulse applied by this constraint.
         /// </summary>
-        public Fix32 TotalImpulse
+        public Fix TotalImpulse
         {
             get { return accumulatedImpulse; }
         }
@@ -115,7 +115,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Gets the current constraint error.
         /// If the motor is in velocity only mode, the error will be zero.
         /// </summary>
-        public Fix32 Error
+        public Fix Error
         {
             get { return error; }
         }
@@ -164,7 +164,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Gets the mass matrix of the constraint.
         /// </summary>
         /// <param name="outputMassMatrix">Constraint's mass matrix.</param>
-        public void GetMassMatrix(out Fix32 outputMassMatrix)
+        public void GetMassMatrix(out Fix outputMassMatrix)
         {
             outputMassMatrix = velocityToImpulse;
         }
@@ -183,7 +183,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
 
             Vector3 worldXAxis;
             Vector3.Cross(ref worldTwistAxisA, ref Toolbox.UpVector, out worldXAxis);
-            Fix32 length = worldXAxis.LengthSquared();
+            Fix length = worldXAxis.LengthSquared();
             if (length < Toolbox.Epsilon)
             {
                 Vector3.Cross(ref worldTwistAxisA, ref Toolbox.RightVector, out worldXAxis);
@@ -209,21 +209,21 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// <summary>
         /// Solves for velocity.
         /// </summary>
-        public override Fix32 SolveIteration()
+        public override Fix SolveIteration()
         {
-            Fix32 velocityA, velocityB;
+            Fix velocityA, velocityB;
             //Find the velocity contribution from each connection
             Vector3.Dot(ref connectionA.angularVelocity, ref jacobianA, out velocityA);
             Vector3.Dot(ref connectionB.angularVelocity, ref jacobianB, out velocityB);
             //Add in the constraint space bias velocity
-            Fix32 lambda = ((velocityA.Add(velocityB).Neg()).Add(biasVelocity)).Sub(usedSoftness.Mul(accumulatedImpulse));
+            Fix lambda = ((velocityA.Add(velocityB).Neg()).Add(biasVelocity)).Sub(usedSoftness.Mul(accumulatedImpulse));
 
 			//Transform to an impulse
 			lambda =
 lambda.Mul(velocityToImpulse);
 
             //Accumulate the impulse
-            Fix32 previousAccumulatedImpulse = accumulatedImpulse;
+            Fix previousAccumulatedImpulse = accumulatedImpulse;
             accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse.Add(lambda), maxForceDt.Neg(), maxForceDt);
             lambda = accumulatedImpulse.Sub(previousAccumulatedImpulse);
 
@@ -247,7 +247,7 @@ lambda.Mul(velocityToImpulse);
         /// Do any necessary computations to prepare the constraint for this frame.
         /// </summary>
         /// <param name="dt">Simulation step length.</param>
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             basisA.rotationMatrix = connectionA.orientationMatrix;
             basisB.rotationMatrix = connectionB.orientationMatrix;
@@ -265,15 +265,15 @@ lambda.Mul(velocityToImpulse);
 
 
                 //By dotting the measurement vector with a 2d plane's axes, we can get a local X and Y value.
-                Fix32 y, x;
+                Fix y, x;
                 Vector3.Dot(ref twistMeasureAxis, ref basisA.yAxis, out y);
                 Vector3.Dot(ref twistMeasureAxis, ref basisA.xAxis, out x);
                 var angle = Fix32Ext.Atan2Fast(y, x);
 
                 //Compute goal velocity.
                 error = GetDistanceFromGoal(angle);
-                Fix32 absErrorOverDt = Fix32Ext.Abs(error.Div(dt));
-                Fix32 errorReduction;
+                Fix absErrorOverDt = Fix32Ext.Abs(error.Div(dt));
+                Fix errorReduction;
                 settings.servo.springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1.Div(dt), out errorReduction, out usedSoftness);
                 biasVelocity = (Fix32Ext.Sign(error).Mul(MathHelper.Min(settings.servo.baseCorrectiveSpeed, absErrorOverDt))).Add(error.Mul(errorReduction));
 
@@ -312,7 +312,7 @@ lambda.Mul(velocityToImpulse);
 
             //****** EFFECTIVE MASS MATRIX ******//
             //Connection A's contribution to the mass matrix
-            Fix32 entryA;
+            Fix entryA;
             Vector3 transformedAxis;
             if (connectionA.isDynamic)
             {
@@ -323,7 +323,7 @@ lambda.Mul(velocityToImpulse);
                 entryA = F64.C0;
 
             //Connection B's contribution to the mass matrix
-            Fix32 entryB;
+            Fix entryB;
             if (connectionB.isDynamic)
             {
                 Matrix3x3.Transform(ref jacobianB, ref connectionB.inertiaTensorInverse, out transformedAxis);
@@ -360,10 +360,10 @@ lambda.Mul(velocityToImpulse);
             }
         }
 
-        private Fix32 GetDistanceFromGoal(Fix32 angle)
+        private Fix GetDistanceFromGoal(Fix angle)
         {
-            Fix32 forwardDistance;
-            Fix32 goalAngle = MathHelper.WrapAngle(settings.servo.goal);
+            Fix forwardDistance;
+            Fix goalAngle = MathHelper.WrapAngle(settings.servo.goal);
             if (goalAngle > F64.C0)
             {
                 if (angle > goalAngle)

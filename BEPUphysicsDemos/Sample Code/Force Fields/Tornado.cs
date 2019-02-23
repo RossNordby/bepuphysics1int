@@ -21,32 +21,32 @@ namespace BEPUphysicsDemos.SampleCode
         /// <summary>
         /// Radius of the tornado at the bottom.
         /// </summary>
-        public Fix32 BottomRadius;
+        public Fix BottomRadius;
 
         /// <summary>
         /// Height of the tornado; objects above or below the tornado will not be affected by its winds.
         /// </summary>
-        public Fix32 Height;
+        public Fix Height;
 
         /// <summary>
         /// Circular force applied within the tornado.  Force magnitude decreases as distance from axis increases past the radius.
         /// </summary>
-        public Fix32 HorizontalForce;
+        public Fix HorizontalForce;
 
         /// <summary>
         /// Maximum horizontal wind speed of the tornado; objects will not be accelerated by the wind past this speed in the direction of the wind.
         /// </summary>
-        public Fix32 HorizontalWindSpeed;
+        public Fix HorizontalWindSpeed;
 
         /// <summary>
         /// Magnitude of the inward-sucking force within the tornado.  Magnitude decreases as distance from the axis increases past the radius.
         /// </summary>
-        public Fix32 InwardForce;
+        public Fix InwardForce;
 
         /// <summary>
         /// Maximum inward sucking wind speed; objects will not be accelerated by the wind past this speed inward.
         /// </summary>
-        public Fix32 InwardSuctionSpeed;
+        public Fix InwardSuctionSpeed;
 
         /// <summary>
         /// Spin direction of the tornado.  Looking down from the top of the tornado (the furthest forward along the tornado axis).
@@ -56,17 +56,17 @@ namespace BEPUphysicsDemos.SampleCode
         /// <summary>
         /// Radius of the tornado at the top.
         /// </summary>
-        public Fix32 TopRadius;
+        public Fix TopRadius;
 
         /// <summary>
         /// Magnitude of upward-pushing force within the tornado.  Magnitude decreases as distance from the axis increases past the radius.
         /// </summary>
-        public Fix32 UpwardForce;
+        public Fix UpwardForce;
 
         /// <summary>
         /// Maximum upward pushing wind speed; objects will not be accelerated by the wind past this speed upward.
         /// </summary>
-        public Fix32 UpwardSuctionSpeed;
+        public Fix UpwardSuctionSpeed;
 
         /// <summary>
         /// Creates a simple, constant force field.
@@ -85,10 +85,10 @@ namespace BEPUphysicsDemos.SampleCode
         /// <param name="topRadius">Radius of the tornado at the top.</param>
         /// <param name="bottomRadius">Radius of the tornado at the bottom.</param>
         public Tornado(ForceFieldShape shape, Vector3 position, Vector3 axis,
-                       Fix32 height, bool spinClockwise, Fix32 horizontalWindSpeed,
-                       Fix32 upwardSuctionSpeed, Fix32 inwardSuctionSpeed,
-                       Fix32 horizontalForce, Fix32 upwardForce, Fix32 inwardForce,
-                       Fix32 topRadius, Fix32 bottomRadius)
+                       Fix height, bool spinClockwise, Fix horizontalWindSpeed,
+                       Fix upwardSuctionSpeed, Fix inwardSuctionSpeed,
+                       Fix horizontalForce, Fix upwardForce, Fix inwardForce,
+                       Fix topRadius, Fix bottomRadius)
             : base(shape)
         {
             Axis = Vector3.Normalize(axis);
@@ -116,26 +116,26 @@ namespace BEPUphysicsDemos.SampleCode
         /// <param name="e">Target of the impulse.</param>
         /// <param name="dt">Time since the last frame in simulation seconds.</param>
         /// <param name="impulse">Force to apply at the given position.</param>
-        protected override void CalculateImpulse(Entity e, Fix32 dt, out Vector3 impulse)
+        protected override void CalculateImpulse(Entity e, Fix dt, out Vector3 impulse)
         {
             Vector3 position = Position; //Referenced a lot, and passed using ref parameter.
             Vector3 entityPosition = e.Position;
 
-            Fix32 entityHeight = Vector3.Dot(Axis, entityPosition - position + Axis * (Height.Div(2.ToFix())));
+            Fix entityHeight = Vector3.Dot(Axis, entityPosition - position + Axis * (Height.Div(2.ToFix())));
             if (entityHeight < 0.ToFix() || entityHeight > Height)
                 impulse = Toolbox.ZeroVector;
             else
             {
-                Fix32 tornadoRadius = (BottomRadius.Mul((1.ToFix().Sub(entityHeight.Div(Height))))).Add(TopRadius.Mul((entityHeight.Div(Height))));
+                Fix tornadoRadius = (BottomRadius.Mul((1.ToFix().Sub(entityHeight.Div(Height))))).Add(TopRadius.Mul((entityHeight.Div(Height))));
                 Vector3 closestPoint;
                 Vector3 endpointA = position + Axis * Height / 2.ToFix();
                 Vector3 endpointB = position - Axis * Height / 2.ToFix();
                 Toolbox.GetClosestPointOnSegmentToPoint(ref endpointA, ref endpointB, ref entityPosition, out closestPoint);
-                Fix32 entityDistanceFromTornado;
+                Fix entityDistanceFromTornado;
                 Vector3.Distance(ref entityPosition, ref closestPoint, out entityDistanceFromTornado);
                 //Compute the axis to the 
                 Vector3 posClosest;
-                Fix32 forceMultiplier;
+                Fix forceMultiplier;
                 if (entityDistanceFromTornado > tornadoRadius)
                 {
                     //outside tornado
@@ -165,7 +165,7 @@ namespace BEPUphysicsDemos.SampleCode
                     Vector3.Cross(ref posClosest, ref Axis, out tangentDirection);
 
                 //Current velocity along the tangent direction.
-                Fix32 dot = Vector3.Dot(e.LinearVelocity, tangentDirection);
+                Fix dot = Vector3.Dot(e.LinearVelocity, tangentDirection);
                 //Compute the velocity difference between the current and the maximum
                 dot = HorizontalWindSpeed.Sub(dot);
                 //Compute the force needed to reach the maximum, but clamp it to the amount of force that the tornado can apply

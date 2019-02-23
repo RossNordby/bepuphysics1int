@@ -33,7 +33,7 @@ namespace BEPUphysicsDemos
             CameraOffset = new Vector3(0.ToFix(), 0.7m.ToFix(), 0.ToFix());
         }
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             base.Update(dt);
 

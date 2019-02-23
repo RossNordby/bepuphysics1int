@@ -53,13 +53,13 @@ namespace BEPUphysics.CollisionShapes
 #if !WINDOWS
             boundingBox = new BoundingBox();
 #endif
-            Fix32 minX = Fix32.MaxValue;
-            Fix32 minY = Fix32.MaxValue;
-            Fix32 minZ = Fix32.MaxValue;
+            Fix minX = Fix.MaxValue;
+            Fix minY = Fix.MaxValue;
+            Fix minZ = Fix.MaxValue;
 
-            Fix32 maxX = Fix32.MaxValue.Neg();
-            Fix32 maxY = Fix32.MaxValue.Neg();
-            Fix32 maxZ = Fix32.MaxValue.Neg();
+            Fix maxX = Fix.MaxValue.Neg();
+            Fix maxY = Fix.MaxValue.Neg();
+            Fix maxZ = Fix.MaxValue.Neg();
             for (int i = 0; i < triangleMesh.Data.vertices.Length; i++)
             {
                 Vector3 vertex;

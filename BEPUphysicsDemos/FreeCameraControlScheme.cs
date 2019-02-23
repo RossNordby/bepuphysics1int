@@ -12,20 +12,20 @@ namespace BEPUphysicsDemos
         /// <summary>
         /// Gets or sets the speed at which the camera moves.
         /// </summary>
-        public Fix32 Speed { get; set; }
+        public Fix Speed { get; set; }
 
-        public FreeCameraControlScheme(Fix32 speed, Camera camera, DemosGame game)
+        public FreeCameraControlScheme(Fix speed, Camera camera, DemosGame game)
             : base(camera, game)
         {
             Speed = speed;
         }
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             base.Update(dt);
 
             //Only move around if the camera has control over its own position.
-            Fix32 distance = Speed.Mul(dt);
+            Fix distance = Speed.Mul(dt);
 #if XBOX360
             MoveForward(Game.GamePadInput.ThumbSticks.Left.Y * distance);
             MoveRight(gamePadInput.ThumbSticks.Left.X * distance);

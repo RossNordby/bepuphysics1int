@@ -34,7 +34,7 @@ namespace BEPUphysicsDemos.Demos
             int numColumns = 10;
             int numRows = 10;
             int numHigh = 1;
-			Fix32 separation = 1.5m.ToFix();
+			Fix separation = 1.5m.ToFix();
             Entity toAdd;
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
@@ -55,15 +55,15 @@ namespace BEPUphysicsDemos.Demos
             int xLength = 180;
             int zLength = 180;
 
-			Fix32 xSpacing = 8.ToFix();
-			Fix32 zSpacing = 8.ToFix();
-            var heights = new Fix32[xLength,zLength];
+			Fix xSpacing = 8.ToFix();
+			Fix zSpacing = 8.ToFix();
+            var heights = new Fix[xLength,zLength];
             for (int i = 0; i < xLength; i++)
             {
                 for (int j = 0; j < zLength; j++)
                 {
-					Fix32 x = (i - xLength / 2).ToFix();
-					Fix32 z = (j - zLength / 2).ToFix();
+					Fix x = (i - xLength / 2).ToFix();
+					Fix z = (j - zLength / 2).ToFix();
                     //heights[i,j] = (Fix64)Math.Pow(1.2 * Math.Sqrt(x * x + y * y), 2);
                     //heights[i,j] = -1f / (x * x + y * y);
                     //heights[i,j] = (Fix64)(x * y / 100f);
@@ -91,7 +91,7 @@ namespace BEPUphysicsDemos.Demos
             get { return "Tornado"; }
         }
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             //Move the origin of the force of the tornado,
             Vector3 increment = new Vector3(10.ToFix(), 0.ToFix(), 0.ToFix()) * dt;

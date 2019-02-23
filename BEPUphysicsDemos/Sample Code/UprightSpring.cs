@@ -22,8 +22,8 @@ namespace BEPUphysicsDemos.SampleCode
 
 
         private Vector3 myLocalUpVector;
-        private Fix32 myMaximumAngle;
-        private Fix32 myMinimumAngle;
+        private Fix myMaximumAngle;
+        private Fix myMinimumAngle;
 
         private Vector3 myWorldUpVector;
 
@@ -37,7 +37,7 @@ namespace BEPUphysicsDemos.SampleCode
         /// <param name="maximumAngle">Maximum angle between the car's transformed up vector and the actual up vector
         /// past which the constraint 'gives up' and lets the entity tumble.</param>
         /// <param name="correctionFactor">Factor of the orientation error to apply in angular velocity each frame.</param>
-        public UprightSpring(Entity entity, Vector3 upVector, Fix32 minimumAngle, Fix32 maximumAngle, Fix32 correctionFactor)
+        public UprightSpring(Entity entity, Vector3 upVector, Fix minimumAngle, Fix maximumAngle, Fix correctionFactor)
         {
             this.Entity = entity;
             this.UpVector = upVector;
@@ -81,7 +81,7 @@ namespace BEPUphysicsDemos.SampleCode
         /// Gets or sets the minimum angle between the car's transformed up vector and the actual up vector
         /// before the constraint begins to apply forces.
         /// </summary>
-        public Fix32 MinimumAngle
+        public Fix MinimumAngle
         {
             get { return myMinimumAngle; }
             set
@@ -96,7 +96,7 @@ namespace BEPUphysicsDemos.SampleCode
         /// Gets or sets the maximum angle between the car's transformed up vector and the actual up vector
         /// past which the constraint 'gives up' and lets the entity tumble.
         /// </summary>
-        public Fix32 MaximumAngle
+        public Fix MaximumAngle
         {
             get { return myMaximumAngle; }
             set
@@ -110,7 +110,7 @@ namespace BEPUphysicsDemos.SampleCode
         /// <summary>
         /// Gets or sets the factor of the orientation error to apply in torque each frame.
         /// </summary>
-        public Fix32 CorrectionFactor { get; set; }
+        public Fix CorrectionFactor { get; set; }
 
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace BEPUphysicsDemos.SampleCode
         /// Called automatically by its owning space.
         /// </summary>
         /// <param name="dt">Time since last frame in simulation seconds.</param>
-        void IDuringForcesUpdateable.Update(Fix32 dt)
+        void IDuringForcesUpdateable.Update(Fix dt)
         {
             myWorldUpVector = Matrix3x3.Transform(myLocalUpVector, Entity.OrientationMatrix);
 

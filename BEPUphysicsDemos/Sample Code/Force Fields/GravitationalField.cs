@@ -18,7 +18,7 @@ namespace BEPUphysicsDemos.SampleCode
         /// <param name="origin">Location that entities will be pushed toward.</param>
         /// <param name="multiplier">Represents the gravitational constant of the field times the effective mass at the center of the field.</param>
         /// <param name="maxAcceleration">Maximum acceleration the field can apply.</param>
-        public GravitationalField(ForceFieldShape shape, Vector3 origin, Fix32 multiplier, Fix32 maxAcceleration)
+        public GravitationalField(ForceFieldShape shape, Vector3 origin, Fix multiplier, Fix maxAcceleration)
             : base(shape)
         {
             this.Multiplier = multiplier;
@@ -29,12 +29,12 @@ namespace BEPUphysicsDemos.SampleCode
         /// <summary>
         /// Gets or sets the gravitational constant of the field times the effective mass at the center of the field.
         /// </summary>
-        public Fix32 Multiplier { get; set; }
+        public Fix Multiplier { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum acceleration that can be applied by the field.
         /// </summary>
-        public Fix32 MaxAcceleration { get; set; }
+        public Fix MaxAcceleration { get; set; }
 
         /// <summary>
         /// Gets or sets the center of the field that entities will be pushed toward.
@@ -48,13 +48,13 @@ namespace BEPUphysicsDemos.SampleCode
         /// <param name="e">Target of the impulse.</param>
         /// <param name="dt">Time since the last frame in simulation seconds.</param>
         /// <param name="impulse">Force to apply at the given position.</param>
-        protected override void CalculateImpulse(Entity e, Fix32 dt, out Vector3 impulse)
+        protected override void CalculateImpulse(Entity e, Fix dt, out Vector3 impulse)
         {
             Vector3 r = e.Position - Origin;
-            Fix32 length = r.Length();
+            Fix length = r.Length();
             if (length > Toolbox.BigEpsilon)
             {
-                Fix32 force = (dt.Mul(e.Mass)).Mul(MathHelper.Min(MaxAcceleration, Multiplier.Div((length.Mul(length)))));
+                Fix force = (dt.Mul(e.Mass)).Mul(MathHelper.Min(MaxAcceleration, Multiplier.Div((length.Mul(length)))));
                 impulse = (force.Div(length)).Neg() * r; //Extra division by length normalizes the direction.
             }
             else

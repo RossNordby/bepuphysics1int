@@ -69,7 +69,7 @@ namespace BEPUphysics.Constraints.SolverGroups
             }
         }
 
-        protected void UpdateUpdateable(SolverUpdateable item, Fix32 dt)
+        protected void UpdateUpdateable(SolverUpdateable item, Fix dt)
         {
             item.SolverSettings.currentIterations = 0;
             item.SolverSettings.iterationsAtZeroImpulse = 0;
@@ -87,7 +87,7 @@ namespace BEPUphysics.Constraints.SolverGroups
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             for (int i = 0; i < solverUpdateables.Count; i++)
             {
@@ -155,7 +155,7 @@ namespace BEPUphysics.Constraints.SolverGroups
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public override Fix32 SolveIteration()
+        public override Fix SolveIteration()
         {
             int activeConstraints = 0;
             for (int i = 0; i < solverUpdateables.Count; i++)

@@ -25,7 +25,7 @@ namespace BEPUphysics.CollisionShapes
         /// Weight of the entry.  This defines how much the entry contributes to its owner
         /// for the purposes of center of rotation computation.
         /// </summary>
-        public Fix32 Weight;
+        public Fix Weight;
 
         ///<summary>
         /// Constructs a new compound shape entry using the volume of the shape as a weight.
@@ -34,7 +34,7 @@ namespace BEPUphysics.CollisionShapes
         ///<param name="localTransform">Local transform of the shape.</param>
         ///<param name="weight">Weight of the entry.  This defines how much the entry contributes to its owner
         /// for the purposes of center of rotation computation.</param>
-        public CompoundShapeEntry(EntityShape shape, RigidTransform localTransform, Fix32 weight)
+        public CompoundShapeEntry(EntityShape shape, RigidTransform localTransform, Fix weight)
         {
             localTransform.Validate();
             LocalTransform = localTransform;
@@ -49,7 +49,7 @@ namespace BEPUphysics.CollisionShapes
         ///<param name="position">Local position of the shape.</param>
         ///<param name="weight">Weight of the entry.  This defines how much the entry contributes to its owner
         /// for the purposes of center of mass and inertia computation.</param>
-        public CompoundShapeEntry(EntityShape shape, Vector3 position, Fix32 weight)
+        public CompoundShapeEntry(EntityShape shape, Vector3 position, Fix weight)
         {
             position.Validate();
             LocalTransform = new RigidTransform(position);
@@ -64,7 +64,7 @@ namespace BEPUphysics.CollisionShapes
         ///<param name="orientation">Local orientation of the shape.</param>
         ///<param name="weight">Weight of the entry.  This defines how much the entry contributes to its owner
         /// for the purposes of center of rotation computation.</param>
-        public CompoundShapeEntry(EntityShape shape, Quaternion orientation, Fix32 weight)
+        public CompoundShapeEntry(EntityShape shape, Quaternion orientation, Fix weight)
         {
             orientation.Validate();
             LocalTransform = new RigidTransform(orientation);
@@ -77,7 +77,7 @@ namespace BEPUphysics.CollisionShapes
         ///<param name="shape">Shape to use.</param>
         ///<param name="weight">Weight of the entry.  This defines how much the entry contributes to its owner
         /// for the purposes of center of rotation computation.</param>
-        public CompoundShapeEntry(EntityShape shape, Fix32 weight)
+        public CompoundShapeEntry(EntityShape shape, Fix weight)
         {
             LocalTransform = RigidTransform.Identity;
             Shape = shape;
@@ -165,7 +165,7 @@ namespace BEPUphysics.CollisionShapes
         {
             if (shapes.Count > 0)
             {
-                Fix32 volume;
+                Fix volume;
                 ComputeVolumeDistribution(shapes, out volume, out volumeDistribution, out center);
                 Volume = volume;
 
@@ -190,7 +190,7 @@ namespace BEPUphysics.CollisionShapes
         {
             if (shapes.Count > 0)
             {
-                Fix32 volume;
+                Fix volume;
                 Vector3 center;
                 ComputeVolumeDistribution(shapes, out volume, out volumeDistribution, out center);
                 Volume = volume;
@@ -226,10 +226,10 @@ namespace BEPUphysics.CollisionShapes
         /// <param name="volume">Summed volume of the constituent shapes. Intersecting volumes get double counted.</param>
         /// <param name="volumeDistribution">Volume distribution of the shape.</param>
         /// <param name="center">Center of the compound.</param>
-        public static void ComputeVolumeDistribution(IList<CompoundShapeEntry> entries, out Fix32 volume, out Matrix3x3 volumeDistribution, out Vector3 center)
+        public static void ComputeVolumeDistribution(IList<CompoundShapeEntry> entries, out Fix volume, out Matrix3x3 volumeDistribution, out Vector3 center)
         {
             center = new Vector3();
-            Fix32 totalWeight = F64.C0;
+            Fix totalWeight = F64.C0;
             volume = F64.C0;
             for (int i = 0; i < entries.Count; i++)
             {
@@ -239,7 +239,7 @@ namespace BEPUphysics.CollisionShapes
             }
             if (totalWeight <= F64.C0)
                 throw new NotFiniteNumberException("Cannot compute distribution; the total weight of a compound shape must be positive.");
-            Fix32 totalWeightInverse = F64.C1.Div(totalWeight);
+            Fix totalWeightInverse = F64.C1.Div(totalWeight);
             totalWeightInverse.Validate();
             center *= totalWeightInverse;
 
@@ -264,7 +264,7 @@ namespace BEPUphysics.CollisionShapes
         /// <param name="baseContribution">Original unmodified contribution.</param>
         /// <param name="weight">Weight of the contribution.</param>
         /// <param name="contribution">Transformed contribution.</param>
-        public static void TransformContribution(ref RigidTransform transform, ref Vector3 center, ref Matrix3x3 baseContribution, Fix32 weight, out Matrix3x3 contribution)
+        public static void TransformContribution(ref RigidTransform transform, ref Vector3 center, ref Matrix3x3 baseContribution, Fix weight, out Matrix3x3 contribution)
         {
             Matrix3x3 rotation;
             Matrix3x3.CreateFromQuaternion(ref transform.Orientation, out rotation);

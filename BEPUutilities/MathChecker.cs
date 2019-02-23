@@ -14,12 +14,12 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="f">Value to validate.</param>
         /// <returns>True if the value is invalid, false if it is valid.</returns>
-        private static bool IsInvalid(Fix32 f)
+        private static bool IsInvalid(Fix f)
         {
 			// Fixed-point library does not have NaN or Infinity representation.
 			// We keep this dummy function around for completeness sake
 			// return float.IsNaN(f) || float.IsInfinity(f);
-			return f == Fix32.MaxValue || f == Fix32.MinValue;
+			return f == Fix.MaxValue || f == Fix.MinValue;
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace BEPUutilities
         /// This is only run when the CHECKMATH symbol is defined.
         /// </summary>
         [Conditional("CHECKMATH")]
-        public static void Validate(this Fix32 f)
+        public static void Validate(this Fix f)
         {
             if (IsInvalid(f))
             {

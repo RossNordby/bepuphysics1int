@@ -15,7 +15,7 @@ namespace BEPUphysicsDemos.Demos
     {
         private int accumulatedPhysicsFrames;
         private double accumulatedPhysicsTime;
-        private Fix32 previousTimeMeasurement;
+        private Fix previousTimeMeasurement;
         private ParallelLooper parallelLooper;
 
         protected Demo(DemosGame game)
@@ -57,7 +57,7 @@ namespace BEPUphysicsDemos.Demos
         /// Updates the game.
         /// </summary>
         /// <param name="dt">Game timestep.</param>
-        public virtual void Update(Fix32 dt)
+        public virtual void Update(Fix dt)
         {
             long startTime = Stopwatch.GetTimestamp();
 

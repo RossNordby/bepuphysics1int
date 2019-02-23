@@ -24,13 +24,13 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// <summary>
         /// Maximum impulse that can be applied in a single frame.
         /// </summary>
-        private Fix32 maxForceDt;
+        private Fix maxForceDt;
 
         /// <summary>
         /// Maximum impulse that can be applied in a single frame, squared.
         /// This is computed in the prestep to avoid doing extra multiplies in the more-often called applyImpulse method.
         /// </summary>
-        private Fix32 maxForceDtSquared;
+        private Fix maxForceDtSquared;
 
         private Vector3 error;
 
@@ -39,7 +39,7 @@ namespace BEPUphysics.Constraints.SingleEntity
         private Vector3 worldPoint;
 
         private Vector3 r;
-        private Fix32 usedSoftness;
+        private Fix usedSoftness;
 
         /// <summary>
         /// Gets or sets the entity affected by the constraint.
@@ -159,7 +159,7 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public override Fix32 SolveIteration()
+        public override Fix SolveIteration()
         {
             //Compute relative velocity
             Vector3 lambda;
@@ -182,7 +182,7 @@ namespace BEPUphysics.Constraints.SingleEntity
             accumulatedImpulse += lambda;
 
             //If the impulse it takes to get to the goal is too high for the motor to handle, scale it back.
-            Fix32 sumImpulseLengthSquared = accumulatedImpulse.LengthSquared();
+            Fix sumImpulseLengthSquared = accumulatedImpulse.LengthSquared();
             if (sumImpulseLengthSquared > maxForceDtSquared)
             {
                 //max / impulse gives some value 0 < x < 1.  Basically, normalize the vector (divide by the length) and scale by the maximum.
@@ -205,32 +205,32 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
             //Transform point into world space.
             Matrix3x3.Transform(ref localPoint, ref entity.orientationMatrix, out r);
             Vector3.Add(ref r, ref entity.position, out worldPoint);
 
-            Fix32 updateRate = F64.C1.Div(dt);
+            Fix updateRate = F64.C1.Div(dt);
             if (settings.mode == MotorMode.Servomechanism)
             {
                 Vector3.Subtract(ref settings.servo.goal, ref worldPoint, out error);
-                Fix32 separationDistance = error.Length();
+                Fix separationDistance = error.Length();
                 if (separationDistance > Toolbox.BigEpsilon)
                 {
-                    Fix32 errorReduction;
+                    Fix errorReduction;
                     settings.servo.springSettings.ComputeErrorReductionAndSoftness(dt, updateRate, out errorReduction, out usedSoftness);
 
                     //The rate of correction can be based on a constant correction velocity as well as a 'spring like' correction velocity.
                     //The constant correction velocity could overshoot the destination, so clamp it.
-                    Fix32 correctionSpeed = MathHelper.Min(settings.servo.baseCorrectiveSpeed, separationDistance.Mul(updateRate)).Add(separationDistance.Mul(errorReduction));
+                    Fix correctionSpeed = MathHelper.Min(settings.servo.baseCorrectiveSpeed, separationDistance.Mul(updateRate)).Add(separationDistance.Mul(errorReduction));
 
                     Vector3.Multiply(ref error, correctionSpeed.Div(separationDistance), out biasVelocity);
                     //Ensure that the corrective velocity doesn't exceed the max.
-                    Fix32 length = biasVelocity.LengthSquared();
+                    Fix length = biasVelocity.LengthSquared();
                     if (length > settings.servo.maxCorrectiveVelocitySquared)
                     {
-                        Fix32 multiplier = settings.servo.maxCorrectiveVelocity.Div(Fix32Ext.Sqrt(length));
+                        Fix multiplier = settings.servo.maxCorrectiveVelocity.Div(Fix32Ext.Sqrt(length));
 						biasVelocity.X = biasVelocity.X.Mul(multiplier);
 						biasVelocity.Y = biasVelocity.Y.Mul(multiplier);
 						biasVelocity.Z = biasVelocity.Z.Mul(multiplier);
@@ -289,18 +289,18 @@ effectiveMassMatrix.M11.Add(usedSoftness);
         /// <summary>
         /// Computes the maxForceDt and maxForceDtSquared fields.
         /// </summary>
-        private void ComputeMaxForces(Fix32 maxForce, Fix32 dt)
+        private void ComputeMaxForces(Fix maxForce, Fix dt)
         {
             //Determine maximum force
-            if (maxForce < Fix32.MaxValue)
+            if (maxForce < Fix.MaxValue)
             {
                 maxForceDt = maxForce.Mul(dt);
                 maxForceDtSquared = maxForceDt.Mul(maxForceDt);
             }
             else
             {
-                maxForceDt = Fix32.MaxValue;
-                maxForceDtSquared = Fix32.MaxValue;
+                maxForceDt = Fix.MaxValue;
+                maxForceDtSquared = Fix.MaxValue;
             }
         }
     }

@@ -56,7 +56,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
         RawList<int> overlaps = new RawList<int>(8);
         private TriangleShape triangle = new TriangleShape { collisionMargin = F64.C0 };
-        public override void UpdateCollision(Fix32 dt)
+        public override void UpdateCollision(Fix dt)
         {
             WasContaining = Containing;
             WasTouching = Touching;

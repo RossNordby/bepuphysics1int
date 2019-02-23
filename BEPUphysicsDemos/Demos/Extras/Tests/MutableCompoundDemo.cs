@@ -23,11 +23,11 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         {
 
             List<CompoundShapeEntry> shapes = new List<CompoundShapeEntry>();
-            Fix32 totalWeight = 0.ToFix();
-            Fix32 density = 10.ToFix();
+            Fix totalWeight = 0.ToFix();
+            Fix density = 10.ToFix();
 
 
-            Fix32 weight = density.Mul(2.ToFix());
+            Fix weight = density.Mul(2.ToFix());
 			totalWeight = totalWeight.Add(weight);
             for (int i = 0; i < 4; i++)
             {
@@ -66,9 +66,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             int width = 3;
             int height = 3;
             int length = 10;
-            Fix32 blockWidth = 1.ToFix();
-            Fix32 blockHeight = 1.ToFix();
-            Fix32 blockLength = 1.ToFix();
+            Fix blockWidth = 1.ToFix();
+            Fix blockHeight = 1.ToFix();
+            Fix blockLength = 1.ToFix();
 
 
 

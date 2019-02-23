@@ -45,7 +45,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="bodies">List of entities to use as subbodies of the compound body.</param>
         /// <param name="mass">Mass of the compound.</param>
         /// <exception cref="InvalidOperationException">Thrown when the bodies list is empty or there is a mix of kinematic and dynamic entities in the body list.</exception>
-        public CompoundBody(IList<CompoundShapeEntry> bodies, Fix32 mass)
+        public CompoundBody(IList<CompoundShapeEntry> bodies, Fix mass)
         {
             Vector3 center;
             var shape = new CompoundShape(bodies, out center);
@@ -72,7 +72,7 @@ namespace BEPUphysics.Entities.Prefabs
         ///</summary>
         ///<param name="children">Children data to construct the compound from.</param>
         ///<param name="mass">Mass of the compound body.</param>
-        public CompoundBody(IList<CompoundChildData> children, Fix32 mass)
+        public CompoundBody(IList<CompoundChildData> children, Fix mass)
         {
             Vector3 center;
             var collidable = new CompoundCollidable(children, out center);

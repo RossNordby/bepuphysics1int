@@ -16,13 +16,13 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
 
         public RawList<Constraint> Constraints = new RawList<Constraint>();
 
-        private Fix32 mass, inverseMass;
-        public Fix32 Mass
+        private Fix mass, inverseMass;
+        public Fix Mass
         {
             get { return mass; }
         }
 
-        public Fix32 InverseMass
+        public Fix InverseMass
         {
             get { return inverseMass; }
         }
@@ -38,7 +38,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
         /// </summary>
         public readonly long Id;
 
-        public LinearDynamic(Fix32 mass)
+        public LinearDynamic(Fix mass)
         {
             this.mass = mass;
             this.inverseMass = 1.ToFix().Div(mass);
@@ -46,7 +46,7 @@ namespace BEPUphysicsDemos.Demos.Extras.SolverTypeTests
             Id = GetId();
         }
 
-        public void UpdatePosition(Fix32 dt)
+        public void UpdatePosition(Fix dt)
         {
             Vector3 displacement;
             Vector3.Multiply(ref Velocity, dt, out displacement);

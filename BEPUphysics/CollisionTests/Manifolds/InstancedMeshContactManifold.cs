@@ -29,7 +29,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
             }
         }
 
-        protected internal override int FindOverlappingTriangles(Fix32 dt)
+        protected internal override int FindOverlappingTriangles(Fix dt)
         {
             BoundingBox boundingBox;
             convex.Shape.GetLocalBoundingBox(ref convex.worldTransform, ref mesh.worldTransform, out boundingBox);

@@ -31,7 +31,7 @@ namespace BEPUphysicsDemos
         /// Updates the camera state according to the control scheme.
         /// </summary>
         /// <param name="dt">Time elapsed since previous frame.</param>
-        public virtual void Update(Fix32 dt)
+        public virtual void Update(Fix dt)
         {
 #if XBOX360
             Yaw += Game.GamePadInput.ThumbSticks.Right.X * -1.5m * dt;

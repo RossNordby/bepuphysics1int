@@ -54,11 +54,11 @@ namespace BEPUphysics.CollisionTests.Manifolds
         /// Updates the manifold.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
 
             //Now, generate a contact between the two shapes.
-            Fix32 distance;
+            Fix distance;
             Vector3 axis;
             BoxContactDataCache manifold;
             if (BoxBoxCollider.AreBoxesColliding(boxA.Shape, boxB.Shape, ref boxA.worldTransform, ref boxB.worldTransform, out distance, out axis, out manifold))

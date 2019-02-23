@@ -51,9 +51,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             //    Space.Add(sphere);
             //}
 
-            Fix32 width = 10.ToFix();
-            Fix32 height = 50.ToFix();
-            Fix32 length = 10.ToFix();
+            Fix width = 10.ToFix();
+            Fix height = 50.ToFix();
+            Fix length = 10.ToFix();
             for (int i = 0; i.ToFix() < width; i++)
             {
                 for (int j = 0; j.ToFix() < height; j++)

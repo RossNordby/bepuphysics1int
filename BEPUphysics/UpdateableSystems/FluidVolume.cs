@@ -48,7 +48,7 @@ namespace BEPUphysics.UpdateableSystems
         /// Gets or sets the dictionary storing density multipliers for the fluid volume.  If a value is specified for an entity, the density of the object is effectively scaled to match.
         /// Higher values make entities sink more, lower values make entities Fix32 more.
         /// </summary>
-        public Dictionary<Entity, Fix32> DensityMultipliers { get; set; }
+        public Dictionary<Entity, Fix> DensityMultipliers { get; set; }
 
         BoundingBox boundingBox;
         /// <summary>
@@ -62,11 +62,11 @@ namespace BEPUphysics.UpdateableSystems
             }
         }
 
-		Fix32 maxDepth;
+		Fix maxDepth;
         /// <summary>
         /// Maximum depth of the fluid from the surface.
         /// </summary>
-        public Fix32 MaxDepth
+        public Fix MaxDepth
         {
             get
             {
@@ -82,7 +82,7 @@ namespace BEPUphysics.UpdateableSystems
         /// <summary>
         /// Density of the fluid represented in the volume.
         /// </summary>
-        public Fix32 Density { get; set; }
+        public Fix Density { get; set; }
 
 		int samplePointsPerDimension = 8;
         /// <summary>
@@ -104,12 +104,12 @@ namespace BEPUphysics.UpdateableSystems
         /// <summary>
         /// Fraction by which to reduce the linear momentum of Fix32ing objects each update.
         /// </summary>
-        public Fix32 LinearDamping { get; set; }
+        public Fix LinearDamping { get; set; }
 
         /// <summary>
         /// Fraction by which to reduce the angular momentum of Fix32ing objects each update.
         /// </summary>
-        public Fix32 AngularDamping { get; set; }
+        public Fix AngularDamping { get; set; }
 
 
 
@@ -126,7 +126,7 @@ namespace BEPUphysics.UpdateableSystems
             }
             set
             {
-				Fix32 length = value.Length();
+				Fix length = value.Length();
                 if (length > F64.C0)
                 {
                     flowDirection = value / length;
@@ -137,13 +137,13 @@ namespace BEPUphysics.UpdateableSystems
             }
         }
 
-        private Fix32 flowForce;
+        private Fix flowForce;
 
         /// <summary>
         /// Magnitude of the flow's force, in units of flow direction.
         /// flowDirection and maxFlowSpeed must have valid values as well for the flow to work.
         /// </summary>
-        public Fix32 FlowForce
+        public Fix FlowForce
         {
             get
             {
@@ -156,12 +156,12 @@ namespace BEPUphysics.UpdateableSystems
             }
         }
 
-        Fix32 maxFlowSpeed;
+        Fix maxFlowSpeed;
         /// <summary>
         /// Maximum speed of the flow; objects will not be accelerated by the flow force beyond this speed.
         /// flowForce and flowDirection must have valid values as well for the flow to work.
         /// </summary>
-        public Fix32 MaxFlowSpeed
+        public Fix MaxFlowSpeed
         {
             get
             {
@@ -198,11 +198,11 @@ namespace BEPUphysics.UpdateableSystems
             }
         }
 
-		Fix32 gravity;
+		Fix gravity;
         ///<summary>
         /// Gets or sets the gravity used by the fluid volume.
         ///</summary>
-        public Fix32 Gravity
+        public Fix Gravity
         {
             get
             {
@@ -226,7 +226,7 @@ namespace BEPUphysics.UpdateableSystems
         /// <param name="fluidDensity">Density of the fluid represented in the volume.</param>
         /// <param name="linearDamping">Fraction by which to reduce the linear momentum of Fix32ing objects each update, in addition to any of the body's own damping.</param>
         /// <param name="angularDamping">Fraction by which to reduce the angular momentum of Fix32ing objects each update, in addition to any of the body's own damping.</param>
-        public FluidVolume(Vector3 upVector, Fix32 gravity, List<Vector3[]> surfaceTriangles, Fix32 depth, Fix32 fluidDensity, Fix32 linearDamping, Fix32 angularDamping)
+        public FluidVolume(Vector3 upVector, Fix gravity, List<Vector3[]> surfaceTriangles, Fix depth, Fix fluidDensity, Fix linearDamping, Fix angularDamping)
         {
             Gravity = gravity;
             SurfaceTriangles = surfaceTriangles;
@@ -239,7 +239,7 @@ namespace BEPUphysics.UpdateableSystems
 
             analyzeCollisionEntryDelegate = AnalyzeEntry;
 
-            DensityMultipliers = new Dictionary<Entity, Fix32>();
+            DensityMultipliers = new Dictionary<Entity, Fix>();
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace BEPUphysics.UpdateableSystems
         /// Called automatically when needed by the owning Space.
         /// </summary>
         /// <param name="dt">Time since last frame in physical logic.</param>
-        void IDuringForcesUpdateable.Update(Fix32 dt)
+        void IDuringForcesUpdateable.Update(Fix dt)
         {
             QueryAccelerator.GetEntries(boundingBox, broadPhaseEntries);
             //TODO: Could integrate the entire thing into the collision detection pipeline.  Applying forces
@@ -296,7 +296,7 @@ namespace BEPUphysics.UpdateableSystems
 
         }
 
-		Fix32 dt;
+		Fix dt;
         Action<int> analyzeCollisionEntryDelegate;
 
         void AnalyzeEntry(int i)
@@ -318,7 +318,7 @@ namespace BEPUphysics.UpdateableSystems
                     return;
 
 				//The entity is submerged, apply buoyancy forces.
-				Fix32 submergedVolume;
+				Fix submergedVolume;
                 Vector3 submergedCenter;
                 GetBuoyancyInformation(entityCollidable, out submergedVolume, out submergedCenter);
 
@@ -326,10 +326,10 @@ namespace BEPUphysics.UpdateableSystems
                 {
 
                     //The approximation can sometimes output a volume greater than the shape itself. Don't let that error seep into usage.
-                    Fix32 fractionSubmerged = MathHelper.Min(F64.C1, submergedVolume.Div(entityCollidable.entity.CollisionInformation.Shape.Volume));
+                    Fix fractionSubmerged = MathHelper.Min(F64.C1, submergedVolume.Div(entityCollidable.entity.CollisionInformation.Shape.Volume));
 
 					//Divide the volume by the density multiplier if present.
-					Fix32 densityMultiplier;
+					Fix densityMultiplier;
                     if (DensityMultipliers.TryGetValue(entityCollidable.entity, out densityMultiplier))
                     {
 						submergedVolume = submergedVolume.Div(densityMultiplier);
@@ -341,7 +341,7 @@ namespace BEPUphysics.UpdateableSystems
                     //Flow
                     if (FlowForce != F64.C0)
                     {
-                        Fix32 dot = MathHelper.Max(Vector3.Dot(entityCollidable.entity.linearVelocity, flowDirection), F64.C0);
+                        Fix dot = MathHelper.Max(Vector3.Dot(entityCollidable.entity.linearVelocity, flowDirection), F64.C0);
                         if (dot < MaxFlowSpeed)
                         {
                             force = (MathHelper.Min(FlowForce, (MaxFlowSpeed.Sub(dot)).Mul(entityCollidable.entity.mass)).Mul(dt)).Mul(fractionSubmerged) * FlowDirection;
@@ -356,7 +356,7 @@ namespace BEPUphysics.UpdateableSystems
             }
         }
 
-        void GetBuoyancyInformation(EntityCollidable collidable, out Fix32 submergedVolume, out Vector3 submergedCenter)
+        void GetBuoyancyInformation(EntityCollidable collidable, out Fix submergedVolume, out Vector3 submergedCenter)
         {
             BoundingBox entityBoundingBox;
 
@@ -378,11 +378,11 @@ namespace BEPUphysics.UpdateableSystems
             }
 
             Vector3 origin, xSpacing, zSpacing;
-			Fix32 perColumnArea;
+			Fix perColumnArea;
             GetSamplingOrigin(ref entityBoundingBox, out xSpacing, out zSpacing, out perColumnArea, out origin);
 
-			Fix32 boundingBoxHeight = entityBoundingBox.Max.Y.Sub(entityBoundingBox.Min.Y);
-			Fix32 maxLength = entityBoundingBox.Min.Y.Neg();
+			Fix boundingBoxHeight = entityBoundingBox.Max.Y.Sub(entityBoundingBox.Min.Y);
+			Fix maxLength = entityBoundingBox.Min.Y.Neg();
             submergedCenter = new Vector3();
             submergedVolume = F64.C0;
             for (int i = 0; i < samplePointsPerDimension; i++)
@@ -390,10 +390,10 @@ namespace BEPUphysics.UpdateableSystems
                 for (int j = 0; j < samplePointsPerDimension; j++)
                 {
                     Vector3 columnVolumeCenter;
-					Fix32 submergedHeight;
+					Fix submergedHeight;
                     if ((submergedHeight = GetSubmergedHeight(collidable, maxLength, boundingBoxHeight, ref origin, ref xSpacing, ref zSpacing, i, j, out columnVolumeCenter)) > F64.C0)
                     {
-						Fix32 columnVolume = submergedHeight.Mul(perColumnArea);
+						Fix columnVolume = submergedHeight.Mul(perColumnArea);
                         Vector3.Multiply(ref columnVolumeCenter, columnVolume, out columnVolumeCenter);
                         Vector3.Add(ref columnVolumeCenter, ref submergedCenter, out submergedCenter);
                         submergedVolume = submergedVolume.Add(columnVolume);
@@ -406,12 +406,12 @@ namespace BEPUphysics.UpdateableSystems
 
         }
 
-        void GetSamplingOrigin(ref BoundingBox entityBoundingBox, out Vector3 xSpacing, out Vector3 zSpacing, out Fix32 perColumnArea, out Vector3 origin)
+        void GetSamplingOrigin(ref BoundingBox entityBoundingBox, out Vector3 xSpacing, out Vector3 zSpacing, out Fix perColumnArea, out Vector3 origin)
         {
 			//Compute spacing and increment informaiton.
-			Fix32 samplePointsPerDimensionFix32 = samplePointsPerDimension.ToFix();
-			Fix32 widthIncrement = (entityBoundingBox.Max.X.Sub(entityBoundingBox.Min.X)).Div(samplePointsPerDimensionFix32);
-			Fix32 lengthIncrement = (entityBoundingBox.Max.Z.Sub(entityBoundingBox.Min.Z)).Div(samplePointsPerDimensionFix32);
+			Fix samplePointsPerDimensionFix32 = samplePointsPerDimension.ToFix();
+			Fix widthIncrement = (entityBoundingBox.Max.X.Sub(entityBoundingBox.Min.X)).Div(samplePointsPerDimensionFix32);
+			Fix lengthIncrement = (entityBoundingBox.Max.Z.Sub(entityBoundingBox.Min.Z)).Div(samplePointsPerDimensionFix32);
             xSpacing = new Vector3(widthIncrement, F64.C0, F64.C0);
             zSpacing = new Vector3(F64.C0, F64.C0, lengthIncrement);
             Quaternion.Transform(ref xSpacing, ref surfaceTransform.Orientation, out xSpacing);
@@ -475,7 +475,7 @@ namespace BEPUphysics.UpdateableSystems
             //}
         }
 
-		Fix32 GetSubmergedHeight(EntityCollidable collidable, Fix32 maxLength, Fix32 boundingBoxHeight, ref Vector3 rayOrigin, ref Vector3 xSpacing, ref Vector3 zSpacing, int i, int j, out Vector3 volumeCenter)
+		Fix GetSubmergedHeight(EntityCollidable collidable, Fix maxLength, Fix boundingBoxHeight, ref Vector3 rayOrigin, ref Vector3 xSpacing, ref Vector3 zSpacing, int i, int j, out Vector3 volumeCenter)
         {
             Ray ray;
             Vector3.Multiply(ref xSpacing, i.ToFix(), out ray.Position);
@@ -496,8 +496,8 @@ namespace BEPUphysics.UpdateableSystems
 
                 //Transform the hit into local space.
                 RigidTransform.TransformByInverse(ref rayHit.Location, ref surfaceTransform, out rayHit.Location);
-				Fix32 bottomY = rayHit.Location.Y;
-				Fix32 bottom = rayHit.T;
+				Fix bottomY = rayHit.Location.Y;
+				Fix bottom = rayHit.T;
                 Vector3 bottomPosition = rayHit.Location;
                 if (collidable.RayCast(ray, boundingBoxHeight.Sub(rayHit.T), out rayHit))
                 {

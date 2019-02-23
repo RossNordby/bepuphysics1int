@@ -58,13 +58,13 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         }
 
 
-        protected internal Fix32 timeOfImpact = F64.C1;
+        protected internal Fix timeOfImpact = F64.C1;
         ///<summary>
         /// Gets the last computed time of impact of the pair handler.
         /// This is only computed when one of the members is a continuously
         /// updated object.
         ///</summary>
-        public Fix32 TimeOfImpact
+        public Fix TimeOfImpact
         {
             get
             {
@@ -77,7 +77,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         ///</summary>
         ///<param name="requester">Collidable requesting the update.</param>
         ///<param name="dt">Timestep duration.</param>
-        public abstract void UpdateTimeOfImpact(Collidable requester, Fix32 dt);
+        public abstract void UpdateTimeOfImpact(Collidable requester, Fix dt);
 
 
         protected bool suppressEvents;

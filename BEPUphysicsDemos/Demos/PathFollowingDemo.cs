@@ -36,7 +36,7 @@ namespace BEPUphysicsDemos.Demos
         /// <summary>
         /// Incremented and used to evaluate paths in the update method. 
         /// </summary>
-        private Fix32 pathTime;
+        private Fix pathTime;
 
         /// <summary>
         /// Constructs a new demo.
@@ -112,9 +112,9 @@ random.NextDouble().ToFix().Mul(20.ToFix()).Sub(10.ToFix())));
             int numColumns = 7;
             int numRows = 7;
             int numHigh = 3;
-            Fix32 xSpacing = 2.09m.ToFix();
-            Fix32 ySpacing = 2.08m.ToFix();
-            Fix32 zSpacing = 2.09m.ToFix();
+            Fix xSpacing = 2.09m.ToFix();
+            Fix ySpacing = 2.08m.ToFix();
+            Fix zSpacing = 2.09m.ToFix();
             for (int i = 0; i < numRows; i++)
                 for (int j = 0; j < numColumns; j++)
                     for (int k = 0; k < numHigh; k++)
@@ -137,7 +137,7 @@ random.NextDouble().ToFix().Mul(20.ToFix()).Sub(10.ToFix())));
             get { return "Path Following"; }
         }
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
 			//Increment the time.  Note that the space's timestep is used
 			//instead of the method's dt.  This is because the demos, by

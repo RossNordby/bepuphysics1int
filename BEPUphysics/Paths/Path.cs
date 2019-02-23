@@ -13,21 +13,21 @@ namespace BEPUphysics.Paths
         /// </summary>
         /// <param name="time">Time at which to evaluate the path.</param>
         /// <param name="value">Path value at the given time.</param>
-        public abstract void Evaluate(Fix32 time, out TValue value);
+        public abstract void Evaluate(Fix time, out TValue value);
 
         /// <summary>
         /// Gets the starting and ending times of the path.
         /// </summary>
         /// <param name="startingTime">Beginning time of the path.</param>
         /// <param name="endingTime">Ending time of the path.</param>
-        public abstract void GetPathBoundsInformation(out Fix32 startingTime, out Fix32 endingTime);
+        public abstract void GetPathBoundsInformation(out Fix startingTime, out Fix endingTime);
 
         /// <summary>
         /// Computes the value of the path at a given time.
         /// </summary>
         /// <param name="time">Time at which to evaluate the path.</param>
         /// <returns>Path value at the given time.</returns>
-        public TValue Evaluate(Fix32 time)
+        public TValue Evaluate(Fix time)
         {
             TValue toReturn;
             Evaluate(time, out toReturn);

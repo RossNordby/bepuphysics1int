@@ -21,10 +21,10 @@ namespace BEPUphysicsDemos.Demos
             : base(game)
         {
             var tris = new List<Vector3[]>();
-            Fix32 basinWidth = 100.ToFix();
-            Fix32 basinLength = 100.ToFix();
-            Fix32 basinHeight = 16.ToFix();
-            Fix32 waterHeight = 15.ToFix();
+            Fix basinWidth = 100.ToFix();
+            Fix basinLength = 100.ToFix();
+            Fix basinHeight = 16.ToFix();
+            Fix waterHeight = 15.ToFix();
 
             //Remember, the triangles composing the surface need to be coplanar with the surface.  In this case, this means they have the same height.
             tris.Add(new[]
@@ -56,7 +56,7 @@ namespace BEPUphysicsDemos.Demos
 
             //Create a tiled floor.
             Entity toAdd;
-            Fix32 boxWidth = 10.ToFix();
+            Fix boxWidth = 10.ToFix();
             int numBoxesWide = 8;
             for (int i = 0; i < numBoxesWide; i++)
             {

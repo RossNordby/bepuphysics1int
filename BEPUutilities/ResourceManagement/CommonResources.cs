@@ -19,7 +19,7 @@ namespace BEPUutilities.ResourceManagement
         {
             SubPoolIntList = new UnsafeResourcePool<RawList<int>>();
             SubPoolIntSet = new UnsafeResourcePool<HashSet<int>>();
-            SubPoolFloatList = new UnsafeResourcePool<RawList<Fix32>>();
+            SubPoolFloatList = new UnsafeResourcePool<RawList<Fix>>();
             SubPoolVectorList = new UnsafeResourcePool<RawList<Vector3>>();
             SubPoolRayHitList = new UnsafeResourcePool<RawList<RayHit>>();
 
@@ -28,7 +28,7 @@ namespace BEPUutilities.ResourceManagement
         static ResourcePool<RawList<RayHit>> SubPoolRayHitList;
         static ResourcePool<RawList<int>> SubPoolIntList;
         static ResourcePool<HashSet<int>> SubPoolIntSet;
-        static ResourcePool<RawList<Fix32>> SubPoolFloatList;
+        static ResourcePool<RawList<Fix>> SubPoolFloatList;
         static ResourcePool<RawList<Vector3>> SubPoolVectorList;
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace BEPUutilities.ResourceManagement
         /// Retrieves a float list from the resource pool.
         /// </summary>
         /// <returns>Empty float list.</returns>
-        public static RawList<Fix32> GetFloatList()
+        public static RawList<Fix> GetFloatList()
         {
             return SubPoolFloatList.Take();
         }
@@ -103,7 +103,7 @@ namespace BEPUutilities.ResourceManagement
         /// Returns a resource to the pool.
         /// </summary>
         /// <param name="list">List to return.</param>
-        public static void GiveBack(RawList<Fix32> list)
+        public static void GiveBack(RawList<Fix> list)
         {
             list.Clear();
             SubPoolFloatList.GiveBack(list);

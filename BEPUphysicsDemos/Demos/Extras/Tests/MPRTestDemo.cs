@@ -41,7 +41,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             Vector3 overlap;
             bool overlapped = MPRToolbox.GetLocalOverlapPosition(shapeA, shapeB, ref transformB, out overlap);
             Vector3 normal;
-            Fix32 depth;
+            Fix depth;
             Vector3 direction = new Vector3(0.ToFix(), (-1).ToFix(), 0.ToFix());
             MPRToolbox.LocalSurfaceCast(shapeA, shapeB, ref transformB, ref direction, out depth, out normal);
 
@@ -113,13 +113,13 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
 
         Entity a;
         Entity b;
-        Fix32 groundWidth, groundHeight, groundLength;
-        Fix32 boxWidth, boxHeight, boxLength;
+        Fix groundWidth, groundHeight, groundLength;
+        Fix boxWidth, boxHeight, boxLength;
 
 
         Vector3 rayCastDirection = Vector3.Up;
 
-        public override void Update(Fix32 dt)
+        public override void Update(Fix dt)
         {
 
             if (Game.KeyboardInput.IsKeyDown(Keys.Left))
@@ -145,9 +145,9 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             if (MPRToolbox.GetLocalOverlapPosition((a.CollisionInformation.Shape as ConvexShape), (b.CollisionInformation.Shape as ConvexShape), ref localTransformB, out position))
             {
                 //Vector3 rayCastDirection = new Vector3(1,0,0);// (Vector3.Normalize(localDirection) + Vector3.Normalize(collidableB.worldTransform.Position - collidableA.worldTransform.Position)) / 2;
-                Fix32 previousT;
+                Fix previousT;
                 Vector3 previousNormal;
-                Fix32 t;
+                Fix t;
                 Vector3 normal;
 
                 rayCastDirection = localTransformB.Position;
@@ -253,16 +253,16 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
             Vector3 max;
             var direction = new Vector3();
             int NumSamples = 16;
-            Fix32 angleChange = MathHelper.TwoPi.Div(NumSamples.ToFix());
+            Fix angleChange = MathHelper.TwoPi.Div(NumSamples.ToFix());
 
             for (int i = 1; i < NumSamples / 2 - 1; i++)
             {
-                Fix32 phi = MathHelper.PiOver2.Sub(i.ToFix().Mul(angleChange));
+                Fix phi = MathHelper.PiOver2.Sub(i.ToFix().Mul(angleChange));
                 var sinPhi = Fix32Ext.Sin(phi);
                 var cosPhi = Fix32Ext.Cos(phi);
                 for (int j = 0; j < NumSamples; j++)
                 {
-                    Fix32 theta = j.ToFix().Mul(angleChange);
+                    Fix theta = j.ToFix().Mul(angleChange);
                     direction.X = Fix32Ext.Cos(theta).Mul(cosPhi);
                     direction.Y = sinPhi;
                     direction.Z = Fix32Ext.Sin(theta).Mul(cosPhi);
@@ -327,7 +327,7 @@ namespace BEPUphysicsDemos.Demos.Extras.Tests
         List<VertexPositionColor> minkowskiLines = new List<VertexPositionColor>();
 
         Vector3 contactNormal;
-        Fix32 contactDepth;
+        Fix contactDepth;
 
         VertexPositionColor[] lines = new VertexPositionColor[12];
         public override void Draw()
